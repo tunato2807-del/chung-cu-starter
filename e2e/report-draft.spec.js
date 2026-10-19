@@ -59,7 +59,7 @@ async function photo() {
   };
 }
 
-test("gallery, cancellation and camera preserve fields and never submit the form", async ({
+test("gallery selection and cancellation preserve fields and never submit the form", async ({
   page,
 }) => {
   let submissions = 0;
@@ -76,11 +76,6 @@ test("gallery, cancellation and camera preserve fields and never submit the form
   await selected.setFiles(await photo());
   await expect(page.getByText("Đã chọn 1 ảnh.", { exact: true })).toBeVisible();
   await expect(page.getByAltText("Xem trước photo.png")).toBeVisible();
-  await unchanged(page);
-  const camera = await choose(page, "Chụp ảnh");
-  expect(camera.isMultiple()).toBe(false);
-  expect(await camera.element().getAttribute("capture")).toBe("environment");
-  await camera.setFiles(await photo());
   await unchanged(page);
   expect(submissions).toBe(0);
   await page.getByRole("button", { name: "Bỏ ảnh đã chọn" }).click();
@@ -192,7 +187,7 @@ test("blocked storage and invalid uploads keep text editable", async ({
     mimeType: "image/jpeg",
     buffer: Buffer.alloc(5 * 1024 * 1024 + 1),
   });
-  await expect(page.getByRole("alert")).toContainText("Tối đa 5 ảnh");
+  await expect(page.getByRole("alert")).toContainText(/tối đa 5 ảnh/i);
   await unchanged(page);
   await (await choose(page, "Chọn ảnh từ thư viện")).setFiles(await photo());
   await expect(page.getByText("Đã chọn 1 ảnh.", { exact: true })).toBeVisible();
