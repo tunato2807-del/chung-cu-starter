@@ -185,8 +185,9 @@ function ChargeOptions({ bill }) {
         </label>
       ))}
       <small>
-        Điện dùng đơn giá một mức do BQL cấu hình. Phí xe theo số đăng ký hiệu
-        lực tại ngày chốt, chưa chia theo ngày.
+        Điện áp dụng biểu giá và thuế hiệu lực tại ngày chốt. Nếu cư dân trả
+        trực tiếp cho EVN, không chọn BQL thu tiền điện. Phí xe theo số đăng ký
+        hiệu lực tại ngày chốt, chưa chia theo ngày.
       </small>
     </div>
   );
@@ -195,7 +196,21 @@ function ChargeOptions({ bill }) {
 export function Rates() {
   const [params, setParams] = useSearchParams(),
     resource = useResource(`/cau_hinh_phi?${params}`),
-    action = useAction(resource.reload);
+    action = useAction(resource.reload),
+    [type, setType] = useState("PHI_QUAN_LY"),
+    [method, setMethod] = useState("BAC_THANG"),
+    [vat, setVat] = useState(""),
+    [tiers, setTiers] = useState(
+      [50, 100, 200, 300, 400, null].map((upper) => ({
+        den_kwh: upper,
+        don_gia: "",
+      })),
+    );
+  function setTier(index, key, value) {
+    setTiers((all) =>
+      all.map((row, i) => (i === index ? { ...row, [key]: value } : row)),
+    );
+  }
   return (
     <>
       <h1>Đơn giá phí</h1>
@@ -210,24 +225,167 @@ export function Rates() {
           onSubmit={(e) => {
             e.preventDefault();
             const form = e.currentTarget;
-            action.run("/cau_hinh_phi", "POST", values(e), () => form.reset());
+            const body = values(e);
+            if (type === "TIEN_DIEN") {
+              body.cach_tinh = method;
+              body.thue_gtgt = vat;
+              if (method === "BAC_THANG")
+                body.bac_dien = tiers.map((r, i) => ({
+                  den_kwh: i === tiers.length - 1 ? null : Number(r.den_kwh),
+                  don_gia: r.don_gia,
+                }));
+            }
+            action.run("/cau_hinh_phi", "POST", body, () => {
+              form.reset();
+              setType("PHI_QUAN_LY");
+              setMethod("BAC_THANG");
+              setVat("");
+              setTiers(
+                [50, 100, 200, 300, 400, null].map((upper) => ({
+                  den_kwh: upper,
+                  don_gia: "",
+                })),
+              );
+            });
           }}
         >
           <fieldset disabled={action.pending}>
             <Field label="Loại phí">
-              <select name="loai_phi">
+              <select
+                name="loai_phi"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+              >
                 <Options values={fees} />
               </select>
             </Field>
-            <Field
-              label="Đơn giá (đồng/đơn vị)"
-              name="don_gia"
-              type="number"
-              min="0"
-              max="9999999999.99"
-              step="0.01"
-              required
-            />
+            {type === "TIEN_DIEN" && (
+              <>
+                <Field label="Cách tính điện">
+                  <select
+                    value={method}
+                    onChange={(e) => setMethod(e.target.value)}
+                  >
+                    <option value="BAC_THANG">Bậc thang lũy tiến</option>
+                    <option value="DON_GIA">
+                      Một đơn giá theo cấu hình thu điện
+                    </option>
+                  </select>
+                </Field>
+                <p>
+                  Đối chiếu biểu giá, định mức và thuế áp dụng trước khi lưu.
+                  Công tơ do EVN thu trực tiếp không đưa vào hóa đơn BQL.
+                </p>
+                <Field label="Thuế GTGT điện (%)">
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    required
+                    value={vat}
+                    onChange={(e) => setVat(e.target.value)}
+                  />
+                </Field>
+                {method === "BAC_THANG" && (
+                  <>
+                    <p>
+                      Nhập ngưỡng cộng dồn: 50, 100, 200... kWh. Điện vượt mỗi
+                      ngưỡng được tính ở bậc tiếp theo.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTiers(
+                          [50, 100, 200, 300, 400, null].map((upper, i) => ({
+                            den_kwh: upper,
+                            don_gia: String(
+                              [1984, 2050, 2380, 2998, 3350, 3460][i],
+                            ),
+                          })),
+                        );
+                        setVat("8");
+                      }}
+                    >
+                      Điền mẫu 6 bậc và thuế 8%
+                    </button>
+                    <small>
+                      Mẫu theo số liệu tham khảo bạn cung cấp, chưa xác minh
+                      hiệu lực; có thể sửa trước khi lưu.
+                    </small>
+                    {tiers.map((row, i) => (
+                      <div className="form-grid" key={i}>
+                        <Field label={`Bậc ${i + 1}: đến kWh`}>
+                          {i === tiers.length - 1 ? (
+                            <span>Không giới hạn</span>
+                          ) : (
+                            <input
+                              type="number"
+                              min="1"
+                              max="999999999"
+                              step="1"
+                              required
+                              value={row.den_kwh ?? ""}
+                              onChange={(e) =>
+                                setTier(i, "den_kwh", e.target.value)
+                              }
+                            />
+                          )}
+                        </Field>
+                        <Field label={`Đơn giá bậc ${i + 1} (đồng/kWh)`}>
+                          <input
+                            type="number"
+                            min="0"
+                            max="9999999999.99"
+                            step="0.01"
+                            required
+                            value={row.don_gia}
+                            onChange={(e) =>
+                              setTier(i, "don_gia", e.target.value)
+                            }
+                          />
+                        </Field>
+                      </div>
+                    ))}
+                    <div className="actions">
+                      <button
+                        type="button"
+                        disabled={tiers.length >= 12}
+                        onClick={() =>
+                          setTiers((all) => [
+                            ...all.slice(0, -1),
+                            { den_kwh: "", don_gia: "" },
+                            all.at(-1),
+                          ])
+                        }
+                      >
+                        Thêm bậc
+                      </button>
+                      <button
+                        type="button"
+                        disabled={tiers.length <= 2}
+                        onClick={() =>
+                          setTiers((all) => [...all.slice(0, -2), all.at(-1)])
+                        }
+                      >
+                        Bớt bậc
+                      </button>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+            {(type !== "TIEN_DIEN" || method === "DON_GIA") && (
+              <Field
+                label="Đơn giá (đồng/đơn vị)"
+                name="don_gia"
+                type="number"
+                min="0"
+                max="9999999999.99"
+                step="0.01"
+                required
+              />
+            )}
             <Field
               label="Áp dụng từ ngày"
               name="tu_ngay"
@@ -272,7 +430,29 @@ export function Rates() {
               {resource.result?.data.map((r) => (
                 <tr key={r.ma_cau_hinh_phi}>
                   <td>{r.ten_phi}</td>
-                  <td>{r.don_gia}</td>
+                  <td>
+                    {r.cach_tinh === "BAC_THANG" ? (
+                      <details>
+                        <summary>Biểu giá bậc thang</summary>
+                        <ol>
+                          {(typeof r.bac_dien === "string"
+                            ? JSON.parse(r.bac_dien)
+                            : r.bac_dien
+                          ).map((tier, i) => (
+                            <li key={i}>
+                              Đến {tier.den_kwh ?? "không giới hạn"} kWh:{" "}
+                              {tier.don_gia} đ/kWh
+                            </li>
+                          ))}
+                        </ol>
+                      </details>
+                    ) : (
+                      r.don_gia
+                    )}
+                    {r.loai_phi === "TIEN_DIEN" && (
+                      <small> · Thuế GTGT {r.thue_gtgt}%</small>
+                    )}
+                  </td>
                   <td>{r.don_vi_tinh}</td>
                   <td>{r.tu_ngay}</td>
                   <td>{r.den_ngay || "Chưa kết thúc"}</td>

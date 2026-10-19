@@ -38,7 +38,7 @@ API căn hộ/cư dân áp dụng xác thực và vai trò BQL cho cả đọc v
 
 ## Phương tiện theo đợt cư trú
 
-Migration 004 thêm phuong_tien; migration hóa đơn bổ sung khóa kỳ; readiness yêu cầu đủ migration 001–005. Một bản ghi là một lần đăng ký với mã riêng, chủ xe, căn chịu phí và khóa ngoại đợt cư trú. Giữ hãng/màu, ngày đăng ký/kết thúc, người tạo/kết thúc, lý do và phien_ban. Căn và đợt của bản cũ không được ghi đè; không có API xóa hoặc sửa lịch sử.
+Migration 004 thêm phuong_tien; migration hóa đơn bổ sung khóa kỳ; readiness yêu cầu đủ migration 001–006. Một bản ghi là một lần đăng ký với mã riêng, chủ xe, căn chịu phí và khóa ngoại đợt cư trú. Giữ hãng/màu, ngày đăng ký/kết thúc, người tạo/kết thúc, lý do và phien_ban. Căn và đợt của bản cũ không được ghi đè; không có API xóa hoặc sửa lịch sử.
 
 Biển số chuẩn hóa ASCII viết hoa, bỏ khoảng trắng/chấm/gạch nối. Ô tô/xe máy bắt buộc biển, xe đạp cho NULL. Cột sinh bien_so_dang_hoat_dong với UNIQUE chặn hai đăng ký đang gửi cùng biển, cho phép nhiều xe đạp không biển. Đăng ký mới cũng kiểm tra khoảng ngày với lịch sử cùng biển để tránh chồng thời gian gửi khi nhập lùi ngày.
 
@@ -51,6 +51,8 @@ Khoảng ngày là [ngay_dang_ky, ngay_ket_thuc), NULL là chưa kết thúc. Ch
 ## Phí và hóa đơn
 
 Migration 005 thêm loai_phi, cau_hinh_phi, chi_so_dich_vu, hoa_don, chi_tiet_hoa_don và lich_su_hoa_don. Không sửa migration cũ. Các loại phí có dữ liệu danh mục, không seed đơn giá hoặc tài khoản ngân hàng. Giá mới nối tiếp khoảng hiệu lực cùng loại, khóa hàng danh mục để chống chồng khi ghi đồng thời; không được hồi tố qua ngày chốt của hóa đơn còn hiệu lực dùng giá cũ.
+
+Migration 006 thêm cach_tinh/thue_gtgt/bac_dien vào cau_hinh_phi, giữ phiên bản cũ DON_GIA/0% và không sửa các dòng hóa đơn. billing.electricity.js kiểm tra 2–12 bậc với ngưỡng nguyên cộng dồn tăng dần, cuối không giới hạn, giá không âm; chia kWh (3 số lẻ) theo ngưỡng rồi làm tròn mỗi bậc half-up đến đồng. Thuế điện (0–100%, 2 số lẻ) chỉ tính trên tổng tiền điện đã làm tròn, thêm một dòng khoản thu riêng. Dòng thuế lưu phần trăm/cơ sở thuế trong nguồn và diễn giải công khai. Widen don_gia chi_tiet_hoa_don lên DECIMAL(16,2) để chứa khoản thuế; don_gia cau_hinh_phi vẫn DECIMAL(12,2). Bậc/thuế và giá của các bậc đã dùng nằm trong snapshot và dấu vân tay như phí khác. Nhánh đơn giá cũ/0% giữ nguyên cấu trúc snapshot để nháp cũ vẫn duyệt được. Một biểu giá tại ngày chốt áp dụng toàn kỳ; chưa phân bổ kỳ đổi giá hoặc nhiều hộ.
 
 Số tiền dùng BigInt theo thang thập phân (đơn giá 2, số lượng/chỉ số 3 số lẻ), không cộng tiền bằng số thực. Từng dòng làm tròn half-up đến đồng, cộng tổng nguyên, kiểm tra giới hạn DECIMAL. Chi tiết lưu giá/đơn vị/số lượng và mã dữ liệu nguồn. Phí xe đọc khoảng nửa mở tại ngày chốt, bỏ qua bản kết thúc cùng ngày; không chia theo giờ/ngày. Các lựa chọn thu nước/điện/xe được BQL xác định rõ; cờ tính phí quản lý độc lập với tình trạng trống.
 

@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { pool, rows } from "../backend/src/lib/db.js";
 
 for (const width of [1440, 375])
-  test(`prices → incomplete draft → meters → approve → send → resident QR → collect at ${width}px`, async ({
+  test(`prices + electricity tiers → incomplete draft → meters → approve → send → resident QR → collect at ${width}px`, async ({
     browser,
   }) => {
     expect(process.env.DB_NAME).toBe("chung_cu_test");
@@ -94,11 +94,27 @@ for (const width of [1440, 375])
         ["PHI_QUAN_LY", "12000"],
         ["GUI_XE_MAY", "100000"],
         ["TIEN_NUOC", "15000"],
+        ["TIEN_DIEN", null],
       ]) {
         await page.getByLabel("Loại phí", { exact: true }).selectOption(type);
-        await page
-          .getByLabel("Đơn giá (đồng/đơn vị)", { exact: true })
-          .fill(price);
+        if (type === "TIEN_DIEN") {
+          await page
+            .getByRole("button", {
+              name: "Điền mẫu 6 bậc và thuế 8%",
+              exact: true,
+            })
+            .click();
+          await expect(
+            page.getByLabel("Đơn giá bậc 1 (đồng/kWh)", { exact: true }),
+          ).toHaveValue("1984");
+          await expect(
+            page.getByLabel("Thuế GTGT điện (%)", { exact: true }),
+          ).toHaveValue("8");
+        } else {
+          await page
+            .getByLabel("Đơn giá (đồng/đơn vị)", { exact: true })
+            .fill(price);
+        }
         await page.getByLabel("Áp dụng từ ngày").fill("2020-01-01");
         await page
           .getByRole("button", { name: "Lưu đơn giá", exact: true })
@@ -122,6 +138,7 @@ for (const width of [1440, 375])
       await page
         .getByLabel("Ngày chốt phí", { exact: true })
         .fill("2026-09-30");
+      await page.getByLabel("BQL thu tiền điện", { exact: true }).check();
       await page
         .getByRole("button", { name: "Tạo bản nháp", exact: true })
         .click();
@@ -148,13 +165,20 @@ for (const width of [1440, 375])
         .getByRole("button", { name: "Lưu chỉ số", exact: true })
         .click();
       await expect(page.locator("tbody tr")).toHaveCount(1);
+      await page.getByLabel("Dịch vụ", { exact: true }).selectOption("DIEN");
+      await page.getByLabel("Chỉ số đầu kỳ").fill("100");
+      await page.getByLabel("Chỉ số cuối kỳ").fill("400");
+      await page
+        .getByRole("button", { name: "Lưu chỉ số", exact: true })
+        .click();
+      await expect(page.locator("tbody tr")).toHaveCount(2);
       await page.goto(`/quan-tri/hoa-don/${id}`);
       await page
         .getByRole("button", { name: "Tính lại bản nháp", exact: true })
         .click();
       await expect(
         page.getByRole("heading", {
-          name: "Tổng cộng: 1.220.000 đ",
+          name: "Tổng cộng: 2.018.660 đ",
           exact: true,
         }),
       ).toBeVisible();
@@ -189,6 +213,18 @@ for (const width of [1440, 375])
       await resident
         .getByRole("link", { name: bill.so_hoa_don, exact: true })
         .click();
+      await expect(
+        resident.getByRole("cell", {
+          name: "Tiền điện bậc 4 (200–300 kWh)",
+          exact: true,
+        }),
+      ).toBeVisible();
+      await expect(
+        resident.getByRole("cell", {
+          name: "Thuế GTGT điện 8.00% trên 739.500 đ",
+          exact: true,
+        }),
+      ).toBeVisible();
       const qr = resident.getByAltText(`VietQR hóa đơn ${bill.so_hoa_don}`);
       await expect(qr).toBeVisible();
       await expect
@@ -203,11 +239,11 @@ for (const width of [1440, 375])
         .getByRole("button", { name: "Xác nhận đã thu", exact: true })
         .click();
       await expect(
-        page.getByText("Đã ghi nhận 1.220.000 đ", { exact: false }),
+        page.getByText("Đã ghi nhận 2.018.660 đ", { exact: false }),
       ).toBeVisible();
       await resident.reload();
       await expect(
-        resident.getByText("Đã ghi nhận 1.220.000 đ", { exact: false }),
+        resident.getByText("Đã ghi nhận 2.018.660 đ", { exact: false }),
       ).toBeVisible();
       await expect(
         resident.getByAltText(`VietQR hóa đơn ${bill.so_hoa_don}`),

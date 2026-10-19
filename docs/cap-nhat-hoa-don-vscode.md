@@ -1,5 +1,7 @@
 # Cập nhật phí và hóa đơn trong VS Code
 
+> Đây là bản hóa đơn ban đầu (migration 005). Nếu đã cập nhật điện bậc thang (006), dùng [hướng dẫn điện bậc thang](cap-nhat-dien-bac-thang-vscode.md) khi sửa 5 file liên quan; không chép lại phiên bản cũ bên dưới đè lên bản mới.
+
 Code đầy đủ theo từng file cho bước phát triển sau commit `cdff84b` (đã có cư trú và phương tiện). Mở trang hướng dẫn này trên GitHub để copy từng khối vào VS Code, không cần tải ZIP.
 
 ## Chuẩn bị

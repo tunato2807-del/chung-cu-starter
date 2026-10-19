@@ -90,3 +90,33 @@ Các route cấu hình/ghi dưới đây chỉ dành cho BQL, cần phiên và `
 Loại phí: PHI_QUAN_LY, GUI_O_TO, GUI_XE_MAY, GUI_XE_DAP, TIEN_NUOC, TIEN_DIEN. Loại chỉ số: DIEN/NUOC. Kỳ YYYY-MM, chỉ số 3 số lẻ, giá 2 số lẻ. Ngày chốt phí và chỉ số phải cùng kỳ, cùng ngày; không sau hôm nay. Hạn trả từ ngày hiện tại và không trước ngày chốt. Cờ phí quản lý lấy từ căn; BQL chọn rõ nước/điện/xe. Không ngầm bỏ phí thiếu chỉ số hoặc giá, nháp giữ danh sách lỗi và không được duyệt.
 
 409 STALE_BILL_SOURCE khi nguồn thay đổi; METER_LOCKED khi sửa kỳ đã duyệt/gửi/thu; BILLED_VEHICLE_PERIOD khi thêm/kết thúc/chuyển xe làm đổi ngày đã chốt (cả căn đi/đến). Gửi lại xác nhận thu đã thành công với cùng số tiền/tham chiếu không ghi thu lần hai. Đổi căn hoặc chuyển đi thu hồi quyền xem hóa đơn căn cũ ngay. Ngân hàng và tài khoản chỉ lưu để dựng QR; không có API ngân hàng, webhook hoặc thanh toán một phần.
+
+
+## Cấu hình điện bậc thang (migration 006)
+
+`POST /api/cau_hinh_phi` vẫn dành cho BQL, thêm ví dụ:
+
+```json
+{
+  "loai_phi": "TIEN_DIEN",
+  "cach_tinh": "BAC_THANG",
+  "thue_gtgt": "8",
+  "tu_ngay": "2026-09-01",
+  "bac_dien": [
+    { "den_kwh": 50, "don_gia": "1984" },
+    { "den_kwh": 100, "don_gia": "2050" },
+    { "den_kwh": 200, "don_gia": "2380" },
+    { "den_kwh": 300, "don_gia": "2998" },
+    { "den_kwh": 400, "don_gia": "3350" },
+    { "den_kwh": null, "don_gia": "3460" }
+  ]
+}
+```
+
+Đây là mẫu theo số liệu người dùng cung cấp, chưa xác minh hiệu lực. `den_kwh` là ngưỡng cộng dồn nguyên (không phải chiều rộng mỗi bậc), tăng dần, bậc cuối bắt buộc null; 2–12 bậc. Khi BAC_THANG, server lưu don_gia gốc = 0; giá thực ở mỗi bậc. Khi DON_GIA, cần don_gia, bac_dien null/không gửi, có thể gửi thue_gtgt cho điện. Bỏ các trường mới giữ tương thích DON_GIA/0%. Phí khác không nhận bậc/thuế điện.
+
+`GET /api/cau_hinh_phi` trả thêm cach_tinh, thue_gtgt, bac_dien. Quy tắc phiên bản nối tiếp và RATE_IN_USE vẫn áp dụng cho cả biểu giá; không có API sửa/xóa bậc đã lưu. Cần ngày mới sau phiên bản gần nhất và không hồi tố qua hóa đơn còn hiệu lực dùng phiên bản trước.
+
+Lập hóa đơn vẫn dùng `tinh_dien: true`, cùng chỉ số DIEN. Chi tiết điện gồm các dòng bậc thực dùng và một dòng thuế (nếu >0%). Lượng 0 kWh có dòng bậc đầu = 0. Thuế là một khoản thu (số lượng 1, đơn giá bằng khoản thuế), không phải một giá điện/kWh. Đơn vị kWh chỉ dành cho dòng điện. Các dòng công khai có diễn giải thuế/cơ sở thuế, không lộ mã nội bộ. QR/tổng thanh toán đã gồm thuế. Không thêm thuế điện lên nước, xe hoặc quản lý. Không sửa hóa đơn đã duyệt/gửi/thu khi thêm phiên bản mới.
+
+Áp dụng một biểu giá theo ngày chốt cho toàn kỳ của một căn/định mức. Chưa tách kỳ đổi giá, định mức nhiều hộ hay chia theo ngày; cần đối chiếu hồ sơ thu điện trước khi duyệt trong những trường hợp này. Căn thanh toán trực tiếp cho EVN cần bỏ `tinh_dien`.

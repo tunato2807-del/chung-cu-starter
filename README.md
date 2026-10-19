@@ -66,9 +66,9 @@ Danh bạ và mọi thao tác xe chỉ dành cho BQL. Module hóa đơn đọc s
 
 ## Phí và hóa đơn
 
-Chạy `npm run db:migrate` để áp dụng `005_billing.sql`, giữ nguyên migration cũ và dữ liệu đã có. Xem [code từng file cho VS Code](docs/cap-nhat-hoa-don-vscode.md).
+Chạy `npm run db:migrate` để áp dụng đến `006_electricity_tiers.sql`, giữ nguyên migration cũ và dữ liệu đã có. Bản hóa đơn ban đầu: [code 11 file](docs/cap-nhat-hoa-don-vscode.md). Nếu đã có bản đó, cập nhật [5 file điện bậc thang](docs/cap-nhat-dien-bac-thang-vscode.md).
 
-1. BQL → **Đơn giá phí** → tạo giá theo loại và ngày áp dụng. Giá điện một mức chỉ dùng nếu BQL thu điện; không tự đưa giá demo vào dữ liệu thật. Phiên bản mới bắt đầu sau phiên bản gần nhất, đóng khoảng giá cũ; không được đặt ngày mới làm thay đổi giá đã dùng trong hóa đơn còn hiệu lực.
+1. BQL → **Đơn giá phí** → tạo giá theo loại và ngày áp dụng. Điện có thể dùng biểu giá bậc thang và thuế theo ngày hiệu lực hoặc một đơn giá theo cấu hình thu điện. Chỉ chọn BQL thu điện khi căn không trả trực tiếp cho EVN; không tự đưa giá mẫu vào dữ liệu thật. Phiên bản mới bắt đầu sau phiên bản gần nhất, đóng khoảng giá cũ; không được đặt ngày mới làm thay đổi giá đã dùng trong hóa đơn còn hiệu lực.
 2. **Chỉ số điện nước** → chọn căn, dịch vụ, kỳ, chỉ số đầu/cuối và ngày chốt. Kỳ đầu cần xác nhận; kỳ tiếp theo phải có kỳ liền trước và chỉ số đầu khớp chỉ số cuối đã ghi. Chỉ sửa kỳ mới nhất, chưa có hóa đơn duyệt/gửi/đã thu.
 3. **Phí & hóa đơn** → **Lập hóa đơn** cho từng căn. Kỳ và ngày chốt thuộc cùng tháng, không trong tương lai. Phí quản lý theo cờ tính phí của căn; nước mặc định thu, điện mặc định không thu, xe mặc định thu. BQL chọn rõ các khoản áp dụng. Thiếu giá/chỉ số đúng ngày chốt được liệt kê trong nháp và chặn duyệt. Chỉ số thay đổi thì **Tính lại bản nháp**.
 4. **Duyệt hóa đơn** khóa các dòng tiền; **Gửi hóa đơn** cần hạn trả, BIN ngân hàng, tài khoản và tên người nhận. Thông tin nhận tiền được lưu riêng trên hóa đơn. Cư dân thấy hóa đơn đã gửi thuộc căn và đợt cư trú hiện tại, có VietQR tạo ngay trong trình duyệt.
@@ -76,7 +76,9 @@ Chạy `npm run db:migrate` để áp dụng `005_billing.sql`, giữ nguyên mi
 
 Tiền tính bằng số thập phân chính xác, làm tròn từng dòng đến đồng rồi cộng tổng. Ví dụ 70 m² × 12.000 + 2 xe máy × 100.000 + 12 m³ × 15.000 = 1.220.000 đồng. Giá và số lượng trên hóa đơn là bản lưu tại lúc lập. Diện tích đọc từ cấu hình căn khi lập; BQL cần kiểm tra khi lập hồi tố, chưa có lịch sử diện tích ngoài các hóa đơn đã lưu. Chuyển cư trú thu hồi quyền xem hóa đơn căn cũ; không tự gắn hóa đơn theo số điện thoại. Quá hạn được tính lúc đọc, không lưu thành một trạng thái riêng.
 
-Chưa có lập hàng loạt, thanh toán một phần/tiền thừa, đồng bộ ngân hàng, xuất PDF/Excel, đơn giá điện bậc thang hoặc tác vụ nhắc nợ. VietQR đã kiểm tra cấu trúc/CRC và hiển thị qua giao diện, chưa thử giao dịch ngân hàng thật. Quét mã không thay trạng thái thanh toán; BQL chịu trách nhiệm nhập đúng ngân hàng và đối soát thực tế.
+Điện bậc thang chia lượng kWh theo từng ngưỡng cộng dồn, làm tròn tiền từng bậc đến đồng rồi tính thuế trên tổng tiền điện trước thuế, không tính thuế điện lên phí khác. Với mẫu người dùng cung cấp, 300 kWh = 739.500 đồng + 8% = 798.660 đồng. Mẫu không được seed tự động, chưa xác minh là biểu giá còn hiệu lực. Phiên bản giá chọn tại ngày chốt cho toàn kỳ; chưa phân bổ khi đổi giá giữa kỳ, nhiều hộ/định mức, hoặc chia theo ngày đọc công tơ.
+
+Chưa có lập hàng loạt, thanh toán một phần/tiền thừa, đồng bộ ngân hàng, xuất PDF/Excel hoặc tác vụ nhắc nợ. VietQR đã kiểm tra cấu trúc/CRC và hiển thị qua giao diện, chưa thử giao dịch ngân hàng thật. Quét mã không thay trạng thái thanh toán; BQL chịu trách nhiệm nhập đúng ngân hàng và đối soát thực tế.
 
 ## Ảnh hiện trường và QR
 

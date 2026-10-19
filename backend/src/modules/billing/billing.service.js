@@ -4,6 +4,7 @@ import { choice, fail, integer, text } from "../../lib/http.js";
 import { lockApartment } from "./billing.guards.js";
 import { vietQR } from "./billing.qr.js";
 import * as v from "./billing.validation.js";
+import { electricityConfig, electricityLines } from "./billing.electricity.js";
 
 const json = (x) => (typeof x === "string" ? JSON.parse(x) : x);
 function stable(x) {
@@ -69,7 +70,11 @@ export async function rates(query) {
 }
 export async function createRate(body, user) {
   const type = choice(body.loai_phi, "loai_phi", v.feeTypes),
-    price = v.decimal(v.scaled(body.don_gia), 2),
+    config = electricityConfig(body, type),
+    price =
+      config.cach_tinh === "BAC_THANG"
+        ? "0.00"
+        : v.decimal(v.scaled(body.don_gia), 2),
     from = v.day(body.tu_ngay, true);
   return transaction(async (db) => {
     await rows(
@@ -108,8 +113,16 @@ export async function createRate(body, user) {
     }
     const result = await rows(
       db,
-      "INSERT INTO cau_hinh_phi (loai_phi,don_gia,tu_ngay,ma_nguoi_tao) VALUES (?,?,?,?)",
-      [type, price, from, user.ma_nguoi_dung],
+      "INSERT INTO cau_hinh_phi (loai_phi,don_gia,tu_ngay,ma_nguoi_tao,cach_tinh,thue_gtgt,bac_dien) VALUES (?,?,?,?,?,?,?)",
+      [
+        type,
+        price,
+        from,
+        user.ma_nguoi_dung,
+        config.cach_tinh,
+        config.thue_gtgt,
+        config.bac_dien === null ? null : JSON.stringify(config.bac_dien),
+      ],
     );
     return { ma_cau_hinh_phi: result.insertId };
   });
@@ -296,6 +309,29 @@ async function calculate(db, apartment, month, day, options) {
       }
       const used =
         v.scaled(meter.chi_so_moi, 3, 9) - v.scaled(meter.chi_so_cu, 3, 9);
+      if (type === "DIEN") {
+        const rate = rates.find((r) => r.loai_phi === "TIEN_DIEN");
+        if (!rate) errors.push("Thiếu đơn giá TIEN_DIEN tại ngày chốt.");
+        else {
+          // Preserve legacy flat/no-VAT snapshots byte-for-byte for existing drafts.
+          if (rate.cach_tinh === "BAC_THANG" || v.scaled(rate.thue_gtgt) > 0n) {
+            lines.push(
+              ...electricityLines(
+                rate,
+                used,
+                {
+                  chi_so_cu: meter.chi_so_cu,
+                  chi_so_moi: meter.chi_so_moi,
+                  phien_ban: meter.phien_ban,
+                },
+                meter.ma_chi_so_dich_vu,
+              ),
+            );
+            continue;
+          }
+        }
+        if (!rate) continue;
+      }
       add(
         `TIEN_${type}`,
         v.decimal(used, 3),

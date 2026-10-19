@@ -17,3 +17,5 @@ Thông báo và nghiệp vụ thanh toán mở rộng chưa được migration t
 `migrations/004_vehicles.sql` thêm `phuong_tien`. Mỗi đăng ký giữ căn chịu phí, đợt cư trú và mã riêng; `ma_dang_ky_truoc` liên kết bản chuyển tiếp. UNIQUE cột sinh chỉ áp dụng cho biển số đang gửi; xe đạp có thể NULL. CHECK giữ ngày kết thúc không trước ngày đăng ký và bắt buộc người/lý do khi kết thúc. FK không xóa dây chuyền lịch sử. Chuyển xe và chuyển cư trú cùng transaction; không sửa các migration 001–003 đã chạy.
 
 `005_billing.sql` thêm danh mục phí, giá theo hiệu lực, chỉ số kỳ, hóa đơn, dòng tiền và lịch sử. Unique bản hiệu lực theo căn/kỳ, mã tham chiếu thu và liên kết thay thế giữ chống trùng; ràng buộc ngày/số không âm và số đã thu bằng tổng được áp dụng trong schema. Quy tắc dữ liệu nguồn/giá/chỉ số có kiểm tra transaction tại service. Không có đơn giá hoặc ngân hàng nhận tiền mặc định. Quyền cư dân đối chiếu đợt đang mở tại thời điểm request.
+
+`006_electricity_tiers.sql` thêm cách tính, thuế và JSON bậc điện theo từng phiên bản giá. Dữ liệu cũ mặc định DON_GIA/0%, hóa đơn cũ không bị tính lại. Đơn giá dòng hóa đơn mở rộng để chứa khoản thuế; không sửa migration 005 đã chạy.
