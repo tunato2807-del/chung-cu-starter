@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getJson } from "../../shared/api/client.js";
-import { newRequestKey } from "../../shared/request-key.js";
+import { useReportDraft } from "../../shared/use-report-draft.js";
 import { useAuth } from "../auth/Auth.jsx";
 import {
   Badge,
@@ -167,15 +167,16 @@ export function Scanner() {
 }
 export function SubmitReport() {
   const { token } = useParams(),
-    { user } = useAuth(),
+    { user, loading: authLoading } = useAuth(),
     resource = useResource(`/cong_khai/vi_tri_qr/${encodeURIComponent(token)}`);
-  const [key] = useState(newRequestKey),
-    [error, setError] = useState(),
+  const form = useRef(null);
+  const draft = useReportDraft(token, user?.ma_nguoi_dung);
+  const [error, setError] = useState(),
     [pending, setPending] = useState(false),
     [receipt, setReceipt] = useState(),
     [confirmed, setConfirmed] = useState(false),
     [copy, setCopy] = useState("");
-  if (resource.loading) return <Loading />;
+  if (resource.loading || authLoading) return <Loading />;
   if (resource.error)
     return (
       <div className="card">
@@ -224,24 +225,36 @@ export function SubmitReport() {
       <p className="eyebrow">PHẢN ÁNH TẠI VỊ TRÍ</p>
       <h1>{resource.result.data.ten_vi_tri}</h1>
       <p className="muted">{resource.result.data.mo_ta}</p>
+      {draft.restored && (
+        <p className="note" role="status">
+          Đã khôi phục nội dung bản nháp. Nếu trước đó đã chọn ảnh, hãy chọn lại
+          ảnh trước khi gửi.
+        </p>
+      )}
+      {draft.warning && (
+        <p className="note" role="status">
+          {draft.warning}
+        </p>
+      )}
       <form
+        ref={form}
+        onInput={(event) => draft.save(event.currentTarget)}
         onSubmit={async (e) => {
           e.preventDefault();
+          draft.save(e.currentTarget);
           const data = new FormData(e.currentTarget);
           data.set("token_qr", token);
-          data.set("khoa_yeu_cau", key);
+          data.set("khoa_yeu_cau", draft.requestKey);
           if (confirmed) data.set("xac_nhan_gui", "true");
           setPending(true);
           setError(null);
           try {
-            setReceipt(
-              (
-                await getJson("/cong_khai/phan_anh", {
-                  method: "POST",
-                  body: data,
-                })
-              ).data,
-            );
+            const result = await getJson("/cong_khai/phan_anh", {
+              method: "POST",
+              body: data,
+            });
+            draft.clear();
+            setReceipt(result.data);
           } catch (err) {
             setError(err);
           } finally {
@@ -250,13 +263,18 @@ export function SubmitReport() {
         }}
       >
         <Field label="Loại sự cố">
-          <select name="loai_su_co" required>
+          <select
+            name="loai_su_co"
+            required
+            defaultValue={draft.values.loai_su_co || "DIEN"}
+          >
             <Options values={categories} />
           </select>
         </Field>
         <Field
           label="Tiêu đề"
           name="tieu_de"
+          defaultValue={draft.values.tieu_de || ""}
           required
           minLength={3}
           maxLength={150}
@@ -265,18 +283,22 @@ export function SubmitReport() {
         <Field label="Mô tả chi tiết">
           <textarea
             name="noi_dung"
+            defaultValue={draft.values.noi_dung || ""}
             required
             minLength={10}
             maxLength={5000}
             rows={4}
           />
         </Field>
-        <ImagesInput />
+        <ImagesInput
+          disabled={pending}
+          onBeforeChoose={() => draft.save(form.current)}
+        />
         <div className="form-grid">
           <Field
             label="Họ tên"
             name="ten_nguoi_gui"
-            defaultValue={user?.ho_va_ten || ""}
+            defaultValue={draft.values.ten_nguoi_gui ?? user?.ho_va_ten ?? ""}
             required
             minLength={2}
             maxLength={100}
@@ -286,7 +308,9 @@ export function SubmitReport() {
             label="Số điện thoại"
             name="so_dien_thoai"
             type="tel"
-            defaultValue={user?.so_dien_thoai || ""}
+            defaultValue={
+              draft.values.so_dien_thoai ?? user?.so_dien_thoai ?? ""
+            }
             required
             autoComplete="tel"
           />
@@ -294,6 +318,7 @@ export function SubmitReport() {
         <Field
           label="Căn hộ (tùy chọn)"
           name="can_ho_khai_bao"
+          defaultValue={draft.values.can_ho_khai_bao || ""}
           maxLength={40}
         />
         <small className="muted">

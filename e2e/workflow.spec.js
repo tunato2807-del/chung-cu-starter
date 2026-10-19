@@ -107,7 +107,7 @@ test("guest → management → technician → acceptance → private public look
     })
       .png()
       .toBuffer();
-    await guest.locator("input[type=file]").setInputFiles({
+    await guest.locator("input[type=file][multiple]").setInputFiles({
       name: "photo.png",
       mimeType: "image/png",
       buffer: image,
@@ -151,7 +151,7 @@ test("guest → management → technician → acceptance → private public look
     await tech
       .getByLabel("Kết quả xử lý (bắt buộc)")
       .fill("Đã thay bóng đèn và kiểm tra hoạt động.");
-    await tech.locator("input[type=file]").setInputFiles({
+    await tech.locator("input[type=file][multiple]").setInputFiles({
       name: "result.png",
       mimeType: "image/png",
       buffer: image,
