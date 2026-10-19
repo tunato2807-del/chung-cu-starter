@@ -1,5 +1,7 @@
 # Cập nhật quản lý phương tiện trong VS Code
 
+Khi đã có module phí/hóa đơn, dùng [hướng dẫn hóa đơn mới nhất](cap-nhat-hoa-don-vscode.md) chứa cả service cư trú/phương tiện có khóa dữ liệu đã tính phí. Các khối code bên dưới là bản trước module hóa đơn.
+
 Code đầy đủ theo từng file cho bước phát triển sau commit `a79ea3e` (căn hộ/cư dân đã hỗ trợ chuyển cùng ngày). Mở hướng dẫn này trên GitHub để copy từng khối code vào VS Code. Không cần tải ZIP hoặc tạo lại dự án.
 
 ## Chuẩn bị

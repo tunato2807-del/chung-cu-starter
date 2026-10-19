@@ -1,11 +1,5 @@
-# Đơn giá, chỉ số, hóa đơn và xác nhận chuyển khoản
+# Phí, chỉ số và hóa đơn
 
-Chưa triển khai. Khi phát triển, tạo:
+billing.validation.js kiểm tra ngày/kỳ, số thập phân và tính tiền bằng BigInt. billing.service.js quản lý giá nối tiếp theo hiệu lực, chỉ số liên tục, nháp/bản thay thế, tính lại và duyệt theo dấu vân tay nguồn, gửi/thu/hủy và quyền cư dân. billing.guards.js khóa căn và chặn sửa xe hồi tố qua kỳ đã chốt; được module cư trú/xe dùng chung. billing.qr.js tạo payload VietQR và CRC tại chỗ. billing.routes.js tách route BQL và cư dân.
 
-- billing.routes.js: URL và middleware.
-- billing.controller.js: nhận HTTP, trả kết quả.
-- billing.service.js: quy tắc nghiệp vụ và ranh giới transaction.
-- billing.repository.js: truy vấn MySQL có tham số.
-- billing.validation.js: kiểm tra đầu vào.
-
-Kiểm tra quyền trên từng bản ghi tại service. Không tin vai trò hoặc mã căn hộ do frontend gửi.
+Không tin tổng/đơn giá từ client; không sửa giá/chi tiết hóa đơn đã duyệt. Mỗi trạng thái và log cùng transaction, phien_ban chống ghi đè, cột sinh chống nhiều bản hiệu lực, mã tham chiếu chống ghi thu lại. Cư dân không xem nháp/hủy hoặc dữ liệu ngoài đợt hiện tại. Không tự gọi ngân hàng hoặc ghi thu sau khi quét QR.

@@ -1,5 +1,7 @@
 # Cập nhật căn hộ và cư dân trong VS Code
 
+Khi đã có module phí/hóa đơn, dùng [hướng dẫn hóa đơn mới nhất](cap-nhat-hoa-don-vscode.md) chứa cả service cư trú/phương tiện có khóa dữ liệu đã tính phí. Các khối code bên dưới là bản trước module hóa đơn.
+
 Bản hướng dẫn này là phiên bản căn hộ/cư trú trước module phương tiện. Khi đã triển khai phương tiện, dùng [hướng dẫn phương tiện](cap-nhat-phuong-tien-vscode.md) chứa đầy đủ các file cư trú được bổ sung xử lý xe.
 
 Hướng dẫn này chứa code đầy đủ theo từng file cho bản bổ sung sau commit `b41060d`, gồm hướng dẫn khoảng ngày chuyển căn hợp lệ. Mở file Markdown này trên GitHub để copy từng khối code vào VS Code, không cần tải ZIP. Các khối code là ảnh chụp của phiên bản bổ sung căn hộ/cư trú này; khi nâng cấp tiếp, dùng phiên bản mới của file nguồn.

@@ -10,8 +10,10 @@ Kiểm thử dùng `chung_cu_test`; các test xóa fixture của chính lượt 
 
 `migrations/002_residency.sql` thêm `can_ho`, `cu_dan`, `lich_su_cu_tru`. Liên kết tài khoản cư dân tùy chọn và duy nhất; căn hiện tại lấy từ lịch sử đang mở. Cột sinh duy nhất chặn hai đợt chưa kết thúc của một cư dân. Chuyển căn có khóa hồ sơ và transaction; không xóa lịch sử. Chạy `npm run db:migrate` để áp dụng các migration chưa chạy theo thứ tự tên; chạy lại không tạo dữ liệu trùng và phát hiện file đã áp dụng bị sửa/mất.
 
-Thiết kế chỉ số, đơn giá theo hiệu lực, hóa đơn và thông báo chưa được migration trong phiên bản này.
+Thông báo và nghiệp vụ thanh toán mở rộng chưa được migration trong phiên bản này.
 
 `migrations/003_same_day_residency.sql` thay CHECK tự sinh từ migration 002 bằng ràng buộc có tên cho phép `den_ngay >= tu_ngay`. Giữ mọi bản ghi lịch sử, không sửa migration 002 đã chạy. Khoảng rỗng giữ dấu vết chuyển trong ngày; UNIQUE đợt đang mở và khóa giao dịch vẫn có hiệu lực.
 
 `migrations/004_vehicles.sql` thêm `phuong_tien`. Mỗi đăng ký giữ căn chịu phí, đợt cư trú và mã riêng; `ma_dang_ky_truoc` liên kết bản chuyển tiếp. UNIQUE cột sinh chỉ áp dụng cho biển số đang gửi; xe đạp có thể NULL. CHECK giữ ngày kết thúc không trước ngày đăng ký và bắt buộc người/lý do khi kết thúc. FK không xóa dây chuyền lịch sử. Chuyển xe và chuyển cư trú cùng transaction; không sửa các migration 001–003 đã chạy.
+
+`005_billing.sql` thêm danh mục phí, giá theo hiệu lực, chỉ số kỳ, hóa đơn, dòng tiền và lịch sử. Unique bản hiệu lực theo căn/kỳ, mã tham chiếu thu và liên kết thay thế giữ chống trùng; ràng buộc ngày/số không âm và số đã thu bằng tổng được áp dụng trong schema. Quy tắc dữ liệu nguồn/giá/chỉ số có kiểm tra transaction tại service. Không có đơn giá hoặc ngân hàng nhận tiền mặc định. Quyền cư dân đối chiếu đợt đang mở tại thời điểm request.

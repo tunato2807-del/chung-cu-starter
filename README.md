@@ -1,6 +1,6 @@
 # Quản lý chung cư · Phản ánh QR
 
-React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú và phương tiện** theo ba tài liệu thiết kế; chưa triển khai hóa đơn và thông báo.
+React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện và phí/hóa đơn** theo ba tài liệu thiết kế; chưa triển khai thông báo.
 
 ## Chạy môi trường phát triển
 
@@ -62,7 +62,21 @@ Chạy `npm run db:migrate` để áp dụng migration `004_vehicles.sql`, rồi
 
 Ngày đăng ký nằm trong đợt cư trú hiện tại và không sau hôm nay. Không được ghi lùi ngày chuyển căn/chuyển đi trước ngày đăng ký hoặc kết thúc xe đã có trong đợt. API từ chối danh sách cư dân cũ sau khi người đó chuyển căn; cần tải lại/chọn lại cư dân. Mỗi biển số có tối đa một đăng ký đang gửi; đăng ký lại được sau khi kết thúc, nhưng các khoảng ngày có thời gian gửi không được chồng nhau. Các đăng ký bắt đầu/kết thúc cùng ngày giữ dấu vết và không đại diện thêm ngày gửi xe.
 
-Danh bạ và mọi thao tác xe chỉ dành cho BQL; chưa có chức năng tính phí gửi xe hoặc xuất hóa đơn. Các mốc ngày và căn chịu phí được lưu để module hóa đơn sau này đọc tại ngày chốt; không tự tính chia theo giờ/ngày.
+Danh bạ và mọi thao tác xe chỉ dành cho BQL. Module hóa đơn đọc số xe theo ngày chốt; không tự tính chia theo giờ/ngày. Khi khoản xe đã có hóa đơn duyệt/gửi/đã thu, không thêm, kết thúc hoặc chuyển xe hồi tố làm đổi kỳ đã chốt; cần xử lý hóa đơn chưa thanh toán hoặc chọn ngày sau ngày chốt.
+
+## Phí và hóa đơn
+
+Chạy `npm run db:migrate` để áp dụng `005_billing.sql`, giữ nguyên migration cũ và dữ liệu đã có. Xem [code từng file cho VS Code](docs/cap-nhat-hoa-don-vscode.md).
+
+1. BQL → **Đơn giá phí** → tạo giá theo loại và ngày áp dụng. Giá điện một mức chỉ dùng nếu BQL thu điện; không tự đưa giá demo vào dữ liệu thật. Phiên bản mới bắt đầu sau phiên bản gần nhất, đóng khoảng giá cũ; không được đặt ngày mới làm thay đổi giá đã dùng trong hóa đơn còn hiệu lực.
+2. **Chỉ số điện nước** → chọn căn, dịch vụ, kỳ, chỉ số đầu/cuối và ngày chốt. Kỳ đầu cần xác nhận; kỳ tiếp theo phải có kỳ liền trước và chỉ số đầu khớp chỉ số cuối đã ghi. Chỉ sửa kỳ mới nhất, chưa có hóa đơn duyệt/gửi/đã thu.
+3. **Phí & hóa đơn** → **Lập hóa đơn** cho từng căn. Kỳ và ngày chốt thuộc cùng tháng, không trong tương lai. Phí quản lý theo cờ tính phí của căn; nước mặc định thu, điện mặc định không thu, xe mặc định thu. BQL chọn rõ các khoản áp dụng. Thiếu giá/chỉ số đúng ngày chốt được liệt kê trong nháp và chặn duyệt. Chỉ số thay đổi thì **Tính lại bản nháp**.
+4. **Duyệt hóa đơn** khóa các dòng tiền; **Gửi hóa đơn** cần hạn trả, BIN ngân hàng, tài khoản và tên người nhận. Thông tin nhận tiền được lưu riêng trên hóa đơn. Cư dân thấy hóa đơn đã gửi thuộc căn và đợt cư trú hiện tại, có VietQR tạo ngay trong trình duyệt.
+5. BQL đối soát rồi **Xác nhận đã thu** đúng tổng, lưu mã tham chiếu giao dịch. Gửi lặp không ghi thu hai lần. Chưa thu thì có thể hủy kèm lý do và lập bản thay thế; giữ bản cũ, không hủy hóa đơn đã thu.
+
+Tiền tính bằng số thập phân chính xác, làm tròn từng dòng đến đồng rồi cộng tổng. Ví dụ 70 m² × 12.000 + 2 xe máy × 100.000 + 12 m³ × 15.000 = 1.220.000 đồng. Giá và số lượng trên hóa đơn là bản lưu tại lúc lập. Diện tích đọc từ cấu hình căn khi lập; BQL cần kiểm tra khi lập hồi tố, chưa có lịch sử diện tích ngoài các hóa đơn đã lưu. Chuyển cư trú thu hồi quyền xem hóa đơn căn cũ; không tự gắn hóa đơn theo số điện thoại. Quá hạn được tính lúc đọc, không lưu thành một trạng thái riêng.
+
+Chưa có lập hàng loạt, thanh toán một phần/tiền thừa, đồng bộ ngân hàng, xuất PDF/Excel, đơn giá điện bậc thang hoặc tác vụ nhắc nợ. VietQR đã kiểm tra cấu trúc/CRC và hiển thị qua giao diện, chưa thử giao dịch ngân hàng thật. Quét mã không thay trạng thái thanh toán; BQL chịu trách nhiệm nhập đúng ngân hàng và đối soát thực tế.
 
 ## Ảnh hiện trường và QR
 

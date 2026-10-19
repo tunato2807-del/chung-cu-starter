@@ -29,6 +29,12 @@ import {
 import Locations from "../features/qr/Locations.jsx";
 import Vehicles from "../features/vehicles/Vehicles.jsx";
 import {
+  Rates,
+  Meters,
+  Bills,
+  BillDetail,
+} from "../features/billing/Billing.jsx";
+import {
   Apartments,
   Residents,
   ResidentDetail,
@@ -54,12 +60,18 @@ function Shell() {
           ["/quan-tri/can-ho", "Căn hộ"],
           ["/quan-tri/cu-dan", "Cư dân & cư trú"],
           ["/quan-tri/phuong-tien", "Phương tiện"],
+          ["/quan-tri/don-gia", "Đơn giá phí"],
+          ["/quan-tri/chi-so", "Chỉ số điện nước"],
+          ["/quan-tri/hoa-don", "Phí & hóa đơn"],
           ["/quan-tri/vi-tri-qr", "Vị trí & QR"],
           ["/quan-tri/nhan-su", "Nhân sự & tài khoản"],
         ]
       : user?.vai_tro === "KY_THUAT_VIEN"
         ? [["/ky-thuat/cong-viec", "Công việc"]]
-        : [["/cu-dan/phan-anh", "Phản ánh của tôi"]];
+        : [
+            ["/cu-dan/phan-anh", "Phản ánh của tôi"],
+            ["/cu-dan/hoa-don", "Hóa đơn của tôi"],
+          ];
   return (
     <div className="app-shell">
       <header className="topbar">
@@ -149,6 +161,10 @@ function Shell() {
               ["/quan-tri/cu-dan", <Residents />],
               ["/quan-tri/cu-dan/:id", <ResidentDetail />],
               ["/quan-tri/phuong-tien", <Vehicles />],
+              ["/quan-tri/don-gia", <Rates />],
+              ["/quan-tri/chi-so", <Meters />],
+              ["/quan-tri/hoa-don", <Bills />],
+              ["/quan-tri/hoa-don/:id", <BillDetail />],
             ].map(([path, element]) => (
               <Route
                 key={path}
@@ -179,6 +195,17 @@ function Shell() {
                   }
                 />
               </React.Fragment>
+            ))}
+            {["/cu-dan/hoa-don", "/cu-dan/hoa-don/:id"].map((path) => (
+              <Route
+                key={path}
+                path={path}
+                element={
+                  <Protected roles={resident}>
+                    {path.endsWith(":id") ? <BillDetail /> : <Bills />}
+                  </Protected>
+                }
+              />
             ))}
             <Route
               path="*"

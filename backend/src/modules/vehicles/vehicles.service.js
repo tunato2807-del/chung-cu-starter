@@ -3,6 +3,10 @@ import { pool, rows, transaction } from "../../lib/db.js";
 import { choice, fail, integer, text } from "../../lib/http.js";
 import { date } from "../residency/residency.validation.js";
 import * as valid from "./vehicles.validation.js";
+import {
+  lockApartment,
+  assertVehiclePeriodOpen,
+} from "../billing/billing.guards.js";
 
 const joins = `FROM phuong_tien v JOIN cu_dan c ON c.ma_cu_dan=v.ma_cu_dan JOIN can_ho a ON a.ma_can_ho=v.ma_can_ho`;
 const columns = `v.*,c.ho_va_ten,c.so_dien_thoai,a.so_can_ho`;
@@ -120,6 +124,7 @@ export async function create(body, user) {
         "INVALID_START_DATE",
         "Ngày đăng ký xe không được trước ngày bắt đầu đợt cư trú.",
       );
+    await assertVehiclePeriodOpen(db, stay.ma_can_ho, data.ngay_dang_ky);
     if (data.bien_so) {
       const conflicts = await rows(
         db,
@@ -143,12 +148,13 @@ export async function end(id, body, user) {
   return transaction(async (db) => {
     const [owner] = await rows(
       db,
-      "SELECT ma_cu_dan FROM phuong_tien WHERE ma_phuong_tien=?",
+      "SELECT ma_cu_dan,ma_can_ho FROM phuong_tien WHERE ma_phuong_tien=?",
       [id],
     );
     if (!owner) fail(404, "NOT_FOUND", "Không tìm thấy đăng ký xe.");
     // All writes lock resident -> stay/vehicle, matching the residency transfer order.
     await residentLock(db, owner.ma_cu_dan);
+    await lockApartment(db, owner.ma_can_ho);
     const [record] = await rows(
       db,
       "SELECT * FROM phuong_tien WHERE ma_phuong_tien=? FOR UPDATE",
@@ -170,6 +176,7 @@ export async function end(id, body, user) {
         "INVALID_END_DATE",
         "Ngày kết thúc không được trước ngày đăng ký xe.",
       );
+    await assertVehiclePeriodOpen(db, record.ma_can_ho, day);
     await rows(
       db,
       "UPDATE phuong_tien SET ngay_ket_thuc=?,ly_do_ket_thuc=?,ma_nguoi_ket_thuc=?,phien_ban=phien_ban+1 WHERE ma_phuong_tien=?",
@@ -181,6 +188,12 @@ export async function end(id, body, user) {
 
 // Called inside the residency transaction, after its resident row is locked.
 export async function finishStayVehicles(db, stayId, day, userId, reason) {
+  const [stay] = await rows(
+    db,
+    "SELECT ma_can_ho FROM lich_su_cu_tru WHERE ma_lich_su_cu_tru=?",
+    [stayId],
+  );
+  await lockApartment(db, stay.ma_can_ho);
   const records = await rows(
     db,
     "SELECT * FROM phuong_tien WHERE ma_lich_su_cu_tru=? ORDER BY ma_phuong_tien FOR UPDATE",
@@ -197,6 +210,7 @@ export async function finishStayVehicles(db, stayId, day, userId, reason) {
       "Ngày chuyển không được trước ngày đăng ký hoặc kết thúc xe trong đợt cư trú này.",
     );
   const active = records.filter((v) => !v.ngay_ket_thuc);
+  if (active.length) await assertVehiclePeriodOpen(db, stay.ma_can_ho, day);
   await rows(
     db,
     "UPDATE phuong_tien SET ngay_ket_thuc=?,ly_do_ket_thuc=?,ma_nguoi_ket_thuc=?,phien_ban=phien_ban+1 WHERE ma_lich_su_cu_tru=? AND ngay_ket_thuc IS NULL",
@@ -205,6 +219,7 @@ export async function finishStayVehicles(db, stayId, day, userId, reason) {
   return active;
 }
 export async function carryStayVehicles(db, records, stay, day, userId) {
+  if (records.length) await assertVehiclePeriodOpen(db, stay.ma_can_ho, day);
   for (const record of records)
     await insert(
       db,

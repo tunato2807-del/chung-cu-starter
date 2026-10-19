@@ -28,7 +28,7 @@ Frontend nhận ảnh thư viện tối đa 25 MB/tệp, kiểm tra chữ ký JP
 
 ## Căn hộ và cư trú
 
-Migration 002 thêm can_ho, cu_dan và lich_su_cu_tru; không thay schema phản ánh hoặc migration 001 đã áp dụng. Runner đọc các migration SQL theo thứ tự tên, kiểm tra checksum và giữ khóa MySQL. Migration 003 thay ràng buộc ngày kết thúc thành lớn hơn hoặc bằng ngày bắt đầu; không sửa các migration cũ đã chạy. Các migration 001–003 phải được giữ khi áp dụng migration 004 cho phương tiện; readiness kiểm tra cả bốn migration.
+Migration 002 thêm can_ho, cu_dan và lich_su_cu_tru; không thay schema phản ánh hoặc migration 001 đã áp dụng. Runner đọc các migration SQL theo thứ tự tên, kiểm tra checksum và giữ khóa MySQL. Migration 003 thay ràng buộc ngày kết thúc thành lớn hơn hoặc bằng ngày bắt đầu; không sửa các migration cũ đã chạy. Các migration 001–003 phải được giữ khi áp dụng migration 004 cho phương tiện; readiness kiểm tra cùng các migration phương tiện và hóa đơn hiện hành.
 
 Hồ sơ cu_dan giữ thông tin liên hệ, liên kết tài khoản tùy chọn/duy nhất và phien_ban. Căn hộ và quan hệ nằm trong đợt cư trú, không giữ thêm một nguồn mô tả căn hiện tại. Khoảng ngày nửa mở, không nhận ngày tương lai, không sửa hồi tố lịch sử đã đóng. Tình trạng đang ở/chuyển đi và số người trong căn được suy ra từ đợt chưa kết thúc. Cờ tính phí không phụ thuộc số người.
 
@@ -38,7 +38,7 @@ API căn hộ/cư dân áp dụng xác thực và vai trò BQL cho cả đọc v
 
 ## Phương tiện theo đợt cư trú
 
-Migration 004 thêm phuong_tien; readiness yêu cầu đủ migration 001–004. Một bản ghi là một lần đăng ký với mã riêng, chủ xe, căn chịu phí và khóa ngoại đợt cư trú. Giữ hãng/màu, ngày đăng ký/kết thúc, người tạo/kết thúc, lý do và phien_ban. Căn và đợt của bản cũ không được ghi đè; không có API xóa hoặc sửa lịch sử.
+Migration 004 thêm phuong_tien; migration hóa đơn bổ sung khóa kỳ; readiness yêu cầu đủ migration 001–005. Một bản ghi là một lần đăng ký với mã riêng, chủ xe, căn chịu phí và khóa ngoại đợt cư trú. Giữ hãng/màu, ngày đăng ký/kết thúc, người tạo/kết thúc, lý do và phien_ban. Căn và đợt của bản cũ không được ghi đè; không có API xóa hoặc sửa lịch sử.
 
 Biển số chuẩn hóa ASCII viết hoa, bỏ khoảng trắng/chấm/gạch nối. Ô tô/xe máy bắt buộc biển, xe đạp cho NULL. Cột sinh bien_so_dang_hoat_dong với UNIQUE chặn hai đăng ký đang gửi cùng biển, cho phép nhiều xe đạp không biển. Đăng ký mới cũng kiểm tra khoảng ngày với lịch sử cùng biển để tránh chồng thời gian gửi khi nhập lùi ngày.
 
@@ -48,6 +48,22 @@ Chuyển căn/chuyển đi khóa các đăng ký thuộc đợt cũ, chặn ngà
 
 Khoảng ngày là [ngay_dang_ky, ngay_ket_thuc), NULL là chưa kết thúc. Chuyển nhiều lần trong ngày tạo các khoảng rỗng có thứ tự theo ID; giữ lịch sử nhưng không tạo thêm ngày chịu phí. Kết thúc cùng ngày được gọi lặp mà không ghi nhận kết thúc lần hai. Chưa có tính phí hoặc sửa dữ liệu đã dùng trong hóa đơn; cần bổ sung khóa kỳ khi triển khai hóa đơn.
 
+## Phí và hóa đơn
+
+Migration 005 thêm loai_phi, cau_hinh_phi, chi_so_dich_vu, hoa_don, chi_tiet_hoa_don và lich_su_hoa_don. Không sửa migration cũ. Các loại phí có dữ liệu danh mục, không seed đơn giá hoặc tài khoản ngân hàng. Giá mới nối tiếp khoảng hiệu lực cùng loại, khóa hàng danh mục để chống chồng khi ghi đồng thời; không được hồi tố qua ngày chốt của hóa đơn còn hiệu lực dùng giá cũ.
+
+Số tiền dùng BigInt theo thang thập phân (đơn giá 2, số lượng/chỉ số 3 số lẻ), không cộng tiền bằng số thực. Từng dòng làm tròn half-up đến đồng, cộng tổng nguyên, kiểm tra giới hạn DECIMAL. Chi tiết lưu giá/đơn vị/số lượng và mã dữ liệu nguồn. Phí xe đọc khoảng nửa mở tại ngày chốt, bỏ qua bản kết thúc cùng ngày; không chia theo giờ/ngày. Các lựa chọn thu nước/điện/xe được BQL xác định rõ; cờ tính phí quản lý độc lập với tình trạng trống.
+
+Chỉ số lưu từng căn/dịch vụ/kỳ với phiên bản. Kỳ đầu xác nhận rõ; các kỳ sau phải nối tiếp tháng và chỉ số. Không nhập lùi/sửa kỳ đã có kỳ sau. Kỳ có hóa đơn duyệt/gửi/đã thu bị khóa, kể cả thay đổi từ API. Nháp có thể thiếu dữ liệu, có danh sách lỗi; tính lại sẽ thay chi tiết nháp. Trước duyệt, tính nguồn hiện tại và so dấu vân tay chuẩn hóa (gồm nguồn và giá trị), kiểm tra lại chi tiết đã lưu/tổng. Nháp cũ trả 409, không âm thầm duyệt số cũ.
+
+Trạng thái NHAP → DA_DUYET → DA_GUI → DA_THANH_TOAN; trước thanh toán có thể HUY. Mỗi căn/kỳ có tối đa một bản còn hiệu lực qua cột sinh UNIQUE; lan_lap đánh số bản thay thế, phien_ban dùng chống ghi đè. Bản thay thế chỉ lập từ bản hủy gần nhất, có số mới và liên kết bản cũ. Cập nhật trạng thái, người thực hiện, thời gian và lịch sử trong cùng transaction. Xác nhận thu cần đúng toàn bộ số tiền và mã tham chiếu duy nhất; retry cùng giao dịch không tạo lịch sử thu lần hai. Quá hạn là thuộc tính tính bằng ngày Việt Nam khi đọc.
+
+Khóa theo căn trước khi ghi chỉ số/hóa đơn/xe. Luồng cư trú khóa cư dân rồi các căn liên quan theo thứ tự ID, sau đó khóa xe; không tính hóa đơn bằng cách khóa ngược hồ sơ cư dân. Chặn thêm/kết thúc/chuyển xe hồi tố qua ngày hóa đơn đã chốt khoản xe, cả căn đi và căn đến. Lỗi trả 409 yêu cầu xử lý hóa đơn trước; cùng ngày vẫn được chuyển khi không thay đổi dữ liệu đã chốt. Hóa đơn lưu bản chụp tài chính, không cập nhật tổng khi dữ liệu nguồn về sau thay đổi.
+
+Cư dân chỉ xem DA_GUI/DA_THANH_TOAN nếu tài khoản gắn hồ sơ có đợt đang mở cùng căn và bắt đầu không sau ngày chốt. Chuyển căn/chuyển đi thu hồi quyền ngay, kể cả truy cập ID trực tiếp. Chi tiết công dân không trả log nội bộ hoặc mã nguồn xe/chỉ số. BQL xem toàn bộ; KTV/khách bị chặn API.
+
+VietQR tạo payload NAPAS QRIBFTTA và CRC16 trong backend, dựng ảnh QR cục bộ bằng dependency qrcode đã có. Không gửi ngân hàng/tài khoản/tiền sang dịch vụ tạo ảnh ngoài. Hóa đơn lưu riêng BIN, tài khoản, tên người nhận khi gửi; chỉ DA_GUI có payload QR. Không có webhook hoặc tự xác nhận quét là đã thu. Cần kiểm tra ngân hàng thật trước khi dùng thanh toán thực tế.
+
 ## Phạm vi tiếp theo
 
-Chưa triển khai các module chỉ số, phí/hóa đơn, VietQR và thông báo. Những bảng nghiệp vụ tiếp theo phải được bổ sung bằng migration mới, giữ lịch sử và áp dụng quyền theo đợt cư trú theo bản rà soát. Không dùng SQL cũ trong tài liệu thiết kế làm migration cho database đang chạy.
+Chưa triển khai module thông báo, lập hóa đơn hàng loạt và các nghiệp vụ thanh toán mở rộng. Những bảng nghiệp vụ tiếp theo phải được bổ sung bằng migration mới, giữ lịch sử và áp dụng quyền theo đợt cư trú theo bản rà soát. Không dùng SQL cũ trong tài liệu thiết kế làm migration cho database đang chạy.

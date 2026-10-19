@@ -1,6 +1,7 @@
 import { pool, rows, transaction } from "../../lib/db.js";
 import { fail, integer, text } from "../../lib/http.js";
 import * as valid from "./residency.validation.js";
+import { lockApartment } from "../billing/billing.guards.js";
 import {
   finishStayVehicles,
   carryStayVehicles,
@@ -241,6 +242,10 @@ export async function changeStay(id, action, body, user) {
         fail(422, "SAME_APARTMENT", "Cần chọn căn hộ khác để chuyển căn.");
     }
     if (next) await one(db, "can_ho", "ma_can_ho", next[0]);
+    for (const apartmentId of [
+      ...new Set([current?.ma_can_ho, next?.[0]].filter(Boolean)),
+    ].sort((a, b) => a - b))
+      await lockApartment(db, apartmentId);
     const vehicles = current
       ? await finishStayVehicles(
           db,

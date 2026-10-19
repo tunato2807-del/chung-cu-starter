@@ -66,3 +66,27 @@ Loại xe: `O_TO`, `XE_MAY`, `XE_DAP`. Biển được viết hoa, bỏ chấm/g
 `GET /api/cu_dan` bổ sung bộ lọc `ma_cu_dan` và trường `ma_lich_su_cu_tru` cho đợt đang ở. `POST /api/cu_dan/:id/chuyen_can` nhận thêm `chuyen_phuong_tien` boolean tùy chọn, mặc định false. Dù chọn chuyển tiếp hay không, xe đang gửi thuộc đợt cũ đều kết thúc cùng ngày chuyển. Nếu true, tạo bản mới trong căn mới, liên kết bản cũ bằng `ma_dang_ky_truoc`. Chuyển đi chỉ kết thúc, không tạo mới. Ngày chuyển không được trước ngày đăng ký/kết thúc xe trong đợt; trả 422 `VEHICLE_DATE_CONFLICT`. Mọi thay đổi cùng transaction và vẫn chấp nhận chuyển nhiều lần trong ngày.
 
 Không có API sửa/xóa đăng ký. Gọi kết thúc lặp với cùng ngày trả thành công, không đổi lịch sử; ngày khác trên bản đã kết thúc trả 409. Chưa triển khai API tính phí gửi xe hoặc hóa đơn.
+
+## Phí, chỉ số và hóa đơn
+
+Các route cấu hình/ghi dưới đây chỉ dành cho BQL, cần phiên và `X-App-Request: 1` khi ghi. Danh sách `{data,total,page}` phân trang 20 bản ghi; chi tiết `{data}`. Tiền và số thập phân trả dạng chuỗi.
+
+| Method | URL | Trường chính |
+|---|---|---|
+| GET, POST | `/api/cau_hinh_phi` | GET lọc loai_phi/page; POST loai_phi,don_gia,tu_ngay (có thể tương lai) |
+| GET, PUT | `/api/chi_so_dich_vu` | GET ma_can_ho/ky_thanh_toan/page; PUT ma_can_ho,loai_dich_vu,ky_thanh_toan,chi_so_cu,chi_so_moi,ngay_chot,ghi_chu; ky_dau=true cho kỳ đầu, phien_ban khi sửa |
+| GET | `/api/hoa_don` | q,ky_thanh_toan,trang_thai,ma_can_ho,page |
+| GET | `/api/hoa_don/:id` | Chi tiết, dòng tiền, lỗi nguồn, lịch sử và qr_payload khi DA_GUI |
+| POST | `/api/hoa_don/lap` | ma_can_ho,ky_thanh_toan,ngay_chot_phi,tinh_nuoc/tinh_dien/tinh_xe (boolean bắt buộc), lập từng căn |
+| POST | `/api/hoa_don/:id/tinh_lai` | phien_ban; tùy chọn đổi ngày chốt/các cờ trên bản NHAP |
+| POST | `/api/hoa_don/:id/duyet` | phien_ban; không nhận giá hoặc tổng do client tính |
+| POST | `/api/hoa_don/:id/gui` | phien_ban,han_thanh_toan,ma_ngan_hang (BIN 6 số),so_tai_khoan (6–30 số),ten_nguoi_nhan |
+| POST | `/api/hoa_don/:id/huy` | phien_ban,ly_do; chỉ NHAP/DA_DUYET/DA_GUI |
+| POST | `/api/hoa_don/:id/lap_thay_the` | phien_ban của bản HUY gần nhất; tùy chọn ngày chốt/cờ thu mới |
+| POST | `/api/hoa_don/:id/xac_nhan_thanh_toan` | phien_ban,so_tien (nguyên đồng đúng tổng),ma_tham_chieu (duy nhất) |
+| GET | `/api/cua_toi/hoa_don` | Cư dân: danh sách đã gửi/đã thu đúng căn và đợt đang ở |
+| GET | `/api/cua_toi/hoa_don/:id` | Cư dân: chi tiết rút gọn, không log/nguồn nội bộ; sai phạm vi trả 404 |
+
+Loại phí: PHI_QUAN_LY, GUI_O_TO, GUI_XE_MAY, GUI_XE_DAP, TIEN_NUOC, TIEN_DIEN. Loại chỉ số: DIEN/NUOC. Kỳ YYYY-MM, chỉ số 3 số lẻ, giá 2 số lẻ. Ngày chốt phí và chỉ số phải cùng kỳ, cùng ngày; không sau hôm nay. Hạn trả từ ngày hiện tại và không trước ngày chốt. Cờ phí quản lý lấy từ căn; BQL chọn rõ nước/điện/xe. Không ngầm bỏ phí thiếu chỉ số hoặc giá, nháp giữ danh sách lỗi và không được duyệt.
+
+409 STALE_BILL_SOURCE khi nguồn thay đổi; METER_LOCKED khi sửa kỳ đã duyệt/gửi/thu; BILLED_VEHICLE_PERIOD khi thêm/kết thúc/chuyển xe làm đổi ngày đã chốt (cả căn đi/đến). Gửi lại xác nhận thu đã thành công với cùng số tiền/tham chiếu không ghi thu lần hai. Đổi căn hoặc chuyển đi thu hồi quyền xem hóa đơn căn cũ ngay. Ngân hàng và tài khoản chỉ lưu để dựng QR; không có API ngân hàng, webhook hoặc thanh toán một phần.
