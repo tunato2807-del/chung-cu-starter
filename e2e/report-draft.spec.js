@@ -75,7 +75,7 @@ test("gallery selection and cancellation preserve fields and never submit the fo
   const selected = await choose(page, "Chọn ảnh từ thư viện");
   await selected.setFiles(await photo());
   await expect(page.getByText("Đã chọn 1 ảnh.", { exact: true })).toBeVisible();
-  await expect(page.getByAltText("Xem trước photo.png")).toBeVisible();
+  await expect(page.getByAltText("Xem trước photo.jpg")).toBeVisible();
   await unchanged(page);
   expect(submissions).toBe(0);
   await page.getByRole("button", { name: "Bỏ ảnh đã chọn" }).click();
@@ -116,7 +116,7 @@ test("reload restores draft and request key; successful upload clears draft", as
   ).toBeVisible();
   expect(payload).toContain(formValues.tieu_de);
   expect(payload).toContain(before.requestKey);
-  expect(payload).toContain('filename="photo.png"');
+  expect(payload).toContain('filename="photo.jpg"');
   expect(
     await page.evaluate((key) => sessionStorage.getItem(key), storageKey),
   ).toBeNull();
@@ -185,9 +185,9 @@ test("blocked storage and invalid uploads keep text editable", async ({
   ).setFiles({
     name: "large.jpg",
     mimeType: "image/jpeg",
-    buffer: Buffer.alloc(5 * 1024 * 1024 + 1),
+    buffer: Buffer.alloc(25 * 1024 * 1024 + 1),
   });
-  await expect(page.getByRole("alert")).toContainText(/tối đa 5 ảnh/i);
+  await expect(page.getByRole("alert")).toContainText(/25 MB/);
   await unchanged(page);
   await (await choose(page, "Chọn ảnh từ thư viện")).setFiles(await photo());
   await expect(page.getByText("Đã chọn 1 ảnh.", { exact: true })).toBeVisible();

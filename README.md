@@ -40,7 +40,9 @@ BQL cấp/khóa tài khoản tại **Nhân sự & tài khoản**. Cư dân chỉ
 
 Form QR lưu nháp nội dung trong sessionStorage của tab hiện tại, tách theo vị trí QR và tài khoản, hết hạn sau 2 giờ và xóa khi gửi thành công. Nếu điện thoại tải lại trang khi mở thư viện ảnh, nội dung được khôi phục; ảnh cần chọn lại vì quyền chọn tệp không được giữ qua lần tải trang. Có nút chọn thư viện/chụp ảnh riêng, thông báo số ảnh đã chọn và cảnh báo khi trình duyệt chặn lưu nháp. Ảnh chỉ gửi lên máy chủ khi bấm Gửi phản ánh.
 
-Nút Chụp ảnh mở camera ngay trong trang qua HTTPS. Chờ hình camera hiện lên rồi bấm Chụp ảnh này: ảnh JPEG được gắn vào form, có ảnh xem trước và camera được tắt. Có thể chụp thêm tới tổng 5 ảnh; ảnh chỉ được upload khi gửi phản ánh. Camera cũng tắt khi đóng, rời trang hoặc chuyển tab. Cần trình duyệt hỗ trợ getUserMedia và DataTransfer, ví dụ Chrome hiện hành trên Android.
+Nút Chụp ảnh mở camera ngay trong trang qua HTTPS. Chờ hình camera hiện lên rồi bấm Chụp ảnh này: ảnh JPEG được gắn vào form, có ảnh xem trước và camera được tắt. Có thể chụp thêm tới tổng 5 ảnh; ảnh chỉ được upload khi gửi phản ánh. Camera cũng tắt khi đóng, rời trang hoặc chuyển tab. Cần trình duyệt hỗ trợ getUserMedia, ví dụ Chrome hiện hành trên Android.
+
+Ảnh thư viện JPEG/PNG/WebP tối đa 25 MB được xử lý lần lượt, thu nhỏ và đổi thành JPEG tối đa 1600 px cạnh dài, dưới 5 MB trước khi xem trước/gửi. Kiểm tra định dạng theo nội dung tệp, kể cả khi thư viện không cung cấp MIME. HEIC/HEIF chưa được hỗ trợ. Chờ ảnh xem trước hiện lên rồi gửi; form chặn gửi trong lúc xử lý ảnh. Cả ảnh chụp và ảnh thư viện được lưu trong cùng danh sách và gắn vào FormData qua sự kiện `formdata`, không cần gán lại `input.files` bằng DataTransfer. Việc hủy chọn ảnh giữ danh sách cũ; chọn thư viện thành công thay danh sách cũ.
 
 Mã QR chứa URL theo tên miền đang mở trang quản trị. Khi thử camera điện thoại, dùng một tên miền HTTPS truy cập được từ điện thoại; địa chỉ loopback của máy phát triển không dùng được trên điện thoại. Camera trong web có hướng dẫn khi bị từ chối quyền và hỗ trợ dán URL cùng hệ thống; không tự mở URL ngoài hệ thống.
 

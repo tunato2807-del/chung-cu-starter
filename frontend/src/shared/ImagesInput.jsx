@@ -1,4 +1,5 @@
 import React, { useEffect, useId, useRef, useState } from "react";
+import { prepareImage } from "./prepare-image.js";
 
 export default function ImagesInput({ onBeforeChoose, disabled = false }) {
   const [files, setFiles] = useState([]);
@@ -9,11 +10,43 @@ export default function ImagesInput({ onBeforeChoose, disabled = false }) {
   const [ready, setReady] = useState(false);
   const [capturing, setCapturing] = useState(false);
   const [stream, setStream] = useState(null);
+  const [processing, setProcessing] = useState(false);
   const input = useRef(null);
   const video = useRef(null);
   const activeStream = useRef(null);
   const generation = useRef(0);
   const inputId = useId();
+  const selectedFiles = useRef([]);
+  const processingRef = useRef(false);
+  const selection = useRef(0);
+
+  function updateFiles(next) {
+    selectedFiles.current = next;
+    setFiles(next);
+  }
+
+  useEffect(() => {
+    const form = input.current?.form;
+    if (!form) return;
+    function appendFiles(event) {
+      event.formData.delete("hinh_anh");
+      for (const file of selectedFiles.current)
+        event.formData.append("hinh_anh", file, file.name);
+    }
+    function waitForImages(event) {
+      if (!processingRef.current) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      setError("Ảnh đang được xử lý. Hãy chờ ảnh xem trước xuất hiện rồi gửi.");
+    }
+    form.addEventListener("formdata", appendFiles);
+    form.addEventListener("submit", waitForImages, true);
+    return () => {
+      selection.current++;
+      form.removeEventListener("formdata", appendFiles);
+      form.removeEventListener("submit", waitForImages, true);
+    };
+  }, []);
 
   useEffect(() => {
     const images = files.map((file) => ({
@@ -137,20 +170,13 @@ export default function ImagesInput({ onBeforeChoose, disabled = false }) {
       if (request !== generation.current) return;
       if (!blob || blob.size > 5 * 1024 * 1024)
         throw new Error("Chưa tạo được ảnh hợp lệ dưới 5 MB. Hãy chụp lại.");
-      const current = Array.from(input.current.files || []);
+      const current = selectedFiles.current;
       if (current.length >= 5)
         throw new Error("Tối đa 5 ảnh. Hãy bỏ ảnh cũ trước khi chụp thêm.");
       const photo = new File([blob], `hien-truong-${Date.now()}.jpg`, {
         type: "image/jpeg",
       });
-      const transfer = new DataTransfer();
-      [...current, photo].forEach((file) => transfer.items.add(file));
-      input.current.files = transfer.files;
-      if (input.current.files.length !== current.length + 1)
-        throw new Error(
-          "Trình duyệt chưa gắn được ảnh vào form. Hãy thử Chrome phiên bản mới.",
-        );
-      setFiles(Array.from(input.current.files));
+      updateFiles([...current, photo]);
       setError("");
       closeCamera();
     } catch (err) {
@@ -161,27 +187,32 @@ export default function ImagesInput({ onBeforeChoose, disabled = false }) {
     }
   }
 
-  function selected(event) {
+  async function selected(event) {
     const picked = Array.from(event.currentTarget.files || []);
-    const invalid = picked.some(
-      (file) =>
-        !["image/jpeg", "image/png", "image/webp"].includes(file.type) &&
-        !/\.(jpe?g|png|webp)$/i.test(file.name),
-    );
-    if (
-      picked.length > 5 ||
-      picked.some((file) => file.size > 5 * 1024 * 1024) ||
-      invalid
-    ) {
-      event.currentTarget.value = "";
-      setFiles([]);
-      setError(
-        "Chọn tối đa 5 ảnh JPEG, PNG hoặc WebP, mỗi ảnh không quá 5 MB.",
-      );
+    event.currentTarget.value = "";
+    if (!picked.length) return;
+    if (picked.length > 5) {
+      setError("Chọn tối đa 5 ảnh mỗi lần.");
       return;
     }
-    setFiles(picked);
+    const request = ++selection.current;
+    processingRef.current = true;
+    setProcessing(true);
     setError("");
+    try {
+      const prepared = [];
+      for (const file of picked) prepared.push(await prepareImage(file));
+      if (request !== selection.current) return;
+      updateFiles(prepared);
+      setError("");
+    } catch (err) {
+      if (request === selection.current) setError(err.message);
+    } finally {
+      if (request === selection.current) {
+        processingRef.current = false;
+        setProcessing(false);
+      }
+    }
   }
 
   return (
@@ -192,16 +223,16 @@ export default function ImagesInput({ onBeforeChoose, disabled = false }) {
         id={inputId}
         name="hinh_anh"
         type="file"
-        accept="image/jpeg,image/png,image/webp"
+        accept="image/*"
         multiple
         hidden
-        disabled={disabled}
+        disabled={disabled || processing || cameraOpen}
         onChange={selected}
       />
       <div className="actions">
         <button
           type="button"
-          disabled={disabled || cameraOpen}
+          disabled={disabled || cameraOpen || processing}
           onClick={() => {
             onBeforeChoose?.();
             input.current?.click();
@@ -211,7 +242,7 @@ export default function ImagesInput({ onBeforeChoose, disabled = false }) {
         </button>
         <button
           type="button"
-          disabled={disabled || cameraOpen || files.length >= 5}
+          disabled={disabled || cameraOpen || processing || files.length >= 5}
           onClick={openCamera}
         >
           Chụp ảnh
@@ -219,10 +250,10 @@ export default function ImagesInput({ onBeforeChoose, disabled = false }) {
         {files.length > 0 && (
           <button
             type="button"
-            disabled={disabled || cameraOpen}
+            disabled={disabled || cameraOpen || processing}
             onClick={() => {
               input.current.value = "";
-              setFiles([]);
+              updateFiles([]);
               setError("");
             }}
           >
@@ -230,6 +261,7 @@ export default function ImagesInput({ onBeforeChoose, disabled = false }) {
           </button>
         )}
       </div>
+      {processing && <p role="status">Đang xử lý ảnh, vui lòng chờ…</p>}
       {cameraOpen && (
         <div
           className="card"
@@ -273,8 +305,9 @@ export default function ImagesInput({ onBeforeChoose, disabled = false }) {
         </div>
       )}
       <small>
-        Tối đa 5 ảnh, mỗi ảnh 5 MB. Ảnh được tải lên khi bấm gửi. Chọn thư viện
-        để thay ảnh, hoặc chụp để thêm ảnh.
+        Tối đa 5 ảnh. Ảnh thư viện tối đa 25 MB được thu nhỏ thành JPEG trước
+        khi gửi. Chọn thư viện để thay ảnh, hoặc chụp để thêm ảnh. Chờ ảnh xem
+        trước xuất hiện rồi bấm gửi.
       </small>
       <p role="status">
         {files.length ? `Đã chọn ${files.length} ảnh.` : "Chưa chọn ảnh."}

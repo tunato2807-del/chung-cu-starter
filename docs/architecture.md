@@ -24,6 +24,8 @@ Khóa yêu cầu UUID và dấu vân tay nội dung/tài khoản/ảnh được 
 
 Ảnh tối đa 5 tệp × 5 MB/request, tối đa 25 triệu điểm ảnh/tệp. Sharp giải mã kiểm tra JPEG/PNG/WebP, giới hạn kích thước, xuất JPEG loại metadata và đổi tên ngẫu nhiên. Ảnh chuẩn bị trước giao dịch được xóa nếu giao dịch thất bại. Chưa có tác vụ định kỳ thu gom ảnh mồ côi do tiến trình/máy bị dừng đột ngột; cần bổ sung trước vận hành dài hạn. Giới hạn IP trong bộ nhớ phù hợp một tiến trình demo; triển khai nhiều instance cần kho giới hạn dùng chung và cấu hình trust proxy đúng hạ tầng.
 
+Frontend nhận ảnh thư viện tối đa 25 MB/tệp, kiểm tra chữ ký JPEG/PNG/WebP và giải mã lần lượt bằng createImageBitmap với kích thước thu nhỏ. Canvas xuất JPEG cạnh dài tối đa 1600 px, chất lượng 0.85 và kiểm tra giới hạn 5 MB. Danh sách File đã xử lý dùng chung cho preview và multipart qua sự kiện formdata; không phụ thuộc FileList của input sau khi đóng thư viện hoặc DataTransfer. Submit bị chặn khi đang xử lý ảnh. Kiểm tra frontend hỗ trợ trải nghiệm, không thay kiểm tra Sharp ở backend.
+
 ## Phạm vi tiếp theo
 
 Chưa triển khai các module cư trú, phương tiện, chỉ số, phí/hóa đơn, VietQR và thông báo. Schema hiện chỉ chứa phần cần cho luồng QR. Những bảng nghiệp vụ tiếp theo phải được bổ sung bằng migration mới, giữ lịch sử và áp dụng quyền theo đợt cư trú theo bản rà soát. Không dùng SQL cũ trong tài liệu thiết kế làm migration cho database đang chạy.

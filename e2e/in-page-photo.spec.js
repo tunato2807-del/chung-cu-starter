@@ -94,11 +94,10 @@ test("capture creates a visible JPEG, attaches it to FormData and stops the came
   expect(submitted).toBeUndefined();
   const attached = await page
     .locator('input[type="file"]')
-    .evaluate((input) => ({
-      count: input.files.length,
-      type: input.files[0].type,
-      size: input.files[0].size,
-    }));
+    .evaluate((input) => {
+      const files = new FormData(input.form).getAll("hinh_anh");
+      return { count: files.length, type: files[0].type, size: files[0].size };
+    });
   expect(attached.count).toBe(1);
   expect(attached.type).toBe("image/jpeg");
   expect(attached.size).toBeGreaterThan(0);
@@ -144,7 +143,7 @@ test("denied camera permission preserves typed content and allows library select
   await page
     .locator('input[type="file"]')
     .setInputFiles({ name: "photo.png", mimeType: "image/png", buffer: image });
-  await expect(page.getByAltText("Xem trước photo.png")).toBeVisible();
+  await expect(page.getByAltText("Xem trước photo.jpg")).toBeVisible();
 });
 
 test("closing a pending camera or leaving the form stops its stream", async ({
