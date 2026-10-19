@@ -6,6 +6,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import QRCode from "qrcode";
+import { banks, bankName, bankSearch } from "./banks.js";
 import { useAuth } from "../auth/Auth.jsx";
 import { getJson } from "../../shared/api/client.js";
 import {
@@ -49,6 +50,13 @@ const today = () =>
     day: "2-digit",
   }).format(new Date());
 const money = (n) => `${BigInt(n || 0).toLocaleString("vi-VN")} đ`;
+// Format API decimal strings without losing precision or displaying trailing zeros.
+const number = (value) => {
+  const match = /^(\d+)(?:\.(\d+))?$/.exec(String(value ?? ""));
+  if (!match) return "—";
+  const fraction = (match[2] || "").replace(/0+$/, "");
+  return `${BigInt(match[1]).toLocaleString("vi-VN")}${fraction ? `,${fraction}` : ""}`;
+};
 const values = (e) => Object.fromEntries(new FormData(e.currentTarget));
 function billOptions(body) {
   for (const k of ["tinh_nuoc", "tinh_dien", "tinh_xe"])
@@ -441,16 +449,16 @@ export function Rates() {
                           ).map((tier, i) => (
                             <li key={i}>
                               Đến {tier.den_kwh ?? "không giới hạn"} kWh:{" "}
-                              {tier.don_gia} đ/kWh
+                              {number(tier.don_gia)} đ/kWh
                             </li>
                           ))}
                         </ol>
                       </details>
                     ) : (
-                      r.don_gia
+                      number(r.don_gia)
                     )}
                     {r.loai_phi === "TIEN_DIEN" && (
-                      <small> · Thuế GTGT {r.thue_gtgt}%</small>
+                      <small> · Thuế GTGT {number(r.thue_gtgt)}%</small>
                     )}
                   </td>
                   <td>{r.don_vi_tinh}</td>
@@ -620,8 +628,8 @@ export function Meters() {
                   <td>
                     {r.ky_thanh_toan} · {meterNames[r.loai_dich_vu]}
                   </td>
-                  <td>{r.chi_so_cu}</td>
-                  <td>{r.chi_so_moi}</td>
+                  <td>{number(r.chi_so_cu)}</td>
+                  <td>{number(r.chi_so_moi)}</td>
                   <td>{r.ngay_chot}</td>
                   <td>
                     <button
@@ -782,6 +790,58 @@ export function Bills() {
     </>
   );
 }
+function BankSelect() {
+  const [query, setQuery] = useState(""),
+    [selected, setSelected] = useState("");
+  const matches = banks.filter((bank) =>
+    bankSearch(`${bank.shortName} ${bank.name} ${bank.bin}`).includes(
+      bankSearch(query),
+    ),
+  );
+  const current = banks.find((bank) => bank.bin === selected);
+  const option = (bank) => (
+    <option key={bank.bin} value={bank.bin}>
+      {bank.shortName} — {bank.name}
+    </option>
+  );
+  return (
+    <div className="bank-picker">
+      <Field label="Tìm ngân hàng">
+        <input
+          type="search"
+          value={query}
+          maxLength={100}
+          placeholder="Nhập tên ngân hàng, ví dụ Vietcombank"
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      </Field>
+      <Field label="Ngân hàng nhận tiền">
+        <select
+          name="ma_ngan_hang"
+          required
+          value={selected}
+          onChange={(e) => setSelected(e.target.value)}
+        >
+          <option value="">Chọn ngân hàng</option>
+          {current &&
+            !matches.some((bank) => bank.bin === selected) &&
+            option(current)}
+          {matches.map(option)}
+        </select>
+      </Field>
+      {!matches.length && (
+        <p className="muted">
+          Không tìm thấy ngân hàng. Hãy thử tên khác hoặc xóa từ khóa.
+        </p>
+      )}
+      {current && (
+        <p className="bank-selection">
+          Đã chọn: <strong>{current.shortName}</strong>
+        </p>
+      )}
+    </div>
+  );
+}
 function PaymentQR({ bill }) {
   const [image, setImage] = useState(""),
     [error, setError] = useState(null);
@@ -807,28 +867,73 @@ function PaymentQR({ bill }) {
   }, [bill.qr_payload]);
   if (!bill.qr_payload) return null;
   return (
-    <section className="card narrow">
-      <h2>Chuyển khoản bằng VietQR</h2>
-      {image && (
-        <img
-          src={image}
-          alt={`VietQR hóa đơn ${bill.so_hoa_don}`}
-          style={{ width: 320, maxWidth: "100%" }}
-        />
-      )}
-      <ErrorBox error={error} />
-      <p>
-        BIN ngân hàng: {bill.ma_ngan_hang} · Tài khoản: {bill.so_tai_khoan}
-      </p>
-      <p>Người nhận: {bill.ten_nguoi_nhan}</p>
-      <p>
-        Số tiền: <strong>{money(bill.tong_tien)}</strong> · Nội dung:{" "}
-        <strong>{bill.so_hoa_don}</strong>
-      </p>
-      <p>
-        Kiểm tra người nhận và số tiền trong ứng dụng ngân hàng. Quét QR không
-        tự xác nhận đã thanh toán; BQL ghi nhận sau khi đối soát.
-      </p>
+    <section
+      className="card payment-card"
+      aria-label="Thông tin thanh toán hóa đơn"
+    >
+      <header className="payment-header">
+        <span className="payment-status">Chờ thanh toán</span>
+        <h2>Chuyển khoản bằng VietQR</h2>
+        <p>
+          Căn {bill.so_can_ho} · Kỳ {bill.ky_thanh_toan}
+        </p>
+      </header>
+      <div className="payment-body">
+        <p className="payment-amount-label">Số tiền cần thanh toán</p>
+        <p className="payment-amount">{money(bill.tong_tien)}</p>
+        <div className="payment-qr-frame">
+          <span className="payment-qr-brand">VIETQR</span>
+          {image ? (
+            <img
+              src={image}
+              alt={`VietQR hóa đơn ${bill.so_hoa_don}`}
+              width="320"
+              height="320"
+            />
+          ) : (
+            !error && <p role="status">Đang tạo mã QR…</p>
+          )}
+          <ErrorBox error={error} />
+          <span className="payment-qr-caption">
+            Quét mã bằng ứng dụng ngân hàng
+          </span>
+        </div>
+        <dl className="payment-details">
+          <div>
+            <dt>Ngân hàng</dt>
+            <dd>{bankName(bill.ma_ngan_hang)}</dd>
+          </div>
+          <div>
+            <dt>Số tài khoản</dt>
+            <dd className="payment-account">{bill.so_tai_khoan}</dd>
+          </div>
+          <div>
+            <dt>Người nhận</dt>
+            <dd>{bill.ten_nguoi_nhan}</dd>
+          </div>
+          <div className="payment-reference">
+            <dt>Nội dung chuyển khoản</dt>
+            <dd>{bill.so_hoa_don}</dd>
+          </div>
+          <div>
+            <dt>Hạn thanh toán</dt>
+            <dd>{bill.han_thanh_toan?.split("-").reverse().join("/")}</dd>
+          </div>
+        </dl>
+        {image && (
+          <a
+            className="button payment-download"
+            href={image}
+            download={`VietQR-${bill.so_hoa_don}.png`}
+          >
+            Tải mã QR
+          </a>
+        )}
+        <p className="payment-notice">
+          Kiểm tra người nhận, số tiền và giữ đúng nội dung chuyển khoản. Ban
+          quản lý sẽ xác nhận sau khi đối soát giao dịch.
+        </p>
+      </div>
     </section>
   );
 }
@@ -876,7 +981,7 @@ export function BillDetail() {
               </ul>
             </div>
           )}
-          <section className="card">
+          <section className="card bill-lines">
             <div className="table-wrap">
               <table>
                 <thead>
@@ -892,16 +997,18 @@ export function BillDetail() {
                   {bill.lines.map((l, i) => (
                     <tr key={i}>
                       <td>{l.dien_giai}</td>
-                      <td>{l.so_luong}</td>
+                      <td className="bill-number">{number(l.so_luong)}</td>
                       <td>{l.don_vi_tinh}</td>
-                      <td>{l.don_gia}</td>
-                      <td>{money(l.thanh_tien)}</td>
+                      <td className="bill-number">{number(l.don_gia)} đ</td>
+                      <td className="bill-number bill-line-total">
+                        {money(l.thanh_tien)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <h2>Tổng cộng: {money(bill.tong_tien)}</h2>
+            <h2 className="bill-total">Tổng cộng: {money(bill.tong_tien)}</h2>
           </section>
           <PaymentQR bill={bill} />
           {bill.trang_thai === "DA_THANH_TOAN" && (
@@ -947,8 +1054,12 @@ export function BillDetail() {
             </section>
           )}
           {admin && bill.trang_thai === "DA_DUYET" && (
-            <section className="card narrow">
+            <section className="card narrow bill-publish">
               <h2>Gửi hóa đơn cho cư dân</h2>
+              <p className="muted">
+                Chọn ngân hàng và điền thông tin nhận tiền để tạo mã thanh toán
+                cho hóa đơn.
+              </p>
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -964,13 +1075,7 @@ export function BillDetail() {
                     defaultValue={today()}
                     required
                   />
-                  <Field
-                    label="BIN ngân hàng (6 số)"
-                    name="ma_ngan_hang"
-                    pattern="[0-9]{6}"
-                    placeholder="Ví dụ Vietcombank: 970436"
-                    required
-                  />
+                  <BankSelect />
                   <Field
                     label="Số tài khoản nhận"
                     name="so_tai_khoan"

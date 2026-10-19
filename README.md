@@ -66,6 +66,8 @@ Danh bạ và mọi thao tác xe chỉ dành cho BQL. Module hóa đơn đọc s
 
 ## Phí và hóa đơn
 
+Cập nhật giao diện sau bản điện bậc thang: [3 file sửa định dạng số, chọn ngân hàng và QR thanh toán](docs/cap-nhat-giao-dien-thanh-toan-vscode.md). Không cần migration mới.
+
 Chạy `npm run db:migrate` để áp dụng đến `006_electricity_tiers.sql`, giữ nguyên migration cũ và dữ liệu đã có. Bản hóa đơn ban đầu: [code 11 file](docs/cap-nhat-hoa-don-vscode.md). Nếu đã có bản đó, cập nhật [5 file điện bậc thang](docs/cap-nhat-dien-bac-thang-vscode.md).
 
 1. BQL → **Đơn giá phí** → tạo giá theo loại và ngày áp dụng. Điện có thể dùng biểu giá bậc thang và thuế theo ngày hiệu lực hoặc một đơn giá theo cấu hình thu điện. Chỉ chọn BQL thu điện khi căn không trả trực tiếp cho EVN; không tự đưa giá mẫu vào dữ liệu thật. Phiên bản mới bắt đầu sau phiên bản gần nhất, đóng khoảng giá cũ; không được đặt ngày mới làm thay đổi giá đã dùng trong hóa đơn còn hiệu lực.

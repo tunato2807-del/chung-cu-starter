@@ -587,6 +587,165 @@ footer {
   border-top: 1px solid #dce5df;
   padding: 24px;
 }
+/* Invoice quantities use Vietnamese separators and align with their prices. */
+.bill-lines th:nth-child(2),
+.bill-lines th:nth-child(4),
+.bill-lines th:nth-child(5),
+.bill-number {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.bill-lines .bill-line-total {
+  color: #183c3b;
+  font-weight: 600;
+}
+.bill-total {
+  margin: 0;
+  padding-top: 22px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.bank-picker {
+  padding: 18px;
+  margin-bottom: 18px;
+  border: 1px solid #dce8e2;
+  border-radius: 10px;
+  background: #f7faf8;
+}
+.bank-picker select {
+  text-overflow: ellipsis;
+}
+.bank-selection {
+  margin: 0;
+  font-size: 13px;
+  color: #47645b;
+}
+.bill-publish > .muted {
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+.payment-card {
+  padding: 0;
+  overflow: hidden;
+}
+.payment-header {
+  padding: 28px 24px 24px;
+  text-align: center;
+  border-bottom: 1px solid #dce8e2;
+  background: linear-gradient(135deg, #f2f8f4, #eaf4ef);
+}
+.payment-status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: #fff5da;
+  color: #805800;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.payment-header h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+.payment-header p {
+  color: #537168;
+  margin: 0;
+  font-size: 14px;
+}
+.payment-body {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 28px 24px;
+  text-align: center;
+}
+.payment-amount-label {
+  margin: 0 0 4px;
+  color: #637b72;
+  font-size: 13px;
+}
+.payment-amount {
+  margin: 0 0 24px;
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 750;
+  line-height: 1.3;
+  color: #13584a;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.payment-qr-frame {
+  width: min(340px, 100%);
+  margin: 0 auto;
+  padding: 16px;
+  border: 1px solid #d4e1d9;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 8px 24px #1a4d3a0a;
+}
+.payment-qr-brand {
+  display: block;
+  font-size: 18px;
+  letter-spacing: 2px;
+  font-weight: 800;
+  color: #164e57;
+}
+.payment-qr-frame img {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  aspect-ratio: 1;
+  margin: 8px auto;
+}
+.payment-qr-caption {
+  display: block;
+  font-size: 12px;
+  color: #637b72;
+}
+.payment-details {
+  margin: 28px auto 20px;
+  max-width: 560px;
+  text-align: left;
+  font-size: 14px;
+}
+.payment-details > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #edf1ed;
+}
+.payment-details dt {
+  color: #637b72;
+}
+.payment-details dd {
+  margin: 0;
+  text-align: right;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.payment-account {
+  font-size: 17px;
+  letter-spacing: 0.4px;
+  font-variant-numeric: tabular-nums;
+}
+.payment-details .payment-reference {
+  margin-top: 6px;
+  padding: 14px 12px;
+  border: 1px solid #d8e6dd;
+  border-radius: 8px;
+  background: #f2f8f4;
+}
+.payment-download {
+  min-width: 180px;
+}
+.payment-notice {
+  max-width: 500px;
+  margin: 20px auto 0;
+  font-size: 13px;
+  color: #637b72;
+}
 @media (max-width: 1000px) {
   .workspace {
     grid-template-columns: 185px minmax(0, 1fr);
@@ -664,6 +823,27 @@ footer {
   }
   .card {
     padding: 20px;
+  }
+  .payment-card {
+    padding: 0;
+  }
+  .payment-body {
+    padding: 24px 18px;
+  }
+  .payment-header {
+    padding: 24px 18px 20px;
+  }
+  .payment-header h2 {
+    font-size: 21px;
+  }
+  .payment-details {
+    font-size: 13px;
+  }
+  .payment-details > div {
+    gap: 10px;
+  }
+  .bank-picker {
+    padding: 14px;
   }
   .filters {
     grid-template-columns: 1fr;

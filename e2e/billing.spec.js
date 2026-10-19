@@ -56,19 +56,33 @@ for (const width of [1440, 375])
         "INSERT INTO lich_su_cu_tru (ma_cu_dan,ma_can_ho,quan_he,tu_ngay,ma_nguoi_ghi_nhan) VALUES (?,?,?,?,?)",
         [profileId, apartmentId, "CHU_HO", "2020-01-01", users[0]],
       );
-      for (let i = 0; i < 2; i++)
+      const vehicles = [
+        ["O_TO", "2020-01-01", null],
+        ["XE_MAY", "2020-01-01", null],
+        ["XE_MAY", "2020-01-01", null],
+        ["XE_DAP", "2020-01-01", null],
+        ["XE_DAP", "2020-01-01", null],
+        ["XE_DAP", "2020-01-01", null],
+        // These registrations must not count at the September cutoff.
+        ["XE_MAY", "2020-01-01", "2026-09-30"],
+        ["O_TO", "2026-10-01", null],
+      ];
+      for (const [i, [type, from, to]] of vehicles.entries())
         await rows(
           pool,
-          "INSERT INTO phuong_tien (ma_dang_ky,ma_cu_dan,ma_can_ho,ma_lich_su_cu_tru,loai_xe,bien_so,ngay_dang_ky,ma_nguoi_tao) VALUES (?,?,?,?,?,?,?,?)",
+          "INSERT INTO phuong_tien (ma_dang_ky,ma_cu_dan,ma_can_ho,ma_lich_su_cu_tru,loai_xe,bien_so,ngay_dang_ky,ngay_ket_thuc,ma_nguoi_tao,ma_nguoi_ket_thuc,ly_do_ket_thuc) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
           [
             `HD-${suffix}-${i}`,
             profileId,
             apartmentId,
             stay.insertId,
-            "XE_MAY",
+            type,
             `T${suffix}${i}`,
-            "2020-01-01",
+            from,
+            to,
             users[0],
+            to ? users[0] : null,
+            to ? "Đã ngừng gửi" : "",
           ],
         );
       async function login(p, i) {
@@ -93,6 +107,8 @@ for (const width of [1440, 375])
       for (const [type, price] of [
         ["PHI_QUAN_LY", "12000"],
         ["GUI_XE_MAY", "100000"],
+        ["GUI_O_TO", "1200000"],
+        ["GUI_XE_DAP", "50000"],
         ["TIEN_NUOC", "15000"],
         ["TIEN_DIEN", null],
       ]) {
@@ -156,7 +172,7 @@ for (const width of [1440, 375])
       await chooseApartment();
       await page.getByLabel("Kỳ ghi chỉ số").fill("2026-09");
       await page.getByLabel("Chỉ số đầu kỳ").fill("113");
-      await page.getByLabel("Chỉ số cuối kỳ").fill("125");
+      await page.getByLabel("Chỉ số cuối kỳ").fill("125.125");
       await page.getByLabel("Ngày chốt chỉ số").fill("2026-09-30");
       await page
         .getByLabel("Đây là kỳ đầu tiên của căn đối với dịch vụ này")
@@ -178,11 +194,24 @@ for (const width of [1440, 375])
         .click();
       await expect(
         page.getByRole("heading", {
-          name: "Tổng cộng: 2.018.660 đ",
+          name: "Tổng cộng: 3.370.535 đ",
           exact: true,
         }),
       ).toBeVisible();
       await expect(page.getByRole("alert")).toHaveCount(0);
+      for (const [fee, qty, unitPrice] of [
+        ["Gửi ô tô", "1", "1.200.000 đ"],
+        ["Gửi xe máy", "2", "100.000 đ"],
+        ["Gửi xe đạp", "3", "50.000 đ"],
+        ["Phí quản lý", "70", "12.000 đ"],
+        ["Tiền nước", "12,125", "15.000 đ"],
+      ]) {
+        const row = page
+          .getByRole("row")
+          .filter({ has: page.getByRole("cell", { name: fee, exact: true }) });
+        await expect(row.getByRole("cell").nth(1)).toHaveText(qty);
+        await expect(row.getByRole("cell").nth(3)).toHaveText(unitPrice);
+      }
       await page
         .getByRole("button", { name: "Duyệt hóa đơn", exact: true })
         .click();
@@ -192,7 +221,28 @@ for (const width of [1440, 375])
           exact: true,
         }),
       ).toBeVisible();
-      await page.getByLabel("BIN ngân hàng (6 số)").fill("970436");
+      const bank = page.getByLabel("Ngân hàng nhận tiền", { exact: true });
+      await expect(bank).toHaveValue("");
+      await page
+        .getByLabel("Tìm ngân hàng", { exact: true })
+        .fill("ngoai thuong");
+      await expect(
+        bank.getByRole("option", { name: /^Vietcombank/ }),
+      ).toHaveCount(1);
+      await bank.selectOption("970436");
+      // Filtering again must not silently change the receiving bank.
+      await page.getByLabel("Tìm ngân hàng", { exact: true }).fill("ACB");
+      await expect(bank).toHaveValue("970436");
+      await page
+        .getByLabel("Tìm ngân hàng", { exact: true })
+        .fill("khong co ngan hang nay");
+      await expect(
+        page.getByText(
+          "Không tìm thấy ngân hàng. Hãy thử tên khác hoặc xóa từ khóa.",
+        ),
+      ).toBeVisible();
+      await expect(bank).toHaveValue("970436");
+      await page.getByLabel("Tìm ngân hàng", { exact: true }).fill("");
       await page.getByLabel("Số tài khoản nhận").fill("1234567890");
       await page.getByLabel("Tên người nhận").fill("BQL DEMO");
       await page
@@ -203,6 +253,7 @@ for (const width of [1440, 375])
         "SELECT * FROM hoa_don WHERE ma_hoa_don=?",
         [id],
       );
+      expect(bill.ma_ngan_hang).toBe("970436");
       await expect(
         page.getByAltText(`VietQR hóa đơn ${bill.so_hoa_don}`),
       ).toBeVisible();
@@ -233,17 +284,36 @@ for (const width of [1440, 375])
       await expect(
         resident.getByRole("button", { name: "Xác nhận đã thu", exact: true }),
       ).toHaveCount(0);
+      const payment = resident.getByRole("region", {
+        name: "Thông tin thanh toán hóa đơn",
+      });
+      // Section has an accessible name; its QR must sit in the center at both sizes.
+      const qrBox = await qr.boundingBox(),
+        cardBox = await payment.boundingBox();
+      expect(
+        Math.abs(qrBox.x + qrBox.width / 2 - cardBox.x - cardBox.width / 2),
+      ).toBeLessThan(2);
+      await expect(
+        payment.getByText("Vietcombank", { exact: true }),
+      ).toBeVisible();
+      await expect(
+        payment.getByText("3.370.535 đ", { exact: true }),
+      ).toBeVisible();
+      await expect(
+        payment.getByRole("link", { name: "Tải mã QR", exact: true }),
+      ).toHaveAttribute("href", /^data:image\/png/);
+      await payment.screenshot({ path: `/tmp/chung-cu-payment-${width}.png` });
       await page.getByLabel("Mã tham chiếu giao dịch").fill(`E2E-${suffix}`);
       await page.getByLabel("Đã đối soát đủ số tiền hóa đơn").check();
       await page
         .getByRole("button", { name: "Xác nhận đã thu", exact: true })
         .click();
       await expect(
-        page.getByText("Đã ghi nhận 2.018.660 đ", { exact: false }),
+        page.getByText("Đã ghi nhận 3.370.535 đ", { exact: false }),
       ).toBeVisible();
       await resident.reload();
       await expect(
-        resident.getByText("Đã ghi nhận 2.018.660 đ", { exact: false }),
+        resident.getByText("Đã ghi nhận 3.370.535 đ", { exact: false }),
       ).toBeVisible();
       await expect(
         resident.getByAltText(`VietQR hóa đơn ${bill.so_hoa_don}`),
