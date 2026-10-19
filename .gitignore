@@ -4,3 +4,7 @@ dist/
 .env.*
 !.env.example
 *.log
+backend/.demo-credentials
+backend/storage/
+playwright-report/
+test-results/

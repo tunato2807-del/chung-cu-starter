@@ -1,4 +1,3 @@
-# Vị trí, token QR và thu hồi QR
+# Vị trí và QR
 
-Thư mục dành cho pages/, components/ và api.js của nghiệp vụ. Chưa triển khai.
-Chỉ tạo các tệp này khi bắt đầu chức năng; dùng shared/ cho phần dùng chung.
+Locations.jsx quản lý vị trí, kích hoạt/vô hiệu, xác nhận thay mã, xem trước/tải/in QR. URL dùng origin đang mở website; muốn dùng điện thoại cần tên miền HTTPS truy cập được.

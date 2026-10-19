@@ -1,40 +1,57 @@
-# Khung dự án quản lý chung cư và phản ánh QR
+# Quản lý chung cư · Phản ánh QR
 
-JavaScript + React/Vite + Express; MySQL ở bước thiết kế. Đây là bộ khung khởi đầu, chưa phải hệ thống hoàn chỉnh.
+React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai luồng **đăng nhập, phân quyền và phản ánh qua QR** theo ba tài liệu thiết kế; chưa triển khai cư trú, phương tiện, hóa đơn và thông báo.
 
-## Mở trong VS Code
+## Chạy môi trường phát triển
 
-Giải nén, chọn File → Open Folder → chung-cu-starter. Mở Terminal → New Terminal.
-Dùng Node.js 24 LTS và npm.
+Cần Node.js 24, npm và Docker có Compose. Chạy tại thư mục gốc repository:
 
 ```bash
-npm install
+npm ci
+npm run init:local
+npm run db:up
+npm run db:migrate
+npm run db:seed
 npm run dev:backend
 ```
 
-Mở terminal thứ hai tại cùng thư mục:
+Terminal thứ hai, cũng tại thư mục gốc:
 
 ```bash
 npm run dev:frontend
 ```
 
-Mở URL Vite in ra (thường http://localhost:5173). API mặc định http://127.0.0.1:3000/api/health. Chưa cần cài MySQL để xem khung. Nếu đổi cổng backend, cập nhật proxy trong frontend/vite.config.js.
+`init:local` tạo `.env` với mật khẩu MySQL và khóa ký phiên ngẫu nhiên, không ghi đè file đã tồn tại. MySQL chạy ở cổng 3307, API ở 3000, Vite ở 5173. Nếu đổi cổng API, đặt `API_TARGET` khi chạy Vite. Trên máy cloud có thư mục home chỉ đọc, dùng `npm ci --cache /workspace/.npm-cache`.
 
-## Hiện đã có
+`db:seed` chỉ dành cho phát triển: tạo BQL, KTV, cư dân và ba vị trí QR. SĐT tương ứng là `0900000001`, `0900000002`, `0900000003`. **Mật khẩu ngẫu nhiên nằm trong file local `backend/.demo-credentials`**; mở file bằng trình soạn thảo. File này và `.env` được Git bỏ qua. Chạy seed lại không thay mật khẩu hoặc xóa dữ liệu hiện có. Không dùng các tài khoản demo cho triển khai thật.
 
-- Giao diện khung với menu bốn nhóm người dùng; chọn nhóm chỉ để xem trước.
-- Luồng React gọi API health, phản hồi thành công và lỗi kết nối.
-- Express với routes/controller/service mẫu, lỗi JSON, lỗi chung và 404.
-- Thư mục dành sẵn cho các nghiệp vụ, hướng dẫn trách nhiệm từng tầng.
+Docker lưu MySQL trong volume `mysql_data`; ảnh nằm tại `backend/storage/images`. `docker compose stop` dừng database và giữ dữ liệu. Cần sao lưu cả database và thư mục ảnh; không xóa volume để sửa lỗi kết nối.
 
-## Chưa có
+## Thử luồng chức năng
 
-Đăng nhập, phân quyền thật, MySQL, lưu phản ánh, quét QR, tải ảnh, hóa đơn và xác nhận thanh toán. Các trang đang hiển thị placeholder; README trong mỗi module mô tả tệp sẽ tạo tiếp. Không sử dụng cho dữ liệu thật.
+1. Đăng nhập BQL → **Vị trí & QR** → chọn vị trí hoặc tạo mới → xem, tải hoặc in QR.
+2. Mở liên kết QR bằng trình duyệt khác hoặc cửa sổ riêng tư. Nhập sự cố, thông tin liên hệ và tối đa 5 ảnh. Lưu mã tra cứu riêng khi gửi thành công.
+3. BQL → **Phản ánh** → mở chi tiết → chọn KTV và mức ưu tiên.
+4. Đăng nhập KTV → **Công việc** → bắt đầu → ghi kết quả và nộp ảnh nghiệm thu mới.
+5. BQL nghiệm thu đạt để đóng, hoặc trả lại xử lý kèm lý do. Lượt xử lý tiếp theo phải nộp ảnh mới.
+6. Khách tra cứu bằng mã riêng và SĐT. Chỉ trả tiến độ và phản hồi công khai; không trả ảnh, nội dung riêng hoặc thông tin liên hệ.
 
-## Kiểm tra build
+BQL cấp/khóa tài khoản tại **Nhân sự & tài khoản**. Cư dân chỉ xem phản ánh đã gửi bằng chính tài khoản; phản ánh khách không tự gắn vào tài khoản theo SĐT. KTV mất quyền ngay ở request tiếp theo khi bị phân công lại. Đổi mật khẩu hoặc đăng xuất kết thúc tất cả phiên của tài khoản.
+
+Mã QR chứa URL theo tên miền đang mở trang quản trị. Khi thử camera điện thoại, dùng một tên miền HTTPS truy cập được từ điện thoại; địa chỉ loopback của máy phát triển không dùng được trên điện thoại. Camera trong web có hướng dẫn khi bị từ chối quyền và hỗ trợ dán URL cùng hệ thống; không tự mở URL ngoài hệ thống.
+
+## Kiểm tra
 
 ```bash
 npm run build
+npm test
+npm run test:e2e
 ```
 
-Xem docs/architecture.md và database/README.md trước khi triển khai nghiệp vụ. Vite proxy chỉ dùng cho dev; khi triển khai cần cấu hình phục vụ frontend và /api trên cùng origin.
+- `npm test`: tạo/migrate database riêng `chung_cu_test`, chạy kiểm thử HTTP với MySQL thật. Gồm xác thực, khóa phiên, quyền bản ghi/ảnh, QR thu hồi, gửi lặp đồng thời, chuyển trạng thái, nghiệm thu mới, gộp trùng, giới hạn gửi và rollback khi lịch sử lỗi.
+- `npm run test:e2e`: chạy API/Vite riêng ở 3101/5174, mở Chromium và đi hết luồng qua giao diện ở 1440 px và 375 px. Browser Linux được đóng gói trong dependency `@sparticuz/chromium`, không cần tải thêm từ CDN. Kiểm thử không thay dữ liệu database phát triển. Hai lệnh test nên chạy lần lượt.
+- `/api/health` kiểm tra tiến trình; `/api/ready` kiểm tra database và migration. Không coi một cổng mở là đã sẵn sàng.
+
+Chưa đo tải lớn, thử camera trên thiết bị thật hoặc kiểm thử sao lưu/phục hồi. Trước triển khai thật: phục vụ frontend và `/api` cùng origin qua HTTPS, đặt `COOKIE_SECURE=true`, dùng khóa/mật khẩu riêng, cấu hình backup và giới hạn request tại reverse proxy. Backend hiện bind loopback; Vite là máy chủ phát triển.
+
+Xem [kiến trúc và quy tắc](docs/architecture.md), [API](docs/api.md), [database](database/README.md). Những quy tắc hóa đơn/cư trú đang là đề xuất trong tài liệu được để lại cho giai đoạn tiếp theo, chưa được coi là nghiệp vụ đã chốt.

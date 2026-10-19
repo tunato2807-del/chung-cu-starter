@@ -1,11 +1,5 @@
-# Phản ánh, phân công, ảnh và lịch sử xử lý
+# Tiếp nhận và xử lý phản ánh
 
-Chưa triển khai. Khi phát triển, tạo:
+incidents.routes.js nhận HTTP/multipart; incidents.service.js kiểm tra dữ liệu, quyền, trạng thái, chống gửi lặp và giữ ranh giới giao dịch; incidents.repository.js quản lý truy vấn, lịch sử và giới hạn bản ghi theo người dùng. Ảnh được xử lý tại lib/images.js và chỉ phục vụ qua API có quyền.
 
-- incidents.routes.js: URL và middleware.
-- incidents.controller.js: nhận HTTP, trả kết quả.
-- incidents.service.js: quy tắc nghiệp vụ và ranh giới transaction.
-- incidents.repository.js: truy vấn MySQL có tham số.
-- incidents.validation.js: kiểm tra đầu vào.
-
-Kiểm tra quyền trên từng bản ghi tại service. Không tin vai trò hoặc mã căn hộ do frontend gửi.
+Xem docs/api.md và docs/architecture.md tại gốc repository để biết quy tắc và endpoint.

@@ -1,11 +1,5 @@
-# Đăng nhập, tài khoản, phiên và phân quyền
+# Đăng nhập và phân quyền
 
-Chưa triển khai. Khi phát triển, tạo:
+auth.routes.js cung cấp đăng nhập, đăng xuất, đổi mật khẩu và quản lý tài khoản. auth.service.js kiểm tra mật khẩu, phát/xác minh JWT và tăng phiên bản khi thu hồi phiên. auth.middleware.js đọc cookie, kiểm tra phiên hiện tại và vai trò. auth.repository.js chỉ đọc các cột công khai của tài khoản.
 
-- auth.routes.js: URL và middleware.
-- auth.controller.js: nhận HTTP, trả kết quả.
-- auth.service.js: quy tắc nghiệp vụ và ranh giới transaction.
-- auth.repository.js: truy vấn MySQL có tham số.
-- auth.validation.js: kiểm tra đầu vào.
-
-Kiểm tra quyền trên từng bản ghi tại service. Không tin vai trò hoặc mã căn hộ do frontend gửi.
+Xem docs/api.md và docs/architecture.md tại gốc repository để biết quy tắc và endpoint.
