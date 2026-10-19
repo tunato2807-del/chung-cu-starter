@@ -5,3 +5,5 @@ residency.routes.js áp dụng xác thực/vai trò BQL cho mọi endpoint. resi
 Căn hộ hiện tại lấy từ lich_su_cu_tru, không sao chép vào cu_dan. phien_ban chặn ghi đè; UNIQUE cột sinh chặn nhiều đợt chưa kết thúc. Chuyển căn giữ lịch sử trong một giao dịch. Không có API xóa cứng hoặc chỉnh sửa hồi tố lịch sử.
 
 apartment-accounts.service.js cấp tài khoản cố định theo căn, gắn CHU_HO phụ trách, đổi mật khẩu/ngắt phiên khi bàn giao, tạm khóa khi chuyển đi; mọi thay đổi và audit cùng transaction. Tài khoản cá nhân giữ riêng, không gán tài khoản căn vào cu_dan.ma_nguoi_dung. Migration 007–008.
+
+listApartmentAccounts trả danh sách riêng có tìm/lọc/trang cho BQL. ownerPhoneChanged thu hồi phiên khi sửa số người phụ trách, alias đăng nhập đọc trực tiếp hồ sơ hiện tại; không sửa SĐT tài khoản cá nhân.

@@ -142,3 +142,14 @@ Cấp lại: `{thao_tac: "cap_lai_mat_khau", phien_ban_ban_giao: 2}`. Bàn giao:
 Tài khoản căn chỉ xem hóa đơn DA_GUI/DA_THANH_TOAN đúng ma_can_ho_thanh_toan; kiểm tra phiên bản token ngay trong truy vấn hóa đơn. Cho xem cả kỳ trước ngày nhập cư của người phụ trách mới; không tự thay thông tin tài chính hoặc xác nhận thanh toán. Tài khoản cá nhân vẫn theo phạm vi cư trú cũ. Người phụ trách cũ mất quyền dùng mật khẩu/phiên của tài khoản căn khi bàn giao, tài khoản cá nhân của họ không bị xóa.
 
 Chi tiết hóa đơn thêm `nguoi_phu_trach_thanh_toan` để hiển thị người phụ trách **hiện tại** từ tài khoản căn; không ghi đè snapshot tiền hoặc nghĩa vụ tài chính của kỳ cũ.
+
+
+## Danh sách riêng và đăng nhập SĐT chủ hộ
+
+`GET /api/can_ho/tai_khoan?q=&trang_thai=&page=1` chỉ BQL, trả `{data,total,page}`, 20 dòng/trang. q tìm số căn/khối/mã CH/tên chủ hộ/SĐT hiện tại; trạng thái DANG_HOAT_DONG hoặc DA_KHOA. Dữ liệu gồm căn, tên đăng nhập CH, người phụ trách, dien_thoai_phu_trach, trạng thái và phiên bản bàn giao, không password/hash. Đăng ký route này trước /:id.
+
+`POST /api/xac_thuc/dang_nhap` nhận SĐT chủ hộ phụ trách hiện tại hoặc CH trong trường `so_dien_thoai`/`ten_dang_nhap`. SĐT +84 được chuẩn hóa như tài khoản cá nhân. Không copy SĐT vào nguoi_dung.so_dien_thoai của tài khoản căn; ánh xạ từ cu_dan qua ma_cu_dan_phu_trach nên thay người phụ trách sẽ loại SĐT cũ ngay. Mật khẩu vẫn là mật khẩu tài khoản căn được cấp/bàn giao, không mặc định bằng mật khẩu cá nhân.
+
+Trường tùy chọn `loai_tai_khoan`: TU_DONG (mặc định), CAN_HO, CA_NHAN. Khi nhập CH thì dùng tài khoản căn cụ thể. Với SĐT, TU_DONG chỉ đăng nhập nếu có đúng một tài khoản hoạt động khớp mật khẩu; nếu nhiều tài khoản cùng khớp trả 409 LOGIN_ACCOUNT_CHOICE, không tự chọn tài khoản và không trả danh sách danh tính cho người chưa đăng nhập. Người dùng chọn CAN_HO/CA_NHAN hoặc mã CH. SĐT khớp hơn 10 ứng viên thì dùng CH/chọn loại, không chạy kiểm tra mật khẩu không giới hạn. Một lần đăng nhập thành công không tăng số lần sai cho các tài khoản khác cùng SĐT.
+
+Auth response thêm dien_thoai_dang_nhap của chủ hộ phụ trách. Sửa SĐT hồ sơ của người phụ trách tăng phiên bản token/bàn giao, xóa khóa đăng nhập sai, ghi DOI_SO_DIEN_THOAI trong cùng transaction. Không đổi mật khẩu chỉ vì sửa SĐT của cùng người. Bàn giao sang người khác vẫn đổi mật khẩu và ngắt phiên như trước; chuyển đi tách người phụ trách, khóa tài khoản và loại SĐT khỏi đăng nhập căn. Tài khoản cá nhân riêng vẫn giữ SĐT/quyền của chính nó.

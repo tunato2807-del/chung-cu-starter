@@ -12,6 +12,7 @@ import {
   ensureApartmentAccount,
   assignHouseholder,
   releaseHouseholder,
+  ownerPhoneChanged,
 } from "./apartment-accounts.service.js";
 
 function search(query) {
@@ -193,11 +194,13 @@ export async function saveResident(id, body, user) {
   const initialStay = id ? null : valid.stay(body);
   return transaction(async (db) => {
     let previousAccount = null,
+      previousPhone = null,
       credentials = null;
     if (id) {
       const current = await one(db, "cu_dan", "ma_cu_dan", id, true);
       version(current, body.phien_ban);
       previousAccount = current.ma_nguoi_dung;
+      previousPhone = current.so_dien_thoai;
     }
     await checkAccount(db, values[2], previousAccount);
     if (id) {
@@ -206,6 +209,7 @@ export async function saveResident(id, body, user) {
         "UPDATE cu_dan SET ho_va_ten=?,so_dien_thoai=?,ma_nguoi_dung=?,phien_ban=phien_ban+1 WHERE ma_cu_dan=?",
         [...values, id],
       );
+      if (previousPhone !== values[1]) await ownerPhoneChanged(db, id, user);
     } else {
       const apartment = await lockApartment(db, initialStay[0]);
       const result = await rows(

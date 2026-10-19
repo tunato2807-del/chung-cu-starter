@@ -78,3 +78,10 @@ Tách tài khoản cá nhân (`cu_dan.ma_nguoi_dung`) với tài khoản thanh t
 apartment-accounts.service.js tạo/cấp lại/gắn/tách với audit trong transaction. Luồng ghi cư trú khóa cư dân rồi các căn theo ID rồi tài khoản/xe; endpoint bàn giao khóa cư dân đích trước căn/tài khoản. Reset không đổi khóa ngoại người phụ trách khi giá trị không đổi. Log giữ ID cư dân như snapshot, không lấy FK lock cư dân cũ gây đảo thứ tự. phien_ban_ban_giao chống hai lần cấp mật khẩu từ trạng thái cũ. Bàn giao/khóa tăng phien_ban_token; quyền hóa đơn của tài khoản căn kiểm tra lại active/version ở SQL, không lấy phạm vi từ client.
 
 Tài khoản căn xem sổ hóa đơn đã gửi/đã thu của căn qua các đợt cư trú. Đây là quyền xem để quản lý thanh toán chung của căn, không tự chuyển nghĩa vụ pháp lý hóa đơn cũ. Tài khoản cá nhân vẫn theo quy tắc đợt đang mở; không đổi mapping cũ. BQL vẫn xác nhận thu sau đối soát, không có xác nhận từ việc đăng nhập/chuyển chủ hộ/quét QR.
+
+
+## Ánh xạ đăng nhập SĐT và danh sách tài khoản căn
+
+SĐT đăng nhập căn là alias đọc trực tiếp từ hồ sơ ma_cu_dan_phu_trach. Không đổi schema 007–008, không copy số vào cột SĐT duy nhất của tài khoản cá nhân. Danh sách /can_ho/tai_khoan là BQL-only, JOIN căn/người phụ trách, phân trang 20 và không chọn cột password/hash.
+
+Login lấy ID ứng viên bên ngoài transaction rồi khóa tài khoản theo thứ tự ID. Sau khóa mới đọc hồ sơ để xác nhận alias còn đúng, tránh dùng kết quả tìm kiếm trước một bàn giao đã commit. Đổi SĐT khóa cư dân → căn → tài khoản và tăng phiên bản token; phiên vừa phát trước thay đổi cũng hết hiệu lực. Mật khẩu hợp lệ duy nhất mới được chọn; nhiều tài khoản cùng khớp cần chọn loại/mã CH, không ưu tiên âm thầm tài khoản cá nhân hoặc căn. Kiểm tra tối đa 10 ứng viên và giữ rate limit. Danh tính không được trả trong phản hồi lỗi đăng nhập.

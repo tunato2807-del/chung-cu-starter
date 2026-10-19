@@ -3,7 +3,10 @@ import { integer } from "../../lib/http.js";
 import { optionalAuth, requireAuth, roles } from "../auth/auth.middleware.js";
 import * as service from "./residency.service.js";
 
-import { manageApartmentAccount } from "./apartment-accounts.service.js";
+import {
+  manageApartmentAccount,
+  listApartmentAccounts,
+} from "./apartment-accounts.service.js";
 
 export const apartmentsRouter = Router(),
   residentsRouter = Router();
@@ -12,6 +15,9 @@ for (const router of [apartmentsRouter, residentsRouter])
 
 apartmentsRouter.get("/", async (req, res) =>
   res.json(await service.listApartments(req.query)),
+);
+apartmentsRouter.get("/tai_khoan", async (req, res) =>
+  res.json(await listApartmentAccounts(req.query)),
 );
 apartmentsRouter.get("/:id", async (req, res) =>
   res.json({

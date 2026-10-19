@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
-import { transaction, rows } from "../../lib/db.js";
+import { pool, transaction, rows } from "../../lib/db.js";
 import { fail, phone, text, choice } from "../../lib/http.js";
 import { findUser, publicColumns } from "./auth.repository.js";
 const secret = () => {
@@ -41,36 +41,90 @@ export async function login(body) {
       "LOGIN_FAILED",
       "Thông tin đăng nhập không đúng hoặc tài khoản tạm khóa.",
     );
-  const user = await transaction(async (db) => {
-    const [u] = await rows(
-      db,
-      `SELECT * FROM nguoi_dung WHERE ${apartmentLogin ? "ten_dang_nhap" : "so_dien_thoai"}=? FOR UPDATE`,
-      [number],
-    );
-    const valid = await bcrypt.compare(
-      body.mat_khau,
-      u?.mat_khau_ma_hoa || dummyHash,
-    );
-    if (
-      !u ||
-      !u.dang_hoat_dong ||
-      (u.khoa_den_luc && new Date(u.khoa_den_luc + "Z").getTime() > Date.now())
-    )
-      return null;
-    if (!valid) {
-      await rows(
-        db,
-        "UPDATE nguoi_dung SET so_lan_dang_nhap_sai=so_lan_dang_nhap_sai+1, khoa_den_luc=IF(so_lan_dang_nhap_sai>=5,DATE_ADD(UTC_TIMESTAMP(),INTERVAL 15 MINUTE),NULL) WHERE ma_nguoi_dung=?",
-        [u.ma_nguoi_dung],
+  const kind = choice(body.loai_tai_khoan ?? "TU_DONG", "loai_tai_khoan", [
+    "TU_DONG",
+    "CAN_HO",
+    "CA_NHAN",
+  ]);
+  // Resolve candidates outside the transaction. Its first consistent read must
+  // happen after user locks, so a completed handover cannot leave an old alias.
+  const candidates = apartmentLogin
+    ? await rows(
+        pool,
+        "SELECT ma_nguoi_dung FROM nguoi_dung WHERE ten_dang_nhap=?",
+        [number],
+      )
+    : await rows(
+        pool,
+        `SELECT u.ma_nguoi_dung FROM nguoi_dung u WHERE
+      (? <> 'CAN_HO' AND u.ma_can_ho_thanh_toan IS NULL AND u.so_dien_thoai=?) OR
+      (? <> 'CA_NHAN' AND u.ma_can_ho_thanh_toan IS NOT NULL AND EXISTS
+        (SELECT 1 FROM cu_dan c WHERE c.ma_cu_dan=u.ma_cu_dan_phu_trach AND c.so_dien_thoai=?))
+      ORDER BY u.ma_nguoi_dung LIMIT 11`,
+        [kind, number, kind, number],
       );
+  const user = await transaction(async (db) => {
+    if (!candidates.length || candidates.length > 10) {
+      await bcrypt.compare(body.mat_khau, dummyHash);
       return null;
     }
+    const accounts = await rows(
+      db,
+      `SELECT * FROM nguoi_dung WHERE ma_nguoi_dung IN (${candidates.map(() => "?").join(",")}) ORDER BY ma_nguoi_dung FOR UPDATE`,
+      candidates.map((u) => u.ma_nguoi_dung),
+    );
+    const checked = [];
+    for (const u of accounts) {
+      let matches = apartmentLogin
+        ? u.ten_dang_nhap === number
+        : u.ma_can_ho_thanh_toan === null && u.so_dien_thoai === number;
+      if (
+        !apartmentLogin &&
+        u.ma_can_ho_thanh_toan !== null &&
+        kind !== "CA_NHAN"
+      ) {
+        const [owner] = await rows(
+          db,
+          "SELECT so_dien_thoai FROM cu_dan WHERE ma_cu_dan=?",
+          [u.ma_cu_dan_phu_trach],
+        );
+        matches = owner?.so_dien_thoai === number;
+      }
+      if (!matches) continue;
+      const valid = await bcrypt.compare(
+        body.mat_khau,
+        u.mat_khau_ma_hoa || dummyHash,
+      );
+      const available =
+        u.dang_hoat_dong &&
+        (!u.khoa_den_luc ||
+          new Date(u.khoa_den_luc + "Z").getTime() <= Date.now());
+      checked.push({ u, valid, available });
+    }
+    const matching = checked.filter((item) => item.valid && item.available);
+    if (matching.length > 1)
+      fail(
+        409,
+        "LOGIN_ACCOUNT_CHOICE",
+        "Số điện thoại và mật khẩu khớp nhiều tài khoản. Chọn loại tài khoản, hoặc dùng mã CH của căn hộ.",
+      );
+    if (!matching.length) {
+      for (const { u, valid, available } of checked)
+        if (!valid && available)
+          await rows(
+            db,
+            "UPDATE nguoi_dung SET so_lan_dang_nhap_sai=so_lan_dang_nhap_sai+1, khoa_den_luc=IF(so_lan_dang_nhap_sai>=5,DATE_ADD(UTC_TIMESTAMP(),INTERVAL 15 MINUTE),NULL) WHERE ma_nguoi_dung=?",
+            [u.ma_nguoi_dung],
+          );
+      return null;
+    }
+    const selected = matching[0].u;
     await rows(
       db,
       "UPDATE nguoi_dung SET so_lan_dang_nhap_sai=0,khoa_den_luc=NULL WHERE ma_nguoi_dung=?",
-      [u.ma_nguoi_dung],
+      [selected.ma_nguoi_dung],
     );
-    return findUser(u.ma_nguoi_dung, db);
+    return findUser(selected.ma_nguoi_dung, db);
   });
   if (!user)
     fail(

@@ -36,7 +36,7 @@ Docker lưu MySQL trong volume `mysql_data`; ảnh nằm tại `backend/storage/
 5. BQL nghiệm thu đạt để đóng, hoặc trả lại xử lý kèm lý do. Lượt xử lý tiếp theo phải nộp ảnh mới.
 6. Khách tra cứu bằng mã riêng và SĐT. Chỉ trả tiến độ và phản hồi công khai; không trả ảnh, nội dung riêng hoặc thông tin liên hệ.
 
-BQL cấp/khóa tài khoản cá nhân tại **Nhân sự & tài khoản**. Tài khoản thanh toán cố định theo căn được quản lý tại **Căn hộ → Xem**. Cư dân chỉ xem phản ánh đã gửi bằng chính tài khoản; phản ánh khách không tự gắn vào tài khoản theo SĐT. KTV mất quyền ngay ở request tiếp theo khi bị phân công lại. Đổi mật khẩu hoặc đăng xuất kết thúc tất cả phiên của tài khoản.
+BQL cấp/khóa tài khoản cá nhân tại **Nhân sự & tài khoản**. Tài khoản thanh toán cố định theo căn được quản lý tại **Tài khoản căn hộ** hoặc **Căn hộ → Xem**. Cư dân chỉ xem phản ánh đã gửi bằng chính tài khoản; phản ánh khách không tự gắn vào tài khoản theo SĐT. KTV mất quyền ngay ở request tiếp theo khi bị phân công lại. Đổi mật khẩu hoặc đăng xuất kết thúc tất cả phiên của tài khoản.
 
 ## Căn hộ và cư dân
 
@@ -53,13 +53,15 @@ Danh bạ căn hộ, cư dân và lịch sử chỉ dành cho BQL ở cả giao 
 
 ## Tài khoản thanh toán căn hộ
 
+Bản mới có mục **Tài khoản căn hộ** riêng và đăng nhập bằng SĐT chủ hộ phụ trách: [code 9 file cập nhật](docs/cap-nhat-danh-sach-tai-khoan-can-ho-vscode.md). Không có migration mới nếu đã áp dụng đến 008.
+
 Xem [code đầy đủ 13 file cập nhật trong VS Code](docs/cap-nhat-tai-khoan-can-ho-vscode.md). Chạy `npm run db:migrate` để áp dụng 007 và 008; không sửa 001–006 hoặc xóa dữ liệu.
 
 - Tạo căn hộ tự sinh tài khoản CU_DAN riêng trong cùng transaction: tên đăng nhập cố định theo ID, ví dụ CH000001, mật khẩu ngẫu nhiên chỉ hiện một lần cho BQL. Đổi số căn không đổi tên đăng nhập.
 - Thêm/nhập cư/chuyển vào với quan hệ CHU_HO tự gắn tài khoản của căn cho cư dân phụ trách. Tài khoản cá nhân hiện có được giữ riêng; không chiếm số điện thoại hoặc đổi liên kết cá nhân. Thành viên/người thuê không tự nhận trách nhiệm.
 - Nếu đã có người phụ trách khác, cần xác nhận bàn giao. Mỗi căn chỉ có một tài khoản/một người phụ trách hiện tại dù có nhiều hồ sơ đồng chủ hộ. Bàn giao/cấp lại mật khẩu đổi mật khẩu, kết thúc mọi phiên cũ, có lịch sử BQL thực hiện. Người phụ trách chuyển đi thì tài khoản căn cũ bị khóa; không mang tài khoản căn cũ sang căn mới.
 - Tài khoản căn xem tất cả hóa đơn DA_GUI/DA_THANH_TOAN thuộc căn, kể cả trước ngày người phụ trách mới nhập cư, để đối soát sổ thu. Không tự ghi lại người chịu nghĩa vụ pháp lý của hóa đơn cũ hoặc đánh dấu đã thu. Quyền hóa đơn của tài khoản cá nhân vẫn theo đợt cư trú như trước.
-- Với căn đã có trước migration: tạo tài khoản khóa, gắn tự động nếu có đúng một chủ hộ đang ở. BQL vào Căn hộ → Xem để cấp mật khẩu hoặc chọn chủ hộ phụ trách khi có nhiều người. Mật khẩu không lưu dạng rõ và không xem lại bằng GET. Chủ hộ đổi mật khẩu trong Tài khoản sau khi nhận.
+- Với căn đã có trước migration: tạo tài khoản khóa, gắn tự động nếu có đúng một chủ hộ đang ở. BQL vào Căn hộ → Xem để cấp mật khẩu hoặc chọn chủ hộ phụ trách khi có nhiều người. Mật khẩu không lưu dạng rõ và không xem lại bằng GET. Chủ hộ đổi mật khẩu trong Tài khoản sau khi nhận. Đăng nhập bằng SĐT trong hồ sơ người phụ trách hiện tại hoặc mã CH với mật khẩu tài khoản căn. Bàn giao dùng SĐT người mới; sửa SĐT chủ hộ cập nhật ngay tên đăng nhập bằng số, kết thúc phiên cũ và giữ mật khẩu hiện có. Nếu SĐT trùng tài khoản cá nhân, chọn Loại tài khoản = Tài khoản căn hộ; không tự gộp hai tài khoản.
 
 ## Phương tiện
 

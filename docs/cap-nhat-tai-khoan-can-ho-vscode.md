@@ -1,5 +1,7 @@
 # Tài khoản căn hộ và bàn giao cho chủ hộ trong VS Code
 
+> Bản tiếp theo thêm danh sách riêng và đăng nhập bằng SĐT: [hướng dẫn 9 file mới](cap-nhat-danh-sach-tai-khoan-can-ho-vscode.md). Sau khi đã cập nhật bản này, không chép lại các file trùng tên bên dưới đè lên bản mới.
+
 Cập nhật sau commit `85578b8` (đã có điện bậc thang, chọn ngân hàng và QR thanh toán). Không cần tải ZIP: tạo/thay đủ **13 file** dưới đây. Giữ file banks.js và CSS của bản giao diện thanh toán trước. Không có dependency mới.
 
 ## Cách hoạt động

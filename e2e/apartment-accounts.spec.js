@@ -15,6 +15,11 @@ for (const width of [1440, 375])
         String(randomBytes(4).readUInt32BE() % 100000000).padStart(8, "0"),
       apartmentName = `TK-${suffix}`,
       names = [`Chủ hộ một ${suffix}`, `Chủ hộ hai ${suffix}`],
+      ownerPhones = [0, 1].map(
+        () =>
+          "09" +
+          String(randomBytes(4).readUInt32BE() % 100000000).padStart(8, "0"),
+      ),
       date = new Intl.DateTimeFormat("en-CA", {
         timeZone: "Asia/Ho_Chi_Minh",
         year: "numeric",
@@ -33,17 +38,22 @@ for (const width of [1440, 375])
     let adminId, apartmentId, billId, priceId;
     for (const page of [admin, owner])
       page.on("pageerror", (e) => errors.push(e.message));
-    async function login(page, username, secret) {
+    async function login(page, username, secret, kind = "TU_DONG") {
       await page.goto("/dang-nhap");
       await page
         .getByLabel("Số điện thoại hoặc tài khoản căn hộ", { exact: true })
         .fill(username);
+      await page
+        .getByLabel("Loại tài khoản", { exact: true })
+        .selectOption(kind);
       await page.getByLabel("Mật khẩu", { exact: true }).fill(secret);
       await page
         .getByRole("button", { name: "Đăng nhập", exact: true })
         .click();
       await expect(page).toHaveURL(
-        /^CH/i.test(username) ? /\/cu-dan\/hoa-don$/ : /\/quan-tri$/,
+        /^CH/i.test(username) || kind === "CAN_HO"
+          ? /\/cu-dan\/hoa-don$/
+          : /\/quan-tri$/,
       );
     }
     async function post(path, data) {
@@ -124,7 +134,7 @@ for (const width of [1440, 375])
         await admin.getByLabel("Họ tên", { exact: true }).fill(names[index]);
         await admin
           .getByLabel("Số điện thoại", { exact: true })
-          .fill("0901234567");
+          .fill(ownerPhones[index]);
         await admin
           .getByLabel("Quan hệ với căn hộ", { exact: true })
           .selectOption("CHU_HO");
@@ -157,8 +167,9 @@ for (const width of [1440, 375])
       ).toBe(401);
       await login(
         owner,
-        first.tai_khoan_can_ho.ten_dang_nhap,
+        ownerPhones[0],
         first.tai_khoan_can_ho.mat_khau_tam_thoi,
+        "CAN_HO",
       );
       await owner.goto(`/cu-dan/hoa-don/${billId}`);
       await expect(
@@ -168,8 +179,25 @@ for (const width of [1440, 375])
         }),
       ).toBeVisible();
       await expect(owner.getByAltText(/^VietQR hóa đơn/)).toBeVisible();
-      await admin.goto(`/quan-tri/can-ho?q=${apartmentName}`);
-      await admin.getByRole("button", { name: "Xem", exact: true }).click();
+      await admin
+        .getByRole("link", { name: "Tài khoản căn hộ", exact: true })
+        .click();
+      await admin
+        .getByLabel("Tìm căn hộ, mã tài khoản, chủ hộ hoặc số điện thoại")
+        .fill(ownerPhones[0]);
+      await admin
+        .getByRole("button", { name: "Tìm tài khoản căn hộ", exact: true })
+        .click();
+      await expect(admin.locator("tbody tr")).toHaveCount(1);
+      await expect(
+        admin.getByRole("cell", { name: initial.ten_dang_nhap, exact: true }),
+      ).toBeVisible();
+      await expect(
+        admin.getByRole("cell", { name: ownerPhones[0], exact: true }),
+      ).toBeVisible();
+      await admin
+        .getByRole("button", { name: "Quản lý tài khoản", exact: true })
+        .click();
       await expect(
         admin.getByRole("heading", {
           name: "Tài khoản thanh toán căn hộ",
@@ -189,7 +217,7 @@ for (const width of [1440, 375])
       expect(
         (await ownerContext.request.get("/api/xac_thuc/toi")).status(),
       ).toBe(401);
-      await login(owner, reset.ten_dang_nhap, reset.mat_khau_tam_thoi);
+      await login(owner, ownerPhones[0], reset.mat_khau_tam_thoi, "CAN_HO");
       await expect(owner).toHaveURL(/\/cu-dan\/hoa-don$/);
       const second = await createOwner(1);
       expect(second.tai_khoan_can_ho.ma_nguoi_dung).toBe(
@@ -203,8 +231,9 @@ for (const width of [1440, 375])
       ).toBe(401);
       await login(
         owner,
-        second.tai_khoan_can_ho.ten_dang_nhap,
+        ownerPhones[1],
         second.tai_khoan_can_ho.mat_khau_tam_thoi,
+        "CAN_HO",
       );
       await owner.goto(`/cu-dan/hoa-don/${billId}`);
       await expect(
@@ -218,6 +247,37 @@ for (const width of [1440, 375])
           exact: true,
         }),
       ).toBeVisible();
+      const oldAlias = await ownerContext.request.post(
+        "/api/xac_thuc/dang_nhap",
+        {
+          headers: { "X-App-Request": "1" },
+          data: {
+            so_dien_thoai: ownerPhones[0],
+            mat_khau: second.tai_khoan_can_ho.mat_khau_tam_thoi,
+            loai_tai_khoan: "CAN_HO",
+          },
+        },
+      );
+      expect(oldAlias.status()).toBe(401);
+      await admin
+        .getByRole("link", { name: "Tài khoản căn hộ", exact: true })
+        .click();
+      await admin
+        .getByLabel("Tìm căn hộ, mã tài khoản, chủ hộ hoặc số điện thoại")
+        .fill(apartmentName);
+      await admin
+        .getByRole("button", { name: "Tìm tài khoản căn hộ", exact: true })
+        .click();
+      await expect(admin.locator("tbody tr")).toHaveCount(1);
+      await expect(
+        admin.getByRole("cell", { name: ownerPhones[1], exact: true }),
+      ).toBeVisible();
+      await expect(
+        admin.getByRole("link", { name: names[1], exact: true }),
+      ).toBeVisible();
+      await expect(
+        admin.getByRole("cell", { name: ownerPhones[0], exact: true }),
+      ).toHaveCount(0);
       for (const page of [admin, owner])
         expect(
           await page.evaluate(

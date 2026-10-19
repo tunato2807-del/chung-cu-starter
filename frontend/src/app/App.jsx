@@ -15,6 +15,7 @@ import {
   Account,
 } from "../features/auth/Auth.jsx";
 import Users from "../features/auth/Users.jsx";
+import ApartmentAccounts from "../features/residency/ApartmentAccounts.jsx";
 import {
   Portal,
   Scanner,
@@ -58,6 +59,7 @@ function Shell() {
           ["/quan-tri", "Tổng quan"],
           ["/quan-tri/phan-anh", "Phản ánh"],
           ["/quan-tri/can-ho", "Căn hộ"],
+          ["/quan-tri/tai-khoan-can-ho", "Tài khoản căn hộ"],
           ["/quan-tri/cu-dan", "Cư dân & cư trú"],
           ["/quan-tri/phuong-tien", "Phương tiện"],
           ["/quan-tri/don-gia", "Đơn giá phí"],
@@ -158,6 +160,7 @@ function Shell() {
             />
             {[
               ["/quan-tri/can-ho", <Apartments />],
+              ["/quan-tri/tai-khoan-can-ho", <ApartmentAccounts />],
               ["/quan-tri/cu-dan", <Residents />],
               ["/quan-tri/cu-dan/:id", <ResidentDetail />],
               ["/quan-tri/phuong-tien", <Vehicles />],

@@ -90,6 +90,12 @@ function Credentials({ action }) {
         <p>
           Tên đăng nhập: <strong>{account.ten_dang_nhap}</strong>
         </p>
+        {account.dien_thoai_phu_trach && (
+          <p>
+            Số điện thoại đăng nhập:{" "}
+            <strong>{account.dien_thoai_phu_trach}</strong>
+          </p>
+        )}
         <p>
           Mật khẩu mới:{" "}
           <code style={{ overflowWrap: "anywhere" }}>
@@ -110,9 +116,12 @@ function Credentials({ action }) {
     )
   );
 }
-function ApartmentAccount({ id }) {
+export function ApartmentAccount({ id, onChange }) {
   const resource = useResource(`/can_ho/${id}`);
-  const action = useChange(resource.reload),
+  const action = useChange(() => {
+      resource.reload();
+      onChange?.();
+    }),
     apartment = resource.result?.data,
     account = apartment?.tai_khoan_can_ho;
   const owners = (apartment?.residents || []).filter(
@@ -121,6 +130,7 @@ function ApartmentAccount({ id }) {
   return (
     <section className="card">
       <h2>Tài khoản thanh toán căn hộ</h2>
+      {apartment && <p>Căn {apartment.so_can_ho}</p>}
       <Credentials action={action} />
       {resource.loading && <Loading />}
       <ErrorBox error={action.error || resource.error} />
@@ -129,6 +139,10 @@ function ApartmentAccount({ id }) {
           <p>
             Tên đăng nhập: <strong>{account.ten_dang_nhap}</strong> ·{" "}
             {account.dang_hoat_dong ? "Đang hoạt động" : "Đang khóa"}
+          </p>
+          <p>
+            Số điện thoại đăng nhập:{" "}
+            <strong>{account.dien_thoai_phu_trach || "Chưa gắn chủ hộ"}</strong>
           </p>
           <p>
             Người phụ trách:{" "}
@@ -223,6 +237,7 @@ function ApartmentAccount({ id }) {
                     BAN_GIAO_CHU_HO: "Bàn giao chủ hộ",
                     CAP_LAI_MAT_KHAU: "Cấp lại mật khẩu",
                     NGUNG_PHU_TRACH: "Ngừng phụ trách",
+                    DOI_SO_DIEN_THOAI: "Đổi số điện thoại đăng nhập",
                   }[row.su_kien]
                 }{" "}
                 · {row.nguoi_thuc_hien}

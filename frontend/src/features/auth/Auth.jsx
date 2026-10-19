@@ -79,6 +79,18 @@ export function Login() {
           required
           autoComplete="username"
         />
+        <Field label="Loại tài khoản">
+          <select name="loai_tai_khoan" defaultValue="TU_DONG">
+            <option value="TU_DONG">Tự nhận diện</option>
+            <option value="CAN_HO">Tài khoản căn hộ</option>
+            <option value="CA_NHAN">Tài khoản cá nhân / Ban quản lý</option>
+          </select>
+        </Field>
+        <p className="note">
+          Tài khoản căn hộ dùng số điện thoại của chủ hộ phụ trách hiện tại hoặc
+          mã CH. Nếu số điện thoại dùng chung với tài khoản cá nhân, chọn loại
+          tài khoản phù hợp.
+        </p>
         <Field
           label="Mật khẩu"
           name="mat_khau"
@@ -121,6 +133,12 @@ export function Account() {
         {user.ho_va_ten} · {roleNames[user.vai_tro]}
       </p>
       <p>{user.ten_dang_nhap || user.so_dien_thoai}</p>
+      {user.ma_can_ho_thanh_toan && (
+        <p>
+          Số điện thoại đăng nhập:{" "}
+          {user.dien_thoai_dang_nhap || "Chưa gắn chủ hộ"}
+        </p>
+      )}
       <h2>Đổi mật khẩu</h2>
       <form
         onSubmit={async (e) => {

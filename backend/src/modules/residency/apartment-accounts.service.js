@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import { randomBytes } from "node:crypto";
 import { pool, rows, transaction } from "../../lib/db.js";
-import { fail, integer } from "../../lib/http.js";
+import { fail, integer, text } from "../../lib/http.js";
 import { lockApartment } from "../billing/billing.guards.js";
 
 const columns =
@@ -175,4 +175,56 @@ export async function manageApartmentAccount(id, body, actor) {
       body.xac_nhan_ban_giao,
     );
   });
+}
+
+export async function listApartmentAccounts(query) {
+  const page = integer(query.page || 1, "page");
+  if (page < 1 || page > 100000)
+    fail(422, "INVALID_PAGE", "Trang không hợp lệ.");
+  const conditions = ["u.ma_can_ho_thanh_toan IS NOT NULL"],
+    values = [];
+  if (query.q) {
+    const q = `%${text(query.q, "q", 1, 100)}%`;
+    conditions.push(
+      "(a.so_can_ho LIKE ? OR a.khoi LIKE ? OR u.ten_dang_nhap LIKE ? OR c.ho_va_ten LIKE ? OR c.so_dien_thoai LIKE ?)",
+    );
+    values.push(q, q, q, q, q);
+  }
+  if (query.trang_thai) {
+    if (!["DANG_HOAT_DONG", "DA_KHOA"].includes(query.trang_thai))
+      fail(422, "INVALID_STATUS", "Trạng thái tài khoản không hợp lệ.");
+    conditions.push("u.dang_hoat_dong=?");
+    values.push(query.trang_thai === "DANG_HOAT_DONG" ? 1 : 0);
+  }
+  const from = `FROM nguoi_dung u JOIN can_ho a ON a.ma_can_ho=u.ma_can_ho_thanh_toan LEFT JOIN cu_dan c ON c.ma_cu_dan=u.ma_cu_dan_phu_trach WHERE ${conditions.join(" AND ")}`;
+  const [count] = await rows(pool, `SELECT COUNT(*) AS total ${from}`, values);
+  const data = await rows(
+    pool,
+    `SELECT ${columns},a.so_can_ho,a.khoi,a.tang ${from} ORDER BY a.khoi,a.tang,a.so_can_ho,u.ma_nguoi_dung LIMIT 20 OFFSET ${(page - 1) * 20}`,
+    values,
+  );
+  return { data, total: count.total, page };
+}
+export async function ownerPhoneChanged(db, residentId, actor) {
+  const [account] = await rows(
+    db,
+    "SELECT ma_can_ho_thanh_toan FROM nguoi_dung WHERE ma_cu_dan_phu_trach=?",
+    [residentId],
+  );
+  if (!account) return;
+  await lockApartment(db, account.ma_can_ho_thanh_toan);
+  const changed = await rows(
+    db,
+    "UPDATE nguoi_dung SET phien_ban_token=phien_ban_token+1,phien_ban_ban_giao=phien_ban_ban_giao+1,so_lan_dang_nhap_sai=0,khoa_den_luc=NULL WHERE ma_cu_dan_phu_trach=?",
+    [residentId],
+  );
+  if (!changed.affectedRows) return;
+  await audit(
+    db,
+    account.ma_can_ho_thanh_toan,
+    residentId,
+    residentId,
+    actor,
+    "DOI_SO_DIEN_THOAI",
+  );
 }

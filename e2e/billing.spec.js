@@ -245,9 +245,15 @@ for (const width of [1440, 375])
       await page.getByLabel("Tìm ngân hàng", { exact: true }).fill("");
       await page.getByLabel("Số tài khoản nhận").fill("1234567890");
       await page.getByLabel("Tên người nhận").fill("BQL DEMO");
+      const publish = page.waitForResponse(
+        (r) =>
+          new URL(r.url()).pathname === `/api/hoa_don/${id}/gui` &&
+          r.request().method() === "POST",
+      );
       await page
         .getByRole("button", { name: "Gửi hóa đơn", exact: true })
         .click();
+      expect((await publish).status()).toBe(200);
       const [bill] = await rows(
         pool,
         "SELECT * FROM hoa_don WHERE ma_hoa_don=?",
