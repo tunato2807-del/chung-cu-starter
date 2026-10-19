@@ -49,3 +49,20 @@ Mọi endpoint bên dưới yêu cầu phiên BQL; cư dân và KTV không đư�
 | POST | `/api/cu_dan/:id/nhap_cu` | `ma_can_ho`, `quan_he`, `ngay`, `phien_ban`; mở đợt sau khi đã chuyển đi |
 
 `quan_he`: `CHU_HO`, `THANH_VIEN`, `NGUOI_THUE`. `ngay` là ngày lịch Việt Nam `YYYY-MM-DD`, không sau hôm nay. Ngày kết thúc không được trước ngày bắt đầu; cho phép chuyển nhiều lần trong ngày. Đợt cũ cùng ngày có `tu_ngay = den_ngay` và giữ lại để xem lịch sử; chỉ đợt chưa kết thúc là căn đang ở. Các đợt có thời gian cư trú không chồng nhau. Không nhận yêu cầu xóa cứng hồ sơ/căn/lịch sử. Chuyển đi không khóa tài khoản. Cờ tính phí dịch vụ được lưu độc lập với tình trạng trống, chưa phát sinh hóa đơn.
+
+## Phương tiện (chỉ BQL)
+
+Mọi endpoint yêu cầu phiên BQL. Request ghi cần `X-App-Request: 1`. Danh sách trả `{data,total,page}`, 20 bản ghi/trang. Tạo trả 201 `{data:{ma_phuong_tien}}`; chi tiết trả `{data}`.
+
+| Method | URL | Nội dung |
+|---|---|---|
+| GET | `/api/phuong_tien?q=&loai_xe=&trang_thai=&ma_cu_dan=&ma_can_ho=&page=1` | Tìm mã/biển, tên/SĐT cư dân hoặc căn; lọc loại, `DANG_GUI` / `DA_KET_THUC` |
+| GET | `/api/phuong_tien/:id` | Chủ xe, căn chịu phí, đợt, người tạo/kết thúc và đăng ký trước khi chuyển căn |
+| POST | `/api/phuong_tien` | `ma_cu_dan`, `ma_lich_su_cu_tru`, `loai_xe`, `bien_so`, `hang_xe`, `mau_sac`, `ngay_dang_ky` |
+| POST | `/api/phuong_tien/:id/ket_thuc` | `ngay_ket_thuc`, `ly_do_ket_thuc` (3–255 ký tự), `phien_ban` |
+
+Loại xe: `O_TO`, `XE_MAY`, `XE_DAP`. Biển được viết hoa, bỏ chấm/gạch nối/khoảng trắng; cần 5–15 chữ cái/số với ít nhất một chữ số. Xe đạp cho null/rỗng. Hãng và màu tùy chọn, tối đa 50 ký tự. Ngày đăng ký/kết thúc là `YYYY-MM-DD`, không trong tương lai; ngày đăng ký từ ngày bắt đầu đợt đang mở, ngày kết thúc từ ngày đăng ký. Server tự lấy căn từ đợt và từ chối căn khác nếu client gửi. Đợt client đã cũ trả 409 `STALE_RESIDENCY`; biển đang dùng hoặc khoảng ngày chồng nhau trả 409 `PLATE_IN_USE`.
+
+`GET /api/cu_dan` bổ sung bộ lọc `ma_cu_dan` và trường `ma_lich_su_cu_tru` cho đợt đang ở. `POST /api/cu_dan/:id/chuyen_can` nhận thêm `chuyen_phuong_tien` boolean tùy chọn, mặc định false. Dù chọn chuyển tiếp hay không, xe đang gửi thuộc đợt cũ đều kết thúc cùng ngày chuyển. Nếu true, tạo bản mới trong căn mới, liên kết bản cũ bằng `ma_dang_ky_truoc`. Chuyển đi chỉ kết thúc, không tạo mới. Ngày chuyển không được trước ngày đăng ký/kết thúc xe trong đợt; trả 422 `VEHICLE_DATE_CONFLICT`. Mọi thay đổi cùng transaction và vẫn chấp nhận chuyển nhiều lần trong ngày.
+
+Không có API sửa/xóa đăng ký. Gọi kết thúc lặp với cùng ngày trả thành công, không đổi lịch sử; ngày khác trên bản đã kết thúc trả 409. Chưa triển khai API tính phí gửi xe hoặc hóa đơn.

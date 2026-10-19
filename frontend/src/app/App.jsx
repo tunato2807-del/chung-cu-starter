@@ -27,6 +27,7 @@ import {
   ReportList,
 } from "../features/incidents/Reports.jsx";
 import Locations from "../features/qr/Locations.jsx";
+import Vehicles from "../features/vehicles/Vehicles.jsx";
 import {
   Apartments,
   Residents,
@@ -52,6 +53,7 @@ function Shell() {
           ["/quan-tri/phan-anh", "Phản ánh"],
           ["/quan-tri/can-ho", "Căn hộ"],
           ["/quan-tri/cu-dan", "Cư dân & cư trú"],
+          ["/quan-tri/phuong-tien", "Phương tiện"],
           ["/quan-tri/vi-tri-qr", "Vị trí & QR"],
           ["/quan-tri/nhan-su", "Nhân sự & tài khoản"],
         ]
@@ -146,6 +148,7 @@ function Shell() {
               ["/quan-tri/can-ho", <Apartments />],
               ["/quan-tri/cu-dan", <Residents />],
               ["/quan-tri/cu-dan/:id", <ResidentDetail />],
+              ["/quan-tri/phuong-tien", <Vehicles />],
             ].map(([path, element]) => (
               <Route
                 key={path}

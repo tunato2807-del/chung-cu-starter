@@ -1,6 +1,10 @@
 import { pool, rows, transaction } from "../../lib/db.js";
 import { fail, integer, text } from "../../lib/http.js";
 import * as valid from "./residency.validation.js";
+import {
+  finishStayVehicles,
+  carryStayVehicles,
+} from "../vehicles/vehicles.service.js";
 
 function search(query) {
   const q = query.q ? text(query.q, "q", 1, 100) : "";
@@ -118,6 +122,10 @@ export async function listResidents(query) {
     conditions.push("l.ma_can_ho=?");
     values.push(integer(query.ma_can_ho, "ma_can_ho"));
   }
+  if (query.ma_cu_dan) {
+    conditions.push("c.ma_cu_dan=?");
+    values.push(integer(query.ma_cu_dan, "ma_cu_dan"));
+  }
   if (query.trang_thai === "DANG_O") conditions.push("l.ma_can_ho IS NOT NULL");
   else if (query.trang_thai === "DA_CHUYEN_DI")
     conditions.push("l.ma_can_ho IS NULL");
@@ -131,7 +139,7 @@ export async function listResidents(query) {
   );
   const data = await rows(
     pool,
-    `SELECT c.*,l.ma_can_ho,l.quan_he,l.tu_ngay,a.so_can_ho ${residentJoin} ${where} ORDER BY c.ho_va_ten,c.ma_cu_dan LIMIT 20 OFFSET ${offset}`,
+    `SELECT c.*,l.ma_lich_su_cu_tru,l.ma_can_ho,l.quan_he,l.tu_ngay,a.so_can_ho ${residentJoin} ${where} ORDER BY c.ho_va_ten,c.ma_cu_dan LIMIT 20 OFFSET ${offset}`,
     values,
   );
   return { data, total: count.total, page };
@@ -183,6 +191,21 @@ export async function saveResident(id, body, user) {
 export async function changeStay(id, action, body, user) {
   const day = valid.date(body.ngay);
   const next = action === "chuyen_di" ? null : valid.stay(body);
+  if (
+    body.chuyen_phuong_tien !== undefined &&
+    typeof body.chuyen_phuong_tien !== "boolean"
+  )
+    fail(
+      422,
+      "INVALID_VEHICLE_CHOICE",
+      "Lựa chọn chuyển xe cần là có hoặc không.",
+    );
+  if (body.chuyen_phuong_tien && action !== "chuyen_can")
+    fail(
+      422,
+      "INVALID_VEHICLE_CHOICE",
+      "Chỉ chuyển đăng ký xe khi chuyển căn.",
+    );
   return transaction(async (db) => {
     const resident = await one(db, "cu_dan", "ma_cu_dan", id, true);
     version(resident, body.phien_ban);
@@ -218,18 +241,36 @@ export async function changeStay(id, action, body, user) {
         fail(422, "SAME_APARTMENT", "Cần chọn căn hộ khác để chuyển căn.");
     }
     if (next) await one(db, "can_ho", "ma_can_ho", next[0]);
+    const vehicles = current
+      ? await finishStayVehicles(
+          db,
+          current.ma_lich_su_cu_tru,
+          day,
+          user.ma_nguoi_dung,
+          action === "chuyen_can" ? "Chuyển căn" : "Chuyển đi",
+        )
+      : [];
     if (current)
       await rows(
         db,
         "UPDATE lich_su_cu_tru SET den_ngay=? WHERE ma_lich_su_cu_tru=?",
         [day, current.ma_lich_su_cu_tru],
       );
-    if (next)
-      await rows(
+    if (next) {
+      const inserted = await rows(
         db,
         "INSERT INTO lich_su_cu_tru (ma_cu_dan,ma_can_ho,quan_he,tu_ngay,ma_nguoi_ghi_nhan) VALUES (?,?,?,?,?)",
         [id, ...next, user.ma_nguoi_dung],
       );
+      if (body.chuyen_phuong_tien)
+        await carryStayVehicles(
+          db,
+          vehicles,
+          { ma_can_ho: next[0], ma_lich_su_cu_tru: inserted.insertId },
+          day,
+          user.ma_nguoi_dung,
+        );
+    }
     await rows(
       db,
       "UPDATE cu_dan SET phien_ban=phien_ban+1 WHERE ma_cu_dan=?",

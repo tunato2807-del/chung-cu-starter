@@ -1,6 +1,6 @@
 # Quản lý chung cư · Phản ánh QR
 
-React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR và quản lý căn hộ/cư trú** theo ba tài liệu thiết kế; chưa triển khai phương tiện, hóa đơn và thông báo.
+React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú và phương tiện** theo ba tài liệu thiết kế; chưa triển khai hóa đơn và thông báo.
 
 ## Chạy môi trường phát triển
 
@@ -50,6 +50,21 @@ Sau khi cập nhật mã nguồn, chạy `npm run db:migrate` trước khi khở
 Ngày cư trú là ngày lịch tại Việt Nam, không nhận ngày tương lai. Khoảng cư trú là `[từ ngày, đến ngày)`; ngày kết thúc có thể bằng ngày bắt đầu để ghi nhận chuyển căn hoặc chuyển đi ngay trong ngày. Có thể chuyển nhiều lần trong ngày; các đợt cũ vẫn được giữ và đánh dấu “Chuyển trong ngày”, thứ tự theo mã lịch sử. Ngày chuyển thuộc đợt mới, đợt cũ cùng ngày không đại diện thêm một ngày cư trú. Hệ thống chưa phân chia theo giờ. Mỗi cư dân có tối đa một đợt đang mở; hồ sơ cũ không được ghi đè khi hai người sửa đồng thời. Trạng thái căn hộ trống/có người ở được suy ra từ các đợt đang mở. Cờ tính phí dịch vụ độc lập với trạng thái trống và chỉ chuẩn bị dữ liệu cho module hóa đơn sau này.
 
 Danh bạ căn hộ, cư dân và lịch sử chỉ dành cho BQL ở cả giao diện và API. Chuyển đi không tự khóa tài khoản đăng nhập; BQL quản lý khóa tài khoản riêng. Phiên bản này chưa có màn cư dân tự xem hồ sơ, nhập dữ liệu hàng loạt hoặc chỉnh sửa hồi tố các đợt đã kết thúc. Xem [API](docs/api.md).
+
+## Phương tiện
+
+Chạy `npm run db:migrate` để áp dụng migration `004_vehicles.sql`, rồi khởi động lại backend. BQL có mục **Phương tiện**, hoặc mở hồ sơ cư dân → **Phương tiện của cư dân**. Xem [code đầy đủ từng file để cập nhật trong VS Code](docs/cap-nhat-phuong-tien-vscode.md).
+
+1. **Đăng ký xe** → tìm/chọn cư dân đang ở → chọn ô tô, xe máy hoặc xe đạp, nhập biển số, hãng, màu và ngày đăng ký. Căn chịu phí lấy từ đợt cư trú trên server. Ô tô/xe máy bắt buộc có biển; xe đạp có thể để trống và vẫn có mã đăng ký riêng.
+2. Tìm theo biển số, mã đăng ký, tên/SĐT cư dân hoặc căn; lọc loại xe, đang gửi/đã kết thúc và phân trang. Biển số được viết hoa và bỏ dấu chấm/gạch nối/khoảng trắng, ví dụ `59A-123.45` lưu thành `59A12345`.
+3. **Kết thúc** cần ngày và lý do, có thể kết thúc ngay trong ngày đăng ký. Bản cũ giữ nguyên căn chịu phí và lịch sử; không xóa hoặc sửa lại bản đã kết thúc. Muốn đổi thông tin đăng ký, kết thúc bản cũ và tạo bản mới.
+4. Khi chuyển căn, biểu mẫu có lựa chọn **Chuyển đăng ký xe đang gửi sang căn mới** (mặc định chọn). Hệ thống đóng bản cũ và tạo bản mới liên kết bản trước trong cùng giao dịch. Bỏ chọn thì chỉ kết thúc các đăng ký cũ. Chuyển đi kết thúc toàn bộ xe đang gửi; quay lại không tự mở lại đăng ký cũ.
+
+Ngày đăng ký nằm trong đợt cư trú hiện tại và không sau hôm nay. Không được ghi lùi ngày chuyển căn/chuyển đi trước ngày đăng ký hoặc kết thúc xe đã có trong đợt. API từ chối danh sách cư dân cũ sau khi người đó chuyển căn; cần tải lại/chọn lại cư dân. Mỗi biển số có tối đa một đăng ký đang gửi; đăng ký lại được sau khi kết thúc, nhưng các khoảng ngày có thời gian gửi không được chồng nhau. Các đăng ký bắt đầu/kết thúc cùng ngày giữ dấu vết và không đại diện thêm ngày gửi xe.
+
+Danh bạ và mọi thao tác xe chỉ dành cho BQL; chưa có chức năng tính phí gửi xe hoặc xuất hóa đơn. Các mốc ngày và căn chịu phí được lưu để module hóa đơn sau này đọc tại ngày chốt; không tự tính chia theo giờ/ngày.
+
+## Ảnh hiện trường và QR
 
 Form QR lưu nháp nội dung trong sessionStorage của tab hiện tại, tách theo vị trí QR và tài khoản, hết hạn sau 2 giờ và xóa khi gửi thành công. Nếu điện thoại tải lại trang khi mở thư viện ảnh, nội dung được khôi phục; ảnh cần chọn lại vì quyền chọn tệp không được giữ qua lần tải trang. Có nút chọn thư viện/chụp ảnh riêng, thông báo số ảnh đã chọn và cảnh báo khi trình duyệt chặn lưu nháp. Ảnh chỉ gửi lên máy chủ khi bấm Gửi phản ánh.
 

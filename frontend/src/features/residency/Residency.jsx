@@ -559,6 +559,14 @@ export function ResidentDetail() {
               Đợt cư trú hiện tại bắt đầu ngày {displayDay(current.tu_ngay)}.
             </p>
           )}
+          <p>
+            <Link
+              className="button"
+              to={`/quan-tri/phuong-tien?ma_cu_dan=${id}`}
+            >
+              Phương tiện của cư dân
+            </Link>
+          </p>
           <div className="actions">
             {[
               ["profile", "Sửa hồ sơ"],
@@ -602,6 +610,8 @@ export function ResidentDetail() {
                 onSubmit={(e) => {
                   e.preventDefault();
                   const body = { ...values(e), phien_ban: resident.phien_ban };
+                  if (mode === "chuyen_can")
+                    body.chuyen_phuong_tien = body.chuyen_phuong_tien === "1";
                   action.change(
                     `/cu_dan/${id}${mode === "profile" ? "" : `/${mode}`}`,
                     mode === "profile" ? "PATCH" : "POST",
@@ -628,6 +638,29 @@ export function ResidentDetail() {
                     </>
                   ) : (
                     <StayFields current={current} minDay={minDay} />
+                  )}
+                  {mode === "chuyen_can" && (
+                    <label className="checkbox">
+                      <input
+                        type="checkbox"
+                        name="chuyen_phuong_tien"
+                        value="1"
+                        defaultChecked
+                      />{" "}
+                      Chuyển đăng ký xe đang gửi sang căn mới
+                    </label>
+                  )}
+                  {mode === "chuyen_can" && (
+                    <p>
+                      Đăng ký xe ở căn cũ sẽ kết thúc cùng ngày chuyển. Khi chọn
+                      chuyển xe, hệ thống tạo đăng ký mới và giữ lịch sử căn cũ.
+                    </p>
+                  )}
+                  {mode === "chuyen_di" && (
+                    <p>
+                      Tất cả đăng ký xe đang gửi của cư dân sẽ kết thúc cùng
+                      ngày chuyển đi và được giữ trong lịch sử.
+                    </p>
                   )}
                   <button className="primary">
                     {action.pending ? "Đang lưu…" : "Xác nhận lưu"}

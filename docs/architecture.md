@@ -28,7 +28,7 @@ Frontend nhận ảnh thư viện tối đa 25 MB/tệp, kiểm tra chữ ký JP
 
 ## Căn hộ và cư trú
 
-Migration 002 thêm can_ho, cu_dan và lich_su_cu_tru; không thay schema phản ánh hoặc migration 001 đã áp dụng. Runner đọc các migration SQL theo thứ tự tên, kiểm tra checksum và giữ khóa MySQL. Migration 003 thay ràng buộc ngày kết thúc thành lớn hơn hoặc bằng ngày bắt đầu; không sửa các migration cũ đã chạy. Readiness yêu cầu 001, 002 và 003 đã áp dụng.
+Migration 002 thêm can_ho, cu_dan và lich_su_cu_tru; không thay schema phản ánh hoặc migration 001 đã áp dụng. Runner đọc các migration SQL theo thứ tự tên, kiểm tra checksum và giữ khóa MySQL. Migration 003 thay ràng buộc ngày kết thúc thành lớn hơn hoặc bằng ngày bắt đầu; không sửa các migration cũ đã chạy. Các migration 001–003 phải được giữ khi áp dụng migration 004 cho phương tiện; readiness kiểm tra cả bốn migration.
 
 Hồ sơ cu_dan giữ thông tin liên hệ, liên kết tài khoản tùy chọn/duy nhất và phien_ban. Căn hộ và quan hệ nằm trong đợt cư trú, không giữ thêm một nguồn mô tả căn hiện tại. Khoảng ngày nửa mở, không nhận ngày tương lai, không sửa hồi tố lịch sử đã đóng. Tình trạng đang ở/chuyển đi và số người trong căn được suy ra từ đợt chưa kết thúc. Cờ tính phí không phụ thuộc số người.
 
@@ -36,6 +36,18 @@ Mỗi thay đổi cư trú khóa hồ sơ cư dân FOR UPDATE và kiểm tra phi
 
 API căn hộ/cư dân áp dụng xác thực và vai trò BQL cho cả đọc và ghi; ID không tạo quyền truy cập. Tài khoản mới gắn phải là CU_DAN đang hoạt động và chưa gắn hồ sơ khác. Khi sửa tên/liên hệ có thể giữ nguyên tài khoản cũ đã khóa; không tự mở khóa hoặc chuyển vai trò. BQL tìm tài khoản chưa gắn theo tên/SĐT qua endpoint phân trang, không tải toàn bộ tài khoản. Màn hình tìm căn và tìm hồ sơ dùng phân trang 20 bản ghi.
 
+## Phương tiện theo đợt cư trú
+
+Migration 004 thêm phuong_tien; readiness yêu cầu đủ migration 001–004. Một bản ghi là một lần đăng ký với mã riêng, chủ xe, căn chịu phí và khóa ngoại đợt cư trú. Giữ hãng/màu, ngày đăng ký/kết thúc, người tạo/kết thúc, lý do và phien_ban. Căn và đợt của bản cũ không được ghi đè; không có API xóa hoặc sửa lịch sử.
+
+Biển số chuẩn hóa ASCII viết hoa, bỏ khoảng trắng/chấm/gạch nối. Ô tô/xe máy bắt buộc biển, xe đạp cho NULL. Cột sinh bien_so_dang_hoat_dong với UNIQUE chặn hai đăng ký đang gửi cùng biển, cho phép nhiều xe đạp không biển. Đăng ký mới cũng kiểm tra khoảng ngày với lịch sử cùng biển để tránh chồng thời gian gửi khi nhập lùi ngày.
+
+Đăng ký và kết thúc xe khóa hồ sơ cư dân trước khi khóa đợt/xe. Tạo xe đối chiếu mã đợt phía client với đợt đang mở trên server; tự lấy căn chịu phí. Nếu cư dân đã chuyển căn, trả 409. Cùng thứ tự khóa với chuyển cư trú giúp việc tạo xe chạy đua chuyển đi không để xe đang gửi trên một đợt đã đóng.
+
+Chuyển căn/chuyển đi khóa các đăng ký thuộc đợt cũ, chặn ngày chuyển trước mốc xe đã ghi, rồi kết thúc xe trong cùng transaction với cư trú. Nếu chuyen_phuong_tien=true khi chuyển căn, tạo đăng ký mới cho từng xe đang gửi và gắn ma_dang_ky_truoc về bản cũ. Cờ này tùy chọn, mặc định false cho API; giao diện BQL hiển thị checkbox mặc định chọn. Bản đã kết thúc trước đó không được chuyển tiếp. Lỗi tạo xe mới rollback cả đợt cư trú và các đăng ký xe.
+
+Khoảng ngày là [ngay_dang_ky, ngay_ket_thuc), NULL là chưa kết thúc. Chuyển nhiều lần trong ngày tạo các khoảng rỗng có thứ tự theo ID; giữ lịch sử nhưng không tạo thêm ngày chịu phí. Kết thúc cùng ngày được gọi lặp mà không ghi nhận kết thúc lần hai. Chưa có tính phí hoặc sửa dữ liệu đã dùng trong hóa đơn; cần bổ sung khóa kỳ khi triển khai hóa đơn.
+
 ## Phạm vi tiếp theo
 
-Chưa triển khai các module phương tiện, chỉ số, phí/hóa đơn, VietQR và thông báo. Những bảng nghiệp vụ tiếp theo phải được bổ sung bằng migration mới, giữ lịch sử và áp dụng quyền theo đợt cư trú theo bản rà soát. Không dùng SQL cũ trong tài liệu thiết kế làm migration cho database đang chạy.
+Chưa triển khai các module chỉ số, phí/hóa đơn, VietQR và thông báo. Những bảng nghiệp vụ tiếp theo phải được bổ sung bằng migration mới, giữ lịch sử và áp dụng quyền theo đợt cư trú theo bản rà soát. Không dùng SQL cũ trong tài liệu thiết kế làm migration cho database đang chạy.

@@ -5,6 +5,7 @@ import { requestContext, fail } from "./lib/http.js";
 import { pool } from "./lib/db.js";
 import { authRouter, usersRouter } from "./modules/auth/auth.routes.js";
 import { qrRouter, publicQrRouter } from "./modules/qr/qr.routes.js";
+import { vehiclesRouter } from "./modules/vehicles/vehicles.routes.js";
 import {
   apartmentsRouter,
   residentsRouter,
@@ -26,14 +27,15 @@ app.use("/api/health", healthRouter);
 app.get("/api/ready", async (req, res) => {
   try {
     const [migrations] = await pool.execute(
-      "SELECT name FROM schema_migrations WHERE name IN (?,?,?)",
+      "SELECT name FROM schema_migrations WHERE name IN (?,?,?,?)",
       [
         "001_auth_qr_incidents.sql",
         "002_residency.sql",
         "003_same_day_residency.sql",
+        "004_vehicles.sql",
       ],
     );
-    if (migrations.length !== 3) throw new Error("Schema not initialized");
+    if (migrations.length !== 4) throw new Error("Schema not initialized");
     await pool.query("SELECT 1 FROM phan_anh LIMIT 1");
   } catch {
     fail(
@@ -48,6 +50,7 @@ app.use("/api/xac_thuc", authRouter);
 app.use("/api/nguoi_dung", usersRouter);
 app.use("/api/can_ho", apartmentsRouter);
 app.use("/api/cu_dan", residentsRouter);
+app.use("/api/phuong_tien", vehiclesRouter);
 app.use("/api/vi_tri_qr", qrRouter);
 app.use("/api/cong_khai/vi_tri_qr", publicQrRouter);
 app.use("/api/cong_khai/phan_anh", publicIncidentsRouter);
