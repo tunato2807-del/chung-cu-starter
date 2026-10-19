@@ -53,6 +53,17 @@ CREATE TABLE IF NOT EXISTS lich_su_cu_tru (
 ) ENGINE=InnoDB;
 ```
 
+## 1b. `database/migrations/003_same_day_residency.sql`
+
+Tạo file mới dưới đây để hỗ trợ chuyển căn cùng ngày. Giữ nguyên migration 001 và 002 nếu đã chạy.
+
+```sql
+ALTER TABLE lich_su_cu_tru
+  DROP CHECK lich_su_cu_tru_chk_1,
+  ADD CONSTRAINT chk_cu_tru_thu_tu_ngay
+    CHECK (den_ngay IS NULL OR den_ngay >= tu_ngay);
+```
+
 ## 2. `backend/scripts/migrate.js`
 
 ```js
@@ -378,11 +389,11 @@ export async function changeStay(id, action, body, user) {
     } else {
       if (!current)
         fail(409, "NO_ACTIVE_STAY", "Cư dân đã chuyển đi. Hãy tải lại hồ sơ.");
-      if (day <= current.tu_ngay)
+      if (day < current.tu_ngay)
         fail(
           422,
           "INVALID_END_DATE",
-          "Ngày chuyển phải sau ngày bắt đầu đợt cư trú hiện tại.",
+          "Ngày chuyển không được trước ngày bắt đầu đợt cư trú hiện tại.",
         );
       if (next && next[0] === current.ma_can_ho)
         fail(422, "SAME_APARTMENT", "Cần chọn căn hộ khác để chuyển căn.");
@@ -509,10 +520,14 @@ app.use("/api/health", healthRouter);
 app.get("/api/ready", async (req, res) => {
   try {
     const [migrations] = await pool.execute(
-      "SELECT name FROM schema_migrations WHERE name IN (?,?)",
-      ["001_auth_qr_incidents.sql", "002_residency.sql"],
+      "SELECT name FROM schema_migrations WHERE name IN (?,?,?)",
+      [
+        "001_auth_qr_incidents.sql",
+        "002_residency.sql",
+        "003_same_day_residency.sql",
+      ],
     );
-    if (migrations.length !== 2) throw new Error("Schema not initialized");
+    if (migrations.length !== 3) throw new Error("Schema not initialized");
     await pool.query("SELECT 1 FROM phan_anh LIMIT 1");
   } catch {
     fail(
@@ -570,11 +585,6 @@ const today = () =>
     day: "2-digit",
   }).format(new Date());
 const values = (event) => Object.fromEntries(new FormData(event.currentTarget));
-function nextDay(day) {
-  const date = new Date(`${day}T00:00:00Z`);
-  date.setUTCDate(date.getUTCDate() + 1);
-  return date.toISOString().slice(0, 10);
-}
 const displayDay = (day) => day.split("-").reverse().join("/");
 
 function Pager({ resource }) {
@@ -1092,7 +1102,7 @@ export function ResidentDetail() {
   const resident = resource.result?.data,
     current = resident?.history.find((s) => !s.den_ngay);
   const minDay = current
-    ? nextDay(current.tu_ngay)
+    ? current.tu_ngay
     : resident?.history[0]?.den_ngay || "1900-01-01";
   const dateBlocked = mode !== "profile" && minDay > today();
   return (
@@ -1146,8 +1156,8 @@ export function ResidentDetail() {
               {mode !== "profile" && (
                 <p className="note" role="status">
                   {dateBlocked
-                    ? `Chưa thể ghi nhận chuyển căn hoặc chuyển đi: ngày sớm nhất là ${displayDay(minDay)}, sau ngày hiện tại ${displayDay(today())}. Hệ thống lưu cư trú theo ngày, nên ngày chuyển phải sau ngày bắt đầu đợt hiện tại.`
-                    : `Có thể chọn ngày từ ${displayDay(minDay)} đến ${displayDay(today())}.`}
+                    ? `Chưa có ngày hợp lệ: ngày sớm nhất là ${displayDay(minDay)}, sau ngày hiện tại ${displayDay(today())}.`
+                    : `Có thể chọn ngày từ ${displayDay(minDay)} đến ${displayDay(today())}, kể cả chuyển căn trong ngày bắt đầu ở. Lịch sử căn cũ vẫn được giữ.`}
                 </p>
               )}
               <form
@@ -1196,7 +1206,8 @@ export function ResidentDetail() {
             <h2>Lịch sử cư trú</h2>
             <p>
               Ngày kết thúc không thuộc đợt cũ; khi chuyển căn, đợt mới bắt đầu
-              cùng ngày đó.
+              cùng ngày đó. Các đợt bắt đầu và kết thúc cùng ngày được giữ để
+              ghi nhận chuyển trong ngày; hệ thống không phân chia theo giờ.
             </p>
             <div className="table-wrap">
               <table>
@@ -1215,7 +1226,12 @@ export function ResidentDetail() {
                       <td>{s.so_can_ho}</td>
                       <td>{relations[s.quan_he]}</td>
                       <td>{s.tu_ngay}</td>
-                      <td>{s.den_ngay || "Đang ở"}</td>
+                      <td>
+                        {s.den_ngay || "Đang ở"}
+                        {s.den_ngay === s.tu_ngay && (
+                          <small> · Chuyển trong ngày</small>
+                        )}
+                      </td>
                       <td>{s.nguoi_ghi_nhan}</td>
                     </tr>
                   ))}
@@ -1475,12 +1491,12 @@ Lệnh HTTPS dùng các chứng chỉ bạn đã tạo trong `.certs`. Tải l�
 
 1. BQL → **Căn hộ** → tạo hai căn có số khác nhau. Thử sửa diện tích và tìm theo số căn/khối hoặc tầng.
 2. **Cư dân & cư trú** → **Thêm cư dân** → nhập liên hệ, chọn căn và quan hệ. Gắn tài khoản Cư dân đã cấp nếu cần; không bắt buộc có tài khoản.
-3. Nếu muốn thử ngay chuyển căn, nhập ngày bắt đầu là một ngày trước hôm nay. Ngày chuyển phải sau ngày bắt đầu và không sau hôm nay.
+3. Có thể nhập ngày bắt đầu là hôm nay và chuyển căn ngay hôm nay. Ngày chuyển không được trước ngày bắt đầu và không sau hôm nay. Chuyển nhiều lần cùng ngày vẫn giữ mọi căn cũ trong lịch sử.
 4. Mở tên cư dân → **Chuyển căn** → chọn căn khác. Lịch sử phải giữ cả căn cũ và căn mới.
 5. **Ghi nhận chuyển đi** kết thúc đợt hiện tại; **Ghi nhận quay lại** mở đợt mới. Không tạo hồ sơ cư dân trùng chỉ để ghi nhận quay lại.
 6. Đăng nhập KTV hoặc Cư dân để kiểm tra không có quyền mở danh bạ BQL.
 
-Khoảng cư trú là `[từ ngày, đến ngày)`: ngày chuyển thuộc đợt mới. Thiết kế theo ngày không cho kết thúc một đợt ngay trong ngày bắt đầu. Hồ sơ giữ lịch sử; không có nút xóa cứng. Chuyển đi không tự khóa tài khoản. Lựa chọn tính phí dịch vụ chỉ lưu cấu hình chuẩn bị cho module hóa đơn sau này.
+Khoảng cư trú là `[từ ngày, đến ngày)`: ngày chuyển thuộc đợt mới. Các đợt kết thúc ngay trong ngày bắt đầu có `từ ngày = đến ngày`, được đánh dấu “Chuyển trong ngày” và giữ nguyên trong lịch sử; hệ thống chưa phân chia theo giờ. Hồ sơ giữ lịch sử; không có nút xóa cứng. Chuyển đi không tự khóa tài khoản. Lựa chọn tính phí dịch vụ chỉ lưu cấu hình chuẩn bị cho module hóa đơn sau này.
 
 ## Kiểm chứng tại repository
 

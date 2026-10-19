@@ -330,7 +330,7 @@ test("MySQL: apartments, accounts, residency dates, concurrent transfer and roll
             await request(
               `/cu_dan/${id}/chuyen_di`,
               "POST",
-              { ...body, ngay: "2020-01-01" },
+              { ...body, ngay: "2019-12-31" },
               admin.cookie,
             )
           ).status,
@@ -495,6 +495,154 @@ test("MySQL: apartments, accounts, residency dates, concurrent transfer and roll
           ).body.total,
           1,
         );
+      },
+    );
+    await t.test(
+      "same-day arrival, repeated transfers, departure and return preserve every stay",
+      async () => {
+        const day = new Intl.DateTimeFormat("en-CA", {
+          timeZone: "Asia/Ho_Chi_Minh",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date());
+        const previous = new Date(`${day}T00:00:00Z`);
+        previous.setUTCDate(previous.getUTCDate() - 1);
+        const previousDay = previous.toISOString().slice(0, 10);
+        const tomorrow = new Date(`${day}T00:00:00Z`);
+        tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+        const created = await request(
+          "/cu_dan",
+          "POST",
+          {
+            ho_va_ten: "Cùng ngày " + suffix,
+            so_dien_thoai: "0901234567",
+            ma_can_ho: apartments[0],
+            quan_he: "THANH_VIEN",
+            ngay: day,
+          },
+          admin.cookie,
+        );
+        assert.equal(created.status, 201);
+        const id = created.body.data.ma_cu_dan;
+        residents.push(id);
+        let revision = 0;
+        for (const room of [apartments[1], apartments[2], apartments[0]]) {
+          const result = await request(
+            `/cu_dan/${id}/chuyen_can`,
+            "POST",
+            {
+              ma_can_ho: room,
+              quan_he: "THANH_VIEN",
+              ngay: day,
+              phien_ban: revision,
+            },
+            admin.cookie,
+          );
+          assert.equal(result.status, 200);
+          revision++;
+        }
+        let detail = (await request(`/cu_dan/${id}`, "GET", null, admin.cookie))
+          .body.data;
+        assert.equal(detail.history.length, 4);
+        assert.equal(detail.history[0].ma_can_ho, apartments[0]);
+        assert.equal(detail.history.filter((s) => !s.den_ngay).length, 1);
+        for (const stay of detail.history.slice(1)) {
+          assert.equal(stay.tu_ngay, day);
+          assert.equal(stay.den_ngay, day);
+        }
+        assert.equal(
+          (
+            await request(
+              `/cu_dan/${id}/chuyen_can`,
+              "POST",
+              {
+                ma_can_ho: apartments[1],
+                quan_he: "THANH_VIEN",
+                ngay: previousDay,
+                phien_ban: revision,
+              },
+              admin.cookie,
+            )
+          ).status,
+          422,
+        );
+        assert.equal(
+          (
+            await request(
+              `/cu_dan/${id}/chuyen_can`,
+              "POST",
+              {
+                ma_can_ho: apartments[1],
+                quan_he: "THANH_VIEN",
+                ngay: tomorrow.toISOString().slice(0, 10),
+                phien_ban: revision,
+              },
+              admin.cookie,
+            )
+          ).status,
+          422,
+        );
+        await assert.rejects(
+          rows(
+            pool,
+            "UPDATE lich_su_cu_tru SET den_ngay=? WHERE ma_lich_su_cu_tru=?",
+            [previousDay, detail.history[1].ma_lich_su_cu_tru],
+          ),
+          (error) => error.code === "ER_CHECK_CONSTRAINT_VIOLATED",
+        );
+        assert.equal(
+          (
+            await request(
+              `/cu_dan/${id}/chuyen_di`,
+              "POST",
+              { ngay: day, phien_ban: revision },
+              admin.cookie,
+            )
+          ).status,
+          200,
+        );
+        revision++;
+        assert.equal(
+          (
+            await request(
+              `/cu_dan/${id}/nhap_cu`,
+              "POST",
+              {
+                ma_can_ho: apartments[2],
+                quan_he: "NGUOI_THUE",
+                ngay: day,
+                phien_ban: revision,
+              },
+              admin.cookie,
+            )
+          ).status,
+          200,
+        );
+        revision++;
+        const race = await Promise.all(
+          apartments
+            .slice(0, 2)
+            .map((room) =>
+              request(
+                `/cu_dan/${id}/chuyen_can`,
+                "POST",
+                {
+                  ma_can_ho: room,
+                  quan_he: "NGUOI_THUE",
+                  ngay: day,
+                  phien_ban: revision,
+                },
+                admin.cookie,
+              ),
+            ),
+        );
+        assert.deepEqual(race.map((r) => r.status).sort(), [200, 409]);
+        detail = (await request(`/cu_dan/${id}`, "GET", null, admin.cookie))
+          .body.data;
+        assert.equal(detail.history.length, 6);
+        assert.equal(detail.history.filter((s) => !s.den_ngay).length, 1);
+        assert.equal(detail.phien_ban, revision + 1);
       },
     );
   } finally {

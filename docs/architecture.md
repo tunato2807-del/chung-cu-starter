@@ -28,11 +28,11 @@ Frontend nhận ảnh thư viện tối đa 25 MB/tệp, kiểm tra chữ ký JP
 
 ## Căn hộ và cư trú
 
-Migration 002 thêm can_ho, cu_dan và lich_su_cu_tru; không thay schema phản ánh hoặc migration 001 đã áp dụng. Runner đọc các migration SQL theo thứ tự tên, kiểm tra checksum và giữ khóa MySQL. Readiness yêu cầu cả 001 và 002 đã áp dụng.
+Migration 002 thêm can_ho, cu_dan và lich_su_cu_tru; không thay schema phản ánh hoặc migration 001 đã áp dụng. Runner đọc các migration SQL theo thứ tự tên, kiểm tra checksum và giữ khóa MySQL. Migration 003 thay ràng buộc ngày kết thúc thành lớn hơn hoặc bằng ngày bắt đầu; không sửa các migration cũ đã chạy. Readiness yêu cầu 001, 002 và 003 đã áp dụng.
 
 Hồ sơ cu_dan giữ thông tin liên hệ, liên kết tài khoản tùy chọn/duy nhất và phien_ban. Căn hộ và quan hệ nằm trong đợt cư trú, không giữ thêm một nguồn mô tả căn hiện tại. Khoảng ngày nửa mở, không nhận ngày tương lai, không sửa hồi tố lịch sử đã đóng. Tình trạng đang ở/chuyển đi và số người trong căn được suy ra từ đợt chưa kết thúc. Cờ tính phí không phụ thuộc số người.
 
-Mỗi thay đổi cư trú khóa hồ sơ cư dân FOR UPDATE và kiểm tra phien_ban. Chuyển căn đóng đợt cũ + mở đợt mới + tăng phiên bản trong cùng transaction; ngày chuyển phải sau ngày bắt đầu đợt cũ. Nhập cư lại phải từ ngày kết thúc đợt gần nhất. Cột sinh cu_dan_dang_o với UNIQUE ngăn nhiều đợt chưa kết thúc ở cấp database. Lịch sử và hồ sơ không có API xóa cứng.
+Mỗi thay đổi cư trú khóa hồ sơ cư dân FOR UPDATE và kiểm tra phien_ban. Chuyển căn đóng đợt cũ + mở đợt mới + tăng phiên bản trong cùng transaction; ngày chuyển không được trước ngày bắt đầu đợt cũ. Cho phép chuyển nhiều lần trong cùng ngày; các khoảng rỗng `[D,D)` là bản ghi lịch sử chuyển trong ngày, không đại diện thêm ngày cư trú và không chồng khoảng thời gian của căn mới. ID lịch sử xác định thứ tự các lần chuyển cùng ngày; hệ thống chưa phân chia theo giờ. Nhập cư lại phải từ ngày kết thúc đợt gần nhất. Cột sinh cu_dan_dang_o với UNIQUE ngăn nhiều đợt chưa kết thúc ở cấp database. Lịch sử và hồ sơ không có API xóa cứng.
 
 API căn hộ/cư dân áp dụng xác thực và vai trò BQL cho cả đọc và ghi; ID không tạo quyền truy cập. Tài khoản mới gắn phải là CU_DAN đang hoạt động và chưa gắn hồ sơ khác. Khi sửa tên/liên hệ có thể giữ nguyên tài khoản cũ đã khóa; không tự mở khóa hoặc chuyển vai trò. BQL tìm tài khoản chưa gắn theo tên/SĐT qua endpoint phân trang, không tải toàn bộ tài khoản. Màn hình tìm căn và tìm hồ sơ dùng phân trang 20 bản ghi.
 

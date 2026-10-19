@@ -11,3 +11,5 @@ Kiểm thử dùng `chung_cu_test`; các test xóa fixture của chính lượt 
 `migrations/002_residency.sql` thêm `can_ho`, `cu_dan`, `lich_su_cu_tru`. Liên kết tài khoản cư dân tùy chọn và duy nhất; căn hiện tại lấy từ lịch sử đang mở. Cột sinh duy nhất chặn hai đợt chưa kết thúc của một cư dân. Chuyển căn có khóa hồ sơ và transaction; không xóa lịch sử. Chạy `npm run db:migrate` để áp dụng các migration chưa chạy theo thứ tự tên; chạy lại không tạo dữ liệu trùng và phát hiện file đã áp dụng bị sửa/mất.
 
 Thiết kế xe, chỉ số, đơn giá theo hiệu lực, hóa đơn và thông báo chưa được migration trong phiên bản này.
+
+`migrations/003_same_day_residency.sql` thay CHECK tự sinh từ migration 002 bằng ràng buộc có tên cho phép `den_ngay >= tu_ngay`. Giữ mọi bản ghi lịch sử, không sửa migration 002 đã chạy. Khoảng rỗng giữ dấu vết chuyển trong ngày; UNIQUE đợt đang mở và khóa giao dịch vẫn có hiệu lực.

@@ -14,6 +14,12 @@ for (const width of [1440, 375])
       hash = await bcrypt.hash(password, 10);
     const apartmentName = `E2E-${suffix}`,
       residentName = `Cư dân E2E ${suffix}`;
+    const day = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Ho_Chi_Minh",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date());
     const accounts = [],
       phones = [];
     const errors = [];
@@ -91,7 +97,7 @@ for (const width of [1440, 375])
         .getByLabel("Tài khoản cư dân (tùy chọn)")
         .selectOption(String(accounts[1]));
       await page.getByLabel("Quan hệ với căn hộ").selectOption("NGUOI_THUE");
-      await page.getByLabel("Ngày bắt đầu / chuyển căn").fill("2020-01-01");
+      await page.getByLabel("Ngày bắt đầu / chuyển căn").fill(day);
       await page
         .getByRole("button", { name: "Lưu cư dân", exact: true })
         .click();
@@ -150,7 +156,7 @@ for (const width of [1440, 375])
       await page
         .getByLabel("Căn hộ", { exact: true })
         .selectOption(String(apartments[1].ma_can_ho));
-      await page.getByLabel("Ngày bắt đầu / chuyển căn").fill("2021-01-01");
+      await page.getByLabel("Ngày bắt đầu / chuyển căn").fill(day);
       await page
         .getByRole("button", { name: "Xác nhận lưu", exact: true })
         .click();
@@ -160,14 +166,12 @@ for (const width of [1440, 375])
         }),
       ).toBeVisible();
       await expect(
-        page.getByRole("cell", { name: "2021-01-01", exact: true }),
-      ).toHaveCount(2);
+        page.locator("tbody small").filter({ hasText: "Chuyển trong ngày" }),
+      ).toHaveCount(1);
       await page
         .getByRole("button", { name: "Ghi nhận chuyển đi", exact: true })
         .click();
-      await page
-        .getByLabel("Ngày chuyển đi", { exact: true })
-        .fill("2022-01-01");
+      await page.getByLabel("Ngày chuyển đi", { exact: true }).fill(day);
       await page
         .getByRole("button", { name: "Xác nhận lưu", exact: true })
         .click();
@@ -186,7 +190,7 @@ for (const width of [1440, 375])
       await page
         .getByLabel("Căn hộ", { exact: true })
         .selectOption(String(apartments[0].ma_can_ho));
-      await page.getByLabel("Ngày bắt đầu / chuyển căn").fill("2023-01-01");
+      await page.getByLabel("Ngày bắt đầu / chuyển căn").fill(day);
       await page
         .getByRole("button", { name: "Xác nhận lưu", exact: true })
         .click();
@@ -222,9 +226,9 @@ for (const width of [1440, 375])
     }
   });
 
-// The day-based schema requires end > start; explain the unavailable interval before submitting.
+// Same-day moves are available immediately; earlier dates and future dates remain invalid.
 for (const width of [1440, 375])
-  test(`same-day transfer explains limits and keeps profile editing available at ${width}px`, async ({
+  test(`same-day transfer accepts today and keeps profile editing available at ${width}px`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 1000 });
@@ -284,15 +288,25 @@ for (const width of [1440, 375])
     for (const label of ["Chuyển căn", "Ghi nhận chuyển đi"]) {
       await page.getByRole("button", { name: label, exact: true }).click();
       await expect(
-        page.getByRole("status").filter({ hasText: "Chưa thể ghi nhận" }),
-      ).toContainText("ngày sớm nhất là 20/10/2026");
+        page.getByRole("status").filter({ hasText: "Có thể chọn ngày" }),
+      ).toContainText("kể cả chuyển căn trong ngày bắt đầu ở");
       await expect(
         page.getByRole("button", { name: "Xác nhận lưu", exact: true }),
-      ).toBeDisabled();
+      ).toBeEnabled();
       const date = page.locator('input[name="ngay"]');
-      await expect(date).toHaveAttribute("min", "2026-10-20");
+      await expect(date).toHaveAttribute("min", "2026-10-19");
       await expect(date).toHaveAttribute("max", "2026-10-19");
-      await expect(date).toBeDisabled();
+      await expect(date).toBeEnabled();
+      await date.fill("2026-10-18");
+      expect(
+        await date.evaluate((input) => input.validity.rangeUnderflow),
+      ).toBe(true);
+      await date.fill("2026-10-20");
+      expect(await date.evaluate((input) => input.validity.rangeOverflow)).toBe(
+        true,
+      );
+      await date.fill("2026-10-19");
+      expect(await date.evaluate((input) => input.validity.valid)).toBe(true);
     }
     expect(writes).toBe(0);
     await page.getByRole("button", { name: "Sửa hồ sơ", exact: true }).click();

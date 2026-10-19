@@ -208,11 +208,11 @@ export async function changeStay(id, action, body, user) {
     } else {
       if (!current)
         fail(409, "NO_ACTIVE_STAY", "Cư dân đã chuyển đi. Hãy tải lại hồ sơ.");
-      if (day <= current.tu_ngay)
+      if (day < current.tu_ngay)
         fail(
           422,
           "INVALID_END_DATE",
-          "Ngày chuyển phải sau ngày bắt đầu đợt cư trú hiện tại.",
+          "Ngày chuyển không được trước ngày bắt đầu đợt cư trú hiện tại.",
         );
       if (next && next[0] === current.ma_can_ho)
         fail(422, "SAME_APARTMENT", "Cần chọn căn hộ khác để chuyển căn.");

@@ -48,4 +48,4 @@ Mọi endpoint bên dưới yêu cầu phiên BQL; cư dân và KTV không đư�
 | POST | `/api/cu_dan/:id/chuyen_di` | `ngay`, `phien_ban`; kết thúc đợt đang mở |
 | POST | `/api/cu_dan/:id/nhap_cu` | `ma_can_ho`, `quan_he`, `ngay`, `phien_ban`; mở đợt sau khi đã chuyển đi |
 
-`quan_he`: `CHU_HO`, `THANH_VIEN`, `NGUOI_THUE`. `ngay` là ngày lịch Việt Nam `YYYY-MM-DD`, không sau hôm nay. Ngày kết thúc phải sau ngày bắt đầu; các đợt không chồng nhau. Không nhận yêu cầu xóa cứng hồ sơ/căn/lịch sử. Chuyển đi không khóa tài khoản. Cờ tính phí dịch vụ được lưu độc lập với tình trạng trống, chưa phát sinh hóa đơn.
+`quan_he`: `CHU_HO`, `THANH_VIEN`, `NGUOI_THUE`. `ngay` là ngày lịch Việt Nam `YYYY-MM-DD`, không sau hôm nay. Ngày kết thúc không được trước ngày bắt đầu; cho phép chuyển nhiều lần trong ngày. Đợt cũ cùng ngày có `tu_ngay = den_ngay` và giữ lại để xem lịch sử; chỉ đợt chưa kết thúc là căn đang ở. Các đợt có thời gian cư trú không chồng nhau. Không nhận yêu cầu xóa cứng hồ sơ/căn/lịch sử. Chuyển đi không khóa tài khoản. Cờ tính phí dịch vụ được lưu độc lập với tình trạng trống, chưa phát sinh hóa đơn.

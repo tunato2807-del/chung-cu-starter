@@ -22,11 +22,6 @@ const today = () =>
     day: "2-digit",
   }).format(new Date());
 const values = (event) => Object.fromEntries(new FormData(event.currentTarget));
-function nextDay(day) {
-  const date = new Date(`${day}T00:00:00Z`);
-  date.setUTCDate(date.getUTCDate() + 1);
-  return date.toISOString().slice(0, 10);
-}
 const displayDay = (day) => day.split("-").reverse().join("/");
 
 function Pager({ resource }) {
@@ -544,7 +539,7 @@ export function ResidentDetail() {
   const resident = resource.result?.data,
     current = resident?.history.find((s) => !s.den_ngay);
   const minDay = current
-    ? nextDay(current.tu_ngay)
+    ? current.tu_ngay
     : resident?.history[0]?.den_ngay || "1900-01-01";
   const dateBlocked = mode !== "profile" && minDay > today();
   return (
@@ -598,8 +593,8 @@ export function ResidentDetail() {
               {mode !== "profile" && (
                 <p className="note" role="status">
                   {dateBlocked
-                    ? `Chưa thể ghi nhận chuyển căn hoặc chuyển đi: ngày sớm nhất là ${displayDay(minDay)}, sau ngày hiện tại ${displayDay(today())}. Hệ thống lưu cư trú theo ngày, nên ngày chuyển phải sau ngày bắt đầu đợt hiện tại.`
-                    : `Có thể chọn ngày từ ${displayDay(minDay)} đến ${displayDay(today())}.`}
+                    ? `Chưa có ngày hợp lệ: ngày sớm nhất là ${displayDay(minDay)}, sau ngày hiện tại ${displayDay(today())}.`
+                    : `Có thể chọn ngày từ ${displayDay(minDay)} đến ${displayDay(today())}, kể cả chuyển căn trong ngày bắt đầu ở. Lịch sử căn cũ vẫn được giữ.`}
                 </p>
               )}
               <form
@@ -648,7 +643,8 @@ export function ResidentDetail() {
             <h2>Lịch sử cư trú</h2>
             <p>
               Ngày kết thúc không thuộc đợt cũ; khi chuyển căn, đợt mới bắt đầu
-              cùng ngày đó.
+              cùng ngày đó. Các đợt bắt đầu và kết thúc cùng ngày được giữ để
+              ghi nhận chuyển trong ngày; hệ thống không phân chia theo giờ.
             </p>
             <div className="table-wrap">
               <table>
@@ -667,7 +663,12 @@ export function ResidentDetail() {
                       <td>{s.so_can_ho}</td>
                       <td>{relations[s.quan_he]}</td>
                       <td>{s.tu_ngay}</td>
-                      <td>{s.den_ngay || "Đang ở"}</td>
+                      <td>
+                        {s.den_ngay || "Đang ở"}
+                        {s.den_ngay === s.tu_ngay && (
+                          <small> · Chuyển trong ngày</small>
+                        )}
+                      </td>
                       <td>{s.nguoi_ghi_nhan}</td>
                     </tr>
                   ))}
