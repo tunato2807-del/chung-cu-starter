@@ -27,6 +27,11 @@ import {
   ReportList,
 } from "../features/incidents/Reports.jsx";
 import Locations from "../features/qr/Locations.jsx";
+import {
+  Apartments,
+  Residents,
+  ResidentDetail,
+} from "../features/residency/Residency.jsx";
 import { ErrorBox, homeFor, roleNames } from "../shared/ui.jsx";
 const admin = ["QUAN_TRI_VIEN"],
   technician = ["KY_THUAT_VIEN"],
@@ -45,6 +50,8 @@ function Shell() {
       ? [
           ["/quan-tri", "Tổng quan"],
           ["/quan-tri/phan-anh", "Phản ánh"],
+          ["/quan-tri/can-ho", "Căn hộ"],
+          ["/quan-tri/cu-dan", "Cư dân & cư trú"],
           ["/quan-tri/vi-tri-qr", "Vị trí & QR"],
           ["/quan-tri/nhan-su", "Nhân sự & tài khoản"],
         ]
@@ -135,6 +142,17 @@ function Shell() {
                 </Protected>
               }
             />
+            {[
+              ["/quan-tri/can-ho", <Apartments />],
+              ["/quan-tri/cu-dan", <Residents />],
+              ["/quan-tri/cu-dan/:id", <ResidentDetail />],
+            ].map(([path, element]) => (
+              <Route
+                key={path}
+                path={path}
+                element={<Protected roles={admin}>{element}</Protected>}
+              />
+            ))}
             {[
               ["/quan-tri/phan-anh", admin],
               ["/ky-thuat/cong-viec", technician],

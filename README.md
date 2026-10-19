@@ -1,6 +1,6 @@
 # Quản lý chung cư · Phản ánh QR
 
-React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai luồng **đăng nhập, phân quyền và phản ánh qua QR** theo ba tài liệu thiết kế; chưa triển khai cư trú, phương tiện, hóa đơn và thông báo.
+React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR và quản lý căn hộ/cư trú** theo ba tài liệu thiết kế; chưa triển khai phương tiện, hóa đơn và thông báo.
 
 ## Chạy môi trường phát triển
 
@@ -37,6 +37,19 @@ Docker lưu MySQL trong volume `mysql_data`; ảnh nằm tại `backend/storage/
 6. Khách tra cứu bằng mã riêng và SĐT. Chỉ trả tiến độ và phản hồi công khai; không trả ảnh, nội dung riêng hoặc thông tin liên hệ.
 
 BQL cấp/khóa tài khoản tại **Nhân sự & tài khoản**. Cư dân chỉ xem phản ánh đã gửi bằng chính tài khoản; phản ánh khách không tự gắn vào tài khoản theo SĐT. KTV mất quyền ngay ở request tiếp theo khi bị phân công lại. Đổi mật khẩu hoặc đăng xuất kết thúc tất cả phiên của tài khoản.
+
+## Căn hộ và cư dân
+
+Sau khi cập nhật mã nguồn, chạy `npm run db:migrate` trước khi khởi động backend. Migration `002_residency.sql` thêm ba bảng mới, giữ dữ liệu QR, tài khoản và phản ánh hiện có. Không sửa hoặc chạy lại SQL tạo schema cũ bằng tay.
+
+1. BQL → **Căn hộ** → nhập số căn, khối, tầng, diện tích và lựa chọn tính phí dịch vụ. Có tìm theo số căn/khối, lọc tầng, phân trang, sửa và xem cư dân đang ở.
+2. BQL → **Cư dân & cư trú** → **Thêm cư dân** → nhập hồ sơ, chọn căn, quan hệ và ngày bắt đầu. Từ trang căn hộ có liên kết lọc cư dân của riêng căn đó.
+3. Nếu cần đăng nhập, cấp tài khoản vai trò Cư dân trong **Nhân sự & tài khoản**, rồi tìm và gắn tài khoản vào hồ sơ. Một tài khoản gắn tối đa một hồ sơ; không tự gắn bằng số điện thoại. Hồ sơ không bắt buộc có tài khoản.
+4. Mở hồ sơ → **Chuyển căn** để kết thúc đợt cũ và bắt đầu đợt mới trong cùng giao dịch; **Ghi nhận chuyển đi** để kết thúc; **Ghi nhận quay lại** để mở đợt mới. Lịch sử cũ được giữ, không xóa hồ sơ/căn hộ qua giao diện.
+
+Ngày cư trú là ngày lịch tại Việt Nam, không nhận ngày tương lai. Khoảng cư trú là `[từ ngày, đến ngày)`; ngày kết thúc phải sau ngày bắt đầu. Do giới hạn theo ngày của thiết kế, không ghi nhận hai lần chuyển trong cùng ngày bắt đầu đợt. Mỗi cư dân có tối đa một đợt đang mở; hồ sơ cũ không được ghi đè khi hai người sửa đồng thời. Trạng thái căn hộ trống/có người ở được suy ra từ các đợt đang mở. Cờ tính phí dịch vụ độc lập với trạng thái trống và chỉ chuẩn bị dữ liệu cho module hóa đơn sau này.
+
+Danh bạ căn hộ, cư dân và lịch sử chỉ dành cho BQL ở cả giao diện và API. Chuyển đi không tự khóa tài khoản đăng nhập; BQL quản lý khóa tài khoản riêng. Phiên bản này chưa có màn cư dân tự xem hồ sơ, nhập dữ liệu hàng loạt hoặc chỉnh sửa hồi tố các đợt đã kết thúc. Xem [API](docs/api.md).
 
 Form QR lưu nháp nội dung trong sessionStorage của tab hiện tại, tách theo vị trí QR và tài khoản, hết hạn sau 2 giờ và xóa khi gửi thành công. Nếu điện thoại tải lại trang khi mở thư viện ảnh, nội dung được khôi phục; ảnh cần chọn lại vì quyền chọn tệp không được giữ qua lần tải trang. Có nút chọn thư viện/chụp ảnh riêng, thông báo số ảnh đã chọn và cảnh báo khi trình duyệt chặn lưu nháp. Ảnh chỉ gửi lên máy chủ khi bấm Gửi phản ánh.
 

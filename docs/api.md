@@ -28,3 +28,24 @@ Gửi phản ánh: multipart gồm token_qr, khoa_yeu_cau (UUID v4), tieu_de (3�
 KTV hoàn thành dùng **multipart PATCH trang_thai** với DA_XU_LY, ghi_chu bắt buộc và ít nhất một tệp hinh_anh mới. Ảnh, trạng thái và lịch sử commit cùng nhau, không có bước upload nghiệm thu riêng có thể bị bỏ dở. Các thao tác khác có thể gửi JSON. QR được vẽ/in tại frontend từ URL /r/:token cùng origin, không cần API sinh ảnh.
 
 HTTP: 400 JSON lỗi, 401 thiếu/hết phiên, 403 sai vai trò/CSRF, 404 không thuộc quyền hoặc QR sai, 409 xung đột phiên bản/trạng thái/gửi lặp, 413 vượt giới hạn tải, 422 lỗi dữ liệu, 429 vượt tần suất, 503 database chưa sẵn sàng. Danh sách nhân sự/vị trí của bản demo giới hạn 200/500; phân trang hai danh mục này cần bổ sung khi quy mô tăng.
+
+## Căn hộ và cư trú (chỉ BQL)
+
+Mọi endpoint bên dưới yêu cầu phiên BQL; cư dân và KTV không được đọc danh bạ. Request ghi vẫn cần `X-App-Request: 1`. Danh sách trả `{data, total, page}`, 20 bản ghi/trang; chi tiết/ghi trả `{data}`. Lỗi theo cấu trúc chung; 409 khi số căn/tài khoản đã tồn tại hoặc phiên bản cũ.
+
+| Method | URL | Nội dung |
+|---|---|---|
+| GET | `/api/can_ho?q=&tang=&page=1` | Tìm số căn/khối và lọc tầng; trả số cư dân đang ở |
+| GET | `/api/can_ho/:id` | Thông tin căn và cư dân đang ở |
+| POST | `/api/can_ho` | `so_can_ho`, `khoi`, `tang`, `dien_tich_m2`, `tinh_phi_dich_vu` (boolean) |
+| PATCH | `/api/can_ho/:id` | Các trường như tạo và `phien_ban` hiện tại |
+| GET | `/api/cu_dan?q=&trang_thai=&ma_can_ho=&page=1` | Tìm tên/SĐT; trạng thái rỗng, `DANG_O` hoặc `DA_CHUYEN_DI` |
+| GET | `/api/cu_dan/tai_khoan?q=&page=1` | Tìm tài khoản cư dân đang hoạt động, chưa gắn hồ sơ; chỉ trả mã/tên/SĐT |
+| GET | `/api/cu_dan/:id` | Hồ sơ và `history` đầy đủ, mới trước |
+| POST | `/api/cu_dan` | `ho_va_ten`, `so_dien_thoai`, `ma_nguoi_dung` tùy chọn, `ma_can_ho`, `quan_he`, `ngay` |
+| PATCH | `/api/cu_dan/:id` | Thông tin hồ sơ, liên kết tài khoản tùy chọn và `phien_ban`; không đổi căn bằng route này |
+| POST | `/api/cu_dan/:id/chuyen_can` | `ma_can_ho`, `quan_he`, `ngay`, `phien_ban`; đóng đợt cũ/mở đợt mới cùng giao dịch |
+| POST | `/api/cu_dan/:id/chuyen_di` | `ngay`, `phien_ban`; kết thúc đợt đang mở |
+| POST | `/api/cu_dan/:id/nhap_cu` | `ma_can_ho`, `quan_he`, `ngay`, `phien_ban`; mở đợt sau khi đã chuyển đi |
+
+`quan_he`: `CHU_HO`, `THANH_VIEN`, `NGUOI_THUE`. `ngay` là ngày lịch Việt Nam `YYYY-MM-DD`, không sau hôm nay. Ngày kết thúc phải sau ngày bắt đầu; các đợt không chồng nhau. Không nhận yêu cầu xóa cứng hồ sơ/căn/lịch sử. Chuyển đi không khóa tài khoản. Cờ tính phí dịch vụ được lưu độc lập với tình trạng trống, chưa phát sinh hóa đơn.

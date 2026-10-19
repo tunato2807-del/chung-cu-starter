@@ -8,4 +8,6 @@ Cổng DB, user, database và mật khẩu đọc từ `.env` gốc; không ghi 
 
 Kiểm thử dùng `chung_cu_test`; các test xóa fixture của chính lượt chạy, không xóa bảng hoặc dữ liệu phát triển. Lệnh test có Docker để tạo database và trigger gây lỗi phục vụ kiểm tra rollback; ứng dụng thường chỉ dùng user của database.
 
-Thiết kế đích về căn hộ, lịch sử cư trú, xe, chỉ số, đơn giá theo hiệu lực, hóa đơn và thông báo chưa được migration trong phiên bản này.
+`migrations/002_residency.sql` thêm `can_ho`, `cu_dan`, `lich_su_cu_tru`. Liên kết tài khoản cư dân tùy chọn và duy nhất; căn hiện tại lấy từ lịch sử đang mở. Cột sinh duy nhất chặn hai đợt chưa kết thúc của một cư dân. Chuyển căn có khóa hồ sơ và transaction; không xóa lịch sử. Chạy `npm run db:migrate` để áp dụng các migration chưa chạy theo thứ tự tên; chạy lại không tạo dữ liệu trùng và phát hiện file đã áp dụng bị sửa/mất.
+
+Thiết kế xe, chỉ số, đơn giá theo hiệu lực, hóa đơn và thông báo chưa được migration trong phiên bản này.
