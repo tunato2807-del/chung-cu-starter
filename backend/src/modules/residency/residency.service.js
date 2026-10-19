@@ -7,6 +7,13 @@ import {
   carryStayVehicles,
 } from "../vehicles/vehicles.service.js";
 
+import {
+  accountForApartment,
+  ensureApartmentAccount,
+  assignHouseholder,
+  releaseHouseholder,
+} from "./apartment-accounts.service.js";
+
 function search(query) {
   const q = query.q ? text(query.q, "q", 1, 100) : "";
   const page = integer(query.page || 1, "page");
@@ -36,6 +43,7 @@ async function checkAccount(db, id, previous) {
   if (id === null) return;
   const account = await one(db, "nguoi_dung", "ma_nguoi_dung", id, true);
   if (
+    account.ma_can_ho_thanh_toan !== null ||
     account.vai_tro !== "CU_DAN" ||
     (!account.dang_hoat_dong && id !== previous)
   )
@@ -67,7 +75,7 @@ export async function listApartments(query) {
 }
 export async function availableAccounts(query) {
   const { q, page, offset } = search(query);
-  const where = `WHERE u.vai_tro='CU_DAN' AND u.dang_hoat_dong=1
+  const where = `WHERE u.vai_tro='CU_DAN' AND u.dang_hoat_dong=1 AND u.ma_can_ho_thanh_toan IS NULL
     AND (u.ho_va_ten LIKE ? OR u.so_dien_thoai LIKE ?)
     AND NOT EXISTS (SELECT 1 FROM cu_dan c WHERE c.ma_nguoi_dung=u.ma_nguoi_dung)`;
   const [count] = await rows(
@@ -89,9 +97,18 @@ export async function apartmentDetail(id) {
     `SELECT c.ma_cu_dan,c.ho_va_ten,c.so_dien_thoai,l.quan_he,l.tu_ngay FROM cu_dan c JOIN lich_su_cu_tru l ON l.ma_cu_dan=c.ma_cu_dan WHERE l.ma_can_ho=? AND l.den_ngay IS NULL ORDER BY c.ho_va_ten`,
     [id],
   );
-  return { ...data, residents };
+  return {
+    ...data,
+    residents,
+    tai_khoan_can_ho: await accountForApartment(id),
+    lich_su_ban_giao: await rows(
+      pool,
+      "SELECT b.*,u.ho_va_ten AS nguoi_thuc_hien FROM lich_su_ban_giao_can_ho b JOIN nguoi_dung u ON u.ma_nguoi_dung=b.ma_nguoi_thuc_hien WHERE b.ma_can_ho=? ORDER BY b.ma_ban_giao DESC LIMIT 50",
+      [id],
+    ),
+  };
 }
-export async function saveApartment(id, body) {
+export async function saveApartment(id, body, user) {
   const values = valid.apartment(body);
   return transaction(async (db) => {
     if (id) {
@@ -110,7 +127,13 @@ export async function saveApartment(id, body) {
       );
       id = result.insertId;
     }
-    return one(db, "can_ho", "ma_can_ho", id);
+    const apartment = await one(db, "can_ho", "ma_can_ho", id);
+    const created = await ensureApartmentAccount(db, apartment, user);
+    return {
+      ...apartment,
+      tai_khoan_can_ho:
+        created.credentials || (await accountForApartment(id, db)),
+    };
   });
 }
 
@@ -152,13 +175,25 @@ export async function residentDetail(id) {
     `SELECT l.*,a.so_can_ho,u.ho_va_ten AS nguoi_ghi_nhan FROM lich_su_cu_tru l JOIN can_ho a ON a.ma_can_ho=l.ma_can_ho JOIN nguoi_dung u ON u.ma_nguoi_dung=l.ma_nguoi_ghi_nhan WHERE l.ma_cu_dan=? ORDER BY l.tu_ngay DESC,l.ma_lich_su_cu_tru DESC`,
     [id],
   );
-  return { ...resident, history };
+  return {
+    ...resident,
+    history,
+    tai_khoan_can_ho:
+      (
+        await rows(
+          pool,
+          "SELECT ma_can_ho_thanh_toan,ten_dang_nhap,dang_hoat_dong FROM nguoi_dung WHERE ma_cu_dan_phu_trach=?",
+          [id],
+        )
+      )[0] || null,
+  };
 }
 export async function saveResident(id, body, user) {
   const values = valid.resident(body);
   const initialStay = id ? null : valid.stay(body);
   return transaction(async (db) => {
-    let previousAccount = null;
+    let previousAccount = null,
+      credentials = null;
     if (id) {
       const current = await one(db, "cu_dan", "ma_cu_dan", id, true);
       version(current, body.phien_ban);
@@ -172,7 +207,7 @@ export async function saveResident(id, body, user) {
         [...values, id],
       );
     } else {
-      await one(db, "can_ho", "ma_can_ho", initialStay[0]);
+      const apartment = await lockApartment(db, initialStay[0]);
       const result = await rows(
         db,
         "INSERT INTO cu_dan (ho_va_ten,so_dien_thoai,ma_nguoi_dung) VALUES (?,?,?)",
@@ -184,8 +219,19 @@ export async function saveResident(id, body, user) {
         "INSERT INTO lich_su_cu_tru (ma_cu_dan,ma_can_ho,quan_he,tu_ngay,ma_nguoi_ghi_nhan) VALUES (?,?,?,?,?)",
         [id, ...initialStay, user.ma_nguoi_dung],
       );
+      if (initialStay[1] === "CHU_HO")
+        credentials = await assignHouseholder(
+          db,
+          apartment,
+          id,
+          user,
+          body.xac_nhan_ban_giao,
+        );
     }
-    return one(db, "cu_dan", "ma_cu_dan", id);
+    return {
+      ...(await one(db, "cu_dan", "ma_cu_dan", id)),
+      tai_khoan_can_ho: credentials,
+    };
   });
 }
 
@@ -255,18 +301,28 @@ export async function changeStay(id, action, body, user) {
           action === "chuyen_can" ? "Chuyển căn" : "Chuyển đi",
         )
       : [];
+    if (current) await releaseHouseholder(db, current.ma_can_ho, id, user);
     if (current)
       await rows(
         db,
         "UPDATE lich_su_cu_tru SET den_ngay=? WHERE ma_lich_su_cu_tru=?",
         [day, current.ma_lich_su_cu_tru],
       );
+    let credentials = null;
     if (next) {
       const inserted = await rows(
         db,
         "INSERT INTO lich_su_cu_tru (ma_cu_dan,ma_can_ho,quan_he,tu_ngay,ma_nguoi_ghi_nhan) VALUES (?,?,?,?,?)",
         [id, ...next, user.ma_nguoi_dung],
       );
+      if (next[1] === "CHU_HO")
+        credentials = await assignHouseholder(
+          db,
+          await one(db, "can_ho", "ma_can_ho", next[0]),
+          id,
+          user,
+          body.xac_nhan_ban_giao,
+        );
       if (body.chuyen_phuong_tien)
         await carryStayVehicles(
           db,
@@ -281,6 +337,10 @@ export async function changeStay(id, action, body, user) {
       "UPDATE cu_dan SET phien_ban=phien_ban+1 WHERE ma_cu_dan=?",
       [id],
     );
-    return { ma_cu_dan: id, phien_ban: resident.phien_ban + 1 };
+    return {
+      ma_cu_dan: id,
+      phien_ban: resident.phien_ban + 1,
+      tai_khoan_can_ho: credentials,
+    };
   });
 }

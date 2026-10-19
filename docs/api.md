@@ -48,7 +48,7 @@ Mọi endpoint bên dưới yêu cầu phiên BQL; cư dân và KTV không đư�
 | POST | `/api/cu_dan/:id/chuyen_di` | `ngay`, `phien_ban`; kết thúc đợt đang mở |
 | POST | `/api/cu_dan/:id/nhap_cu` | `ma_can_ho`, `quan_he`, `ngay`, `phien_ban`; mở đợt sau khi đã chuyển đi |
 
-`quan_he`: `CHU_HO`, `THANH_VIEN`, `NGUOI_THUE`. `ngay` là ngày lịch Việt Nam `YYYY-MM-DD`, không sau hôm nay. Ngày kết thúc không được trước ngày bắt đầu; cho phép chuyển nhiều lần trong ngày. Đợt cũ cùng ngày có `tu_ngay = den_ngay` và giữ lại để xem lịch sử; chỉ đợt chưa kết thúc là căn đang ở. Các đợt có thời gian cư trú không chồng nhau. Không nhận yêu cầu xóa cứng hồ sơ/căn/lịch sử. Chuyển đi không khóa tài khoản. Cờ tính phí dịch vụ được lưu độc lập với tình trạng trống, chưa phát sinh hóa đơn.
+`quan_he`: `CHU_HO`, `THANH_VIEN`, `NGUOI_THUE`. `ngay` là ngày lịch Việt Nam `YYYY-MM-DD`, không sau hôm nay. Ngày kết thúc không được trước ngày bắt đầu; cho phép chuyển nhiều lần trong ngày. Đợt cũ cùng ngày có `tu_ngay = den_ngay` và giữ lại để xem lịch sử; chỉ đợt chưa kết thúc là căn đang ở. Các đợt có thời gian cư trú không chồng nhau. Không nhận yêu cầu xóa cứng hồ sơ/căn/lịch sử. Chuyển đi giữ tài khoản cá nhân; tài khoản căn có người phụ trách chuyển đi sẽ bị tạm khóa. Cờ tính phí dịch vụ được lưu độc lập với tình trạng trống, chưa phát sinh hóa đơn.
 
 ## Phương tiện (chỉ BQL)
 
@@ -120,3 +120,25 @@ Loại phí: PHI_QUAN_LY, GUI_O_TO, GUI_XE_MAY, GUI_XE_DAP, TIEN_NUOC, TIEN_DIEN
 Lập hóa đơn vẫn dùng `tinh_dien: true`, cùng chỉ số DIEN. Chi tiết điện gồm các dòng bậc thực dùng và một dòng thuế (nếu >0%). Lượng 0 kWh có dòng bậc đầu = 0. Thuế là một khoản thu (số lượng 1, đơn giá bằng khoản thuế), không phải một giá điện/kWh. Đơn vị kWh chỉ dành cho dòng điện. Các dòng công khai có diễn giải thuế/cơ sở thuế, không lộ mã nội bộ. QR/tổng thanh toán đã gồm thuế. Không thêm thuế điện lên nước, xe hoặc quản lý. Không sửa hóa đơn đã duyệt/gửi/thu khi thêm phiên bản mới.
 
 Áp dụng một biểu giá theo ngày chốt cho toàn kỳ của một căn/định mức. Chưa tách kỳ đổi giá, định mức nhiều hộ hay chia theo ngày; cần đối chiếu hồ sơ thu điện trước khi duyệt trong những trường hợp này. Căn thanh toán trực tiếp cho EVN cần bỏ `tinh_dien`.
+
+
+## Tài khoản cố định theo căn (migration 007–008)
+
+Đăng nhập `/api/xac_thuc/dang_nhap` nhận `ten_dang_nhap` (CH000001, không phân biệt hoa thường) hoặc trường `so_dien_thoai` cũ (chấp nhận cả CH... và SĐT). Tài khoản căn có vai_tro CU_DAN, ten_dang_nhap và ma_can_ho_thanh_toan; SĐT để null. Login SĐT cho tài khoản cá nhân giữ nguyên. Danh sách Nhân sự và chọn tài khoản cá nhân cư dân không trộn tài khoản căn. Không dùng PATCH nguoi_dung để mở lại tài khoản căn với mật khẩu cũ.
+
+Tất cả thao tác quản lý dưới đây chỉ BQL, yêu cầu X-App-Request: 1 khi ghi:
+
+| Endpoint | Thay đổi |
+|---|---|
+| POST /api/can_ho | Tạo căn và tài khoản trong cùng transaction. Trả data.tai_khoan_can_ho, có mat_khau_tam_thoi một lần |
+| GET /api/can_ho/:id | Thêm tai_khoan_can_ho và lich_su_ban_giao (50 sự kiện gần nhất); không mật khẩu/hash |
+| POST /api/cu_dan | CHU_HO tự gắn tài khoản căn, trả data.tai_khoan_can_ho với mật khẩu mới. Nếu có người phụ trách khác, cần xac_nhan_ban_giao: true |
+| POST /api/cu_dan/:id/nhap_cu hoặc chuyen_can | Tương tự khi quan_he CHU_HO; chuyển người phụ trách đi khóa tài khoản căn cũ trong cùng transaction |
+| GET /api/cu_dan/:id | Thêm tai_khoan_can_ho đang phụ trách (metadata), riêng với ma_nguoi_dung cá nhân |
+| POST /api/can_ho/:id/tai_khoan | Cấp lại hoặc bàn giao, trả data là metadata và mat_khau_tam_thoi một lần |
+
+Cấp lại: `{thao_tac: "cap_lai_mat_khau", phien_ban_ban_giao: 2}`. Bàn giao: `{thao_tac: "ban_giao", ma_cu_dan: 10, phien_ban_ban_giao: 2, xac_nhan_ban_giao: true}`. Người nhận phải là CHU_HO đang ở đúng căn. HANDOVER_REQUIRED 409 khi chưa xác nhận thay người phụ trách; STALE_VERSION 409 khi trạng thái đã đổi. Một lần reset/bàn giao tăng phiên bản bàn giao/token, đổi mật khẩu, xóa khóa đăng nhập sai và kích hoạt tài khoản; chuyển người phụ trách đi tăng phiên bản, tách cư dân, khóa tài khoản. Mọi log cùng transaction, lỗi ghi log rollback cả hồ sơ/cư trú/xe và mật khẩu.
+
+Tài khoản căn chỉ xem hóa đơn DA_GUI/DA_THANH_TOAN đúng ma_can_ho_thanh_toan; kiểm tra phiên bản token ngay trong truy vấn hóa đơn. Cho xem cả kỳ trước ngày nhập cư của người phụ trách mới; không tự thay thông tin tài chính hoặc xác nhận thanh toán. Tài khoản cá nhân vẫn theo phạm vi cư trú cũ. Người phụ trách cũ mất quyền dùng mật khẩu/phiên của tài khoản căn khi bàn giao, tài khoản cá nhân của họ không bị xóa.
+
+Chi tiết hóa đơn thêm `nguoi_phu_trach_thanh_toan` để hiển thị người phụ trách **hiện tại** từ tài khoản căn; không ghi đè snapshot tiền hoặc nghĩa vụ tài chính của kỳ cũ.

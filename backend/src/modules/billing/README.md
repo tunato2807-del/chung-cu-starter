@@ -5,3 +5,5 @@ billing.validation.js kiểm tra ngày/kỳ, số thập phân và tính tiền 
 Không tin tổng/đơn giá từ client; không sửa giá/chi tiết hóa đơn đã duyệt. Mỗi trạng thái và log cùng transaction, phien_ban chống ghi đè, cột sinh chống nhiều bản hiệu lực, mã tham chiếu chống ghi thu lại. Cư dân không xem nháp/hủy hoặc dữ liệu ngoài đợt hiện tại. Không tự gọi ngân hàng hoặc ghi thu sau khi quét QR.
 
 billing.electricity.js kiểm tra và tính điện bậc thang/thuế bằng BigInt; mỗi dòng lưu ngưỡng/giá/chỉ số, thuế chỉ trên tiền điện. Tương thích snapshot điện đơn giá cũ. Một biểu giá tại ngày chốt, chưa tách kỳ đổi giá/định mức nhiều hộ.
+
+Tài khoản căn cố định xem DA_GUI/DA_THANH_TOAN đúng căn qua mọi đợt; SQL kiểm tra lại active/token version. Tài khoản cá nhân vẫn theo đợt đang mở. Bàn giao không tự đánh dấu hóa đơn đã thu.

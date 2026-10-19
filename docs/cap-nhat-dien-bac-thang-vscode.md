@@ -1,5 +1,7 @@
 # Cập nhật điện bậc thang trong VS Code
 
+> Sau khi có tài khoản căn hộ (007–008), dùng [hướng dẫn tài khoản căn mới nhất](cap-nhat-tai-khoan-can-ho-vscode.md) cho các file trùng tên; không chép bản cũ đè lên thay đổi mới.
+
 > Nếu đã cập nhật giao diện chọn ngân hàng/QR, dùng [bản giao diện mới](cap-nhat-giao-dien-thanh-toan-vscode.md) cho file Billing.jsx; không chép lại giao diện cũ bên dưới đè lên bản mới.
 
 Bản cập nhật tiếp theo sau phí và hóa đơn (commit `c61a3c4`, migration 005). Không cần tải ZIP: tạo/thay đầy đủ **5 file** bên dưới. Nếu chưa có module hóa đơn, làm [bản hóa đơn ban đầu](cap-nhat-hoa-don-vscode.md) trước, rồi áp dụng bản này. Không cần cài thêm dependency.

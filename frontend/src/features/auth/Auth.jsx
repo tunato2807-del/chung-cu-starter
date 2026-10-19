@@ -73,9 +73,9 @@ export function Login() {
         }}
       >
         <Field
-          label="Số điện thoại"
+          label="Số điện thoại hoặc tài khoản căn hộ"
           name="so_dien_thoai"
-          type="tel"
+          type="text"
           required
           autoComplete="username"
         />
@@ -120,7 +120,7 @@ export function Account() {
       <p>
         {user.ho_va_ten} · {roleNames[user.vai_tro]}
       </p>
-      <p>{user.so_dien_thoai}</p>
+      <p>{user.ten_dang_nhap || user.so_dien_thoai}</p>
       <h2>Đổi mật khẩu</h2>
       <form
         onSubmit={async (e) => {

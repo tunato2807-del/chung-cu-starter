@@ -38,7 +38,7 @@ API căn hộ/cư dân áp dụng xác thực và vai trò BQL cho cả đọc v
 
 ## Phương tiện theo đợt cư trú
 
-Migration 004 thêm phuong_tien; migration hóa đơn bổ sung khóa kỳ; readiness yêu cầu đủ migration 001–006. Một bản ghi là một lần đăng ký với mã riêng, chủ xe, căn chịu phí và khóa ngoại đợt cư trú. Giữ hãng/màu, ngày đăng ký/kết thúc, người tạo/kết thúc, lý do và phien_ban. Căn và đợt của bản cũ không được ghi đè; không có API xóa hoặc sửa lịch sử.
+Migration 004 thêm phuong_tien; migration hóa đơn bổ sung khóa kỳ; readiness yêu cầu đủ migration 001–008. Một bản ghi là một lần đăng ký với mã riêng, chủ xe, căn chịu phí và khóa ngoại đợt cư trú. Giữ hãng/màu, ngày đăng ký/kết thúc, người tạo/kết thúc, lý do và phien_ban. Căn và đợt của bản cũ không được ghi đè; không có API xóa hoặc sửa lịch sử.
 
 Biển số chuẩn hóa ASCII viết hoa, bỏ khoảng trắng/chấm/gạch nối. Ô tô/xe máy bắt buộc biển, xe đạp cho NULL. Cột sinh bien_so_dang_hoat_dong với UNIQUE chặn hai đăng ký đang gửi cùng biển, cho phép nhiều xe đạp không biển. Đăng ký mới cũng kiểm tra khoảng ngày với lịch sử cùng biển để tránh chồng thời gian gửi khi nhập lùi ngày.
 
@@ -69,3 +69,12 @@ VietQR tạo payload NAPAS QRIBFTTA và CRC16 trong backend, dựng ảnh QR c�
 ## Phạm vi tiếp theo
 
 Chưa triển khai module thông báo, lập hóa đơn hàng loạt và các nghiệp vụ thanh toán mở rộng. Những bảng nghiệp vụ tiếp theo phải được bổ sung bằng migration mới, giữ lịch sử và áp dụng quyền theo đợt cư trú theo bản rà soát. Không dùng SQL cũ trong tài liệu thiết kế làm migration cho database đang chạy.
+
+
+## Tài khoản căn và người phụ trách
+
+Tách tài khoản cá nhân (`cu_dan.ma_nguoi_dung`) với tài khoản thanh toán cố định (`nguoi_dung.ma_can_ho_thanh_toan`, duy nhất/căn). Người phụ trách là `ma_cu_dan_phu_trach`, chỉ một cư dân hiện tại cho mỗi tài khoản, không đổi vai trò cư trú hoặc xóa hồ sơ người cũ. Username CH + ID căn, mật khẩu random 18 byte/base64url, bcrypt12. Chỉ trả plaintext một lần trong response ghi cho BQL; GET/auth/log không trả hash/mật khẩu. Backfill căn cũ tạo tài khoản khóa, không có mật khẩu dùng được; BQL cấp mật khẩu trước khi bàn giao.
+
+apartment-accounts.service.js tạo/cấp lại/gắn/tách với audit trong transaction. Luồng ghi cư trú khóa cư dân rồi các căn theo ID rồi tài khoản/xe; endpoint bàn giao khóa cư dân đích trước căn/tài khoản. Reset không đổi khóa ngoại người phụ trách khi giá trị không đổi. Log giữ ID cư dân như snapshot, không lấy FK lock cư dân cũ gây đảo thứ tự. phien_ban_ban_giao chống hai lần cấp mật khẩu từ trạng thái cũ. Bàn giao/khóa tăng phien_ban_token; quyền hóa đơn của tài khoản căn kiểm tra lại active/version ở SQL, không lấy phạm vi từ client.
+
+Tài khoản căn xem sổ hóa đơn đã gửi/đã thu của căn qua các đợt cư trú. Đây là quyền xem để quản lý thanh toán chung của căn, không tự chuyển nghĩa vụ pháp lý hóa đơn cũ. Tài khoản cá nhân vẫn theo quy tắc đợt đang mở; không đổi mapping cũ. BQL vẫn xác nhận thu sau đối soát, không có xác nhận từ việc đăng nhập/chuyển chủ hộ/quét QR.

@@ -1,5 +1,7 @@
 # Cập nhật căn hộ và cư dân trong VS Code
 
+> Sau khi có tài khoản căn hộ (007–008), dùng [hướng dẫn tài khoản căn mới nhất](cap-nhat-tai-khoan-can-ho-vscode.md) cho các file trùng tên; không chép bản cũ đè lên thay đổi mới.
+
 Khi đã có module phí/hóa đơn, dùng [hướng dẫn hóa đơn mới nhất](cap-nhat-hoa-don-vscode.md) chứa cả service cư trú/phương tiện có khóa dữ liệu đã tính phí. Các khối code bên dưới là bản trước module hóa đơn.
 
 Bản hướng dẫn này là phiên bản căn hộ/cư trú trước module phương tiện. Khi đã triển khai phương tiện, dùng [hướng dẫn phương tiện](cap-nhat-phuong-tien-vscode.md) chứa đầy đủ các file cư trú được bổ sung xử lý xe.

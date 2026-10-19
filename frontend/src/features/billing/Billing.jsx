@@ -971,6 +971,12 @@ export function BillDetail() {
             {bill.qua_han && " · Quá hạn"} · Hạn trả:{" "}
             {bill.han_thanh_toan || "Chưa gửi"}
           </p>
+          <p className="muted">
+            Người phụ trách thanh toán hiện tại:{" "}
+            <strong>
+              {bill.nguoi_phu_trach_thanh_toan || "Chưa gắn chủ hộ"}
+            </strong>
+          </p>
           {admin && bill.loi_du_lieu.length > 0 && (
             <div className="error" role="alert">
               <strong>Cần bổ sung trước khi duyệt:</strong>

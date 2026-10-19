@@ -29,11 +29,13 @@ export const roleNames = {
   CU_DAN: "Cư dân",
 };
 export const homeFor = (u) =>
-  u?.vai_tro === "QUAN_TRI_VIEN"
-    ? "/quan-tri"
-    : u?.vai_tro === "KY_THUAT_VIEN"
-      ? "/ky-thuat/cong-viec"
-      : "/cu-dan/phan-anh";
+  u?.ma_can_ho_thanh_toan
+    ? "/cu-dan/hoa-don"
+    : u?.vai_tro === "QUAN_TRI_VIEN"
+      ? "/quan-tri"
+      : u?.vai_tro === "KY_THUAT_VIEN"
+        ? "/ky-thuat/cong-viec"
+        : "/cu-dan/phan-anh";
 export const date = (value) =>
   value
     ? new Date(

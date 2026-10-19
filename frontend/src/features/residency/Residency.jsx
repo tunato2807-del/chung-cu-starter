@@ -55,13 +55,17 @@ function Pager({ resource }) {
 }
 function useChange(reload) {
   const [pending, setPending] = useState(false),
-    [error, setError] = useState();
+    [error, setError] = useState(),
+    [credentials, setCredentials] = useState(null);
   async function change(path, method, body, done) {
     setPending(true);
     setError(null);
+    setCredentials(null);
     try {
-      await getJson(path, { method, body });
-      done?.();
+      const result = await getJson(path, { method, body });
+      const fresh = result.data?.tai_khoan_can_ho || result.data;
+      if (fresh?.mat_khau_tam_thoi) setCredentials(fresh);
+      done?.(result.data);
       reload();
     } catch (err) {
       setError(err);
@@ -69,7 +73,166 @@ function useChange(reload) {
       setPending(false);
     }
   }
-  return { pending, error, change };
+  return {
+    pending,
+    error,
+    change,
+    credentials,
+    clearCredentials: () => setCredentials(null),
+  };
+}
+function Credentials({ action }) {
+  const account = action.credentials;
+  return (
+    account && (
+      <section className="card" aria-label="Thông tin bàn giao tài khoản">
+        <h2>Thông tin đăng nhập tài khoản căn hộ</h2>
+        <p>
+          Tên đăng nhập: <strong>{account.ten_dang_nhap}</strong>
+        </p>
+        <p>
+          Mật khẩu mới:{" "}
+          <code style={{ overflowWrap: "anywhere" }}>
+            {account.mat_khau_tam_thoi}
+          </code>
+        </p>
+        <p>
+          {account.nguoi_phu_trach
+            ? `Bàn giao cho: ${account.nguoi_phu_trach}.`
+            : "Chưa gắn cư dân phụ trách."}{" "}
+          Mật khẩu chỉ hiển thị lần này. Chủ hộ nên đổi mật khẩu tại mục Tài
+          khoản sau khi nhận.
+        </p>
+        <button onClick={action.clearCredentials}>
+          Đã lưu thông tin, ẩn mật khẩu
+        </button>
+      </section>
+    )
+  );
+}
+function ApartmentAccount({ id }) {
+  const resource = useResource(`/can_ho/${id}`);
+  const action = useChange(resource.reload),
+    apartment = resource.result?.data,
+    account = apartment?.tai_khoan_can_ho;
+  const owners = (apartment?.residents || []).filter(
+    (r) => r.quan_he === "CHU_HO",
+  );
+  return (
+    <section className="card">
+      <h2>Tài khoản thanh toán căn hộ</h2>
+      <Credentials action={action} />
+      {resource.loading && <Loading />}
+      <ErrorBox error={action.error || resource.error} />
+      {account ? (
+        <>
+          <p>
+            Tên đăng nhập: <strong>{account.ten_dang_nhap}</strong> ·{" "}
+            {account.dang_hoat_dong ? "Đang hoạt động" : "Đang khóa"}
+          </p>
+          <p>
+            Người phụ trách:{" "}
+            {account.ma_cu_dan_phu_trach ? (
+              <Link to={`/quan-tri/cu-dan/${account.ma_cu_dan_phu_trach}`}>
+                {account.nguoi_phu_trach}
+              </Link>
+            ) : (
+              "Chưa gắn cư dân"
+            )}
+          </p>
+          <p className="note">
+            Tài khoản đi theo căn hộ và xem các hóa đơn đã gửi của căn. Bàn giao
+            hoặc cấp lại mật khẩu sẽ ngắt mọi phiên cũ. Khi người phụ trách
+            chuyển đi, tài khoản tạm khóa đến khi BQL bàn giao/cấp lại.
+          </p>
+          <button
+            disabled={action.pending}
+            onClick={() =>
+              action.change(
+                `/can_ho/${apartment.ma_can_ho}/tai_khoan`,
+                "POST",
+                {
+                  thao_tac: "cap_lai_mat_khau",
+                  phien_ban_ban_giao: account.phien_ban_ban_giao,
+                },
+              )
+            }
+          >
+            Cấp lại mật khẩu và ngắt phiên cũ
+          </button>
+          {owners.some((r) => r.ma_cu_dan !== account.ma_cu_dan_phu_trach) && (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const body = values(e);
+                body.thao_tac = "ban_giao";
+                body.phien_ban_ban_giao = account.phien_ban_ban_giao;
+                body.xac_nhan_ban_giao = body.xac_nhan_ban_giao === "1";
+                action.change(
+                  `/can_ho/${apartment.ma_can_ho}/tai_khoan`,
+                  "POST",
+                  body,
+                );
+              }}
+            >
+              <fieldset disabled={action.pending}>
+                <h3>Bàn giao người phụ trách</h3>
+                <Field label="Chủ hộ nhận tài khoản">
+                  <select name="ma_cu_dan" required defaultValue="">
+                    <option value="">Chọn chủ hộ đang ở</option>
+                    {owners
+                      .filter(
+                        (r) => r.ma_cu_dan !== account.ma_cu_dan_phu_trach,
+                      )
+                      .map((r) => (
+                        <option key={r.ma_cu_dan} value={r.ma_cu_dan}>
+                          {r.ho_va_ten} · {r.so_dien_thoai}
+                        </option>
+                      ))}
+                  </select>
+                </Field>
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    name="xac_nhan_ban_giao"
+                    value="1"
+                    required={!!account.ma_cu_dan_phu_trach}
+                  />
+                  Xác nhận bàn giao và đổi mật khẩu tài khoản căn hộ
+                </label>
+                <button className="primary">Bàn giao tài khoản</button>
+              </fieldset>
+            </form>
+          )}
+        </>
+      ) : (
+        <p>
+          Tài khoản chưa được khởi tạo. Hãy chạy migration mới nhất và tải lại.
+        </p>
+      )}
+      {apartment?.lich_su_ban_giao?.length > 0 && (
+        <details>
+          <summary>Lịch sử bàn giao tài khoản</summary>
+          <ul>
+            {apartment.lich_su_ban_giao.map((row) => (
+              <li key={row.ma_ban_giao}>
+                {row.ngay_thuc_hien} ·{" "}
+                {
+                  {
+                    TAO_TAI_KHOAN: "Tạo tài khoản",
+                    BAN_GIAO_CHU_HO: "Bàn giao chủ hộ",
+                    CAP_LAI_MAT_KHAU: "Cấp lại mật khẩu",
+                    NGUNG_PHU_TRACH: "Ngừng phụ trách",
+                  }[row.su_kien]
+                }{" "}
+                · {row.nguoi_thuc_hien}
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+    </section>
+  );
 }
 
 export function Apartments() {
@@ -109,6 +272,7 @@ export function Apartments() {
         <button>Tìm kiếm</button>
       </form>
       <ErrorBox error={resource.error || action.error} />
+      <Credentials action={action} />
       <div className="detail-grid">
         <section className="card">
           <h2>Danh sách căn hộ</h2>
@@ -135,7 +299,12 @@ export function Apartments() {
                     <td>{a.so_cu_dan ? `${a.so_cu_dan} đang ở` : "Trống"}</td>
                     <td>
                       <div className="actions">
-                        <button onClick={() => setSelected(a.ma_can_ho)}>
+                        <button
+                          onClick={() => {
+                            action.clearCredentials();
+                            setSelected(a.ma_can_ho);
+                          }}
+                        >
                           Xem
                         </button>
                         <button
@@ -244,6 +413,7 @@ function ApartmentResidents({ id: selected }) {
     <section className="card">
       {detail.loading && <Loading />}
       <ErrorBox error={detail.error} />
+      <ApartmentAccount id={selected} key={selected} />
       {detail.result && (
         <>
           <h2>Cư dân căn {detail.result.data.so_can_ho}</h2>
@@ -345,7 +515,7 @@ function ProfileFields({ resident }) {
         defaultValue={resident?.so_dien_thoai || ""}
       />
       <ErrorBox error={users.error} />
-      <Field label="Tìm tài khoản theo tên hoặc số điện thoại">
+      <Field label="Tìm tài khoản cá nhân theo tên hoặc số điện thoại">
         <input
           value={q}
           maxLength={100}
@@ -353,7 +523,7 @@ function ProfileFields({ resident }) {
         />
       </Field>
       <input type="hidden" name="ma_nguoi_dung" value={accountId} />
-      <Field label="Tài khoản cư dân (tùy chọn)">
+      <Field label="Tài khoản cá nhân (tùy chọn)">
         <select
           disabled={users.loading || !!users.error}
           value={accountId}
@@ -378,7 +548,9 @@ function ProfileFields({ resident }) {
         </small>
       )}
       <small>
-        Cấp tài khoản tại mục Nhân sự & tài khoản, sau đó chọn ở đây.
+        Đây là tài khoản cá nhân tùy chọn. Khi chọn vai trò Chủ hộ, hệ thống tự
+        gắn thêm tài khoản thanh toán cố định của căn, không cần tạo thủ công
+        tại mục Nhân sự.
       </small>
     </>
   );
@@ -389,14 +561,32 @@ function StayFields({
   initialLabel,
   minDay = "1900-01-01",
 }) {
+  const [relation, setRelation] = useState(current?.quan_he || "THANH_VIEN");
   return (
     <>
       <ApartmentPicker initialId={initialId} initialLabel={initialLabel} />
       <Field label="Quan hệ với căn hộ">
-        <select name="quan_he" defaultValue={current?.quan_he || "THANH_VIEN"}>
+        <select
+          name="quan_he"
+          value={relation}
+          onChange={(e) => setRelation(e.target.value)}
+        >
           <Options values={relations} />
         </select>
       </Field>
+      {relation === "CHU_HO" && (
+        <>
+          <p className="note">
+            Tự gắn tài khoản thanh toán của căn cho chủ hộ này và cấp mật khẩu
+            mới để bàn giao.
+          </p>
+          <label className="checkbox">
+            <input type="checkbox" name="xac_nhan_ban_giao" value="1" />
+            Bàn giao tài khoản nếu căn đang có người phụ trách (ngắt mọi phiên
+            cũ)
+          </label>
+        </>
+      )}
       <Field
         label="Ngày bắt đầu / chuyển căn"
         name="ngay"
@@ -441,15 +631,16 @@ export function Residents() {
         </p>
       )}
       <ErrorBox error={action.error} />
+      <Credentials action={action} />
       {adding && (
         <section className="card narrow">
           <h2>Hồ sơ và đợt cư trú đầu tiên</h2>
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              action.change("/cu_dan", "POST", values(e), () =>
-                setAdding(false),
-              );
+              const body = values(e);
+              body.xac_nhan_ban_giao = body.xac_nhan_ban_giao === "1";
+              action.change("/cu_dan", "POST", body, () => setAdding(false));
             }}
           >
             <fieldset disabled={action.pending}>
@@ -547,6 +738,7 @@ export function ResidentDetail() {
       <Link to="/quan-tri/cu-dan">← Danh sách cư dân</Link>
       {resource.loading && <Loading />}
       <ErrorBox error={resource.error || action.error} />
+      <Credentials action={action} />
       {resident && (
         <>
           <h1>{resident.ho_va_ten}</h1>
@@ -554,6 +746,15 @@ export function ResidentDetail() {
             {resident.so_dien_thoai} ·{" "}
             {current ? `Đang ở căn ${current.so_can_ho}` : "Đã chuyển đi"}
           </p>
+          {resident.tai_khoan_can_ho && (
+            <p>
+              Đang phụ trách tài khoản thanh toán{" "}
+              <strong>{resident.tai_khoan_can_ho.ten_dang_nhap}</strong> ·{" "}
+              {resident.tai_khoan_can_ho.dang_hoat_dong
+                ? "Hoạt động"
+                : "Đang khóa"}
+            </p>
+          )}
           {current && (
             <p>
               Đợt cư trú hiện tại bắt đầu ngày {displayDay(current.tu_ngay)}.
@@ -610,6 +811,7 @@ export function ResidentDetail() {
                 onSubmit={(e) => {
                   e.preventDefault();
                   const body = { ...values(e), phien_ban: resident.phien_ban };
+                  body.xac_nhan_ban_giao = body.xac_nhan_ban_giao === "1";
                   if (mode === "chuyen_can")
                     body.chuyen_phuong_tien = body.chuyen_phuong_tien === "1";
                   action.change(

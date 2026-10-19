@@ -3,6 +3,8 @@ import { integer } from "../../lib/http.js";
 import { optionalAuth, requireAuth, roles } from "../auth/auth.middleware.js";
 import * as service from "./residency.service.js";
 
+import { manageApartmentAccount } from "./apartment-accounts.service.js";
+
 export const apartmentsRouter = Router(),
   residentsRouter = Router();
 for (const router of [apartmentsRouter, residentsRouter])
@@ -17,11 +19,17 @@ apartmentsRouter.get("/:id", async (req, res) =>
   }),
 );
 apartmentsRouter.post("/", async (req, res) =>
-  res.status(201).json({ data: await service.saveApartment(null, req.body) }),
+  res
+    .status(201)
+    .json({ data: await service.saveApartment(null, req.body, req.user) }),
 );
 apartmentsRouter.patch("/:id", async (req, res) =>
   res.json({
-    data: await service.saveApartment(integer(req.params.id, "id"), req.body),
+    data: await service.saveApartment(
+      integer(req.params.id, "id"),
+      req.body,
+      req.user,
+    ),
   }),
 );
 
@@ -61,3 +69,13 @@ for (const action of ["chuyen_can", "chuyen_di", "nhap_cu"])
       ),
     }),
   );
+
+apartmentsRouter.post("/:id/tai_khoan", async (req, res) =>
+  res.json({
+    data: await manageApartmentAccount(
+      integer(req.params.id, "id"),
+      req.body,
+      req.user,
+    ),
+  }),
+);

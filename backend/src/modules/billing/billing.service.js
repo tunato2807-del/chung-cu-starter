@@ -602,10 +602,17 @@ function access(user, where, values) {
   if (user.vai_tro === "QUAN_TRI_VIEN") return;
   if (user.vai_tro !== "CU_DAN")
     fail(403, "FORBIDDEN", "Bạn không có quyền xem hóa đơn.");
-  where.push(
-    "h.trang_thai IN ('DA_GUI','DA_THANH_TOAN') AND EXISTS (SELECT 1 FROM cu_dan c JOIN lich_su_cu_tru l ON l.ma_cu_dan=c.ma_cu_dan WHERE c.ma_nguoi_dung=? AND l.ma_can_ho=h.ma_can_ho AND l.den_ngay IS NULL AND l.tu_ngay<=h.ngay_chot_phi)",
-  );
-  values.push(user.ma_nguoi_dung);
+  if (user.ma_can_ho_thanh_toan !== null) {
+    where.push(
+      "h.trang_thai IN ('DA_GUI','DA_THANH_TOAN') AND EXISTS (SELECT 1 FROM nguoi_dung u WHERE u.ma_nguoi_dung=? AND u.ma_can_ho_thanh_toan=h.ma_can_ho AND u.dang_hoat_dong=1 AND u.phien_ban_token=?)",
+    );
+    values.push(user.ma_nguoi_dung, user.phien_ban_token);
+  } else {
+    where.push(
+      "h.trang_thai IN ('DA_GUI','DA_THANH_TOAN') AND EXISTS (SELECT 1 FROM cu_dan c JOIN lich_su_cu_tru l ON l.ma_cu_dan=c.ma_cu_dan WHERE c.ma_nguoi_dung=? AND l.ma_can_ho=h.ma_can_ho AND l.den_ngay IS NULL AND l.tu_ngay<=h.ngay_chot_phi)",
+    );
+    values.push(user.ma_nguoi_dung);
+  }
 }
 function summary(bill) {
   return {
@@ -662,7 +669,7 @@ export async function detail(id, user) {
   access(user, where, values);
   const [row] = await rows(
     pool,
-    `SELECT h.*,a.so_can_ho FROM hoa_don h JOIN can_ho a ON a.ma_can_ho=h.ma_can_ho WHERE ${where.join(" AND ")}`,
+    `SELECT h.*,a.so_can_ho,c.ho_va_ten AS nguoi_phu_trach_thanh_toan FROM hoa_don h JOIN can_ho a ON a.ma_can_ho=h.ma_can_ho LEFT JOIN nguoi_dung tk ON tk.ma_can_ho_thanh_toan=h.ma_can_ho LEFT JOIN cu_dan c ON c.ma_cu_dan=tk.ma_cu_dan_phu_trach WHERE ${where.join(" AND ")}`,
     values,
   );
   if (!row)
@@ -692,6 +699,7 @@ export async function detail(id, user) {
     "ma_hoa_don",
     "so_hoa_don",
     "so_can_ho",
+    "nguoi_phu_trach_thanh_toan",
     "ky_thanh_toan",
     "ngay_chot_phi",
     "trang_thai",

@@ -88,13 +88,13 @@ for (const width of [1440, 375])
       await page.getByLabel("Họ tên", { exact: true }).fill(residentName);
       await page.getByLabel("Số điện thoại", { exact: true }).fill(phones[1]);
       await page
-        .getByLabel("Tìm tài khoản theo tên hoặc số điện thoại")
+        .getByLabel("Tìm tài khoản cá nhân theo tên hoặc số điện thoại")
         .fill(phones[1]);
       await expect(
         page.getByRole("option", { name: new RegExp(phones[1]) }),
       ).toBeAttached();
       await page
-        .getByLabel("Tài khoản cư dân (tùy chọn)")
+        .getByLabel("Tài khoản cá nhân (tùy chọn)")
         .selectOption(String(accounts[1]));
       await page.getByLabel("Quan hệ với căn hộ").selectOption("NGUOI_THUE");
       await page.getByLabel("Ngày bắt đầu / chuyển căn").fill(day);

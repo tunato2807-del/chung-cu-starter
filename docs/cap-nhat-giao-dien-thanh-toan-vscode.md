@@ -1,5 +1,7 @@
 # Cập nhật số lượng, chọn ngân hàng và giao diện thanh toán
 
+> Sau khi có tài khoản căn hộ (007–008), dùng [hướng dẫn tài khoản căn mới nhất](cap-nhat-tai-khoan-can-ho-vscode.md) cho các file trùng tên; không chép bản cũ đè lên thay đổi mới.
+
 Áp dụng sau bản điện bậc thang (commit `e4237c4`, migration 006). Tạo/thay đủ **3 file frontend** dưới đây trong VS Code. Không cần tải ZIP, cài thư viện hoặc chạy migration mới. Các file backend và dữ liệu hóa đơn giữ nguyên.
 
 ## Thay đổi

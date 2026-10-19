@@ -24,7 +24,14 @@ export function password(value, field = "mat_khau") {
   return value;
 }
 export async function login(body) {
-  const number = phone(body.so_dien_thoai);
+  const identifier = text(
+    body.ten_dang_nhap ?? body.so_dien_thoai,
+    "ten_dang_nhap",
+    1,
+    30,
+  ).trim();
+  const apartmentLogin = /^CH\d{6,10}$/i.test(identifier);
+  const number = apartmentLogin ? identifier.toUpperCase() : phone(identifier);
   if (
     typeof body.mat_khau !== "string" ||
     Buffer.byteLength(body.mat_khau) > 72
@@ -37,7 +44,7 @@ export async function login(body) {
   const user = await transaction(async (db) => {
     const [u] = await rows(
       db,
-      "SELECT * FROM nguoi_dung WHERE so_dien_thoai=? FOR UPDATE",
+      `SELECT * FROM nguoi_dung WHERE ${apartmentLogin ? "ten_dang_nhap" : "so_dien_thoai"}=? FOR UPDATE`,
       [number],
     );
     const valid = await bcrypt.compare(
@@ -152,6 +159,12 @@ export async function setUserActive(actor, id, active) {
       [id],
     );
     if (!user) fail(404, "NOT_FOUND", "Không tìm thấy tài khoản.");
+    if (user.ma_can_ho_thanh_toan !== null)
+      fail(
+        409,
+        "APARTMENT_ACCOUNT",
+        "Quản lý tài khoản thanh toán trong mục Căn hộ để cấp mật khẩu mới khi mở lại.",
+      );
     if (user.vai_tro === "QUAN_TRI_VIEN")
       fail(403, "FORBIDDEN", "Không khóa tài khoản quản trị trong luồng này.");
     await rows(
