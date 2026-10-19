@@ -221,3 +221,83 @@ for (const width of [1440, 375])
         await rows(pool, "DELETE FROM nguoi_dung WHERE ma_nguoi_dung=?", [id]);
     }
   });
+
+// The day-based schema requires end > start; explain the unavailable interval before submitting.
+for (const width of [1440, 375])
+  test(`same-day transfer explains limits and keeps profile editing available at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.clock.install({ time: new Date("2026-10-19T08:00:00Z") });
+    await page.route("**/api/xac_thuc/toi", (route) =>
+      route.fulfill({
+        json: {
+          data: {
+            ma_nguoi_dung: 1,
+            ho_va_ten: "BQL thử ngày",
+            vai_tro: "QUAN_TRI_VIEN",
+          },
+        },
+      }),
+    );
+    await page.route("**/api/cu_dan/999", (route) =>
+      route.fulfill({
+        json: {
+          data: {
+            ma_cu_dan: 999,
+            ho_va_ten: "Cư dân cùng ngày",
+            so_dien_thoai: "0901234567",
+            ma_nguoi_dung: null,
+            phien_ban: 0,
+            history: [
+              {
+                ma_lich_su_cu_tru: 1,
+                ma_can_ho: 1,
+                so_can_ho: "101",
+                quan_he: "THANH_VIEN",
+                tu_ngay: "2026-10-19",
+                den_ngay: null,
+                nguoi_ghi_nhan: "BQL",
+              },
+            ],
+          },
+        },
+      }),
+    );
+    await page.route("**/api/can_ho?**", (route) =>
+      route.fulfill({ json: { data: [], total: 0, page: 1 } }),
+    );
+    await page.route("**/api/cu_dan/tai_khoan?**", (route) =>
+      route.fulfill({ json: { data: [], total: 0, page: 1 } }),
+    );
+    let writes = 0;
+    await page.route("**/api/cu_dan/999/*", (route) => {
+      writes++;
+      return route.fulfill({ status: 500, json: {} });
+    });
+    await page.goto("/quan-tri/cu-dan/999");
+    await expect(
+      page.getByText("Đợt cư trú hiện tại bắt đầu ngày 19/10/2026.", {
+        exact: true,
+      }),
+    ).toBeVisible();
+    for (const label of ["Chuyển căn", "Ghi nhận chuyển đi"]) {
+      await page.getByRole("button", { name: label, exact: true }).click();
+      await expect(
+        page.getByRole("status").filter({ hasText: "Chưa thể ghi nhận" }),
+      ).toContainText("ngày sớm nhất là 20/10/2026");
+      await expect(
+        page.getByRole("button", { name: "Xác nhận lưu", exact: true }),
+      ).toBeDisabled();
+      const date = page.locator('input[name="ngay"]');
+      await expect(date).toHaveAttribute("min", "2026-10-20");
+      await expect(date).toHaveAttribute("max", "2026-10-19");
+      await expect(date).toBeDisabled();
+    }
+    expect(writes).toBe(0);
+    await page.getByRole("button", { name: "Sửa hồ sơ", exact: true }).click();
+    await expect(
+      page.getByRole("button", { name: "Xác nhận lưu", exact: true }),
+    ).toBeEnabled();
+    await expect(page.getByLabel("Họ tên", { exact: true })).toBeEditable();
+  });

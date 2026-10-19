@@ -22,6 +22,12 @@ const today = () =>
     day: "2-digit",
   }).format(new Date());
 const values = (event) => Object.fromEntries(new FormData(event.currentTarget));
+function nextDay(day) {
+  const date = new Date(`${day}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + 1);
+  return date.toISOString().slice(0, 10);
+}
+const displayDay = (day) => day.split("-").reverse().join("/");
 
 function Pager({ resource }) {
   const [params, setParams] = useSearchParams();
@@ -382,7 +388,12 @@ function ProfileFields({ resident }) {
     </>
   );
 }
-function StayFields({ current, initialId, initialLabel }) {
+function StayFields({
+  current,
+  initialId,
+  initialLabel,
+  minDay = "1900-01-01",
+}) {
   return (
     <>
       <ApartmentPicker initialId={initialId} initialLabel={initialLabel} />
@@ -396,10 +407,15 @@ function StayFields({ current, initialId, initialLabel }) {
         name="ngay"
         type="date"
         required
-        min="1900-01-01"
+        min={minDay}
         max={today()}
         defaultValue={today()}
       />
+      {!current && (
+        <small>
+          Nhập ngày thực tế bắt đầu ở căn hộ, có thể trước ngày lập hồ sơ.
+        </small>
+      )}
     </>
   );
 }
@@ -527,6 +543,10 @@ export function ResidentDetail() {
   const action = useChange(resource.reload);
   const resident = resource.result?.data,
     current = resident?.history.find((s) => !s.den_ngay);
+  const minDay = current
+    ? nextDay(current.tu_ngay)
+    : resident?.history[0]?.den_ngay || "1900-01-01";
+  const dateBlocked = mode !== "profile" && minDay > today();
   return (
     <>
       <Link to="/quan-tri/cu-dan">← Danh sách cư dân</Link>
@@ -539,6 +559,11 @@ export function ResidentDetail() {
             {resident.so_dien_thoai} ·{" "}
             {current ? `Đang ở căn ${current.so_can_ho}` : "Đã chuyển đi"}
           </p>
+          {current && (
+            <p>
+              Đợt cư trú hiện tại bắt đầu ngày {displayDay(current.tu_ngay)}.
+            </p>
+          )}
           <div className="actions">
             {[
               ["profile", "Sửa hồ sơ"],
@@ -570,6 +595,13 @@ export function ResidentDetail() {
                   }[mode]
                 }
               </h2>
+              {mode !== "profile" && (
+                <p className="note" role="status">
+                  {dateBlocked
+                    ? `Chưa thể ghi nhận chuyển căn hoặc chuyển đi: ngày sớm nhất là ${displayDay(minDay)}, sau ngày hiện tại ${displayDay(today())}. Hệ thống lưu cư trú theo ngày, nên ngày chuyển phải sau ngày bắt đầu đợt hiện tại.`
+                    : `Có thể chọn ngày từ ${displayDay(minDay)} đến ${displayDay(today())}.`}
+                </p>
+              )}
               <form
                 key={`${mode}:${resident.phien_ban}`}
                 onSubmit={(e) => {
@@ -583,7 +615,7 @@ export function ResidentDetail() {
                   );
                 }}
               >
-                <fieldset disabled={action.pending}>
+                <fieldset disabled={action.pending || dateBlocked}>
                   {mode === "profile" ? (
                     <ProfileFields resident={resident} />
                   ) : mode === "chuyen_di" ? (
@@ -594,13 +626,13 @@ export function ResidentDetail() {
                         name="ngay"
                         type="date"
                         required
-                        min={current?.tu_ngay}
+                        min={minDay}
                         max={today()}
                         defaultValue={today()}
                       />
                     </>
                   ) : (
-                    <StayFields current={current} />
+                    <StayFields current={current} minDay={minDay} />
                   )}
                   <button className="primary">
                     {action.pending ? "Đang lưu…" : "Xác nhận lưu"}
