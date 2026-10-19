@@ -1,5 +1,7 @@
 # Danh sách tài khoản căn hộ và đăng nhập bằng SĐT chủ hộ
 
+> Bản tiếp theo: [Thông báo và nhắc phí — code 9 file](cap-nhat-thong-bao-nhac-phi-vscode.md). Nếu đã cập nhật bản đó, không chép các file App.jsx cũ bên dưới đè lại.
+
 Bản cập nhật sau commit `714ffc2`, đã có tài khoản căn hộ và migration 007–008. Không cần tải ZIP: chép đủ **9 file** bên dưới vào VS Code. Không có dependency hoặc migration mới.
 
 ## Kết quả

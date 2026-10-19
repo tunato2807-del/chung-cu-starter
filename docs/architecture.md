@@ -68,7 +68,7 @@ VietQR tạo payload NAPAS QRIBFTTA và CRC16 trong backend, dựng ảnh QR c�
 
 ## Phạm vi tiếp theo
 
-Chưa triển khai module thông báo, lập hóa đơn hàng loạt và các nghiệp vụ thanh toán mở rộng. Những bảng nghiệp vụ tiếp theo phải được bổ sung bằng migration mới, giữ lịch sử và áp dụng quyền theo đợt cư trú theo bản rà soát. Không dùng SQL cũ trong tài liệu thiết kế làm migration cho database đang chạy.
+Chưa triển khai lập hóa đơn hàng loạt và các nghiệp vụ thanh toán mở rộng. Những bảng nghiệp vụ tiếp theo phải được bổ sung bằng migration mới, giữ lịch sử và áp dụng quyền theo đợt cư trú theo bản rà soát. Không dùng SQL cũ trong tài liệu thiết kế làm migration cho database đang chạy.
 
 
 ## Tài khoản căn và người phụ trách
@@ -85,3 +85,11 @@ Tài khoản căn xem sổ hóa đơn đã gửi/đã thu của căn qua các đ
 SĐT đăng nhập căn là alias đọc trực tiếp từ hồ sơ ma_cu_dan_phu_trach. Không đổi schema 007–008, không copy số vào cột SĐT duy nhất của tài khoản cá nhân. Danh sách /can_ho/tai_khoan là BQL-only, JOIN căn/người phụ trách, phân trang 20 và không chọn cột password/hash.
 
 Login lấy ID ứng viên bên ngoài transaction rồi khóa tài khoản theo thứ tự ID. Sau khóa mới đọc hồ sơ để xác nhận alias còn đúng, tránh dùng kết quả tìm kiếm trước một bàn giao đã commit. Đổi SĐT khóa cư dân → căn → tài khoản và tăng phiên bản token; phiên vừa phát trước thay đổi cũng hết hiệu lực. Mật khẩu hợp lệ duy nhất mới được chọn; nhiều tài khoản cùng khớp cần chọn loại/mã CH, không ưu tiên âm thầm tài khoản cá nhân hoặc căn. Kiểm tra tối đa 10 ứng viên và giữ rate limit. Danh tính không được trả trong phản hồi lỗi đăng nhập.
+
+## Thông báo và nhắc phí trên web
+
+Module announcements quản lý bản nháp → phát hành → thu hồi, lạc quan bằng phien_ban, khóa row và ghi audit cùng transaction. Nội dung văn bản thuần, không render HTML. BQL độc quyền ghi/xem nội bộ; KTV và khách không được vào hộp cư dân. GET không tạo receipt; frontend chi tiết gọi POST da_doc riêng và có thử lại khi lỗi.
+
+Hộp cư dân JOIN tài khoản active/tokenversion, căn cố định hoặc đợt cư trú đang mở, người phụ trách hiện tại và receipt trong cùng truy vấn. Thông báo chung được xét động theo căn/khối hiện tại, kể cả thông báo trước ngày nhập cư. Nhắc phí cần tài khoản căn hoặc tài khoản cá nhân của đúng người phụ trách; cá nhân còn cần tu_ngay <= ngày chốt như quyền hóa đơn. Không lấy căn từ tham số client. Receipt tài khoản căn tách theo ID người phụ trách để bàn giao không kế thừa trạng thái đã đọc của người cũ; cá nhân luôn tự giữ receipt riêng.
+
+Nhắc phí là thao tác BQL trên hóa đơn DA_GUI, kiểm tra phiên bản; khóa căn → hóa đơn → thông báo, UNIQUE hóa đơn/ngày Việt Nam, retry trả ID cũ mà không thêm audit. Thu hồi không xóa giới hạn cùng ngày. Không tăng phiên bản tài chính hoặc tính lại tiền. Hóa đơn thanh toán còn có thông báo đã xử lý, không tính chưa đọc; hủy thì mất quyền xem nhắc. Đánh dấu đọc khóa riêng tài khoản để cố định scope người nhận, không khóa cư dân/căn ngược chiều. Migration không phát hành thông báo và ứng dụng không chạy cron hay kết nối email/SMS/push.

@@ -73,7 +73,13 @@ function useAction(done) {
     setNotice("");
     try {
       const r = await getJson(path, { method, body });
-      setNotice("Đã lưu thay đổi.");
+      setNotice(
+        path.endsWith("/nhac_phi")
+          ? r.data.da_ton_tai
+            ? "Hóa đơn này đã được nhắc trên web hôm nay."
+            : "Đã gửi nhắc thanh toán vào hộp thông báo trên web."
+          : "Đã lưu thay đổi.",
+      );
       after?.(r.data);
       done?.();
     } catch (err) {
@@ -1103,7 +1109,16 @@ export function BillDetail() {
           )}
           {admin && bill.trang_thai === "DA_GUI" && (
             <section className="card narrow">
-              <h2>Xác nhận thu tiền</h2>
+              <h2>Nhắc phí và xác nhận thu tiền</h2>
+              <p className="muted">
+                Gửi vào hộp thông báo của tài khoản căn hộ và người phụ trách
+                thanh toán hiện tại. Mỗi hóa đơn được nhắc tối đa một lần trong
+                ngày.
+              </p>
+              <button disabled={action.pending} onClick={() => run("nhac_phi")}>
+                Nhắc thanh toán trên web
+              </button>
+              <h3>Xác nhận thu tiền</h3>
               <form
                 onSubmit={(e) => {
                   e.preventDefault();

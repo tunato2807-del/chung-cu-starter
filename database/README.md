@@ -10,7 +10,7 @@ Kiểm thử dùng `chung_cu_test`; các test xóa fixture của chính lượt 
 
 `migrations/002_residency.sql` thêm `can_ho`, `cu_dan`, `lich_su_cu_tru`. Liên kết tài khoản cư dân tùy chọn và duy nhất; căn hiện tại lấy từ lịch sử đang mở. Cột sinh duy nhất chặn hai đợt chưa kết thúc của một cư dân. Chuyển căn có khóa hồ sơ và transaction; không xóa lịch sử. Chạy `npm run db:migrate` để áp dụng các migration chưa chạy theo thứ tự tên; chạy lại không tạo dữ liệu trùng và phát hiện file đã áp dụng bị sửa/mất.
 
-Thông báo và nghiệp vụ thanh toán mở rộng chưa được migration trong phiên bản này.
+Nghiệp vụ thanh toán mở rộng được bổ sung bằng migration mới khi triển khai.
 
 `migrations/003_same_day_residency.sql` thay CHECK tự sinh từ migration 002 bằng ràng buộc có tên cho phép `den_ngay >= tu_ngay`. Giữ mọi bản ghi lịch sử, không sửa migration 002 đã chạy. Khoảng rỗng giữ dấu vết chuyển trong ngày; UNIQUE đợt đang mở và khóa giao dịch vẫn có hiệu lực.
 
@@ -23,3 +23,5 @@ Thông báo và nghiệp vụ thanh toán mở rộng chưa được migration t
 `007_apartment_accounts.sql` cho phép SĐT null ở tài khoản căn, thêm tên đăng nhập duy nhất, FK/unique căn và người phụ trách, phiên bản bàn giao và lịch sử bàn giao. Bổ sung tài khoản khóa cho căn đã có, liên kết người phụ trách chỉ khi có duy nhất một CHU_HO đang ở. Hash có tiền tố ! ở tài khoản backfill là giá trị không đăng nhập được; chỉ khi BQL cấp mật khẩu mới mới kích hoạt. Không đổi tài khoản/điện thoại cá nhân hoặc hóa đơn đã lưu.
 
 `008_handover_audit_locks.sql` giữ mã cư dân cũ/mới trong log như ảnh chụp lịch sử, bỏ FK từ hai mã này để ghi log không lấy khóa cư dân ngược thứ tự khi bàn giao/chuyển đi. FK căn và người thực hiện vẫn giữ. Service kiểm tra cư dân mới đang là CHU_HO trong cùng transaction với khóa cư dân → căn → tài khoản. Tài khoản bị cascade xóa khi công cụ test xóa fixture căn; ứng dụng không cung cấp API xóa căn hoặc tài khoản.
+
+`009_announcements.sql` thêm `thong_bao`, `thong_bao_da_doc`, `lich_su_thong_bao`. Phạm vi có CHECK toàn chung cư/khối/căn; nhắc phí gắn hóa đơn và ngày Việt Nam, UNIQUE hóa đơn/ngày chống trùng. Receipt dùng khóa (thông báo, tài khoản, người tiếp nhận): người tiếp nhận là ID chủ hộ hiện tại của tài khoản căn, hoặc 0 cho tài khoản cá nhân/chưa gắn. Đây là snapshot không có FK cư dân để tránh khóa ngược luồng bàn giao. Audit người thực hiện là FK tài khoản, cùng transaction với nội dung/trạng thái. Không seed hay phát hành thông báo vào dữ liệu phát triển khi migrate.

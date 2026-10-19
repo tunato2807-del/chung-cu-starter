@@ -2,6 +2,7 @@ import { Router } from "express";
 import { integer } from "../../lib/http.js";
 import { optionalAuth, requireAuth, roles } from "../auth/auth.middleware.js";
 import * as service from "./billing.service.js";
+import { remindBill } from "../announcements/announcements.service.js";
 export const ratesRouter = Router(),
   metersRouter = Router(),
   billsRouter = Router(),
@@ -52,3 +53,9 @@ for (const action of [
       ),
     }),
   );
+
+billsRouter.post("/:id/nhac_phi", async (req, res) =>
+  res.json({
+    data: await remindBill(integer(req.params.id, "id"), req.body, req.user),
+  }),
+);

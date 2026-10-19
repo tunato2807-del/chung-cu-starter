@@ -153,3 +153,27 @@ Chi tiết hóa đơn thêm `nguoi_phu_trach_thanh_toan` để hiển thị ngư
 Trường tùy chọn `loai_tai_khoan`: TU_DONG (mặc định), CAN_HO, CA_NHAN. Khi nhập CH thì dùng tài khoản căn cụ thể. Với SĐT, TU_DONG chỉ đăng nhập nếu có đúng một tài khoản hoạt động khớp mật khẩu; nếu nhiều tài khoản cùng khớp trả 409 LOGIN_ACCOUNT_CHOICE, không tự chọn tài khoản và không trả danh sách danh tính cho người chưa đăng nhập. Người dùng chọn CAN_HO/CA_NHAN hoặc mã CH. SĐT khớp hơn 10 ứng viên thì dùng CH/chọn loại, không chạy kiểm tra mật khẩu không giới hạn. Một lần đăng nhập thành công không tăng số lần sai cho các tài khoản khác cùng SĐT.
 
 Auth response thêm dien_thoai_dang_nhap của chủ hộ phụ trách. Sửa SĐT hồ sơ của người phụ trách tăng phiên bản token/bàn giao, xóa khóa đăng nhập sai, ghi DOI_SO_DIEN_THOAI trong cùng transaction. Không đổi mật khẩu chỉ vì sửa SĐT của cùng người. Bàn giao sang người khác vẫn đổi mật khẩu và ngắt phiên như trước; chuyển đi tách người phụ trách, khóa tài khoản và loại SĐT khỏi đăng nhập căn. Tài khoản cá nhân riêng vẫn giữ SĐT/quyền của chính nó.
+
+## Thông báo và nhắc phí (migration 009)
+
+Mọi request ghi có `X-App-Request: 1` và cookie. BQL là QUAN_TRI_VIEN, hộp riêng chỉ CU_DAN; KTV/khách bị chặn. List phân trang 20, `{data,total,page}`; chi tiết/hành động `{data}`. Truy cập ID ngoài phạm vi trả 404.
+
+| API | Quyền và hành vi |
+| --- | --- |
+| GET /api/thong_bao?q=&loai=&trang_thai=&page=1 | BQL xem mọi bản, loại THONG_BAO/NHAC_PHI, trạng thái NHAP/DA_GUI/THU_HOI |
+| POST /api/thong_bao | BQL tạo bản nháp; trả ma_thong_bao |
+| GET /api/thong_bao/:id | BQL chi tiết + history |
+| PUT /api/thong_bao/:id | BQL sửa bản nháp, body có phien_ban |
+| POST /api/thong_bao/:id/phat_hanh | BQL, body {phien_ban}; chỉ bản nháp chung |
+| POST /api/thong_bao/:id/thu_hoi | BQL, body {phien_ban,ly_do}; lý do 3–255 ký tự |
+| GET /api/cua_toi/thong_bao?q=&loai=&chua_doc=1&page=1 | Cư dân: chỉ thông báo đang phát hành đúng phạm vi; có ngay_doc/chua_doc |
+| GET /api/cua_toi/thong_bao/chua_doc | Cư dân: {data:{so_chua_doc}} |
+| GET /api/cua_toi/thong_bao/:id | Cư dân: chi tiết, không tự đánh dấu đọc, không trả history nội bộ |
+| POST /api/cua_toi/thong_bao/:id/da_doc | Cư dân: đánh dấu đọc idempotent; body {} |
+| POST /api/hoa_don/:id/nhac_phi | BQL, body {phien_ban}; chỉ DA_GUI, trả ma_thong_bao/da_ton_tai |
+
+Body bản nháp: `{tieu_de,noi_dung,pham_vi,muc_do,khoi?,ma_can_ho?}`. Tiêu đề 3–160 ký tự, nội dung văn bản thuần 3–6000. pham_vi TOAN_BO/KHOI/CAN_HO; KHOI cần khối 1–10 ký tự có căn tồn tại, CAN_HO cần ID căn tồn tại; bỏ các trường không dùng về NULL. muc_do THUONG/QUAN_TRONG. Nội dung đã phát hành không sửa; thu hồi kèm lý do, giữ lịch sử. Phiên bản cũ trả 409 STALE_VERSION.
+
+Phạm vi đọc xét lại trong SQL theo căn cố định hoặc cư trú đang mở, không dựa số điện thoại hay căn client. Nhắc phí chỉ tài khoản căn hoặc cá nhân của người phụ trách hiện tại; cá nhân cần ngày bắt đầu cư trú không sau ngày chốt hóa đơn. Cư dân không có căn đang ở nhận hộp rỗng. Chủ hộ mới có receipt riêng trên cùng tài khoản căn; người cũ không xem nhắc phí qua tài khoản cá nhân sau bàn giao.
+
+Nhắc phí lấy nội dung, tiền, kỳ và hạn từ server; khóa căn/hóa đơn và UNIQUE(ma_hoa_don,ngay_nhac) với ngày Asia/Ho_Chi_Minh. Gọi lại cùng ngày trả ID cũ/da_ton_tai=true, kể cả đã thu hồi thông báo; không nhân đôi hoặc đổi hóa đơn. Hóa đơn đã thu trả INVALID_STATE khi nhắc mới, nhắc cũ vẫn xem được nhưng chua_doc=0; hóa đơn hủy ẩn nhắc cũ khỏi cư dân. Đây là nhắc trên web bằng thao tác BQL, không có SMS/email/cron.

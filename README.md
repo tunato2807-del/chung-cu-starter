@@ -1,6 +1,6 @@
 # Quản lý chung cư · Phản ánh QR
 
-React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện và phí/hóa đơn** theo ba tài liệu thiết kế; chưa triển khai thông báo.
+React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn và thông báo/nhắc phí trên web** theo ba tài liệu thiết kế.
 
 ## Chạy môi trường phát triển
 
@@ -92,7 +92,18 @@ Tiền tính bằng số thập phân chính xác, làm tròn từng dòng đế
 
 Điện bậc thang chia lượng kWh theo từng ngưỡng cộng dồn, làm tròn tiền từng bậc đến đồng rồi tính thuế trên tổng tiền điện trước thuế, không tính thuế điện lên phí khác. Với mẫu người dùng cung cấp, 300 kWh = 739.500 đồng + 8% = 798.660 đồng. Mẫu không được seed tự động, chưa xác minh là biểu giá còn hiệu lực. Phiên bản giá chọn tại ngày chốt cho toàn kỳ; chưa phân bổ khi đổi giá giữa kỳ, nhiều hộ/định mức, hoặc chia theo ngày đọc công tơ.
 
-Chưa có lập hàng loạt, thanh toán một phần/tiền thừa, đồng bộ ngân hàng, xuất PDF/Excel hoặc tác vụ nhắc nợ. VietQR đã kiểm tra cấu trúc/CRC và hiển thị qua giao diện, chưa thử giao dịch ngân hàng thật. Quét mã không thay trạng thái thanh toán; BQL chịu trách nhiệm nhập đúng ngân hàng và đối soát thực tế.
+Chưa có lập hàng loạt, thanh toán một phần/tiền thừa, đồng bộ ngân hàng, xuất PDF/Excel hoặc tác vụ nhắc nợ tự động. VietQR đã kiểm tra cấu trúc/CRC và hiển thị qua giao diện, chưa thử giao dịch ngân hàng thật. Quét mã không thay trạng thái thanh toán; BQL chịu trách nhiệm nhập đúng ngân hàng và đối soát thực tế.
+
+## Thông báo và nhắc phí
+
+Cập nhật bằng [code đầy đủ 9 file trong VS Code](docs/cap-nhat-thong-bao-nhac-phi-vscode.md), chạy `npm run db:migrate` để áp dụng **009_announcements.sql**, rồi khởi động lại backend/frontend. Không sửa migration 001–008.
+
+- BQL → **Thông báo** → **Soạn thông báo**: nhập tiêu đề/nội dung, chọn toàn chung cư, khối hoặc một căn, đặt mức độ. Lưu bản nháp, kiểm tra rồi **Phát hành thông báo đã lưu**. Bản đã phát hành không sửa nội dung; có thể thu hồi kèm lý do. Lịch sử thao tác được lưu cùng giao dịch.
+- Cư dân/tài khoản căn → **Thông báo**: số chưa đọc, tìm/lọc, mở chi tiết để đánh dấu đã đọc. Phạm vi theo căn/cư trú hiện tại. Cư dân mới nhìn thấy thông báo còn phát hành của căn mới; chuyển đi mất quyền căn cũ. Chủ hộ mới trên cùng tài khoản căn có trạng thái đọc riêng.
+- BQL → **Phí & hóa đơn** → mở hóa đơn **Đã gửi** → **Nhắc thanh toán trên web**. Tối đa một lần mỗi hóa đơn/ngày Việt Nam, kể cả bấm lại/đồng thời hoặc đã thu hồi nhắc hôm đó. Nội dung lấy từ hóa đơn; không làm đổi tiền hay trạng thái hóa đơn.
+- Nhắc phí chỉ đến tài khoản căn và tài khoản cá nhân của người phụ trách hiện tại nếu có quyền xem kỳ hóa đơn. Thành viên khác không thấy nhắc phí. Tài khoản căn xem được sổ hóa đơn cũ; tài khoản cá nhân vẫn giới hạn theo đợt cư trú. Hóa đơn đã thu còn xem thông báo nhưng không tính chưa đọc; hóa đơn hủy thì nhắc phí bị ẩn.
+
+Phiên bản này là hộp thông báo **trên web**. BQL chủ động gửi nhắc; chưa có lịch tự động, SMS, email hoặc thông báo đẩy trên điện thoại. Số chưa đọc cập nhật khi đổi trang, quay lại tab và mỗi 60 giây khi mở web.
 
 ## Ảnh hiện trường và QR
 
@@ -114,7 +125,7 @@ npm test
 npm run test:e2e
 ```
 
-- `npm test`: tạo/migrate database riêng `chung_cu_test`, chạy kiểm thử HTTP với MySQL thật. Gồm xác thực, khóa phiên, quyền bản ghi/ảnh, QR thu hồi, gửi lặp đồng thời, chuyển trạng thái, nghiệm thu mới, gộp trùng, giới hạn gửi và rollback khi lịch sử lỗi.
+- `npm test`: tạo/migrate database riêng `chung_cu_test`, chạy kiểm thử HTTP với MySQL thật. Gồm xác thực, khóa phiên, quyền bản ghi/ảnh, QR thu hồi, gửi lặp đồng thời, chuyển trạng thái, nghiệm thu mới, gộp trùng, giới hạn gửi, hóa đơn/cư trú/tài khoản căn, phạm vi thông báo, receipt sau bàn giao, nhắc phí đồng thời và rollback khi lịch sử lỗi.
 - `npm run test:e2e`: chạy API/Vite riêng ở 3101/5174, mở Chromium và đi hết luồng qua giao diện ở 1440 px và 375 px. Browser Linux được đóng gói trong dependency `@sparticuz/chromium`, không cần tải thêm từ CDN. Kiểm thử không thay dữ liệu database phát triển. Hai lệnh test nên chạy lần lượt.
 - `/api/health` kiểm tra tiến trình; `/api/ready` kiểm tra database và migration. Không coi một cổng mở là đã sẵn sàng.
 

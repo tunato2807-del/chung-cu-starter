@@ -14,6 +14,11 @@ import {
   Login,
   Account,
 } from "../features/auth/Auth.jsx";
+import {
+  Announcements,
+  AnnouncementDetail,
+  useUnreadCount,
+} from "../features/announcements/Announcements.jsx";
 import Users from "../features/auth/Users.jsx";
 import ApartmentAccounts from "../features/residency/ApartmentAccounts.jsx";
 import {
@@ -48,6 +53,7 @@ function Shell() {
   const { user, logout } = useAuth(),
     location = useLocation(),
     [error, setError] = useState();
+  const unread = useUnreadCount(user, location.pathname);
   const inWorkspace =
     !!user &&
     ["/quan-tri", "/ky-thuat", "/cu-dan", "/tai-khoan"].some((p) =>
@@ -65,6 +71,7 @@ function Shell() {
           ["/quan-tri/don-gia", "Đơn giá phí"],
           ["/quan-tri/chi-so", "Chỉ số điện nước"],
           ["/quan-tri/hoa-don", "Phí & hóa đơn"],
+          ["/quan-tri/thong-bao", "Thông báo"],
           ["/quan-tri/vi-tri-qr", "Vị trí & QR"],
           ["/quan-tri/nhan-su", "Nhân sự & tài khoản"],
         ]
@@ -73,6 +80,7 @@ function Shell() {
         : [
             ["/cu-dan/phan-anh", "Phản ánh của tôi"],
             ["/cu-dan/hoa-don", "Hóa đơn của tôi"],
+            ["/cu-dan/thong-bao", "Thông báo"],
           ];
   return (
     <div className="app-shell">
@@ -108,6 +116,14 @@ function Shell() {
               {[...links, ["/tai-khoan", "Tài khoản"]].map(([path, label]) => (
                 <NavLink key={path} end={path === "/quan-tri"} to={path}>
                   {label}
+                  {path === "/cu-dan/thong-bao" && unread > 0 && (
+                    <span
+                      className="notification-count"
+                      aria-label={`${unread} chưa đọc`}
+                    >
+                      {unread > 99 ? "99+" : unread}
+                    </span>
+                  )}
                 </NavLink>
               ))}
             </nav>
@@ -168,6 +184,8 @@ function Shell() {
               ["/quan-tri/chi-so", <Meters />],
               ["/quan-tri/hoa-don", <Bills />],
               ["/quan-tri/hoa-don/:id", <BillDetail />],
+              ["/quan-tri/thong-bao", <Announcements />],
+              ["/quan-tri/thong-bao/:id", <AnnouncementDetail />],
             ].map(([path, element]) => (
               <Route
                 key={path}
@@ -199,13 +217,28 @@ function Shell() {
                 />
               </React.Fragment>
             ))}
-            {["/cu-dan/hoa-don", "/cu-dan/hoa-don/:id"].map((path) => (
+            {[
+              "/cu-dan/hoa-don",
+              "/cu-dan/hoa-don/:id",
+              "/cu-dan/thong-bao",
+              "/cu-dan/thong-bao/:id",
+            ].map((path) => (
               <Route
                 key={path}
                 path={path}
                 element={
                   <Protected roles={resident}>
-                    {path.endsWith(":id") ? <BillDetail /> : <Bills />}
+                    {path.includes("thong-bao") ? (
+                      path.endsWith(":id") ? (
+                        <AnnouncementDetail />
+                      ) : (
+                        <Announcements />
+                      )
+                    ) : path.endsWith(":id") ? (
+                      <BillDetail />
+                    ) : (
+                      <Bills />
+                    )}
                   </Protected>
                 }
               />

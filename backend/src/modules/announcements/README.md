@@ -1,11 +1,3 @@
-# Thông báo và đối tượng nhận
+# Thông báo và nhắc phí
 
-Chưa triển khai. Khi phát triển, tạo:
-
-- announcements.routes.js: URL và middleware.
-- announcements.controller.js: nhận HTTP, trả kết quả.
-- announcements.service.js: quy tắc nghiệp vụ và ranh giới transaction.
-- announcements.repository.js: truy vấn MySQL có tham số.
-- announcements.validation.js: kiểm tra đầu vào.
-
-Kiểm tra quyền trên từng bản ghi tại service. Không tin vai trò hoặc mã căn hộ do frontend gửi.
+Bản nháp/phát hành/thu hồi theo toàn chung cư, khối hoặc căn. Hộp cư dân và trạng thái chưa đọc theo căn/cư trú/người phụ trách hiện tại. BQL nhắc hóa đơn đã gửi tối đa một lần/ngày Việt Nam; đã thanh toán không tính chưa đọc, hóa đơn hủy ẩn nhắc phí. Chỉ thông báo trên web, chưa có lịch tự động/email/SMS/push. Xem [hướng dẫn cập nhật](../../../../docs/cap-nhat-thong-bao-nhac-phi-vscode.md) và [API](../../../../docs/api.md).
