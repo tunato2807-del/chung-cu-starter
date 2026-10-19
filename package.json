@@ -18,7 +18,9 @@
     "db:seed": "npm run db:seed -w backend",
     "test": "node scripts/test-local.js",
     "test:e2e": "node scripts/test-local.js e2e",
-    "format": "prettier --write \"backend/**/*.js\" \"frontend/src/**/*.{js,jsx,css}\" \"scripts/*.js\" \"e2e/*.js\" playwright.config.js"
+    "format": "prettier --write \"backend/**/*.js\" \"frontend/src/**/*.{js,jsx,css}\" \"scripts/*.js\" \"e2e/*.js\" playwright.config.js",
+    "dev:frontend:https": "npm run dev:https -w frontend",
+    "test:https": "node scripts/test-https.js"
   },
   "type": "module",
   "devDependencies": {

@@ -8,3 +8,4 @@ backend/.demo-credentials
 backend/storage/
 playwright-report/
 test-results/
+.certs/

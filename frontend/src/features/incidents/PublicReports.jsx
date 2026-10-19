@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getJson } from "../../shared/api/client.js";
+import { newRequestKey } from "../../shared/request-key.js";
 import { useAuth } from "../auth/Auth.jsx";
 import {
   Badge,
@@ -92,6 +93,14 @@ export function Scanner() {
   }, []);
   async function start() {
     setError(null);
+    if (!window.isSecureContext) {
+      setError(
+        new Error(
+          "Không mở được camera vì địa chỉ HTTP qua IP mạng nội bộ chưa có kết nối bảo mật. Hãy dùng HTTPS đã được thiết bị tin cậy, hoặc dùng ứng dụng Camera điện thoại quét mã QR đang hiển thị trên máy tính.",
+        ),
+      );
+      return;
+    }
     setRunning(true);
     try {
       const { Html5Qrcode } = await import("html5-qrcode");
@@ -160,7 +169,7 @@ export function SubmitReport() {
   const { token } = useParams(),
     { user } = useAuth(),
     resource = useResource(`/cong_khai/vi_tri_qr/${encodeURIComponent(token)}`);
-  const [key] = useState(() => crypto.randomUUID()),
+  const [key] = useState(newRequestKey),
     [error, setError] = useState(),
     [pending, setPending] = useState(false),
     [receipt, setReceipt] = useState(),

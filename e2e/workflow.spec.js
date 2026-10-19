@@ -43,6 +43,13 @@ test("guest → management → technician → acceptance → private public look
   const admin = await adminContext.newPage(),
     tech = await techContext.newPage(),
     guest = await guestContext.newPage();
+  // LAN HTTP browsers lack randomUUID but retain cryptographic getRandomValues.
+  await guest.addInitScript(() =>
+    Object.defineProperty(crypto, "randomUUID", {
+      value: undefined,
+      configurable: true,
+    }),
+  );
   const errors = [];
   for (const p of [admin, tech, guest])
     p.on("pageerror", (e) => errors.push(e.message));

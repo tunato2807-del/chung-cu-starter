@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:https": "vite --config vite.https.config.js"
   },
   "dependencies": {
     "html5-qrcode": "^2.3.8",

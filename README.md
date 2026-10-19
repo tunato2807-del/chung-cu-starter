@@ -40,6 +40,8 @@ BQL cấp/khóa tài khoản tại **Nhân sự & tài khoản**. Cư dân chỉ
 
 Mã QR chứa URL theo tên miền đang mở trang quản trị. Khi thử camera điện thoại, dùng một tên miền HTTPS truy cập được từ điện thoại; địa chỉ loopback của máy phát triển không dùng được trên điện thoại. Camera trong web có hướng dẫn khi bị từ chối quyền và hỗ trợ dán URL cùng hệ thống; không tự mở URL ngoài hệ thống.
 
+Để dùng nút **Mở camera** trên điện thoại cùng Wi-Fi, xem [hướng dẫn HTTPS cho Windows/Android](docs/https-local.md). Sau khi tạo và tin cậy chứng chỉ, chạy `npm run dev:frontend:https`. HTTP qua IP mạng nội bộ chỉ dùng được để mở form; trình duyệt chặn camera trong trang.
+
 ## Kiểm tra
 
 ```bash
