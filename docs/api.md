@@ -201,3 +201,35 @@ Thu phí nhận `tu_ngay`, `den_ngay` YYYY-MM-DD, mặc định đầu tháng/h�
 summary thu phí: `tong_da_thu`, `so_khoan_thu`, `so_can_da_thu`. Chỉ DA_THANH_TOAN có ngay_thanh_toan trong khoảng mới được tính; dùng so_tien_da_thu, không suy tiền từ việc quét QR hoặc nội dung chuyển khoản. Data GIAO_DICH có hóa đơn/căn/kỳ, số tiền đã thu, tham chiếu, thời điểm và tên người xác nhận; không trả số tài khoản ngân hàng/hash/mật khẩu. THEO_NGAY có ngay_thu, da_thu và so_khoan_thu. Ngày xác nhận là ngày BQL ghi nhận trên hệ thống, có thể khác ngày chuyển khoản; hóa đơn đã thu thiếu thời điểm không thể vào báo cáo theo ngày.
 
 Ví dụ: `/api/bao_cao/cong_no?tu_ky=2026-09&den_ky=2026-10&khoi=A&che_do=HOA_DON&qua_han=1` và `/api/bao_cao/thu_phi?tu_ngay=2026-10-01&den_ngay=2026-10-20&khoi=A`. Khoảng đảo ngược trả 422 INVALID_PERIOD_RANGE/INVALID_DATE_RANGE; chọn sai chế độ/quá hạn theo kỳ trả 422. Truy cập báo cáo không tự gửi nhắc hoặc ghi nhận đã thu.
+
+## Thiết bị và bảo trì (migration 010–011)
+
+Tất cả cần đăng nhập; ghi có `X-App-Request: 1`. Danh mục thiết bị/cấu hình chỉ QUAN_TRI_VIEN. Phiếu bảo trì cho BQL hoặc KY_THUAT_VIEN được giao; cư dân 403, khách 401. KTV không được xem phiếu của người khác, kể cả sau khi từng được giao (404). GET không tạo công việc hoặc đổi lịch.
+
+| API | Quyền / dữ liệu |
+| --- | --- |
+| GET /api/thiet_bi?q=&loai=&trang_thai=&lich=&page=1 | BQL, {data,summary,total,page,ngay_hien_tai}; 20 dòng/trang |
+| POST /api/thiet_bi | BQL, tạo hồ sơ/lịch, 201 {data:{ma_thiet_bi}} |
+| GET /api/thiet_bi/:id | BQL, chi tiết + history thông tin thiết bị + phieu_dinh_ky_dang_mo |
+| PUT /api/thiet_bi/:id | BQL, body hồ sơ đầy đủ + phien_ban |
+| POST /api/thiet_bi/:id/phieu_bao_tri | BQL, tạo định kỳ/đột xuất, 201 hoặc replay 200 |
+| GET /api/bao_tri/ky_thuat_vien?q=&page=1 | BQL, KTV hoạt động, 20 dòng/trang; không password/hash |
+| GET /api/bao_tri?q=&ma_thiet_bi=&trang_thai=&loai=&qua_han=&page=1 | BQL toàn bộ; KTV chỉ được giao; {data,total,page,ngay_hien_tai} |
+| GET /api/bao_tri/:id | Chi tiết + history, tên/vị trí lúc lập và hiện tại, kết quả hiện tại |
+| POST /api/bao_tri/:id/phan_cong | BQL, {phien_ban,ma_ky_thuat_vien,ghi_chu?}; đổi người cần lý do 3–500 |
+| POST /api/bao_tri/:id/doi_lich | BQL, {phien_ban,ngay_den_han,ly_do}; trước bắt đầu, lý do 3–500 |
+| POST /api/bao_tri/:id/bat_dau | KTV được giao, {phien_ban} |
+| POST /api/bao_tri/:id/bao_cao | KTV được giao, {phien_ban,ngay_thuc_hien,ket_qua}; kết quả 10–4000 ký tự |
+| POST /api/bao_tri/:id/tra_lai | BQL, {phien_ban,ly_do}; chỉ CHO_NGHIEM_THU, lý do 3–1000 |
+| POST /api/bao_tri/:id/nghiem_thu | BQL, {phien_ban,nhan_xet}; nhận xét 3–1000 |
+| POST /api/bao_tri/:id/huy | BQL, {phien_ban,ly_do}; lý do 3–500, phiếu chưa kết thúc |
+
+Hồ sơ thiết bị: `ma_tai_san` tạo mới (2–30, chữ không dấu/số/gạch ngang/gạch dưới, chuẩn hóa hoa, giữ cố định), `ten_thiet_bi` 2–150, `loai` THANG_MAY/MAY_BOM/PCCC/DIEN/NUOC/CAMERA/KHAC, `vi_tri` 2–160, `so_serial` tối đa 100, `ngay_lap_dat` tùy chọn không sau hôm nay, `ghi_chu` tối đa 1000. `trang_thai` DANG_SU_DUNG/TAM_DUNG/NGUNG_SU_DUNG. Lịch: chu_ky_ngay 1–3650 và ngay_bao_tri_tiep_theo đi cùng nhau hoặc cùng NULL/rỗng, nhac_truoc_ngay 0–90 (mặc định 7). Ngừng sử dụng xóa lịch, không xóa dữ liệu; cấm khi còn phiếu mở. Chỉ sửa thông tin khác khi đang có phiếu định kỳ, không đổi chu kỳ/ngày/nhắc trước. Đổi lịch phiếu định kỳ trước bắt đầu sẽ đổi cả ngày kế tiếp trong hồ sơ.
+
+List thiết bị lọc `lich=QUA_HAN|SAP_DEN_HAN|CHUA_CAU_HINH`; không tính ngừng sử dụng trong cảnh báo. `tinh_trang_lich` còn có CHUA_DEN_HAN/NGUNG_THEO_DOI. Summary là số liệu trong bộ lọc. Ngày hôm nay chưa quá hạn; ngày cuối cửa sổ nhắc vẫn Sắp/đến hạn. Mốc ngày theo Asia/Ho_Chi_Minh, dữ liệu ngày YYYY-MM-DD.
+
+Tạo phiếu: `loai=DINH_KY|DOT_XUAT`, `khoa_yeu_cau` UUID, `ma_ky_thuat_vien` tùy chọn, `do_uu_tien=THUONG|CAO|KHAN_CAP`. DINH_KY cần phien_ban_thiet_bi, server lấy tên/vị trí/ngày đến hạn/chu kỳ từ thiết bị; chỉ một định kỳ mở. DOT_XUAT cần tieu_de 3–180, noi_dung 3–2000, ngay_den_han. Tạo trả ma_phieu_bao_tri/replay; cùng UUID và nội dung chuẩn hóa/actor trả lại ID cũ, khác nội dung/actor trả 409 REQUEST_KEY_REUSED. Kiểm tra replay trước trạng thái/version hiện tại để retry sau phản hồi thất lạc vẫn về đúng phiếu. UUID khác nhưng đã có định kỳ mở trả 409 OPEN_PERIODIC_JOB.
+
+Trạng thái: MOI → DA_PHAN_CONG → DANG_THUC_HIEN → CHO_NGHIEM_THU → HOAN_THANH. BQL trả lại từ chờ nghiệm thu về đang thực hiện, tăng lượt và xóa kết quả/ngày hiện tại; báo cáo cũ giữ trong lịch sử. Đổi người ở MOI/DA_PHAN_CONG/DANG_THUC_HIEN đưa về DA_PHAN_CONG, đặt lại thời điểm bắt đầu. KTV cũ mất quyền đọc/ghi; mục đang giao không có cơ chế tự nhận việc. HUY chỉ trước hoàn thành và không dời lịch. Mọi thay đổi dùng phien_ban, cũ trả 409 STALE_VERSION, sai trạng thái 409 INVALID_STATE.
+
+Ngày thực hiện phải từ ngay_lap tới hôm nay. Nghiệm thu định kỳ cập nhật ngày kế tiếp bằng ngày thực hiện + chu kỳ snapshot của phiếu, trong cùng transaction với kết thúc phiếu/audit. Không tự lập phiếu mới, không đổi trạng thái vận hành thiết bị. Đột xuất không đổi lịch định kỳ. Lịch sử đọc là văn bản; payload audit JSON giữ nội bộ DB, không trả nguyên body/request key/hash hoặc dữ liệu mật khẩu.

@@ -103,3 +103,15 @@ Mỗi response dùng transaction REPEATABLE READ WITH CONSISTENT SNAPSHOT, READ 
 Ngày quá hạn chốt một lần bằng ngày Asia/Ho_Chi_Minh ở đầu request, dùng hạn < ngày đó, bỏ NULL. Hóa đơn đến hạn hôm nay chưa quá hạn. Thu phí dùng ngay_thanh_toan UTC và khoảng nửa mở tương ứng 00:00 ngày đầu tới 00:00 ngày sau ngày cuối tại +07:00; group ngày bằng CONVERT_TZ offset, không phụ thuộc MySQL timezone tables. Luồng xác nhận thu ghi UTC_TIMESTAMP() rõ ràng để không phụ thuộc timezone session. Không sửa thời điểm lịch sử khi thêm báo cáo.
 
 Report chỉ BQL ở route và giao diện, không xuất thông tin ngân hàng/hash. Màn báo cáo chỉ đọc; hành động thu/nhắc mở chi tiết hóa đơn theo API đang có. Không triển khai sổ chi, hoàn tiền, hạch toán hoặc số dư công nợ hồi tố trong module này. Ngày thu là lúc xác nhận tại phần mềm, không tự đồng bộ ngày chuyển tiền từ ngân hàng.
+
+## Thiết bị và bảo trì
+
+010 thêm thiet_bi, phieu_bao_tri và lich_su_bao_tri. 011 thêm CHECK rõ IS NOT NULL cho cặp chu kỳ/ngày và snapshot định kỳ, vì CHECK của MySQL không từ chối biểu thức UNKNOWN. Không sửa các migration đã áp dụng. Mã tài sản duy nhất và giữ cố định, lịch tách khỏi trạng thái vận hành: tạm dừng vẫn theo dõi, ngừng sử dụng bỏ lịch sau khi không còn phiếu mở.
+
+Một phiếu giữ tên/vị trí lúc lập, ngày đến hạn, chu kỳ định kỳ snapshot. UNIQUE cột sinh dinh_ky_dang_mo chỉ tồn tại với định kỳ chưa hoàn thành/hủy, chống hai phiếu định kỳ mở. UUID request duy nhất kèm fingerprint input chuẩn hóa và actor; retry trả ID cũ trước kiểm tra phiên bản/trạng thái mới. Khác input cùng key bị chặn, mã tài sản cũng chống tạo hồ sơ trùng. Không có API xóa thiết bị/phiếu.
+
+Ghi khóa theo thiết bị → phiếu → đọc chia sẻ tài khoản actor/KTV. Asset của phiếu bất biến nên có thể lấy hint ID trước, sau khóa đọc lại trạng thái/version/assignee. Mọi sửa thông tin/lịch/nghiệm thu cùng khóa thiết bị; chặn đổi cấu hình khi định kỳ đang mở. KTV được chọn phải còn hoạt động, kiểm tra với FOR SHARE; actor active/role/token được xác nhận lại bên trong giao dịch. Đổi người ngay lập tức loại quyền đọc/ghi của KTV cũ. Query danh sách/chi tiết KTV kiểm tra scope assignment và token trong SQL, không dựa ID người client gửi.
+
+Luồng BQL phân công/đổi lịch/hủy/nghiệm thu, KTV bắt đầu/báo cáo. Trả lại xóa kết quả hiện tại, tăng lượt; báo cáo lượt trước vẫn trong audit văn bản và snapshot JSON. Nghiệm thu định kỳ tính ngày kế tiếp từ ngày thực hiện được duyệt + chu kỳ của phiếu, chỉ một lần nhờ version/khóa trạng thái. Đột xuất/hủy/trả lại không đổi lịch. Ghi lịch sử lỗi rollback cả phiếu và ngày kế tiếp. Tên/serial/vị trí hiện tại có thể sửa nhưng không ghi đè snapshot phiếu cũ.
+
+Giao diện BQL /quan-tri/thiet-bi và /quan-tri/bao-tri; KTV /ky-thuat/bao-tri. Resource gắn với path/revision để không render dữ liệu trang/query cũ trong lúc chuyển màn hình. Cảnh báo quá hạn và cửa sổ nhắc theo ngày Việt Nam. BQL chủ động lập phiếu kỳ sau; không có cron tạo phiếu hoặc gửi thông báo ngoài web. Bảo trì không thay sổ hóa đơn/thu phí hoặc tự đổi trạng thái thiết bị sau nghiệm thu.

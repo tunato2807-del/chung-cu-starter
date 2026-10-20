@@ -28,6 +28,11 @@ import {
 
 import { financialReportsRouter } from "./modules/financial-reports/financial-reports.routes.js";
 
+import {
+  equipmentRouter,
+  maintenanceRouter,
+} from "./modules/maintenance/maintenance.routes.js";
+
 export const app = express();
 app.disable("x-powered-by");
 app.use(requestContext);
@@ -40,7 +45,7 @@ app.use("/api/health", healthRouter);
 app.get("/api/ready", async (req, res) => {
   try {
     const [migrations] = await pool.execute(
-      "SELECT name FROM schema_migrations WHERE name IN (?,?,?,?,?,?,?,?,?)",
+      "SELECT name FROM schema_migrations WHERE name IN (?,?,?,?,?,?,?,?,?,?,?)",
       [
         "001_auth_qr_incidents.sql",
         "002_residency.sql",
@@ -51,9 +56,11 @@ app.get("/api/ready", async (req, res) => {
         "007_apartment_accounts.sql",
         "008_handover_audit_locks.sql",
         "009_announcements.sql",
+        "010_maintenance.sql",
+        "011_maintenance_plan_checks.sql",
       ],
     );
-    if (migrations.length !== 9) throw new Error("Schema not initialized");
+    if (migrations.length !== 11) throw new Error("Schema not initialized");
     await pool.query("SELECT 1 FROM phan_anh LIMIT 1");
   } catch {
     fail(
@@ -73,6 +80,8 @@ app.use("/api/cau_hinh_phi", ratesRouter);
 app.use("/api/chi_so_dich_vu", metersRouter);
 app.use("/api/hoa_don", billsRouter);
 app.use("/api/bao_cao", financialReportsRouter);
+app.use("/api/thiet_bi", equipmentRouter);
+app.use("/api/bao_tri", maintenanceRouter);
 app.use("/api/thong_bao", announcementsRouter);
 app.use("/api/cua_toi/thong_bao", selfAnnouncementsRouter);
 app.use("/api/cua_toi/hoa_don", selfBillsRouter);

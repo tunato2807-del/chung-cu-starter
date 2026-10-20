@@ -1,5 +1,7 @@
 # Báo cáo công nợ và thu phí — code từng file cho VS Code
 
+> Bản tiếp theo: [Thiết bị và bảo trì — code 9 file](cap-nhat-bao-tri-thiet-bi-vscode.md). Nếu đã cập nhật bản này, không chép App.jsx/app.js/global.css cũ bên dưới đè lại.
+
 Bản tiếp theo sau `fb2418a` (Thông báo và nhắc phí). Chép đủ **7 file** bên dưới; không cần tải ZIP, cài thêm thư viện hoặc thêm migration. Bản này dùng schema đến 009 hiện có. Nếu chưa có phần thông báo, cập nhật [bản thông báo 9 file](cap-nhat-thong-bao-nhac-phi-vscode.md) trước. Khi đã cập nhật bản mới, không chép App.jsx/app.js/global.css của bản cũ đè lại.
 
 ## Cách cập nhật

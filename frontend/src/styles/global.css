@@ -1127,3 +1127,116 @@ footer {
     font-size: 1.5rem;
   }
 }
+
+.maintenance-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+.maintenance-stats .card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.maintenance-stats strong {
+  font-size: 1.8rem;
+}
+.maintenance-overdue {
+  color: #a33225;
+}
+.maintenance-tag {
+  display: inline-block;
+  padding: 0.25rem 0.55rem;
+  border-radius: 0.4rem;
+  background: #edf3f1;
+  color: #47645b;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin: 0.2rem;
+}
+.due-QUA_HAN,
+.work-HUY {
+  background: #fff0ea;
+  color: #a33225;
+}
+.due-SAP_DEN_HAN,
+.work-CHO_NGHIEM_THU {
+  background: #fff2d9;
+  color: #8a5416;
+}
+.work-HOAN_THANH {
+  background: #e3f3e8;
+  color: #225e46;
+}
+.work-DANG_THUC_HIEN {
+  background: #e7effb;
+  color: #275384;
+}
+.maintenance-subtitle {
+  display: block;
+  color: #627c73;
+  margin-top: 0.4rem;
+}
+.maintenance-info {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 2rem;
+  margin: 0 0 1.4rem;
+}
+.maintenance-info dt {
+  color: #627c73;
+  font-size: 0.85rem;
+}
+.maintenance-info dd {
+  margin: 0.3rem 0 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.maintenance-text,
+.maintenance-history p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.maintenance-staff {
+  padding: 1rem;
+  border: 1px solid #dce5df;
+  border-radius: 0.6rem;
+  margin-bottom: 1.2rem;
+  background: #f8faf9;
+}
+.maintenance-staff .actions {
+  font-size: 0.85rem;
+}
+.maintenance-action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.maintenance-action-grid .card {
+  min-width: 0;
+}
+.maintenance-history {
+  padding-left: 1.2rem;
+}
+.maintenance-history li {
+  padding: 0 0 1rem 0.4rem;
+  border-bottom: 1px solid #e4ebe7;
+  margin-bottom: 1rem;
+}
+.maintenance-history li div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  justify-content: space-between;
+}
+.maintenance-history time {
+  color: #627c73;
+  font-size: 0.8rem;
+}
+@media (max-width: 700px) {
+  .maintenance-stats,
+  .maintenance-info,
+  .maintenance-action-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

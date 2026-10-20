@@ -1,6 +1,6 @@
 # Quản lý chung cư · Phản ánh QR
 
-React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web và báo cáo công nợ/thu phí** theo ba tài liệu thiết kế.
+React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web báo cáo công nợ/thu phí và bảo trì thiết bị** theo ba tài liệu thiết kế.
 
 ## Chạy môi trường phát triển
 
@@ -114,6 +114,20 @@ BQL → **Công nợ & thu phí** tại `/quan-tri/bao-cao-tai-chinh`. Xem [code
 - **Thu phí theo ngày xác nhận**: tiền BQL đã xác nhận thu trong khoảng ngày Việt Nam, mặc định đầu tháng đến hôm nay. Có bảng từng khoản/tham chiếu/người xác nhận và tổng hợp theo ngày. Thu cho kỳ cũ vẫn vào đúng ngày xác nhận. Đây không phải ngày chuyển khoản từ ngân hàng.
 
 Hạn hôm nay chưa quá hạn; chỉ quá hạn khi hạn trả nhỏ hơn ngày hiện tại tại Việt Nam. Tiền trả API ở dạng chuỗi đồng nguyên, tổng hợp giữ chính xác cả khi vượt giới hạn số nguyên JavaScript. Tổng, số dòng và bảng chi tiết cùng một snapshot nhất quán khi có người thu tiền đồng thời. Chỉ BQL được truy cập cả API và giao diện. Người phụ trách căn hiển thị theo hiện tại, không tự thay nghĩa vụ tài chính của hóa đơn cũ.
+
+## Thiết bị và bảo trì
+
+Cập nhật [code đầy đủ 9 file cho VS Code](docs/cap-nhat-bao-tri-thiet-bi-vscode.md), chạy `npm run db:migrate` để áp dụng **010_maintenance.sql** và **011_maintenance_plan_checks.sql**, rồi khởi động lại backend/frontend. Giữ các migration 001–009 và dữ liệu đã có, không cần cài dependency mới.
+
+1. BQL → **Thiết bị & bảo trì** → **Thêm thiết bị**: mã tài sản cố định, tên, loại, vị trí, serial/ngày lắp, trạng thái và ghi chú. Mã chuẩn hóa chữ hoa, duy nhất; không xóa thiết bị qua giao diện.
+2. Nhập chu kỳ 1–3650 ngày cùng ngày kế tiếp, nhắc trước 0–90 ngày; bỏ trống cả chu kỳ/ngày nếu chưa cấu hình. Lọc quá hạn/sắp đến hạn/chưa có lịch. Quá hạn nếu ngày kế tiếp trước hôm nay, ngày hôm nay và hết cửa sổ nhắc trước đều thuộc Sắp/đến hạn. Tạm dừng vẫn theo dõi bảo trì; ngừng sử dụng tắt lịch.
+3. Mở thiết bị → **Lập phiếu định kỳ** hoặc **Lập phiếu đột xuất**, có thể chọn KTV ngay hoặc để chưa phân công. Một thiết bị chỉ có một phiếu định kỳ chưa kết thúc; gửi lại cùng yêu cầu không tạo trùng. Phiếu giữ tên/vị trí lúc lập ngay cả khi hồ sơ được sửa sau đó.
+4. KTV → **Bảo trì thiết bị** → mở phiếu được giao → bắt đầu → ghi ngày và kết quả để gửi BQL. KTV chỉ xem phiếu đang gắn cho mình; đổi người thu hồi quyền người cũ, kể cả truy cập ID trực tiếp. BQL có thể đổi lịch khi chưa bắt đầu, đổi người khi đang làm hoặc hủy phiếu kèm lý do.
+5. BQL nghiệm thu đạt hoặc trả lại kèm lý do. Trả lại giữ báo cáo cũ trong lịch sử, xóa kết quả hiện tại để KTV phải gửi lượt mới. KTV không tự nghiệm thu; BQL không ghi thay báo cáo của KTV.
+
+Sau nghiệm thu định kỳ, ngày kế tiếp = **ngày thực hiện được nghiệm thu + chu kỳ đã lưu trong phiếu**. Phiếu đột xuất không đổi lịch định kỳ; trả lại/hủy không dời lịch. Hệ thống cập nhật ngày, BQL chủ động lập phiếu kỳ sau. Không đổi cấu hình chu kỳ/ngày/nhắc trước khi còn phiếu định kỳ mở. Muốn ngừng sử dụng thiết bị phải xử lý hết phiếu mở; ngừng sử dụng tự bỏ lịch, không xóa lịch sử.
+
+Phân công, trạng thái, kết quả và lịch kế tiếp được lưu cùng lịch sử trong một giao dịch; lỗi ghi lịch sử rollback cả thay đổi. Các thao tác kiểm tra phiên bản để tránh hai người ghi đè. Ngày thực hiện từ ngày lập phiếu đến hôm nay theo Việt Nam. Cảnh báo lịch hiển thị trên web; kết quả nghiệm thu không tự đổi trạng thái vận hành thiết bị.
 
 ## Ảnh hiện trường và QR
 

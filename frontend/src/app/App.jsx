@@ -20,6 +20,12 @@ import {
   useUnreadCount,
 } from "../features/announcements/Announcements.jsx";
 import FinancialReports from "../features/financial-reports/FinancialReports.jsx";
+import {
+  EquipmentList,
+  EquipmentDetail,
+  MaintenanceList,
+  MaintenanceDetail,
+} from "../features/maintenance/Maintenance.jsx";
 import Users from "../features/auth/Users.jsx";
 import ApartmentAccounts from "../features/residency/ApartmentAccounts.jsx";
 import {
@@ -69,6 +75,7 @@ function Shell() {
           ["/quan-tri/tai-khoan-can-ho", "Tài khoản căn hộ"],
           ["/quan-tri/cu-dan", "Cư dân & cư trú"],
           ["/quan-tri/phuong-tien", "Phương tiện"],
+          ["/quan-tri/thiet-bi", "Thiết bị & bảo trì"],
           ["/quan-tri/don-gia", "Đơn giá phí"],
           ["/quan-tri/chi-so", "Chỉ số điện nước"],
           ["/quan-tri/hoa-don", "Phí & hóa đơn"],
@@ -78,7 +85,10 @@ function Shell() {
           ["/quan-tri/nhan-su", "Nhân sự & tài khoản"],
         ]
       : user?.vai_tro === "KY_THUAT_VIEN"
-        ? [["/ky-thuat/cong-viec", "Công việc"]]
+        ? [
+            ["/ky-thuat/cong-viec", "Công việc"],
+            ["/ky-thuat/bao-tri", "Bảo trì thiết bị"],
+          ]
         : [
             ["/cu-dan/phan-anh", "Phản ánh của tôi"],
             ["/cu-dan/hoa-don", "Hóa đơn của tôi"],
@@ -182,6 +192,10 @@ function Shell() {
               ["/quan-tri/cu-dan", <Residents />],
               ["/quan-tri/cu-dan/:id", <ResidentDetail />],
               ["/quan-tri/phuong-tien", <Vehicles />],
+              ["/quan-tri/thiet-bi", <EquipmentList />],
+              ["/quan-tri/thiet-bi/:id", <EquipmentDetail />],
+              ["/quan-tri/bao-tri", <MaintenanceList />],
+              ["/quan-tri/bao-tri/:id", <MaintenanceDetail />],
               ["/quan-tri/don-gia", <Rates />],
               ["/quan-tri/chi-so", <Meters />],
               ["/quan-tri/hoa-don", <Bills />],
@@ -219,6 +233,21 @@ function Shell() {
                   }
                 />
               </React.Fragment>
+            ))}
+            {["/ky-thuat/bao-tri", "/ky-thuat/bao-tri/:id"].map((path) => (
+              <Route
+                key={path}
+                path={path}
+                element={
+                  <Protected roles={technician}>
+                    {path.endsWith(":id") ? (
+                      <MaintenanceDetail />
+                    ) : (
+                      <MaintenanceList />
+                    )}
+                  </Protected>
+                }
+              />
             ))}
             {[
               "/cu-dan/hoa-don",
