@@ -175,6 +175,8 @@ Excel có hai sheet Tổng hợp/Chi tiết; mã/điện thoại giữ số 0 đ
 
 ## Nhập / xuất dữ liệu theo phân hệ
 
+Có [bộ Excel/PDF đã điền sẵn để test](samples/nhap-du-lieu/README.md): 10 tệp cho 5 phần nhập, hai bộ dùng mã khác nhau, kèm 2 tệp cố ý có lỗi. Không cần sửa code để dùng; tệp xe cần điền mã cư dân thật sau bước nhập cư dân.
+
 Xem [code đầy đủ từng file để cập nhật trong VS Code](docs/cap-nhat-nhap-xuat-du-lieu-vscode.md). Bản này cần migration **014_data_imports.sql**, không sửa 001–013 đã chạy.
 
 ```bash

@@ -1,0 +1,464 @@
+[
+  {
+    "file": "01_can_ho.xlsx",
+    "kind": "can_ho",
+    "items": [
+      {
+        "so_can_ho": "T261020X01",
+        "khoi": "TESTX",
+        "tang": "1",
+        "dien_tich_m2": "62.50",
+        "tinh_phi_dich_vu": "1"
+      },
+      {
+        "so_can_ho": "T261020X02",
+        "khoi": "TESTX",
+        "tang": "2",
+        "dien_tich_m2": "78",
+        "tinh_phi_dich_vu": "1"
+      },
+      {
+        "so_can_ho": "T261020X03",
+        "khoi": "TESTX",
+        "tang": "3",
+        "dien_tich_m2": "45.25",
+        "tinh_phi_dich_vu": "0"
+      }
+    ]
+  },
+  {
+    "file": "02_cu_dan.xlsx",
+    "kind": "cu_dan",
+    "items": [
+      {
+        "ho_va_ten": "Nguyễn Minh An (TEST X)",
+        "so_dien_thoai": "0949462111",
+        "so_can_ho": "T261020X01",
+        "quan_he": "CHU_HO",
+        "ngay": "2026-10-01"
+      },
+      {
+        "ho_va_ten": "Trần Ngọc Mai (TEST X)",
+        "so_dien_thoai": "0949462112",
+        "so_can_ho": "T261020X01",
+        "quan_he": "THANH_VIEN",
+        "ngay": "2026-10-01"
+      },
+      {
+        "ho_va_ten": "Lê Quang Bình (TEST X)",
+        "so_dien_thoai": "0949462113",
+        "so_can_ho": "T261020X02",
+        "quan_he": "NGUOI_THUE",
+        "ngay": "2026-10-01"
+      },
+      {
+        "ho_va_ten": "Phạm Thu Hà (TEST X)",
+        "so_dien_thoai": "0949462114",
+        "so_can_ho": "T261020X03",
+        "quan_he": "CHU_HO",
+        "ngay": "2026-10-01"
+      }
+    ]
+  },
+  {
+    "file": "03_phuong_tien.xlsx",
+    "kind": "phuong_tien",
+    "items": [
+      {
+        "ma_cu_dan": "THAY_MA_CU_DAN_1",
+        "so_can_ho": "T261020X01",
+        "loai_xe": "XE_MAY",
+        "bien_so": "99T261020X01",
+        "hang_xe": "Honda",
+        "mau_sac": "Trắng",
+        "ngay_dang_ky": "2026-10-01"
+      },
+      {
+        "ma_cu_dan": "THAY_MA_CU_DAN_2",
+        "so_can_ho": "T261020X02",
+        "loai_xe": "O_TO",
+        "bien_so": "99T261020X02",
+        "hang_xe": "Toyota",
+        "mau_sac": "Bạc",
+        "ngay_dang_ky": "2026-10-01"
+      },
+      {
+        "ma_cu_dan": "THAY_MA_CU_DAN_1",
+        "so_can_ho": "T261020X01",
+        "loai_xe": "XE_DAP",
+        "bien_so": "",
+        "hang_xe": "Thống Nhất",
+        "mau_sac": "Xanh",
+        "ngay_dang_ky": "2026-10-01"
+      }
+    ]
+  },
+  {
+    "file": "04_chi_so.xlsx",
+    "kind": "chi_so",
+    "items": [
+      {
+        "so_can_ho": "T261020X01",
+        "loai_dich_vu": "DIEN",
+        "ky_thanh_toan": "2026-10",
+        "chi_so_cu": "1000",
+        "chi_so_moi": "1065.5",
+        "ngay_chot": "2026-10-19",
+        "ky_dau": "1",
+        "ghi_chu": "Điện thử nghiệm X, căn 1"
+      },
+      {
+        "so_can_ho": "T261020X01",
+        "loai_dich_vu": "NUOC",
+        "ky_thanh_toan": "2026-10",
+        "chi_so_cu": "50",
+        "chi_so_moi": "55.125",
+        "ngay_chot": "2026-10-19",
+        "ky_dau": "1",
+        "ghi_chu": "Nước thử nghiệm X, căn 1"
+      },
+      {
+        "so_can_ho": "T261020X02",
+        "loai_dich_vu": "DIEN",
+        "ky_thanh_toan": "2026-10",
+        "chi_so_cu": "2000",
+        "chi_so_moi": "2150",
+        "ngay_chot": "2026-10-19",
+        "ky_dau": "1",
+        "ghi_chu": "Điện thử nghiệm X, căn 2"
+      },
+      {
+        "so_can_ho": "T261020X02",
+        "loai_dich_vu": "NUOC",
+        "ky_thanh_toan": "2026-10",
+        "chi_so_cu": "100",
+        "chi_so_moi": "108",
+        "ngay_chot": "2026-10-19",
+        "ky_dau": "1",
+        "ghi_chu": "Nước thử nghiệm X, căn 2"
+      },
+      {
+        "so_can_ho": "T261020X03",
+        "loai_dich_vu": "DIEN",
+        "ky_thanh_toan": "2026-10",
+        "chi_so_cu": "3000",
+        "chi_so_moi": "3235.125",
+        "ngay_chot": "2026-10-19",
+        "ky_dau": "1",
+        "ghi_chu": "Điện thử nghiệm X, căn 3"
+      },
+      {
+        "so_can_ho": "T261020X03",
+        "loai_dich_vu": "NUOC",
+        "ky_thanh_toan": "2026-10",
+        "chi_so_cu": "150",
+        "chi_so_moi": "162.5",
+        "ngay_chot": "2026-10-19",
+        "ky_dau": "1",
+        "ghi_chu": "Nước thử nghiệm X, căn 3"
+      }
+    ]
+  },
+  {
+    "file": "05_thiet_bi.xlsx",
+    "kind": "thiet_bi",
+    "items": [
+      {
+        "ma_tai_san": "T261020-X-BOM",
+        "ten_thiet_bi": "Máy bơm thử nghiệm X",
+        "loai": "MAY_BOM",
+        "vi_tri": "Tầng hầm khối TESTX",
+        "so_serial": "SN-T261020-X-01",
+        "ngay_lap_dat": "2026-10-01",
+        "trang_thai": "DANG_SU_DUNG",
+        "chu_ky_ngay": "30",
+        "ngay_bao_tri_tiep_theo": "2026-11-19",
+        "nhac_truoc_ngay": "7",
+        "ghi_chu": "Dữ liệu giả lập để kiểm thử nhập tệp."
+      },
+      {
+        "ma_tai_san": "T261020-X-PCCC",
+        "ten_thiet_bi": "Thiết bị PCCC thử nghiệm X",
+        "loai": "PCCC",
+        "vi_tri": "Sảnh khối TESTX",
+        "so_serial": "SN-T261020-X-02",
+        "ngay_lap_dat": "2026-10-01",
+        "trang_thai": "TAM_DUNG",
+        "chu_ky_ngay": "90",
+        "ngay_bao_tri_tiep_theo": "2026-11-19",
+        "nhac_truoc_ngay": "14",
+        "ghi_chu": "Ví dụ thiết bị tạm dừng, vẫn có lịch theo dõi."
+      },
+      {
+        "ma_tai_san": "T261020-X-CAM",
+        "ten_thiet_bi": "Camera thử nghiệm X",
+        "loai": "CAMERA",
+        "vi_tri": "Lối ra khối TESTX",
+        "so_serial": "SN-T261020-X-03",
+        "ngay_lap_dat": "2026-10-01",
+        "trang_thai": "DANG_SU_DUNG",
+        "chu_ky_ngay": "",
+        "ngay_bao_tri_tiep_theo": "",
+        "nhac_truoc_ngay": "7",
+        "ghi_chu": "Ví dụ chưa cấu hình chu kỳ bảo trì."
+      }
+    ]
+  },
+  {
+    "file": "01_can_ho.pdf",
+    "kind": "can_ho",
+    "items": [
+      {
+        "so_can_ho": "T261020P01",
+        "khoi": "TESTP",
+        "tang": "1",
+        "dien_tich_m2": "62.50",
+        "tinh_phi_dich_vu": "1"
+      },
+      {
+        "so_can_ho": "T261020P02",
+        "khoi": "TESTP",
+        "tang": "2",
+        "dien_tich_m2": "78",
+        "tinh_phi_dich_vu": "1"
+      },
+      {
+        "so_can_ho": "T261020P03",
+        "khoi": "TESTP",
+        "tang": "3",
+        "dien_tich_m2": "45.25",
+        "tinh_phi_dich_vu": "0"
+      }
+    ]
+  },
+  {
+    "file": "02_cu_dan.pdf",
+    "kind": "cu_dan",
+    "items": [
+      {
+        "ho_va_ten": "Nguyễn Minh An (TEST P)",
+        "so_dien_thoai": "0949462121",
+        "so_can_ho": "T261020P01",
+        "quan_he": "CHU_HO",
+        "ngay": "2026-10-01"
+      },
+      {
+        "ho_va_ten": "Trần Ngọc Mai (TEST P)",
+        "so_dien_thoai": "0949462122",
+        "so_can_ho": "T261020P01",
+        "quan_he": "THANH_VIEN",
+        "ngay": "2026-10-01"
+      },
+      {
+        "ho_va_ten": "Lê Quang Bình (TEST P)",
+        "so_dien_thoai": "0949462123",
+        "so_can_ho": "T261020P02",
+        "quan_he": "NGUOI_THUE",
+        "ngay": "2026-10-01"
+      },
+      {
+        "ho_va_ten": "Phạm Thu Hà (TEST P)",
+        "so_dien_thoai": "0949462124",
+        "so_can_ho": "T261020P03",
+        "quan_he": "CHU_HO",
+        "ngay": "2026-10-01"
+      }
+    ]
+  },
+  {
+    "file": "03_phuong_tien.pdf",
+    "kind": "phuong_tien",
+    "items": [
+      {
+        "ma_cu_dan": "THAY_MA_CU_DAN_1",
+        "so_can_ho": "T261020P01",
+        "loai_xe": "XE_MAY",
+        "bien_so": "99T261020P01",
+        "hang_xe": "Honda",
+        "mau_sac": "Trắng",
+        "ngay_dang_ky": "2026-10-01"
+      },
+      {
+        "ma_cu_dan": "THAY_MA_CU_DAN_2",
+        "so_can_ho": "T261020P02",
+        "loai_xe": "O_TO",
+        "bien_so": "99T261020P02",
+        "hang_xe": "Toyota",
+        "mau_sac": "Bạc",
+        "ngay_dang_ky": "2026-10-01"
+      },
+      {
+        "ma_cu_dan": "THAY_MA_CU_DAN_1",
+        "so_can_ho": "T261020P01",
+        "loai_xe": "XE_DAP",
+        "bien_so": "",
+        "hang_xe": "Thống Nhất",
+        "mau_sac": "Xanh",
+        "ngay_dang_ky": "2026-10-01"
+      }
+    ]
+  },
+  {
+    "file": "04_chi_so.pdf",
+    "kind": "chi_so",
+    "items": [
+      {
+        "so_can_ho": "T261020P01",
+        "loai_dich_vu": "DIEN",
+        "ky_thanh_toan": "2026-10",
+        "chi_so_cu": "1000",
+        "chi_so_moi": "1065.5",
+        "ngay_chot": "2026-10-19",
+        "ky_dau": "1",
+        "ghi_chu": "Điện thử nghiệm P, căn 1"
+      },
+      {
+        "so_can_ho": "T261020P01",
+        "loai_dich_vu": "NUOC",
+        "ky_thanh_toan": "2026-10",
+        "chi_so_cu": "50",
+        "chi_so_moi": "55.125",
+        "ngay_chot": "2026-10-19",
+        "ky_dau": "1",
+        "ghi_chu": "Nước thử nghiệm P, căn 1"
+      },
+      {
+        "so_can_ho": "T261020P02",
+        "loai_dich_vu": "DIEN",
+        "ky_thanh_toan": "2026-10",
+        "chi_so_cu": "2000",
+        "chi_so_moi": "2150",
+        "ngay_chot": "2026-10-19",
+        "ky_dau": "1",
+        "ghi_chu": "Điện thử nghiệm P, căn 2"
+      },
+      {
+        "so_can_ho": "T261020P02",
+        "loai_dich_vu": "NUOC",
+        "ky_thanh_toan": "2026-10",
+        "chi_so_cu": "100",
+        "chi_so_moi": "108",
+        "ngay_chot": "2026-10-19",
+        "ky_dau": "1",
+        "ghi_chu": "Nước thử nghiệm P, căn 2"
+      },
+      {
+        "so_can_ho": "T261020P03",
+        "loai_dich_vu": "DIEN",
+        "ky_thanh_toan": "2026-10",
+        "chi_so_cu": "3000",
+        "chi_so_moi": "3235.125",
+        "ngay_chot": "2026-10-19",
+        "ky_dau": "1",
+        "ghi_chu": "Điện thử nghiệm P, căn 3"
+      },
+      {
+        "so_can_ho": "T261020P03",
+        "loai_dich_vu": "NUOC",
+        "ky_thanh_toan": "2026-10",
+        "chi_so_cu": "150",
+        "chi_so_moi": "162.5",
+        "ngay_chot": "2026-10-19",
+        "ky_dau": "1",
+        "ghi_chu": "Nước thử nghiệm P, căn 3"
+      }
+    ]
+  },
+  {
+    "file": "05_thiet_bi.pdf",
+    "kind": "thiet_bi",
+    "items": [
+      {
+        "ma_tai_san": "T261020-P-BOM",
+        "ten_thiet_bi": "Máy bơm thử nghiệm P",
+        "loai": "MAY_BOM",
+        "vi_tri": "Tầng hầm khối TESTP",
+        "so_serial": "SN-T261020-P-01",
+        "ngay_lap_dat": "2026-10-01",
+        "trang_thai": "DANG_SU_DUNG",
+        "chu_ky_ngay": "30",
+        "ngay_bao_tri_tiep_theo": "2026-11-19",
+        "nhac_truoc_ngay": "7",
+        "ghi_chu": "Dữ liệu giả lập để kiểm thử nhập tệp."
+      },
+      {
+        "ma_tai_san": "T261020-P-PCCC",
+        "ten_thiet_bi": "Thiết bị PCCC thử nghiệm P",
+        "loai": "PCCC",
+        "vi_tri": "Sảnh khối TESTP",
+        "so_serial": "SN-T261020-P-02",
+        "ngay_lap_dat": "2026-10-01",
+        "trang_thai": "TAM_DUNG",
+        "chu_ky_ngay": "90",
+        "ngay_bao_tri_tiep_theo": "2026-11-19",
+        "nhac_truoc_ngay": "14",
+        "ghi_chu": "Ví dụ thiết bị tạm dừng, vẫn có lịch theo dõi."
+      },
+      {
+        "ma_tai_san": "T261020-P-CAM",
+        "ten_thiet_bi": "Camera thử nghiệm P",
+        "loai": "CAMERA",
+        "vi_tri": "Lối ra khối TESTP",
+        "so_serial": "SN-T261020-P-03",
+        "ngay_lap_dat": "2026-10-01",
+        "trang_thai": "DANG_SU_DUNG",
+        "chu_ky_ngay": "",
+        "ngay_bao_tri_tiep_theo": "",
+        "nhac_truoc_ngay": "7",
+        "ghi_chu": "Ví dụ chưa cấu hình chu kỳ bảo trì."
+      }
+    ]
+  },
+  {
+    "file": "90_loi_dien_tich_can_ho.xlsx",
+    "kind": "can_ho",
+    "items": [
+      {
+        "so_can_ho": "T261020ERR01",
+        "khoi": "TESTX",
+        "tang": "1",
+        "dien_tich_m2": "62.50",
+        "tinh_phi_dich_vu": "1"
+      },
+      {
+        "so_can_ho": "T261020ERR02",
+        "khoi": "TESTX",
+        "tang": "2",
+        "dien_tich_m2": "-10",
+        "tinh_phi_dich_vu": "1"
+      }
+    ]
+  },
+  {
+    "file": "91_loi_loai_thiet_bi.pdf",
+    "kind": "thiet_bi",
+    "items": [
+      {
+        "ma_tai_san": "T261020-ERR-BOM",
+        "ten_thiet_bi": "Máy bơm thử nghiệm P",
+        "loai": "MAY_BOM",
+        "vi_tri": "Tầng hầm khối TESTP",
+        "so_serial": "SN-T261020-P-01",
+        "ngay_lap_dat": "2026-10-01",
+        "trang_thai": "DANG_SU_DUNG",
+        "chu_ky_ngay": "30",
+        "ngay_bao_tri_tiep_theo": "2026-11-19",
+        "nhac_truoc_ngay": "7",
+        "ghi_chu": "Dữ liệu giả lập để kiểm thử nhập tệp."
+      },
+      {
+        "ma_tai_san": "T261020-ERR-PCCC",
+        "ten_thiet_bi": "Thiết bị PCCC thử nghiệm P",
+        "loai": "SAI_LOAI",
+        "vi_tri": "Sảnh khối TESTP",
+        "so_serial": "SN-T261020-P-02",
+        "ngay_lap_dat": "2026-10-01",
+        "trang_thai": "TAM_DUNG",
+        "chu_ky_ngay": "90",
+        "ngay_bao_tri_tiep_theo": "2026-11-19",
+        "nhac_truoc_ngay": "14",
+        "ghi_chu": "Ví dụ thiết bị tạm dừng, vẫn có lịch theo dõi."
+      }
+    ]
+  }
+]
