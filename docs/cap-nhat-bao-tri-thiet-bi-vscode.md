@@ -1,5 +1,7 @@
 # Thiết bị và bảo trì — code từng file cho VS Code
 
+> Bản tiếp theo: [Đặt lịch tiện ích cư dân — code đầy đủ 8 file](cap-nhat-dat-lich-tien-ich-vscode.md). Nếu đã cập nhật tiện ích, không dùng app.js/App.jsx/global.css bên dưới đè lên bản mới.
+
 Bản tiếp theo sau `d48909a` (báo cáo công nợ và thu phí). Chép đủ **9 file** bên dưới, không cần tải ZIP hoặc cài thêm thư viện. Nếu chưa có bản công nợ, cập nhật [bản 7 file báo cáo](cap-nhat-bao-cao-cong-no-vscode.md) trước. Giữ nguyên các chức năng đã có; không chép App.jsx/app.js/global.css cũ đè lại sau bản này.
 
 ## Cách cập nhật

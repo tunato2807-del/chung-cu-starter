@@ -1,6 +1,6 @@
 # Quản lý chung cư · Phản ánh QR
 
-React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web báo cáo công nợ/thu phí và bảo trì thiết bị** theo ba tài liệu thiết kế.
+React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web, báo cáo công nợ/thu phí, bảo trì thiết bị và đặt lịch tiện ích** theo ba tài liệu thiết kế.
 
 ## Chạy môi trường phát triển
 
@@ -141,6 +141,16 @@ Mã QR chứa URL theo tên miền đang mở trang quản trị. Khi thử came
 
 Để dùng nút **Mở camera** trên điện thoại cùng Wi-Fi, xem [hướng dẫn HTTPS cho Windows/Android](docs/https-local.md). Sau khi tạo và tin cậy chứng chỉ, chạy `npm run dev:frontend:https`. HTTP qua IP mạng nội bộ chỉ dùng được để mở form; trình duyệt chặn camera trong trang.
 
+## Đặt lịch tiện ích cư dân
+
+Xem [code đầy đủ 8 file để cập nhật trong VS Code](docs/cap-nhat-dat-lich-tien-ich-vscode.md). Cần bản bảo trì trước đó, rồi chạy `npm run db:migrate` để áp dụng 012, khởi động lại backend/frontend.
+
+- BQL → **Tiện ích & đặt lịch** → **Thêm tiện ích**: tên, vị trí, quy định, sức chứa, giờ mở/đóng, thời lượng tối đa, hạn đặt trước. **Quản lý lượt đặt** để lọc và duyệt/từ chối/hủy có lịch sử.
+- Cư dân hoặc tài khoản căn → **Đặt lịch tiện ích** → chọn tiện ích/ngày, chọn ô giờ trống, nhập số người/ghi chú → **Gửi yêu cầu đặt lịch**. Chỉ sử dụng sau khi BQL duyệt. **Lịch đặt của tôi** theo dõi/hủy trước giờ bắt đầu.
+- Mỗi lượt dùng riêng tiện ích; lịch chờ duyệt cũng giữ chỗ, hai nhóm không chia sẻ cùng khung giờ dù chưa hết sức chứa. Từ chối/hủy trả giờ trống, hai lượt sát nhau được phép. Server chặn trùng khi gửi đồng thời.
+- Tài khoản cá nhân cần liên kết cư dân đang ở. Tài khoản căn cần chủ hộ phụ trách hiện tại và có thể quản lý các lượt của căn. Cư dân khác chỉ biết khung bận, không thấy ghi chú/người/căn của lượt đó.
+- Đặt theo giờ Việt Nam, bước 30 phút, cùng ngày, giờ tương lai trong hạn 1–90 ngày tùy cấu hình. Tạm ngừng chỉ chặn lịch mới, không hủy lịch cũ. Lượt đã tới giờ không còn duyệt/từ chối/hủy; Chờ duyệt không tự thành Đã duyệt. Chuyển đi không tự hủy lượt đã đặt; BQL hoặc tài khoản căn hợp lệ xử lý trước giờ bắt đầu. Phần này chưa thu phí tiện ích.
+
 ## Kiểm tra
 
 ```bash
@@ -149,7 +159,7 @@ npm test
 npm run test:e2e
 ```
 
-- `npm test`: tạo/migrate database riêng `chung_cu_test`, chạy kiểm thử HTTP với MySQL thật. Gồm xác thực, khóa phiên, quyền bản ghi/ảnh, QR thu hồi, gửi lặp đồng thời, chuyển trạng thái, nghiệm thu mới, gộp trùng, giới hạn gửi, hóa đơn/cư trú/tài khoản căn, phạm vi thông báo, receipt sau bàn giao, nhắc phí đồng thời và rollback khi lịch sử lỗi.
+- `npm test`: tạo/migrate database riêng `chung_cu_test`, chạy kiểm thử HTTP với MySQL thật. Gồm xác thực, khóa phiên, quyền bản ghi/ảnh, QR thu hồi, gửi lặp đồng thời, chuyển trạng thái, nghiệm thu mới, gộp trùng, giới hạn gửi, hóa đơn/cư trú/tài khoản căn, phạm vi thông báo, receipt sau bàn giao, nhắc phí đồng thời, bảo trì thiết bị, đặt lịch tiện ích đồng thời và rollback khi lịch sử lỗi.
 - `npm run test:e2e`: chạy API/Vite riêng ở 3101/5174, mở Chromium và đi hết luồng qua giao diện ở 1440 px và 375 px. Browser Linux được đóng gói trong dependency `@sparticuz/chromium`, không cần tải thêm từ CDN. Kiểm thử không thay dữ liệu database phát triển. Hai lệnh test nên chạy lần lượt.
 - `/api/health` kiểm tra tiến trình; `/api/ready` kiểm tra database và migration. Không coi một cổng mở là đã sẵn sàng.
 

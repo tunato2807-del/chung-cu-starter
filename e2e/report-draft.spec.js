@@ -92,6 +92,8 @@ test("reload restores draft and request key; successful upload clears draft", as
     storageKey,
   );
   await (await choose(page, "Chọn ảnh từ thư viện")).setFiles(await photo());
+  // File selection finishes before asynchronous resize/decoding does.
+  await expect(page.getByAltText("Xem trước photo.jpg")).toBeVisible();
   await page.reload();
   await expect(page.getByText(/Đã khôi phục nội dung bản nháp/)).toBeVisible();
   await unchanged(page);
@@ -102,6 +104,8 @@ test("reload restores draft and request key; successful upload clears draft", as
   );
   expect(after.requestKey).toBe(before.requestKey);
   await (await choose(page, "Chọn ảnh từ thư viện")).setFiles(await photo());
+  // File selection finishes before asynchronous resize/decoding does.
+  await expect(page.getByAltText("Xem trước photo.jpg")).toBeVisible();
   let payload = "";
   await page.route("**/api/cong_khai/phan_anh", (route) => {
     payload = route.request().postDataBuffer().toString("utf8");

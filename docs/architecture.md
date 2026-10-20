@@ -115,3 +115,17 @@ Ghi khóa theo thiết bị → phiếu → đọc chia sẻ tài khoản actor/
 Luồng BQL phân công/đổi lịch/hủy/nghiệm thu, KTV bắt đầu/báo cáo. Trả lại xóa kết quả hiện tại, tăng lượt; báo cáo lượt trước vẫn trong audit văn bản và snapshot JSON. Nghiệm thu định kỳ tính ngày kế tiếp từ ngày thực hiện được duyệt + chu kỳ của phiếu, chỉ một lần nhờ version/khóa trạng thái. Đột xuất/hủy/trả lại không đổi lịch. Ghi lịch sử lỗi rollback cả phiếu và ngày kế tiếp. Tên/serial/vị trí hiện tại có thể sửa nhưng không ghi đè snapshot phiếu cũ.
 
 Giao diện BQL /quan-tri/thiet-bi và /quan-tri/bao-tri; KTV /ky-thuat/bao-tri. Resource gắn với path/revision để không render dữ liệu trang/query cũ trong lúc chuyển màn hình. Cảnh báo quá hạn và cửa sổ nhắc theo ngày Việt Nam. BQL chủ động lập phiếu kỳ sau; không có cron tạo phiếu hoặc gửi thông báo ngoài web. Bảo trì không thay sổ hóa đơn/thu phí hoặc tự đổi trạng thái thiết bị sau nghiệm thu.
+
+## Tiện ích và đặt lịch cư dân
+
+Module amenities dùng migration 012: tien_ich, dat_lich_tien_ich, lich_su_dat_lich. Phần này đặt riêng từng tiện ích, sức chứa là giới hạn người trong một lượt, không cộng gộp các nhóm độc lập. CHO_DUYET/DA_DUYET cùng giữ chỗ; TU_CHOI/DA_HUY giải phóng. Không tự thu tiền hoặc thêm dòng phí hóa đơn.
+
+Khóa ghi theo cư dân → đợt cư trú → căn → tiện ích → lượt đặt → tài khoản chia sẻ, tương thích luồng cư trú/bàn giao. BQL đổi cấu hình/duyệt/hủy chỉ khóa tiện ích → lượt → tài khoản. Mọi phép kiểm tra giao nhau và cấu hình chạy sau khóa cha tiện ích; dùng locking read để thấy các lượt đã commit khi vừa chờ khóa xong, không đọc snapshot cũ của transaction. Không dựa riêng vào bước kiểm tra trống trên frontend. Actor active/role/token, liên kết cá nhân hoặc người phụ trách căn được xác nhận lại trước ghi. Lịch sử và trạng thái cùng transaction; ghi audit lỗi rollback toàn bộ.
+
+Khóa UUID duy nhất kèm SHA256 của input chuẩn hóa/actor/tiện ích/phiên bản cấu hình. Retry được xét trước version/policy mới, chỉ sau khi xác nhận cư trú và phiên; cùng request trả đúng ID kể cả lịch đã hủy, không hồi sinh. Metadata tên/vị trí tiện ích, người đặt và đợt cư trú giữ lúc tạo. Các lần đổi tên không viết lại lịch cũ. Không thêm khóa ngoài từ cấu hình tiện ích tới căn/cư dân gây đảo thứ tự.
+
+Giờ đặt lưu DATETIME theo wall-clock Việt Nam, không gắn Z hoặc convert như timestamp UTC. Audit ngay_tao vẫn UTC theo cấu hình DB hiện tại. Giờ mở/đóng cùng ngày, bước 30 phút; khung [bắt đầu,kết thúc), cho phép sát giờ. Duyệt/hủy/từ chối bị chặn khi đã tới giờ bắt đầu. Chờ duyệt vẫn giữ trạng thái trong lịch sử khi quá giờ, không được coi như đã duyệt để sử dụng. Không có bộ lập lịch tự đổi trạng thái.
+
+API lịch trống chỉ trả các ô giờ và cờ, không lộ người/căn/nội dung/mã của lịch khác. Cá nhân chỉ đọc các lượt chính tài khoản tạo; hủy phải còn cùng đợt cư trú. Tài khoản căn xem mọi lượt của căn khi còn chủ hộ phụ trách hợp lệ, và được hủy thay hộ; bàn giao ngắt phiên cũ theo module tài khoản căn hiện có. Cư dân chuyển đi vẫn đọc lịch cá nhân, không còn quyền hủy tại đợt cũ. Lịch không tự hủy theo chuyển đi, BQL/tài khoản căn quyết định trước giờ bắt đầu.
+
+Giao diện /quan-tri/tien-ich, /quan-tri/dat-lich và đường dẫn tương ứng /cu-dan. Các request gắn path/revision, bỏ response bị hủy để không chồng lịch ngày cũ lên ngày mới. Form giữ input và UUID khi lỗi mạng/trùng lịch, đổi input tạo UUID mới. Mô tả/ghi chú được render dưới dạng văn bản thuần. Toàn bộ danh sách tiện ích/lượt đặt được phân trang 20, không cắt danh mục chọn cố định.

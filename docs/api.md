@@ -233,3 +233,30 @@ Tạo phiếu: `loai=DINH_KY|DOT_XUAT`, `khoa_yeu_cau` UUID, `ma_ky_thuat_vien` 
 Trạng thái: MOI → DA_PHAN_CONG → DANG_THUC_HIEN → CHO_NGHIEM_THU → HOAN_THANH. BQL trả lại từ chờ nghiệm thu về đang thực hiện, tăng lượt và xóa kết quả/ngày hiện tại; báo cáo cũ giữ trong lịch sử. Đổi người ở MOI/DA_PHAN_CONG/DANG_THUC_HIEN đưa về DA_PHAN_CONG, đặt lại thời điểm bắt đầu. KTV cũ mất quyền đọc/ghi; mục đang giao không có cơ chế tự nhận việc. HUY chỉ trước hoàn thành và không dời lịch. Mọi thay đổi dùng phien_ban, cũ trả 409 STALE_VERSION, sai trạng thái 409 INVALID_STATE.
 
 Ngày thực hiện phải từ ngay_lap tới hôm nay. Nghiệm thu định kỳ cập nhật ngày kế tiếp bằng ngày thực hiện + chu kỳ snapshot của phiếu, trong cùng transaction với kết thúc phiếu/audit. Không tự lập phiếu mới, không đổi trạng thái vận hành thiết bị. Đột xuất không đổi lịch định kỳ. Lịch sử đọc là văn bản; payload audit JSON giữ nội bộ DB, không trả nguyên body/request key/hash hoặc dữ liệu mật khẩu.
+
+## Tiện ích và đặt lịch
+
+Migration 012. Chỉ BQL/CU_DAN; KTV và khách không được truy cập. Giờ sử dụng là giờ Việt Nam, theo bước 30 phút, cùng ngày. Timestamp lịch sử là UTC. Danh sách trả `{data,total,page}` 20 dòng/trang; chi tiết/thao tác trả `{data}`.
+
+| Method | Đường dẫn dưới /api | Quyền / dữ liệu |
+|---|---|---|
+| GET | /tien_ich | BQL/CU_DAN; q, dang_mo=0/1, page; gồm cả tiện ích tạm ngừng |
+| POST | /tien_ich | BQL; ten_tien_ich, vi_tri, mo_ta, suc_chua, gio_mo, gio_dong, toi_da_phut, dat_truoc_ngay, dang_mo boolean |
+| GET, PUT | /tien_ich/:id | GET BQL/CU_DAN; PUT BQL, cùng trường tạo + phien_ban |
+| GET | /tien_ich/:id/lich?ngay=YYYY-MM-DD | BQL/CU_DAN; từ hôm nay đến 90 ngày tới; chỉ khung 30 phút và cờ da_dat/co_the_dat |
+| POST | /tien_ich/:id/dat_lich | CU_DAN; ngay, gio_bat_dau, gio_ket_thuc, so_nguoi, ghi_chu, phien_ban_tien_ich, khoa_yeu_cau UUID |
+| GET | /cua_toi/dat_lich/ngu_canh | CU_DAN; căn/cư dân/đợt cư trú hiện tại đủ quyền đặt, hoặc null |
+| GET | /dat_lich_tien_ich | BQL; q, ngay, trang_thai, ma_tien_ich, page |
+| GET | /cua_toi/dat_lich | CU_DAN; cùng bộ lọc, chỉ lịch thuộc quyền |
+| GET | /dat_lich_tien_ich/:id, /cua_toi/dat_lich/:id | Chi tiết theo quyền, lịch sử và co_the_huy; không trả UUID/fingerprint |
+| POST | /dat_lich_tien_ich/:id/duyet | BQL; phien_ban, ghi_chu tùy chọn; CHO_DUYET → DA_DUYET |
+| POST | /dat_lich_tien_ich/:id/tu_choi | BQL; phien_ban, ghi_chu 5–1000 ký tự; CHO_DUYET → TU_CHOI |
+| POST | /dat_lich_tien_ich/:id/huy, /cua_toi/dat_lich/:id/huy | BQL/cư dân thuộc quyền; phien_ban, ghi_chu 5–1000; lịch đang giữ chỗ → DA_HUY |
+
+Giờ HH:mm, phút 00/30; mở/đóng trong ngày 00:00–23:30, sức chứa 1–1000 người, mỗi lượt 30–360 phút và không vượt thời lượng cấu hình/giờ mở cửa; đặt trước 1–90 ngày tùy tiện ích. Giờ bắt đầu phải sau hiện tại; ngày cuối hạn đặt trước được tính cả ngày. Cờ `co_the_dat` chỉ cho biết khung còn trong thời gian nhận lịch; cần kiểm tra cả `da_dat=false`. API tạo kiểm tra lại mọi điều kiện; lịch trống là thông tin tham khảo tại thời điểm đọc.
+
+Server tự lấy căn, người đặt và đợt cư trú; không nhận căn/creator từ client. Tài khoản cá nhân phải có đợt cư trú đang mở; tài khoản căn phải có người phụ trách đang là chủ hộ tại chính căn. Cá nhân xem lịch tự đặt (kể cả lịch cũ sau chuyển đi); hủy cần còn đúng đợt cư trú đó. Tài khoản căn xem lịch của căn và hủy thay hộ khi còn người phụ trách hợp lệ. Đổi chủ hộ vẫn dùng cơ chế ngắt phiên cũ hiện có; chủ mới tiếp tục quản lý lịch căn. Cư dân khác chỉ xem khung bận, không được xem ghi chú/tên/căn/mã lượt đặt.
+
+CHO_DUYET và DA_DUYET đều giữ riêng toàn bộ tiện ích, không chia sẻ sức chứa với lượt khác. Hai khoảng giao nhau khi `cũ.bat_dau < mới.ket_thuc AND cũ.ket_thuc > mới.bat_dau`; hai lượt sát giờ được phép. UUID cùng input/actor/tiện ích/phiên bản cấu hình trả ID cũ (200), tạo mới 201, khác input cùng key 409. Retry không phục hồi lịch đã hủy/từ chối. Khóa tiện ích chung cho đặt/duyệt/hủy/sửa cấu hình, nên nhiều lượt gửi đồng thời không đặt trùng.
+
+Chỉ duyệt/từ chối/hủy **trước giờ bắt đầu**; yêu cầu chờ duyệt đến giờ vẫn ghi Chờ duyệt nhưng không được sử dụng và giao diện hiển thị đã tới giờ. Không tự duyệt, hoàn thành hoặc đổi trạng thái bằng cron. Tạm ngừng chặn đặt mới, giữ lịch có sẵn và vẫn cho BQL quyết định các lịch đó. Sửa sức chứa/giờ/thời lượng không được ảnh hưởng các lượt đang giữ chỗ chưa kết thúc; giảm hạn đặt trước chỉ áp dụng lượt mới. Chuyển đi không tự hủy lịch, BQL hoặc tài khoản căn còn hợp lệ xử lý lịch sắp tới. Không có xóa, sửa khung giờ lượt đã gửi, gửi thông báo ngoài hệ thống hoặc tính phí tiện ích trong bản này.

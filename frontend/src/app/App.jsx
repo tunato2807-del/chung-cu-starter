@@ -26,6 +26,12 @@ import {
   MaintenanceList,
   MaintenanceDetail,
 } from "../features/maintenance/Maintenance.jsx";
+import {
+  Amenities,
+  AmenityDetail,
+  Bookings,
+  BookingDetail,
+} from "../features/amenities/Amenities.jsx";
 import Users from "../features/auth/Users.jsx";
 import ApartmentAccounts from "../features/residency/ApartmentAccounts.jsx";
 import {
@@ -76,6 +82,7 @@ function Shell() {
           ["/quan-tri/cu-dan", "Cư dân & cư trú"],
           ["/quan-tri/phuong-tien", "Phương tiện"],
           ["/quan-tri/thiet-bi", "Thiết bị & bảo trì"],
+          ["/quan-tri/tien-ich", "Tiện ích & đặt lịch"],
           ["/quan-tri/don-gia", "Đơn giá phí"],
           ["/quan-tri/chi-so", "Chỉ số điện nước"],
           ["/quan-tri/hoa-don", "Phí & hóa đơn"],
@@ -92,6 +99,7 @@ function Shell() {
         : [
             ["/cu-dan/phan-anh", "Phản ánh của tôi"],
             ["/cu-dan/hoa-don", "Hóa đơn của tôi"],
+            ["/cu-dan/tien-ich", "Đặt lịch tiện ích"],
             ["/cu-dan/thong-bao", "Thông báo"],
           ];
   return (
@@ -192,6 +200,10 @@ function Shell() {
               ["/quan-tri/cu-dan", <Residents />],
               ["/quan-tri/cu-dan/:id", <ResidentDetail />],
               ["/quan-tri/phuong-tien", <Vehicles />],
+              ["/quan-tri/tien-ich", <Amenities />],
+              ["/quan-tri/tien-ich/:id", <AmenityDetail />],
+              ["/quan-tri/dat-lich", <Bookings />],
+              ["/quan-tri/dat-lich/:id", <BookingDetail />],
               ["/quan-tri/thiet-bi", <EquipmentList />],
               ["/quan-tri/thiet-bi/:id", <EquipmentDetail />],
               ["/quan-tri/bao-tri", <MaintenanceList />],
@@ -233,6 +245,18 @@ function Shell() {
                   }
                 />
               </React.Fragment>
+            ))}
+            {[
+              ["/cu-dan/tien-ich", <Amenities />],
+              ["/cu-dan/tien-ich/:id", <AmenityDetail />],
+              ["/cu-dan/dat-lich", <Bookings />],
+              ["/cu-dan/dat-lich/:id", <BookingDetail />],
+            ].map(([path, element]) => (
+              <Route
+                key={path}
+                path={path}
+                element={<Protected roles={resident}>{element}</Protected>}
+              />
             ))}
             {["/ky-thuat/bao-tri", "/ky-thuat/bao-tri/:id"].map((path) => (
               <Route
