@@ -49,6 +49,107 @@
   margin: 0 0 16px;
   font-size: 1.15rem;
 }
+.trend-card-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: start;
+  gap: 8px 16px;
+  margin-bottom: 12px;
+}
+.trend-card-heading h3 {
+  flex: 1 1 170px;
+}
+.trend-card-heading .field {
+  margin: 0;
+  max-width: 100%;
+}
+.trend-card-heading .field label {
+  font-size: 0.76rem;
+}
+.trend-card-heading select {
+  padding: 8px 12px;
+}
+.trends-visibility {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  border: 1px solid #dce7e1;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin: 8px 0 12px;
+}
+.trends-visibility legend {
+  color: #527369;
+  font-size: 0.85rem;
+  padding: 0 6px;
+}
+.trends-visibility label {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+}
+.trends-visibility input {
+  width: 18px;
+  height: 18px;
+  accent-color: #16776c;
+}
+.trend-pie-layout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.trend-pie {
+  display: block;
+  flex: 1 1 220px;
+  width: 100%;
+  max-width: 320px;
+  min-width: 0;
+}
+.trend-pie-total {
+  fill: #234b43;
+  font-weight: 700;
+  font-size: 19px;
+}
+.trend-pie path[role="button"] {
+  cursor: pointer;
+}
+.trend-pie path[role="button"]:focus {
+  outline: none;
+  stroke: #173d37;
+  stroke-width: 4px;
+}
+.trend-pie-legend {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+.trend-pie-legend button {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+  border: 0;
+  text-align: left;
+  padding: 10px;
+  font-size: 0.85rem;
+}
+.trend-pie-legend button[aria-pressed="true"] {
+  background: #edf4f0;
+}
+.trend-pie-legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+.trend-pie-legend b {
+  width: 100%;
+  margin-left: 16px;
+  overflow-wrap: anywhere;
+}
 .trend-totals {
   display: flex;
   flex-wrap: wrap;

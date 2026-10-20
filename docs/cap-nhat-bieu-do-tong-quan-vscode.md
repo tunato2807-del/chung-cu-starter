@@ -1,5 +1,7 @@
 # Biểu đồ Tổng quan theo ngày, tuần, tháng, quý, năm — code đầy đủ 5 file
 
+> Có bản cập nhật [chọn kiểu và hiện/ẩn biểu đồ — code đầy đủ 2 file](cap-nhat-kieu-va-an-hien-bieu-do-vscode.md). Sau khi áp dụng, không chép DashboardCharts.jsx/CSS cũ bên dưới đè lên.
+
 Áp dụng sau [Tổng quan vận hành 73bafdb](cap-nhat-tong-quan-van-hanh-vscode.md) trên nhánh `codex/auth-qr-incidents`. Giữ các chức năng trước đây. Hướng dẫn này chứa toàn bộ code **5 file** để chép vào VS Code, không cần tải ZIP. Không thêm thư viện hoặc migration.
 
 ## Biểu đồ được thêm

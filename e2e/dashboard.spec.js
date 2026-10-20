@@ -18,6 +18,11 @@ for (const width of [1440, 375])
       context = await browser.newContext({ viewport: { width, height: 1000 } }),
       page = await context.newPage(),
       errors = [];
+    let chartRequests = 0;
+    page.on("request", (r) => {
+      if (new URL(r.url()).pathname === "/api/tong_quan/thong_ke")
+        chartRequests++;
+    });
     let user, apartment, first;
     page.on("pageerror", (e) => errors.push(e.message));
     async function loaded(action) {
@@ -100,7 +105,11 @@ for (const width of [1440, 375])
           page.getByRole("heading", { name: title, exact: true }),
         ).toBeVisible();
       const charts = page.locator(".trends");
-      await expect(charts.locator(".trend-card")).toHaveCount(4);
+      await expect(charts.locator(".trend-card")).toHaveCount(0);
+      await expect(
+        charts.getByRole("button", { name: "Hiện biểu đồ", exact: true }),
+      ).toHaveAttribute("aria-expanded", "false");
+      expect(chartRequests).toBe(0);
       const financeChart = charts.locator(".trend-card").filter({
         has: page.getByRole("heading", {
           name: "Thu phí và hạn công nợ",
@@ -119,6 +128,31 @@ for (const width of [1440, 375])
         ).toBeEnabled();
         return (await r.json()).data;
       }
+      await chartLoaded(() =>
+        charts
+          .getByRole("button", { name: "Hiện biểu đồ", exact: true })
+          .click(),
+      );
+      await expect(charts.locator(".trend-card")).toHaveCount(4);
+      const typeSelect = (title) =>
+        charts.getByLabel(`Kiểu biểu đồ — ${title}`, { exact: true });
+      await expect(typeSelect("Thu phí và hạn công nợ")).toHaveValue("DUONG");
+      await expect(typeSelect("Tiếp nhận và đóng phản ánh")).toHaveValue("COT");
+      await expect(typeSelect("Lập và nghiệm thu bảo trì")).toHaveValue("MIEN");
+      await expect(typeSelect("Lượt đặt tiện ích")).toHaveValue("VONG");
+      for (const type of ["COT", "MIEN", "DUONG"]) {
+        await typeSelect("Thu phí và hạn công nợ").selectOption(type);
+        await expect(financeChart.locator("svg")).toHaveAttribute(
+          "data-chart-type",
+          type,
+        );
+      }
+      const beforeVisibility = chartRequests;
+      await charts.getByLabel("Bảo trì", { exact: true }).uncheck();
+      await expect(charts.locator(".trend-card")).toHaveCount(3);
+      await charts.getByLabel("Bảo trì", { exact: true }).check();
+      expect(chartRequests).toBe(beforeVisibility);
+      let lastChart;
       for (const [period, count] of [
         ["NGAY", 24],
         ["TUAN", 7],
@@ -140,6 +174,7 @@ for (const width of [1440, 375])
             .getByLabel("Khoảng thống kê", { exact: true })
             .selectOption(period),
         );
+        lastChart = result;
         expect(result.diem).toHaveLength(count);
         await expect(financeChart.locator('svg g[role="button"]')).toHaveCount(
           count,
@@ -158,6 +193,104 @@ for (const width of [1440, 375])
       await financeChart.locator("summary").click();
       await expect(financeChart.locator("tbody tr")).toHaveCount(12);
       await financeChart.locator("summary").click();
+      const pieData = structuredClone(lastChart);
+      for (const [key, value] of [
+        ["da_duyet", 1],
+        ["cho_duyet", 3],
+        ["da_huy", 2],
+        ["tu_choi", 4],
+      ]) {
+        pieData.tong[key] = value;
+        for (let i = 0; i < pieData.diem.length; i++)
+          pieData.diem[i][key] = i ? 0 : value;
+      }
+      const pieResponse = (route) =>
+        route.fulfill({
+          contentType: "application/json",
+          body: JSON.stringify({ data: pieData }),
+        });
+      await page.route("**/api/tong_quan/thong_ke?*", pieResponse);
+      await chartLoaded(() =>
+        charts
+          .getByRole("button", { name: "Cập nhật biểu đồ", exact: true })
+          .click(),
+      );
+      const bookingChart = charts.locator(".trend-card").filter({
+        has: page.getByRole("heading", {
+          name: "Lượt đặt tiện ích",
+          exact: true,
+        }),
+      });
+      await expect(bookingChart.locator(".trend-pie path")).toHaveCount(4);
+      await expect(bookingChart.locator(".trend-pie-total")).toHaveText(
+        "10 lượt",
+      );
+      await bookingChart
+        .locator(".trend-pie-legend")
+        .getByRole("button", { name: /Từ chối/ })
+        .click();
+      await expect(bookingChart.locator(".trend-detail")).toContainText("40%");
+      await bookingChart.screenshot({
+        path: `/tmp/chung-cu-chart-options-pie-${width}.png`,
+      });
+      for (const type of ["TRON", "COT", "DUONG", "MIEN", "VONG"])
+        await typeSelect("Lượt đặt tiện ích").selectOption(type);
+      // A single nonzero slice must draw a full ring, not a zero-length arc.
+      for (const key of ["cho_duyet", "da_huy", "tu_choi"]) {
+        pieData.tong[key] = 0;
+        pieData.diem[0][key] = 0;
+      }
+      await chartLoaded(() =>
+        charts
+          .getByRole("button", { name: "Cập nhật biểu đồ", exact: true })
+          .click(),
+      );
+      await expect(bookingChart.locator(".trend-pie path")).toHaveCount(1);
+      await expect(bookingChart.locator(".trend-pie-legend")).toContainText(
+        "100%",
+      );
+      await page.unroute("**/api/tong_quan/thong_ke?*", pieResponse);
+      await typeSelect("Thu phí và hạn công nợ").selectOption("MIEN");
+      await charts.getByLabel("Bảo trì", { exact: true }).uncheck();
+      await charts
+        .getByRole("button", { name: "Ẩn biểu đồ", exact: true })
+        .click();
+      await expect(charts.locator("#trends-body")).toHaveCount(0);
+      const beforeHidden = chartRequests;
+      await loaded(() => page.reload());
+      await expect(
+        charts.getByRole("button", { name: "Hiện biểu đồ", exact: true }),
+      ).toBeVisible();
+      expect(chartRequests).toBe(beforeHidden);
+      await page.screenshot({
+        path: `/tmp/chung-cu-chart-options-collapsed-${width}.png`,
+      });
+      await chartLoaded(() =>
+        charts
+          .getByRole("button", { name: "Hiện biểu đồ", exact: true })
+          .click(),
+      );
+      await expect(
+        charts.getByLabel("Bảo trì", { exact: true }),
+      ).not.toBeChecked();
+      await expect(typeSelect("Thu phí và hạn công nợ")).toHaveValue("MIEN");
+      await charts.getByLabel("Bảo trì", { exact: true }).check();
+      const beforeNone = chartRequests;
+      for (const label of [
+        "Thu phí & công nợ",
+        "Phản ánh",
+        "Bảo trì",
+        "Tiện ích",
+      ])
+        await charts.getByLabel(label, { exact: true }).uncheck();
+      await expect(charts.locator(".trend-card")).toHaveCount(0);
+      await expect(charts).toContainText("Chọn ít nhất một nhóm biểu đồ");
+      expect(chartRequests).toBe(beforeNone);
+      await chartLoaded(() =>
+        charts.getByLabel("Thu phí & công nợ", { exact: true }).check(),
+      );
+      for (const label of ["Phản ánh", "Bảo trì", "Tiện ích"])
+        await charts.getByLabel(label, { exact: true }).check();
       await expect(
         page
           .locator(".overview-metric")
@@ -282,6 +415,41 @@ for (const width of [1440, 375])
       await expect(
         page.getByText("Không có phiếu bảo trì đang mở.", { exact: true }),
       ).toBeVisible();
+      if (width === 1440) {
+        await page.evaluate(
+          (id) =>
+            localStorage.setItem(
+              `chung-cu:dashboard-charts:v1:${id}`,
+              JSON.stringify({
+                expanded: true,
+                visible: ["finance", "bogus", "finance"],
+                types: { finance: "TRON" },
+              }),
+            ),
+          user,
+        );
+        await loaded(() => page.reload());
+        await expect(charts.locator(".trend-card")).toHaveCount(1);
+        await expect(typeSelect("Thu phí và hạn công nợ")).toHaveValue("DUONG");
+        await context.addInitScript(() => {
+          Storage.prototype.getItem = () => {
+            throw new DOMException("Blocked", "SecurityError");
+          };
+          Storage.prototype.setItem = () => {
+            throw new DOMException("Blocked", "SecurityError");
+          };
+        });
+        await loaded(() => page.reload());
+        await expect(
+          charts.getByRole("button", { name: "Hiện biểu đồ", exact: true }),
+        ).toBeVisible();
+        await chartLoaded(() =>
+          charts
+            .getByRole("button", { name: "Hiện biểu đồ", exact: true })
+            .click(),
+        );
+        await expect(charts.locator(".trend-card")).toHaveCount(4);
+      }
       expect(errors).toEqual([]);
     } finally {
       await context.close();
