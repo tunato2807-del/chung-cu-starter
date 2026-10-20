@@ -1,5 +1,7 @@
 # Đặt lịch tiện ích cư dân — code từng file cho VS Code
 
+> Bản tiếp theo: [Thu chi và quỹ — code đầy đủ 9 file](cap-nhat-thu-chi-quy-vscode.md). Nếu đã cập nhật thu chi, không dùng app.js/App.jsx/global.css bên dưới đè lên bản mới.
+
 Bản tiếp theo sau `b73eb07` (thiết bị và bảo trì). Chép đủ **8 file** dưới đây vào dự án đang có. Không cần tải ZIP hoặc cài thêm thư viện. Nếu chưa cập nhật bảo trì, làm theo [bản 9 file bảo trì](cap-nhat-bao-tri-thiet-bi-vscode.md) trước; bản này dùng cả các chức năng tài khoản căn hộ, cư trú, hóa đơn, thông báo và báo cáo đã có.
 
 ## Cập nhật trên máy Windows

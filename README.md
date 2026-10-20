@@ -1,6 +1,6 @@
 # Quản lý chung cư · Phản ánh QR
 
-React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web, báo cáo công nợ/thu phí, bảo trì thiết bị và đặt lịch tiện ích** theo ba tài liệu thiết kế.
+React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web, báo cáo công nợ/thu phí, bảo trì thiết bị, đặt lịch tiện ích và thu chi/quỹ** theo ba tài liệu thiết kế.
 
 ## Chạy môi trường phát triển
 
@@ -151,6 +151,16 @@ Xem [code đầy đủ 8 file để cập nhật trong VS Code](docs/cap-nhat-da
 - Tài khoản cá nhân cần liên kết cư dân đang ở. Tài khoản căn cần chủ hộ phụ trách hiện tại và có thể quản lý các lượt của căn. Cư dân khác chỉ biết khung bận, không thấy ghi chú/người/căn của lượt đó.
 - Đặt theo giờ Việt Nam, bước 30 phút, cùng ngày, giờ tương lai trong hạn 1–90 ngày tùy cấu hình. Tạm ngừng chỉ chặn lịch mới, không hủy lịch cũ. Lượt đã tới giờ không còn duyệt/từ chối/hủy; Chờ duyệt không tự thành Đã duyệt. Chuyển đi không tự hủy lượt đã đặt; BQL hoặc tài khoản căn hợp lệ xử lý trước giờ bắt đầu. Phần này chưa thu phí tiện ích.
 
+## Thu chi và quỹ
+
+Xem [code đầy đủ 9 file để cập nhật trong VS Code](docs/cap-nhat-thu-chi-quy-vscode.md). Sau bản đặt lịch tiện ích, chạy `npm run db:migrate` để áp dụng 013 rồi khởi động lại backend/frontend.
+
+- BQL → **Thu chi & quỹ**: quỹ vận hành tự nhận số tiền hóa đơn đã xác nhận thu, kể cả hóa đơn cũ. Không cần lập thêm phiếu thu cho cùng khoản tiền. Có thể tạo quỹ khác, số dư bắt đầu 0, bổ sung số tiền ban đầu bằng phiếu Thu/Bổ sung quỹ.
+- Mở quỹ → **Lập phiếu thu / chi** → nhập loại, nhóm, ngày hạch toán, số tiền nguyên đồng, người nộp/nhận và diễn giải → lưu nháp. Chọn và tải chứng từ ảnh/PDF lên, rồi **Xác nhận duyệt và ghi sổ**. Phiếu chi bắt buộc chứng từ và số dư hiện tại đủ; ghi đồng thời không được chi vượt quỹ.
+- Nháp sửa/hủy được; phiếu đã ghi sổ và chứng từ giữ nguyên. Sai phiếu dùng **Lập phiếu đảo** có lý do, tạo khoản đối ứng hôm nay, gốc vẫn giữ lịch sử. Không đảo tiếp phiếu đảo. Đảo thu cần quỹ đủ tiền.
+- Sổ quỹ có đầu kỳ, thu/chi trong kỳ, cuối kỳ; xem từng giao dịch hoặc tổng hợp theo tháng, tìm nguồn/đối tác/mã phiếu. Lọc chi tiết không làm đổi tổng toàn quỹ theo khoảng ngày. Số dư theo dữ liệu phần mềm, cần đối soát tiền mặt/ngân hàng; ngày hạch toán lùi có thể làm báo cáo hồi tố âm. Chưa có khóa sổ kỳ, chuyển giữa quỹ hoặc giao dịch ngân hàng tự động.
+- Chỉ BQL xem/ghi và tải chứng từ. Tệp ảnh/PDF tối đa 5 MB, tối đa 5/phiếu; binary nằm trong database, không có thư mục công khai. Sao lưu cả database lẫn thư mục ảnh phản ánh hiện có.
+
 ## Kiểm tra
 
 ```bash
@@ -159,7 +169,7 @@ npm test
 npm run test:e2e
 ```
 
-- `npm test`: tạo/migrate database riêng `chung_cu_test`, chạy kiểm thử HTTP với MySQL thật. Gồm xác thực, khóa phiên, quyền bản ghi/ảnh, QR thu hồi, gửi lặp đồng thời, chuyển trạng thái, nghiệm thu mới, gộp trùng, giới hạn gửi, hóa đơn/cư trú/tài khoản căn, phạm vi thông báo, receipt sau bàn giao, nhắc phí đồng thời, bảo trì thiết bị, đặt lịch tiện ích đồng thời và rollback khi lịch sử lỗi.
+- `npm test`: tạo/migrate database riêng `chung_cu_test`, chạy kiểm thử HTTP với MySQL thật. Gồm xác thực, khóa phiên, quyền bản ghi/ảnh, QR thu hồi, gửi lặp đồng thời, chuyển trạng thái, nghiệm thu mới, gộp trùng, giới hạn gửi, hóa đơn/cư trú/tài khoản căn, phạm vi thông báo, receipt sau bàn giao, nhắc phí đồng thời, bảo trì thiết bị, đặt lịch tiện ích đồng thời, thu chi/quỹ, chứng từ và rollback khi lịch sử lỗi.
 - `npm run test:e2e`: chạy API/Vite riêng ở 3101/5174, mở Chromium và đi hết luồng qua giao diện ở 1440 px và 375 px. Browser Linux được đóng gói trong dependency `@sparticuz/chromium`, không cần tải thêm từ CDN. Kiểm thử không thay dữ liệu database phát triển. Hai lệnh test nên chạy lần lượt.
 - `/api/health` kiểm tra tiến trình; `/api/ready` kiểm tra database và migration. Không coi một cổng mở là đã sẵn sàng.
 

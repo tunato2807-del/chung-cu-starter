@@ -260,3 +260,31 @@ Server tự lấy căn, người đặt và đợt cư trú; không nhận căn/
 CHO_DUYET và DA_DUYET đều giữ riêng toàn bộ tiện ích, không chia sẻ sức chứa với lượt khác. Hai khoảng giao nhau khi `cũ.bat_dau < mới.ket_thuc AND cũ.ket_thuc > mới.bat_dau`; hai lượt sát giờ được phép. UUID cùng input/actor/tiện ích/phiên bản cấu hình trả ID cũ (200), tạo mới 201, khác input cùng key 409. Retry không phục hồi lịch đã hủy/từ chối. Khóa tiện ích chung cho đặt/duyệt/hủy/sửa cấu hình, nên nhiều lượt gửi đồng thời không đặt trùng.
 
 Chỉ duyệt/từ chối/hủy **trước giờ bắt đầu**; yêu cầu chờ duyệt đến giờ vẫn ghi Chờ duyệt nhưng không được sử dụng và giao diện hiển thị đã tới giờ. Không tự duyệt, hoàn thành hoặc đổi trạng thái bằng cron. Tạm ngừng chặn đặt mới, giữ lịch có sẵn và vẫn cho BQL quyết định các lịch đó. Sửa sức chứa/giờ/thời lượng không được ảnh hưởng các lượt đang giữ chỗ chưa kết thúc; giảm hạn đặt trước chỉ áp dụng lượt mới. Chuyển đi không tự hủy lịch, BQL hoặc tài khoản căn còn hợp lệ xử lý lịch sắp tới. Không có xóa, sửa khung giờ lượt đã gửi, gửi thông báo ngoài hệ thống hoặc tính phí tiện ích trong bản này.
+
+## Thu chi và quỹ
+
+Migration 013. Toàn bộ API chỉ dành cho BQL, gồm cả tải chứng từ; cư dân, tài khoản căn, KTV và khách không được đọc/ghi. JSON trả `{data}`, danh sách/sổ quỹ `{data,total,page}` 20 dòng/trang. Ghi JSON/multipart đều cần `X-App-Request: 1`.
+
+| Method | Đường dẫn dưới /api | Dữ liệu / hành vi |
+|---|---|---|
+| GET, POST | /quy | GET q,page. POST ten_quy (2–120), mo_ta (0–1000), dang_hoat_dong boolean; quỹ mới không nhận tự động hóa đơn, số dư từ 0 |
+| GET, PUT | /quy/:id | GET metadata + so_du hiện tại. PUT các trường tạo + phien_ban; không đổi nguồn thu hóa đơn, không tạm ngừng quỹ nhận hóa đơn |
+| GET | /quy/:id/so_quy | tu_ngay,den_ngay YYYY-MM-DD, không tương lai, mặc định đầu tháng–hôm nay; che_do GIAO_DICH/THEO_THANG; page |
+| GET, POST | /phieu_thu_chi | GET ma_quy,loai,trang_thai,q,page. POST ma_quy,loai,nhom,ngay_hach_toan,so_tien,doi_tac,dien_giai,khoa_yeu_cau UUID |
+| GET, PUT | /phieu_thu_chi/:id | GET chi tiết, metadata chứng từ, lịch sử, liên kết phiếu đảo/gốc. PUT các trường tạo (không UUID) + phien_ban, chỉ NHAP; không đổi quỹ/loại |
+| POST | /phieu_thu_chi/:id/duyet | phien_ban,ghi_chu tùy chọn; NHAP → DA_GHI_SO; chi cần chứng từ và số dư hiện tại đủ |
+| POST | /phieu_thu_chi/:id/huy | phien_ban,ly_do (5–1000); chỉ NHAP → HUY |
+| POST | /phieu_thu_chi/:id/dao | phien_ban,ly_do (5–1000); tạo ngay phiếu ngược chiều đã ghi sổ, cùng tiền/quỹ, ngày hôm nay; một lần/phiếu gốc |
+| POST | /phieu_thu_chi/:id/chung_tu | multipart phien_ban + 1–5 tệp chung_tu; chỉ NHAP, tổng mỗi phiếu tối đa 5, mỗi tệp 5 MB |
+| DELETE | /phieu_thu_chi/:id/chung_tu/:proof | JSON phien_ban, chỉ NHAP; xóa tệp + audit cùng transaction |
+| GET | /phieu_thu_chi/:id/chung_tu/:proof | BQL; trả binary đúng cặp phiếu/tệp, Content-Disposition attachment, CSP sandbox và nosniff |
+
+Loại THU có nhóm BO_SUNG_QUY/THU_KHAC; CHI có VAN_HANH/BAO_TRI/MUA_SAM/CHI_KHAC. DIEU_CHINH dành riêng phiếu đảo, THU_HOA_DON là nguồn hóa đơn, không tạo thủ công. so_tien là số nguyên đồng dương, tối đa 14 chữ số; ngày hạch toán không tương lai, đối tác 2–150, diễn giải 5–1000. Tính/sum bằng DECIMAL/BigInt, trả tiền dưới dạng chuỗi. Đơn vị cố định VND.
+
+NHAP/HUY không vào sổ. DA_GHI_SO không sửa tiền/ngày/nội dung/chứng từ và không hủy; đảo tạo dòng đối ứng, giữ nguyên số tiền/trạng thái/nội dung gốc. Phiếu đảo không đảo tiếp; gốc có tối đa một phiếu đảo. Cùng actor và lý do gửi lại thao tác đảo trả ID cũ; khác lý do/actor khi đã đảo báo 409. Đảo thu là chi nên cần đủ số dư; đảo chi cộng lại tiền. Phiếu đảo dùng chứng từ tại liên kết gốc, không yêu cầu upload bản sao.
+
+Quỹ vận hành mặc định đọc các hoa_don DA_THANH_TOAN có ngay_thanh_toan, so_tien_da_thu; không sao chép thành phiếu. Bao gồm hóa đơn đã xác nhận từ trước khi cập nhật, không đưa nháp/chưa thu/hủy vào sổ. Ngày nguồn hóa đơn là thời điểm xác nhận quy đổi UTC → Việt Nam, không phải kỳ hóa đơn. Xác nhận thu lặp chỉ có một dòng hóa đơn. Nguồn mặc định này cố định, chỉ tên/mô tả được sửa. Quỹ khác chỉ nhận phiếu thủ công; không chuyển quỹ tự động hoặc ghi lại cùng khoản hóa đơn thành thu khác.
+
+Sổ tính dau_ky = thu − chi trước từ ngày; tong_thu/tong_chi trong khoảng ngày bao gồm cả hai đầu, cuoi_ky = dau_ky + thu − chi. Tham số nguon PHIEU/HOA_DON, loai THU/CHI và q (mã chứng từ/đối tác/diễn giải) chỉ lọc danh sách GIAO_DICH, không đổi tổng số dư. THEO_THANG tổng hợp toàn quỹ trong khoảng ngày, bỏ các bộ lọc chi tiết, trả tháng có giao dịch cùng tổng thu/chi. Báo cáo dùng một snapshot chỉ đọc cho tổng/count/trang. Số dư có thể thay đổi hồi tố khi BQL ghi phiếu lùi ngày; không có khóa sổ kỳ trong bản này. Kiểm tra không vượt quỹ dùng **số dư hiện tại khi duyệt**, không phải số dư quá khứ tại ngày hạch toán; báo cáo quá khứ có thể âm.
+
+Khóa theo quỹ → phiếu → actor; mọi lập/sửa/đính kèm/duyệt/đảo cùng quỹ được tuần tự hóa. UUID + fingerprint bảo vệ tạo nháp lặp; cùng request 200 với ID cũ, mới 201, khác input cùng UUID 409. Không có bản ghi tiền tự động nào được tạo khi xem sổ hoặc migrate. Chứng từ PDF kiểm tra đầu/đuôi tệp và chỉ phục vụ tải xuống; ảnh được decode JPEG/PNG/WebP tĩnh ≤25 triệu pixel, xoay/thu nhỏ/bỏ metadata/encode JPEG. SHA256 nội dung chuẩn hóa chống upload trùng; retry toàn bộ tệp đã có trả thành công trước kiểm tra phiên bản, không tăng version. Tệp trùng một phần + tệp mới vẫn cần version hiện tại. Binary lưu trong database, không có URL storage công khai. Mọi thay đổi phiếu/chứng từ/audit cùng transaction.

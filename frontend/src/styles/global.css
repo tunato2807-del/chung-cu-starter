@@ -1430,3 +1430,132 @@ footer {
   border-color: #14635a;
   box-shadow: 0 0 0 2px #b7d9ca;
 }
+
+.treasury-funds,
+.treasury-form-grid,
+.treasury-action-grid,
+.treasury-voucher-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+.treasury-funds > .card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+.treasury-funds h2 {
+  overflow-wrap: anywhere;
+}
+.treasury-funds p {
+  flex: 1;
+}
+.treasury-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.treasury-tag {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 2rem;
+  background: #e3f3e8;
+  color: #225e46;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+.treasury-NHAP {
+  background: #fff2d9;
+  color: #8a5416;
+}
+.treasury-HUY,
+.treasury-closed {
+  background: #fff0ea;
+  color: #a33225;
+}
+.treasury-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+}
+.treasury-filters .field {
+  flex: 1 1 180px;
+  margin-bottom: 0;
+}
+.treasury-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+.treasury-metrics .card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+}
+.treasury-metrics strong {
+  font-size: 1.5rem;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.treasury-subtitle,
+.treasury-history small {
+  display: block;
+  color: #627c73;
+}
+.treasury-money {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.treasury-voucher-summary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.3rem;
+  background: #f2f6f4;
+  border-radius: 0.8rem;
+  overflow-wrap: anywhere;
+}
+.treasury-voucher-summary strong {
+  font-size: 1.7rem;
+}
+.treasury-history {
+  padding-left: 1.3rem;
+}
+.treasury-history li {
+  padding: 0 0 1rem 0.3rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e4ebe7;
+}
+.treasury-proofs {
+  padding-left: 1.3rem;
+}
+.treasury-proofs li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #e4ebe7;
+}
+.treasury-proofs a {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1100px) {
+  .treasury-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .treasury-funds,
+  .treasury-form-grid,
+  .treasury-action-grid,
+  .treasury-voucher-summary,
+  .treasury-metrics {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .treasury-filters > button {
+    width: 100%;
+  }
+}

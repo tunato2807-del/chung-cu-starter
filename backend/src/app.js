@@ -39,6 +39,11 @@ import {
   selfBookingsRouter,
 } from "./modules/amenities/amenities.routes.js";
 
+import {
+  fundsRouter,
+  vouchersRouter,
+} from "./modules/treasury/treasury.routes.js";
+
 export const app = express();
 app.disable("x-powered-by");
 app.use(requestContext);
@@ -51,7 +56,7 @@ app.use("/api/health", healthRouter);
 app.get("/api/ready", async (req, res) => {
   try {
     const [migrations] = await pool.execute(
-      "SELECT name FROM schema_migrations WHERE name IN (?,?,?,?,?,?,?,?,?,?,?,?)",
+      "SELECT name FROM schema_migrations WHERE name IN (?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         "001_auth_qr_incidents.sql",
         "002_residency.sql",
@@ -65,9 +70,10 @@ app.get("/api/ready", async (req, res) => {
         "010_maintenance.sql",
         "011_maintenance_plan_checks.sql",
         "012_amenity_bookings.sql",
+        "013_treasury.sql",
       ],
     );
-    if (migrations.length !== 12) throw new Error("Schema not initialized");
+    if (migrations.length !== 13) throw new Error("Schema not initialized");
     await pool.query("SELECT 1 FROM phan_anh LIMIT 1");
   } catch {
     fail(
@@ -87,6 +93,8 @@ app.use("/api/cau_hinh_phi", ratesRouter);
 app.use("/api/chi_so_dich_vu", metersRouter);
 app.use("/api/hoa_don", billsRouter);
 app.use("/api/bao_cao", financialReportsRouter);
+app.use("/api/quy", fundsRouter);
+app.use("/api/phieu_thu_chi", vouchersRouter);
 app.use("/api/tien_ich", amenitiesRouter);
 app.use("/api/dat_lich_tien_ich", bookingsRouter);
 app.use("/api/cua_toi/dat_lich", selfBookingsRouter);

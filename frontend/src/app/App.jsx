@@ -32,6 +32,13 @@ import {
   Bookings,
   BookingDetail,
 } from "../features/amenities/Amenities.jsx";
+import {
+  Funds,
+  FundDetail,
+  Vouchers,
+  VoucherNew,
+  VoucherDetail,
+} from "../features/treasury/Treasury.jsx";
 import Users from "../features/auth/Users.jsx";
 import ApartmentAccounts from "../features/residency/ApartmentAccounts.jsx";
 import {
@@ -87,6 +94,7 @@ function Shell() {
           ["/quan-tri/chi-so", "Chỉ số điện nước"],
           ["/quan-tri/hoa-don", "Phí & hóa đơn"],
           ["/quan-tri/bao-cao-tai-chinh", "Công nợ & thu phí"],
+          ["/quan-tri/quy", "Thu chi & quỹ"],
           ["/quan-tri/thong-bao", "Thông báo"],
           ["/quan-tri/vi-tri-qr", "Vị trí & QR"],
           ["/quan-tri/nhan-su", "Nhân sự & tài khoản"],
@@ -200,6 +208,11 @@ function Shell() {
               ["/quan-tri/cu-dan", <Residents />],
               ["/quan-tri/cu-dan/:id", <ResidentDetail />],
               ["/quan-tri/phuong-tien", <Vehicles />],
+              ["/quan-tri/quy", <Funds />],
+              ["/quan-tri/quy/:id", <FundDetail />],
+              ["/quan-tri/phieu-thu-chi", <Vouchers />],
+              ["/quan-tri/phieu-thu-chi/moi", <VoucherNew />],
+              ["/quan-tri/phieu-thu-chi/:id", <VoucherDetail />],
               ["/quan-tri/tien-ich", <Amenities />],
               ["/quan-tri/tien-ich/:id", <AmenityDetail />],
               ["/quan-tri/dat-lich", <Bookings />],
