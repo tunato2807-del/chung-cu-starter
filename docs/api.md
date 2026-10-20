@@ -339,6 +339,16 @@ Parser nhận diện đúng danh mục từ marker PDF hoặc tập header Excel
 Import phương tiện chặn mã không phải số hoặc placeholder THAY_MA_CU_DAN_1/2 bằng thông báo hướng dẫn lấy mã tại Cư dân. Mã cư dân là ma_cu_dan của hồ sơ, không phải tên đăng nhập CH... của căn hộ. Các API danh sách/chi tiết đã trả mã này; giao diện mới hiển thị mã, nút sao chép và dùng bộ lọc ma_cu_dan hiện có. Không thay schema, quyền hoặc logic bàn giao tài khoản.
 
 
+## Lập bản nháp hóa đơn hàng loạt (chỉ BQL)
+
+POST `/api/hoa_don/hang_loat/xem_truoc` nhận `{ma_can_ho:[id...],ky_thanh_toan,ngay_chot_phi,tinh_nuoc,tinh_dien,tinh_xe}`. Từ 1–50 ID dương duy nhất, thứ tự chuẩn hóa tăng dần; kỳ YYYY-MM, ngày chốt thật thuộc kỳ và không sau hôm nay Việt Nam; ba option bắt buộc boolean. Phí quản lý theo từng căn. 401/403 như hóa đơn BQL, bắt buộc X-App-Request, no-store.
+
+Trả `{data:{rows,so_can,so_can_loi,tong_tien,xac_nhan}}`; rows gồm ID/số căn/khối, tong_tien tạm tính, loi[], chi_tiet[] theo snapshot phí đơn lẻ. tong_tien tổng chỉ các căn hợp lệ, string nguyên đồng. Nếu có căn thiếu chỉ số/giá, đã có hóa đơn còn hiệu lực hoặc cần lập thay thế thì xac_nhan=null. Không ghi bản nháp/ledger/audit; không tự bỏ qua căn lỗi. Căn bị lỗi vẫn có thể có khoản tạm tính để kiểm tra, không được đưa vào tổng hợp lệ.
+
+POST `/api/hoa_don/hang_loat/xac_nhan` nhận cùng input và `{xac_nhan,khoa_yeu_cau}` UUID. Token HMAC hạn 15 phút, gắn người lập/token phiên, input và báo giá. Tính lại dưới khóa nguồn trước khi ghi. Toàn bộ hợp lệ/khớp mới tạo tất cả NHAP trong một giao dịch, gồm snapshot và audit cũ. Trả 201 `{data:{ma_dot_lap,so_hoa_don,tong_tien,hoa_don:[{ma_can_ho,so_can_ho,ma_hoa_don,tong_tien}],da_lap_truoc}}`. Không tự duyệt/gửi/thu tiền.
+
+Lỗi `BATCH_SIZE`/`BATCH_APARTMENTS`/validation 422; `PREVIEW_REQUIRED`/`PREVIEW_EXPIRED` 409 cần xem trước; `BATCH_CHANGED` 409 chưa ghi căn nào; `BATCH_KEY_CONFLICT` 409 khi UUID cũ đi với input khác. Deadlock/lock timeout trả 409 CONCURRENT_UPDATE theo handler chung. Khi lỗi mạng, giữ nguyên input/token/UUID và retry: ledger UNIQUE(actor,UUID) trả lại ID cũ mà không tạo thêm, kể cả token đã hết hạn hoặc máy chủ restart. Đợt đã ghi chỉ trả kết quả cũ sau kiểm tra phiên/actor, không tính lại số tiền theo trạng thái hiện tại. Đổi UUID vẫn bị khóa hóa đơn còn hiệu lực theo căn/kỳ; hóa đơn hủy phải lập thay thế qua màn riêng. Các API đơn lẻ giữ nguyên hợp đồng, vẫn cho tạo nháp thiếu dữ liệu để sửa từng căn.
+
 ## Tổng quan vận hành (chỉ BQL)
 
 GET `/api/tong_quan` trả `{data:{tai_luc,ngay_hien_tai,gio_hien_tai,tu_ngay_thu,den_ngay_thu,tai_chinh,phan_anh,bao_tri,tien_ich}}`. UTC timestamp tai_luc, ngày/giờ nghiệp vụ Việt Nam UTC+07. 401 cho khách/phiên hết, 403 cho KTV/cư dân; no-store/nosniff theo middleware chung. Không nhận bộ lọc từng khối vì đây là tổng quan toàn hệ thống.

@@ -1,4 +1,5 @@
 import DataTools from "../../shared/DataTools.jsx";
+import BatchBills from "./BatchBills.jsx";
 import React, { useEffect, useState } from "react";
 import {
   Link,
@@ -671,6 +672,8 @@ export function Bills() {
   const [params, setParams] = useSearchParams(),
     resource = useResource(`${api}?${params}`),
     [adding, setAdding] = useState(false),
+    [batchAdding, setBatchAdding] = useState(false),
+    [batchBusy, setBatchBusy] = useState(false),
     navigate = useNavigate(),
     action = useAction(resource.reload);
   return (
@@ -678,16 +681,34 @@ export function Bills() {
       <div className="page-heading">
         <h1>{admin ? "Phí và hóa đơn" : "Hóa đơn của tôi"}</h1>
         {admin && (
-          <button
-            className="primary"
-            disabled={action.pending}
-            onClick={() => setAdding(!adding)}
-          >
-            {adding ? "Đóng biểu mẫu" : "Lập hóa đơn"}
-          </button>
+          <div className="actions">
+            <button
+              type="button"
+              disabled={action.pending || batchBusy}
+              onClick={() => {
+                setBatchAdding(!batchAdding);
+                setAdding(false);
+              }}
+            >
+              {batchAdding ? "Đóng lập hàng loạt" : "Lập hàng loạt"}
+            </button>
+            <button
+              className="primary"
+              disabled={action.pending || batchBusy}
+              onClick={() => {
+                setAdding(!adding);
+                setBatchAdding(false);
+              }}
+            >
+              {adding ? "Đóng biểu mẫu" : "Lập hóa đơn"}
+            </button>
+          </div>
         )}
       </div>
       <Feedback action={action} />
+      {batchAdding && (
+        <BatchBills onDone={resource.reload} onBusy={setBatchBusy} />
+      )}
       {admin && (
         <DataTools kind="hoa_don" params={params} disabled={resource.loading} />
       )}

@@ -1,5 +1,7 @@
 # Cập nhật phí và hóa đơn trong VS Code
 
+> Có bản [lập hóa đơn hàng loạt — code đầy đủ 8 file](cap-nhat-hoa-don-hang-loat-vscode.md), gồm migration 015. Sau khi cập nhật, không chép service/router hóa đơn, app.js hoặc Billing.jsx cũ đè lên.
+
 > Sau khi có tài khoản căn hộ (007–008), dùng [hướng dẫn tài khoản căn mới nhất](cap-nhat-tai-khoan-can-ho-vscode.md) cho các file trùng tên; không chép bản cũ đè lên thay đổi mới.
 
 > Đây là bản hóa đơn ban đầu (migration 005). Nếu đã cập nhật điện bậc thang (006), dùng [hướng dẫn điện bậc thang](cap-nhat-dien-bac-thang-vscode.md) khi sửa 5 file liên quan; không chép lại phiên bản cũ bên dưới đè lên bản mới.

@@ -40,3 +40,5 @@ Hóa đơn đã thu được đọc trực tiếp vào sổ quỹ vận hành, g
 
 
 `migrations/014_data_imports.sql` thêm ledger `dot_nhap_du_lieu`: actor, UUID, phân hệ, SHA256 tệp, 1–100 dòng, kết quả JSON chỉ ID/số dòng và thời điểm UTC. UNIQUE(actor,UUID) chặn UUID dùng lại cho lô khác, UNIQUE(actor,phan_he,SHA256) chặn nhập lại cùng file với UUID mới. FK người nhập giữ audit. Không sửa dữ liệu nghiệp vụ cũ, không seed lô nhập hay sao chép file/mật khẩu. Ledger chỉ commit cùng toàn bộ hồ sơ trong lô, preview và lô lỗi rollback. Giữ nguyên checksum migration 001–013.
+
+`migrations/015_bill_batches.sql` thêm ledger `dot_lap_hoa_don`: người lập, UUID duy nhất theo người lập, SHA256 đầu vào chuẩn hóa, JSON kết quả và thời điểm tạo UTC. Kết quả chỉ chứa ID căn/hóa đơn, tổng tiền và số hóa đơn; không chứa token xem trước hay thông tin ngân hàng/mật khẩu. Row ledger commit cùng toàn bộ bản nháp, không backfill hoặc sửa hóa đơn cũ. Retry cùng UUID trả kết quả cũ, batch lỗi rollback cả ledger. Chạy `npm run db:migrate`, không sửa 001–014 và không seed lại. API ready yêu cầu đủ 15 migration.

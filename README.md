@@ -90,6 +90,8 @@ Danh bạ và mọi thao tác xe chỉ dành cho BQL. Module hóa đơn đọc s
 
 ## Phí và hóa đơn
 
+Trong **Phí & hóa đơn → Lập hàng loạt**, BQL chọn tối đa 50 căn, kỳ và ngày chốt, xem trước từng khoản thu và lỗi trước khi xác nhận. Có chọn các căn trên trang, giữ lựa chọn khi tìm/chuyển trang và bỏ các căn lỗi để xem trước lại. Chỉ tạo bản nháp khi toàn bộ đợt hợp lệ và dữ liệu nguồn còn khớp; không tự duyệt/gửi/thu tiền. Retry sau lỗi mạng giữ UUID để nhận lại đúng kết quả cũ. Cần chạy migration **015_bill_batches.sql**; xem [code đầy đủ 8 file cho VS Code](docs/cap-nhat-hoa-don-hang-loat-vscode.md).
+
 Cập nhật giao diện sau bản điện bậc thang: [3 file sửa định dạng số, chọn ngân hàng và QR thanh toán](docs/cap-nhat-giao-dien-thanh-toan-vscode.md). Không cần migration mới.
 
 Chạy `npm run db:migrate` để áp dụng đến `006_electricity_tiers.sql`, giữ nguyên migration cũ và dữ liệu đã có. Bản hóa đơn ban đầu: [code 11 file](docs/cap-nhat-hoa-don-vscode.md). Nếu đã có bản đó, cập nhật [5 file điện bậc thang](docs/cap-nhat-dien-bac-thang-vscode.md).

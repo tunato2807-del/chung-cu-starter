@@ -382,7 +382,7 @@ async function storeSnapshot(db, id, snapshot) {
     [snapshot.total, JSON.stringify(snapshot.errors), snapshot.hash, id],
   );
 }
-async function makeDraft(db, apartment, body, user, previous = null) {
+export async function prepareDraft(db, apartment, body, previous = null) {
   const month = v.period(body.ky_thanh_toan),
     day = v.monthDay(body.ngay_chot_phi, month),
     options = v.options(body);
@@ -407,6 +407,15 @@ async function makeDraft(db, apartment, body, user, previous = null) {
       "Hãy lập thay thế từ hóa đơn hủy gần nhất.",
     );
   const snapshot = await calculate(db, apartment, month, day, options);
+  return { month, day, options, existing, snapshot };
+}
+async function makeDraft(db, apartment, body, user, previous = null) {
+  const { month, day, options, existing, snapshot } = await prepareDraft(
+    db,
+    apartment,
+    body,
+    previous,
+  );
   const result = await rows(
     db,
     "INSERT INTO hoa_don (so_hoa_don,ma_can_ho,ky_thanh_toan,ngay_chot_phi,lan_lap,tinh_nuoc,tinh_dien,tinh_xe,loi_du_lieu,dau_van_tay,ma_nguoi_lap,ma_hoa_don_thay_the_cho) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -429,10 +438,11 @@ async function makeDraft(db, apartment, body, user, previous = null) {
   await log(db, result.insertId, user, previous ? "LAP_THAY_THE" : "LAP_NHAP");
   return { ma_hoa_don: result.insertId };
 }
-export async function generate(body, user) {
+export async function generate(body, user, connection = null) {
   const id = integer(body.ma_can_ho, "ma_can_ho");
-  return transaction(async (db) =>
-    makeDraft(db, await lockApartment(db, id), body, user),
+  return transaction(
+    async (db) => makeDraft(db, await lockApartment(db, id), body, user),
+    connection,
   );
 }
 async function lockedBill(db, id) {

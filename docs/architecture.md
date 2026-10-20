@@ -68,7 +68,7 @@ VietQR tạo payload NAPAS QRIBFTTA và CRC16 trong backend, dựng ảnh QR c�
 
 ## Phạm vi tiếp theo
 
-Chưa triển khai lập hóa đơn hàng loạt và các nghiệp vụ thanh toán mở rộng. Những bảng nghiệp vụ tiếp theo phải được bổ sung bằng migration mới, giữ lịch sử và áp dụng quyền theo đợt cư trú theo bản rà soát. Không dùng SQL cũ trong tài liệu thiết kế làm migration cho database đang chạy.
+Lập bản nháp hóa đơn hàng loạt đã triển khai ở migration 015; các nghiệp vụ thanh toán mở rộng chưa triển khai. Những bảng nghiệp vụ tiếp theo phải được bổ sung bằng migration mới, giữ lịch sử và áp dụng quyền theo đợt cư trú theo bản rà soát. Không dùng SQL cũ trong tài liệu thiết kế làm migration cho database đang chạy.
 
 
 ## Tài khoản căn và người phụ trách
@@ -185,3 +185,13 @@ Biểu đồ dùng module dashboard-statistics và API /tong_quan/thong_ke chỉ
 DashboardCharts tách riêng, CSS trend/trends, vẽ SVG theo tỷ lệ BigInt (chỉ đổi tỷ lệ 0–1 sang Number), số gốc và bảng giữ chính xác nguyên đồng. Các cột có focus, phím mũi tên/Home/End, chạm/rê chuột; bảng có caption và tổng. Cuộn ngang nằm trong biểu đồ/bảng trên điện thoại. Bộ lọc biểu đồ tồn tại độc lập khi Tổng quan refresh; mỗi request có key gồm khoảng/ngày/revision. Không thư viện biểu đồ hoặc migration mới.
 
 Biểu đồ có collapse mặc định và chọn nhóm, chỉ fetch khi expanded và còn nhóm được chọn; thu gọn/hide-all abort request và bỏ state, mở lại đọc mới. Preferences localStorage key `chung-cu:dashboard-charts:v1:<userId>` chỉ chứa expanded, danh sách nhóm và kiểu vẽ đã kiểm tra allowlist, không lưu dữ liệu nghiệp vụ; auth đổi user remount panel. Storage bị chặn vẫn dùng state trong phiên. Kiểu mặc định: finance đường, incidents cột, maintenance miền không cộng dồn, bookings donut. Các chuỗi dòng chảy không dùng pie vì không loại trừ nhau; chỉ bookings có pie/donut theo tổng các trạng thái trong kỳ. Bảng vẫn theo thời gian. Tỷ lệ vẽ BigInt; pie 0 có vòng trống, 1 nhóm vẽ đủ vòng, không gán tỷ lệ giả cho trạng thái 0. Nhãn tổng và bảng giữ số gốc.
+
+## Lập bản nháp hóa đơn hàng loạt
+
+015 thêm ledger dot_lap_hoa_don với UNIQUE(actor,UUID) và kết quả JSON không bí mật. BQL chọn tường minh 1–50 ID, chuẩn hóa sắp tăng dần. Xem trước khóa các căn theo thứ tự trước khi khóa nguồn phí, chỉ gọi prepareDraft dùng chung với lập đơn lẻ, không INSERT hóa đơn/chi tiết/audit hoặc tiêu thụ số hóa đơn. Giao dịch xem trước luôn rollback và nhả khóa. Lỗi thiếu chỉ số/giá, hóa đơn còn hiệu lực hoặc cần lập thay thế được trả theo căn; batch yêu cầu mọi căn không lỗi, khác luồng nháp đơn lẻ vẫn cho xem/sửa nháp chưa đủ dữ liệu.
+
+Token xem trước HMAC RAM, hạn 15 phút, gắn actor/token-version, hash input chuẩn hóa và hash toàn bộ bảng báo giá. Xác nhận khóa ledger để serialize retry, khóa căn tăng dần, tính lại và so hash trước khi ghi; dữ liệu đổi hoặc có lỗi rollback toàn bộ, không tự bỏ qua căn. Mỗi nháp dùng generate với connection ngoài để giữ cùng cách tính, snapshot và audit của luồng cũ. Recheck actor active/role/token ở trong giao dịch. Audit lỗi ở căn sau rollback cả các căn trước và ledger. Tiền vẫn BigInt/string nguyên đồng.
+
+Ledger chỉ commit cùng mọi hóa đơn mới, giữ ID căn/hóa đơn và tổng đã tạo. Cùng actor/UUID/input trả lại kết quả dù token cũ hết hạn hoặc server restart; khác input cùng UUID bị từ chối. Đổi UUID không vượt UNIQUE(căn,kỳ,hiệu lực); đợt giao nhau nhận 409 thay vì ghi trùng. Không tự lập thay thế cho căn đã có hóa đơn hủy; vẫn dùng thao tác từ chi tiết hóa đơn hủy gần nhất. Không tự duyệt, gửi, nhắc hoặc ghi nhận thu.
+
+BatchBills nằm trong màn hóa đơn BQL, chọn qua tìm kiếm/phân trang, giữ ID đã chọn độc lập với danh sách đang xem. Thay đầu vào bỏ bản xem trước/token; lỗi 409 yêu cầu xem trước lại, lỗi mạng khi xác nhận giữ UUID/token để retry an toàn. Không lưu hóa đơn hoặc token vào localStorage. Dùng newRequestKey có fallback LAN HTTP. Các thao tác đóng biểu mẫu bị khóa khi đang xử lý; API vẫn đảm bảo không trùng nếu người dùng rời trang hay mất kết nối.
