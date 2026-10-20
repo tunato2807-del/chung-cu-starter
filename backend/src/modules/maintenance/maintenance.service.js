@@ -1,3 +1,4 @@
+import { reportPage } from "../report-exports/report-files.js";
 import { createHash } from "node:crypto";
 import { pool, rows, transaction } from "../../lib/db.js";
 import { choice, fail, text, integer } from "../../lib/http.js";
@@ -60,8 +61,8 @@ function dueState(e, today) {
     : "CHUA_DEN_HAN";
 }
 const equipmentSelect = `SELECT e.*,(SELECT j.ma_phieu_bao_tri FROM phieu_bao_tri j WHERE j.dinh_ky_dang_mo=e.ma_thiet_bi) AS phieu_dinh_ky_dang_mo FROM thiet_bi e`;
-export async function equipmentList(query) {
-  const { page, offset } = pagination(query),
+export async function equipmentList(query, exportFormat = null) {
+  const { page, offset, limit, check } = reportPage(query, exportFormat),
     today = v.today(),
     where = ["1=1"],
     values = [];
@@ -104,11 +105,13 @@ export async function equipmentList(query) {
     `SELECT COUNT(*) AS total,CAST(COALESCE(SUM(e.trang_thai<>'NGUNG_SU_DUNG' AND e.ngay_bao_tri_tiep_theo<?),0) AS UNSIGNED) AS qua_han,CAST(COALESCE(SUM(e.trang_thai<>'NGUNG_SU_DUNG' AND e.ngay_bao_tri_tiep_theo>=? AND e.ngay_bao_tri_tiep_theo<=DATE_ADD(?,INTERVAL e.nhac_truoc_ngay DAY)),0) AS UNSIGNED) AS sap_den_han FROM thiet_bi e WHERE ${condition}`,
     [today, today, today, ...values],
   );
+  check(summary.total);
   const data = await rows(
     pool,
-    `${equipmentSelect} WHERE ${condition} ORDER BY e.ngay_bao_tri_tiep_theo IS NULL,e.ngay_bao_tri_tiep_theo,e.ma_thiet_bi LIMIT 20 OFFSET ${offset}`,
+    `${equipmentSelect} WHERE ${condition} ORDER BY e.ngay_bao_tri_tiep_theo IS NULL,e.ngay_bao_tri_tiep_theo,e.ma_thiet_bi LIMIT ${exportFormat ? limit + 1 : limit} OFFSET ${offset}`,
     values,
   );
+  check(data.length);
   return {
     data: data.map((e) => ({ ...e, tinh_trang_lich: dueState(e, today) })),
     summary,
@@ -128,7 +131,7 @@ export async function equipmentDetail(id) {
     history: await history(pool, id, null),
   };
 }
-export async function createEquipment(body, user) {
+export async function createEquipment(body, user, connection = null) {
   const code = v.assetCode(body.ma_tai_san),
     fields = v.equipment(body);
   return transaction(async (db) => {
@@ -153,7 +156,7 @@ export async function createEquipment(body, user) {
       { ma_tai_san: code, ...fields },
     );
     return { ma_thiet_bi: result.insertId };
-  });
+  }, connection);
 }
 export async function updateEquipment(id, body, user) {
   const fields = v.equipment(body);
@@ -354,8 +357,8 @@ function scope(user, where, values) {
     values.push(user.ma_nguoi_dung, user.ma_nguoi_dung, user.phien_ban_token);
   }
 }
-export async function jobs(query, user) {
-  const { page, offset } = pagination(query),
+export async function jobs(query, user, exportFormat = null) {
+  const { page, offset, limit, check } = reportPage(query, exportFormat),
     where = ["1=1"],
     values = [],
     today = v.today();
@@ -392,11 +395,13 @@ export async function jobs(query, user) {
     `SELECT COUNT(*) AS total ${jobFrom} WHERE ${condition}`,
     values,
   );
+  check(count.total);
   const data = await rows(
     pool,
-    `SELECT ${jobFields},(j.trang_thai IN ${openSql} AND j.ngay_den_han<?) AS qua_han ${jobFrom} WHERE ${condition} ORDER BY (j.trang_thai IN ${openSql}) DESC,j.ngay_den_han,j.ma_phieu_bao_tri DESC LIMIT 20 OFFSET ${offset}`,
+    `SELECT ${jobFields},(j.trang_thai IN ${openSql} AND j.ngay_den_han<?) AS qua_han ${jobFrom} WHERE ${condition} ORDER BY (j.trang_thai IN ${openSql}) DESC,j.ngay_den_han,j.ma_phieu_bao_tri DESC LIMIT ${exportFormat ? limit + 1 : limit} OFFSET ${offset}`,
     [today, ...values],
   );
+  check(data.length);
   return { data, total: count.total, page, ngay_hien_tai: today };
 }
 export async function jobDetail(id, user) {

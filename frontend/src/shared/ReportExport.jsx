@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ErrorBox } from "./ui.jsx";
-export default function ReportExport({ path, disabled = false }) {
+export default function ReportExport({
+  path,
+  disabled = false,
+  template = false,
+  templateRows = 3,
+}) {
   const [pending, setPending] = useState(""),
     [error, setError] = useState(null),
     [notice, setNotice] = useState(""),
@@ -58,7 +63,9 @@ export default function ReportExport({ path, disabled = false }) {
       link.remove();
       setTimeout(() => URL.revokeObjectURL(objectURL), 60000);
       setNotice(
-        `Đã tạo tệp ${format === "xlsx" ? "Excel" : "PDF"} gồm ${Number(r.headers.get("X-Export-Rows") || 0).toLocaleString("vi-VN")} dòng. Kiểm tra mục Tệp đã tải xuống của trình duyệt.`,
+        template
+          ? "Đã tải mẫu. Điền dữ liệu rồi chọn tệp để xem trước."
+          : `Đã tạo tệp ${format === "xlsx" ? "Excel" : "PDF"} gồm ${Number(r.headers.get("X-Export-Rows") || 0).toLocaleString("vi-VN")} dòng. Kiểm tra mục Tệp đã tải xuống của trình duyệt.`,
       );
     } catch (e) {
       if (!controller.signal.aborted && currentPath.current === requestPath)
@@ -80,18 +87,32 @@ export default function ReportExport({ path, disabled = false }) {
     <section className="report-export" aria-label="Xuất báo cáo">
       <div className="actions">
         <button
+          type="button"
           disabled={disabled || !!pending}
           onClick={() => download("xlsx")}
         >
-          {pending === "xlsx" ? "Đang tạo Excel…" : "Xuất Excel"}
+          {pending === "xlsx"
+            ? "Đang tạo Excel…"
+            : template
+              ? "Tải mẫu Excel"
+              : "Xuất Excel"}
         </button>
         <button
+          type="button"
           disabled={disabled || !!pending}
           onClick={() => download("pdf")}
         >
-          {pending === "pdf" ? "Đang tạo PDF…" : "Xuất PDF"}
+          {pending === "pdf"
+            ? "Đang tạo PDF…"
+            : template
+              ? "Tải mẫu PDF"
+              : "Xuất PDF"}
         </button>
-        <small>Xuất toàn bộ kết quả theo bộ lọc đã áp dụng.</small>
+        <small>
+          {template
+            ? `Mẫu Excel tối đa 100 dòng. Mẫu PDF có ${templateRows} trang, mỗi trang một hồ sơ.`
+            : "Xuất toàn bộ kết quả theo bộ lọc đã áp dụng."}
+        </small>
       </div>
       {notice && (
         <p className="note" role="status">

@@ -1,3 +1,4 @@
+import { reportPage } from "../report-exports/report-files.js";
 import { randomBytes } from "node:crypto";
 import { pool, rows, transaction } from "../../lib/db.js";
 import { choice, fail, integer, text } from "../../lib/http.js";
@@ -18,9 +19,9 @@ async function residentLock(db, id) {
   );
   if (!resident) fail(404, "NOT_FOUND", "Không tìm thấy cư dân.");
 }
-export async function list(query) {
+export async function list(query, exportFormat = null) {
   const q = query.q ? text(query.q, "q", 1, 100) : "";
-  const page = integer(query.page || 1, "page");
+  const { page, offset, limit, check } = reportPage(query, exportFormat);
   if (page < 1 || page > 100000)
     fail(422, "INVALID_PAGE", "Trang không hợp lệ.");
   const where = [
@@ -56,11 +57,13 @@ export async function list(query) {
     `SELECT COUNT(*) AS total ${joins} ${condition}`,
     values,
   );
+  check(count.total);
   const data = await rows(
     pool,
-    `SELECT ${columns} ${joins} ${condition} ORDER BY v.ma_phuong_tien DESC LIMIT 20 OFFSET ${(page - 1) * 20}`,
+    `SELECT ${columns} ${joins} ${condition} ORDER BY v.ma_phuong_tien DESC LIMIT ${exportFormat ? limit + 1 : limit} OFFSET ${offset}`,
     values,
   );
+  check(data.length);
   return { data, total: count.total, page };
 }
 export async function detail(id) {
@@ -92,7 +95,7 @@ async function insert(db, record, stay, userId, previous = null) {
   );
   return { ma_phuong_tien: result.insertId };
 }
-export async function create(body, user) {
+export async function create(body, user, connection = null) {
   const data = valid.registration(body);
   return transaction(async (db) => {
     await residentLock(db, data.ma_cu_dan);
@@ -139,7 +142,7 @@ export async function create(body, user) {
         );
     }
     return insert(db, data, stay, user.ma_nguoi_dung);
-  });
+  }, connection);
 }
 export async function end(id, body, user) {
   const day = date(body.ngay_ket_thuc),

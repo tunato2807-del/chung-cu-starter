@@ -10,7 +10,9 @@ export const pool = mysql.createPool({
   charset: "utf8mb4",
   dateStrings: true,
 });
-export async function transaction(work) {
+export async function transaction(work, connection = null) {
+  // Batch imports reuse the same domain operations inside one outer transaction.
+  if (connection) return work(connection);
   const db = await pool.getConnection();
   try {
     await db.beginTransaction();

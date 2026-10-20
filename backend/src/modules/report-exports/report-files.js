@@ -94,7 +94,13 @@ export async function excel(report) {
   meta.addRow([]);
   for (const note of [
     ...report.notes,
-    "Tiền trên 15 chữ số được lưu dạng văn bản để giữ nguyên giá trị; các mã và số điện thoại luôn là văn bản.",
+    ...(report.currency === false
+      ? [
+          "Các mã và số điện thoại được lưu dạng văn bản để giữ nguyên số 0 đầu.",
+        ]
+      : [
+          "Tiền trên 15 chữ số được lưu dạng văn bản để giữ nguyên giá trị; các mã và số điện thoại luôn là văn bản.",
+        ]),
   ]) {
     const row = meta.addRow([clean(note)]);
     meta.mergeCells(row.number, 1, row.number, 2);
@@ -166,8 +172,7 @@ export async function excel(report) {
     fitToHeight: 0,
     printTitlesRow: "1:1",
   };
-  data.headerFooter.oddFooter =
-    "&LQuản lý chung cư&CTrang &P / &N&RĐơn vị: đồng";
+  data.headerFooter.oddFooter = `&LQuản lý chung cư&CTrang &P / &N${report.currency === false ? "" : "&RĐơn vị: đồng"}`;
   return Buffer.from(await wb.xlsx.writeBuffer());
 }
 let printerPromise;
@@ -214,7 +219,7 @@ export async function pdf(report) {
     info: {
       title: report.title,
       author: "Quản lý chung cư",
-      subject: "Báo cáo tài chính theo dữ liệu đã ghi nhận",
+      subject: "Báo cáo theo dữ liệu đã ghi nhận",
     },
     defaultStyle: { font: "Roboto", fontSize: wide ? 7 : 8, color: "#183c3b" },
     footer: (current, total) => ({
@@ -222,7 +227,7 @@ export async function pdf(report) {
       columns: [
         { text: "CHUNG CƯ · QUẢN LÝ VẬN HÀNH", fontSize: 7, color: "#627c73" },
         {
-          text: `Trang ${current} / ${total} · Đơn vị: đồng`,
+          text: `Trang ${current} / ${total}${report.currency === false ? "" : " · Đơn vị: đồng"}`,
           alignment: "right",
           fontSize: 7,
           color: "#627c73",

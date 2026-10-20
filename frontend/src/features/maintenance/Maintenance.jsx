@@ -1,3 +1,4 @@
+import DataTools from "../../shared/DataTools.jsx";
 import React, { useEffect, useState } from "react";
 import {
   Link,
@@ -450,6 +451,12 @@ export function EquipmentList() {
         </div>
       </div>
       <Feedback action={action} />
+      <DataTools
+        kind="thiet_bi"
+        params={params}
+        importable
+        disabled={resource.loading}
+      />
       {adding && (
         <section className="card">
           <h2>Đăng ký thiết bị</h2>
@@ -748,6 +755,9 @@ export function MaintenanceList() {
           </Link>
         )}
       </div>
+      {isAdmin && (
+        <DataTools kind="bao_tri" params={params} disabled={resource.loading} />
+      )}
       <p className="muted">
         {isAdmin
           ? "Lập phiếu từ trang thiết bị. Phiếu định kỳ cập nhật lịch tiếp theo khi BQL nghiệm thu đạt."

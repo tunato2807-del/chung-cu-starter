@@ -1,3 +1,4 @@
+import DataTools from "../../shared/DataTools.jsx";
 import React, { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { getJson } from "../../shared/api/client.js";
@@ -246,6 +247,12 @@ export default function Vehicles() {
           {adding ? "Đóng biểu mẫu" : "Đăng ký xe"}
         </button>
       </div>
+      <DataTools
+        kind="phuong_tien"
+        params={params}
+        importable
+        disabled={resource.loading}
+      />
       {params.get("ma_cu_dan") && (
         <p>
           Đang lọc xe của cư dân #{params.get("ma_cu_dan")} ·{" "}

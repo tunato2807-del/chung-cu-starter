@@ -1,3 +1,4 @@
+import { reportPage } from "../report-exports/report-files.js";
 import { createHash, randomBytes } from "node:crypto";
 import { pool, rows, transaction } from "../../lib/db.js";
 import { choice, fail, integer, text } from "../../lib/http.js";
@@ -127,8 +128,8 @@ export async function createRate(body, user) {
     return { ma_cau_hinh_phi: result.insertId };
   });
 }
-export async function meters(query) {
-  const { page, offset } = v.pagination(query),
+export async function meters(query, exportFormat = null) {
+  const { page, offset, limit, check } = reportPage(query, exportFormat),
     values = [],
     where = [];
   if (query.ma_can_ho) {
@@ -145,14 +146,16 @@ export async function meters(query) {
     `SELECT COUNT(*) AS total FROM chi_so_dich_vu m ${condition}`,
     values,
   );
+  check(count.total);
   const data = await rows(
     pool,
-    `SELECT m.*,a.so_can_ho FROM chi_so_dich_vu m JOIN can_ho a ON a.ma_can_ho=m.ma_can_ho ${condition} ORDER BY m.ky_thanh_toan DESC,m.ma_chi_so_dich_vu DESC LIMIT 20 OFFSET ${offset}`,
+    `SELECT m.*,a.so_can_ho FROM chi_so_dich_vu m JOIN can_ho a ON a.ma_can_ho=m.ma_can_ho ${condition} ORDER BY m.ky_thanh_toan DESC,m.ma_chi_so_dich_vu DESC LIMIT ${exportFormat ? limit + 1 : limit} OFFSET ${offset}`,
     values,
   );
+  check(data.length);
   return { data, total: count.total, page };
 }
-export async function saveMeter(body, user) {
+export async function saveMeter(body, user, connection = null) {
   const apartmentId = integer(body.ma_can_ho, "ma_can_ho"),
     type = choice(body.loai_dich_vu, "loai_dich_vu", ["DIEN", "NUOC"]),
     month = v.period(body.ky_thanh_toan),
@@ -240,7 +243,7 @@ export async function saveMeter(body, user) {
       ],
     );
     return { ma_chi_so_dich_vu: result.insertId };
-  });
+  }, connection);
 }
 
 async function calculate(db, apartment, month, day, options) {
@@ -620,8 +623,8 @@ function summary(bill) {
     qua_han: bill.trang_thai === "DA_GUI" && bill.han_thanh_toan < v.today(),
   };
 }
-export async function list(query, user) {
-  const { page, offset } = v.pagination(query),
+export async function list(query, user, exportFormat = null) {
+  const { page, offset, limit, check } = reportPage(query, exportFormat),
     where = [],
     values = [];
   access(user, where, values);
@@ -656,11 +659,13 @@ export async function list(query, user) {
     `SELECT COUNT(*) AS total FROM hoa_don h JOIN can_ho a ON a.ma_can_ho=h.ma_can_ho ${condition}`,
     values,
   );
+  check(count.total);
   const data = await rows(
     pool,
-    `SELECT h.ma_hoa_don,h.so_hoa_don,h.ky_thanh_toan,h.ngay_chot_phi,h.trang_thai,h.tong_tien,h.han_thanh_toan,a.so_can_ho FROM hoa_don h JOIN can_ho a ON a.ma_can_ho=h.ma_can_ho ${condition} ORDER BY h.ma_hoa_don DESC LIMIT 20 OFFSET ${offset}`,
+    `SELECT h.ma_hoa_don,h.so_hoa_don,h.ky_thanh_toan,h.ngay_chot_phi,h.trang_thai,h.tong_tien,h.han_thanh_toan,a.so_can_ho FROM hoa_don h JOIN can_ho a ON a.ma_can_ho=h.ma_can_ho ${condition} ORDER BY h.ma_hoa_don DESC LIMIT ${exportFormat ? limit + 1 : limit} OFFSET ${offset}`,
     values,
   );
+  check(data.length);
   return { data: data.map(summary), total: count.total, page };
 }
 export async function detail(id, user) {

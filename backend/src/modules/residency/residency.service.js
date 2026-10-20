@@ -1,3 +1,4 @@
+import { reportPage } from "../report-exports/report-files.js";
 import { pool, rows, transaction } from "../../lib/db.js";
 import { fail, integer, text } from "../../lib/http.js";
 import * as valid from "./residency.validation.js";
@@ -51,8 +52,9 @@ async function checkAccount(db, id, previous) {
     fail(422, "INVALID_ACCOUNT", "Chỉ gắn tài khoản cư dân đang hoạt động.");
 }
 
-export async function listApartments(query) {
-  const { q, page, offset } = search(query);
+export async function listApartments(query, exportFormat = null) {
+  const { q } = search({ ...query, page: 1 });
+  const { page, offset, limit, check } = reportPage(query, exportFormat);
   const conditions = ["(so_can_ho LIKE ? OR khoi LIKE ?)"];
   const values = [q, q];
   if (query.tang !== undefined && query.tang !== "") {
@@ -67,11 +69,13 @@ export async function listApartments(query) {
     `SELECT COUNT(*) AS total FROM can_ho ${where}`,
     values,
   );
+  check(count.total);
   const data = await rows(
     pool,
-    `SELECT c.*, (SELECT COUNT(*) FROM lich_su_cu_tru l WHERE l.ma_can_ho=c.ma_can_ho AND l.den_ngay IS NULL) AS so_cu_dan FROM can_ho c ${where} ORDER BY khoi,tang,so_can_ho LIMIT 20 OFFSET ${offset}`,
+    `SELECT c.*, (SELECT COUNT(*) FROM lich_su_cu_tru l WHERE l.ma_can_ho=c.ma_can_ho AND l.den_ngay IS NULL) AS so_cu_dan FROM can_ho c ${where} ORDER BY khoi,tang,so_can_ho LIMIT ${exportFormat ? limit + 1 : limit} OFFSET ${offset}`,
     values,
   );
+  check(data.length);
   return { data, total: count.total, page };
 }
 export async function availableAccounts(query) {
@@ -109,7 +113,7 @@ export async function apartmentDetail(id) {
     ),
   };
 }
-export async function saveApartment(id, body, user) {
+export async function saveApartment(id, body, user, connection = null) {
   const values = valid.apartment(body);
   return transaction(async (db) => {
     if (id) {
@@ -135,12 +139,13 @@ export async function saveApartment(id, body, user) {
       tai_khoan_can_ho:
         created.credentials || (await accountForApartment(id, db)),
     };
-  });
+  }, connection);
 }
 
 const residentJoin = `FROM cu_dan c LEFT JOIN lich_su_cu_tru l ON l.ma_cu_dan=c.ma_cu_dan AND l.den_ngay IS NULL LEFT JOIN can_ho a ON a.ma_can_ho=l.ma_can_ho`;
-export async function listResidents(query) {
-  const { q, page, offset } = search(query);
+export async function listResidents(query, exportFormat = null) {
+  const { q } = search({ ...query, page: 1 });
+  const { page, offset, limit, check } = reportPage(query, exportFormat);
   const conditions = ["(c.ho_va_ten LIKE ? OR c.so_dien_thoai LIKE ?)"];
   const values = [q, q];
   if (query.ma_can_ho) {
@@ -162,11 +167,13 @@ export async function listResidents(query) {
     `SELECT COUNT(*) AS total ${residentJoin} ${where}`,
     values,
   );
+  check(count.total);
   const data = await rows(
     pool,
-    `SELECT c.*,l.ma_lich_su_cu_tru,l.ma_can_ho,l.quan_he,l.tu_ngay,a.so_can_ho ${residentJoin} ${where} ORDER BY c.ho_va_ten,c.ma_cu_dan LIMIT 20 OFFSET ${offset}`,
+    `SELECT c.*,l.ma_lich_su_cu_tru,l.ma_can_ho,l.quan_he,l.tu_ngay,a.so_can_ho ${residentJoin} ${where} ORDER BY c.ho_va_ten,c.ma_cu_dan LIMIT ${exportFormat ? limit + 1 : limit} OFFSET ${offset}`,
     values,
   );
+  check(data.length);
   return { data, total: count.total, page };
 }
 export async function residentDetail(id) {
@@ -189,7 +196,7 @@ export async function residentDetail(id) {
       )[0] || null,
   };
 }
-export async function saveResident(id, body, user) {
+export async function saveResident(id, body, user, connection = null) {
   const values = valid.resident(body);
   const initialStay = id ? null : valid.stay(body);
   return transaction(async (db) => {
@@ -236,7 +243,7 @@ export async function saveResident(id, body, user) {
       ...(await one(db, "cu_dan", "ma_cu_dan", id)),
       tai_khoan_can_ho: credentials,
     };
-  });
+  }, connection);
 }
 
 export async function changeStay(id, action, body, user) {

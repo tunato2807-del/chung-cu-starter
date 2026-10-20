@@ -1,3 +1,4 @@
+import DataTools from "../../shared/DataTools.jsx";
 import React, { useEffect, useState } from "react";
 import {
   Link,
@@ -489,6 +490,12 @@ export function Meters() {
   return (
     <>
       <h1>Chỉ số điện nước</h1>
+      <DataTools
+        kind="chi_so"
+        params={params}
+        importable
+        disabled={resource.loading}
+      />
       <p>
         Nhập lần lượt từng kỳ. Chỉ số đầu kỳ phải khớp cuối kỳ liền trước; kỳ
         đầu cần xác nhận riêng.
@@ -681,6 +688,9 @@ export function Bills() {
         )}
       </div>
       <Feedback action={action} />
+      {admin && (
+        <DataTools kind="hoa_don" params={params} disabled={resource.loading} />
+      )}
       {adding && (
         <section className="card narrow">
           <h2>Lập bản nháp cho căn hộ</h2>

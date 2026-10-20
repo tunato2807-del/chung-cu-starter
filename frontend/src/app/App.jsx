@@ -20,6 +20,7 @@ import {
   useUnreadCount,
 } from "../features/announcements/Announcements.jsx";
 import FinancialReports from "../features/financial-reports/FinancialReports.jsx";
+import DataExchange from "../features/data-exchange/DataExchange.jsx";
 import {
   EquipmentList,
   EquipmentDetail,
@@ -95,6 +96,7 @@ function Shell() {
           ["/quan-tri/hoa-don", "Phí & hóa đơn"],
           ["/quan-tri/bao-cao-tai-chinh", "Công nợ & thu phí"],
           ["/quan-tri/quy", "Thu chi & quỹ"],
+          ["/quan-tri/nhap-xuat", "Nhập / xuất Excel, PDF"],
           ["/quan-tri/thong-bao", "Thông báo"],
           ["/quan-tri/vi-tri-qr", "Vị trí & QR"],
           ["/quan-tri/nhan-su", "Nhân sự & tài khoản"],
@@ -226,6 +228,7 @@ function Shell() {
               ["/quan-tri/hoa-don", <Bills />],
               ["/quan-tri/hoa-don/:id", <BillDetail />],
               ["/quan-tri/bao-cao-tai-chinh", <FinancialReports />],
+              ["/quan-tri/nhap-xuat", <DataExchange />],
               ["/quan-tri/thong-bao", <Announcements />],
               ["/quan-tri/thong-bao/:id", <AnnouncementDetail />],
             ].map(([path, element]) => (

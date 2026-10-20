@@ -1,4 +1,5 @@
 import express from "express";
+import { dataExchangeRouter } from "./modules/data-exchange/data-exchange.routes.js";
 import { healthRouter } from "./modules/health/health.routes.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { requestContext, fail } from "./lib/http.js";
@@ -56,7 +57,7 @@ app.use("/api/health", healthRouter);
 app.get("/api/ready", async (req, res) => {
   try {
     const [migrations] = await pool.execute(
-      "SELECT name FROM schema_migrations WHERE name IN (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      "SELECT name FROM schema_migrations WHERE name IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         "001_auth_qr_incidents.sql",
         "002_residency.sql",
@@ -71,9 +72,10 @@ app.get("/api/ready", async (req, res) => {
         "011_maintenance_plan_checks.sql",
         "012_amenity_bookings.sql",
         "013_treasury.sql",
+        "014_data_imports.sql",
       ],
     );
-    if (migrations.length !== 13) throw new Error("Schema not initialized");
+    if (migrations.length !== 14) throw new Error("Schema not initialized");
     await pool.query("SELECT 1 FROM phan_anh LIMIT 1");
   } catch {
     fail(
@@ -85,6 +87,7 @@ app.get("/api/ready", async (req, res) => {
   res.json({ data: { status: "ok", database: "connected" } });
 });
 app.use("/api/xac_thuc", authRouter);
+app.use("/api/trao_doi_du_lieu", dataExchangeRouter);
 app.use("/api/nguoi_dung", usersRouter);
 app.use("/api/can_ho", apartmentsRouter);
 app.use("/api/cu_dan", residentsRouter);

@@ -1,3 +1,4 @@
+import { reportPage } from "../report-exports/report-files.js";
 import { createHash } from "node:crypto";
 import { pool, rows, transaction } from "../../lib/db.js";
 import { fail, integer, text } from "../../lib/http.js";
@@ -284,8 +285,8 @@ function scope(user, args) {
   return `EXISTS (SELECT 1 FROM nguoi_dung u WHERE u.ma_nguoi_dung=? AND u.dang_hoat_dong=1 AND u.phien_ban_token=? AND ((u.ma_can_ho_thanh_toan IS NULL AND b.ma_nguoi_dat=u.ma_nguoi_dung) OR (u.ma_can_ho_thanh_toan=b.ma_can_ho AND EXISTS (SELECT 1 FROM lich_su_cu_tru l WHERE l.ma_cu_dan=u.ma_cu_dan_phu_trach AND l.ma_can_ho=b.ma_can_ho AND l.den_ngay IS NULL AND l.quan_he='CHU_HO'))))`;
 }
 const selection = `b.ma_dat_lich,b.ma_tien_ich,b.ma_can_ho,b.ma_nguoi_dat,b.ten_tien_ich,b.vi_tri,b.ten_nguoi_dat,b.bat_dau,b.ket_thuc,b.so_nguoi,b.ghi_chu,b.trang_thai,b.phien_ban,b.ngay_tao,a.so_can_ho,a.khoi`;
-export async function bookings(query, user) {
-  const { page, offset } = v.pagination(query),
+export async function bookings(query, user, exportFormat = null) {
+  const { page, offset, limit, check } = reportPage(query, exportFormat),
     args = [],
     where = ["1=1"];
   if (user.vai_tro !== "QUAN_TRI_VIEN") where.push(scope(user, args));
@@ -311,11 +312,13 @@ export async function bookings(query, user) {
   }
   const from = `FROM dat_lich_tien_ich b JOIN can_ho a ON a.ma_can_ho=b.ma_can_ho WHERE ${where.join(" AND ")}`;
   const [n] = await rows(pool, `SELECT COUNT(*) AS total ${from}`, args);
+  check(n.total);
   const data = await rows(
     pool,
-    `SELECT ${selection} ${from} ORDER BY b.bat_dau DESC,b.ma_dat_lich DESC LIMIT 20 OFFSET ${offset}`,
+    `SELECT ${selection} ${from} ORDER BY b.bat_dau DESC,b.ma_dat_lich DESC LIMIT ${exportFormat ? limit + 1 : limit} OFFSET ${offset}`,
     args,
   );
+  check(data.length);
   return { data, total: n.total, page };
 }
 export async function bookingDetail(id, user) {

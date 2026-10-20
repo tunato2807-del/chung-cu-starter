@@ -1,5 +1,7 @@
 # Xuất báo cáo Excel / PDF — code từng file cho VS Code
 
+> Có bản mới hơn: [nhập/xuất dữ liệu theo phân hệ — code từng file](cap-nhat-nhap-xuat-du-lieu-vscode.md). Sau khi cài bản mới, không chép service, ReportExport hoặc CSS cũ trong hướng dẫn này đè lại.
+
 Bản tiếp theo sau `d3d62cf` (thu chi và quỹ). Chép đủ **11 file** dưới đây vào dự án hiện có, không cần tải ZIP. Nếu chưa có thu chi, cập nhật [bản 9 file thu chi/quỹ](cap-nhat-thu-chi-quy-vscode.md) trước. Bản này thêm nút xuất ngay tại báo cáo công nợ, thu phí và sổ quỹ; không tạo menu mới.
 
 ## Cách cập nhật trên Windows

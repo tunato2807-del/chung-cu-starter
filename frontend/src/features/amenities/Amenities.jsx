@@ -1,3 +1,4 @@
+import DataTools from "../../shared/DataTools.jsx";
 import React, { useEffect, useState } from "react";
 import {
   Link,
@@ -640,6 +641,13 @@ export function Bookings() {
         </div>
       </div>
       <Nav admin={admin} />
+      {admin && (
+        <DataTools
+          kind="dat_lich"
+          params={params}
+          disabled={resource.loading}
+        />
+      )}
       <form
         className="card amenity-filters"
         onSubmit={(e) => {

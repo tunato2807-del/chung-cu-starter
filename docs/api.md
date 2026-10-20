@@ -306,3 +306,27 @@ Giới hạn Excel **10.000 dòng**, PDF **1.000 dòng** sau khi áp dụng ch�
 Excel .xlsx có hai sheet Tổng hợp và Chi tiết: thời điểm dữ liệu Việt Nam, bộ lọc đã áp dụng, tổng hợp và ghi chú ý nghĩa; dữ liệu đầy đủ, bộ lọc cột và cố định tiêu đề. Số tiền nguyên đồng tới 15 chữ số ghi ô số; giá trị lớn hơn 15 chữ số ghi chuỗi thập phân nguyên gốc để tránh Excel làm tròn, kèm ghi chú. Mã căn, điện thoại, mã tham chiếu và nội dung người dùng luôn là chuỗi, không tạo formula/hyperlink từ nội dung nhập. Không dùng SUM formula để tạo tổng có nguy cơ sai độ chính xác; tổng lấy trực tiếp từ snapshot DB/BigInt.
 
 PDF thật A4 ngang, font Roboto từ gói pdfmake được nhúng, giữ tiếng Việt và nguyên số tiền, có tổng hợp/bộ lọc/thời điểm, bảng lặp header khi sang trang và số trang. Không dùng cửa sổ in, không gọi dịch vụ/font/CDN ngoài khi xuất. Cả hai định dạng giữ quy tắc hiện có: lọc quá hạn chỉ thay chi tiết công nợ; lọc nguồn/loại/từ khóa sổ quỹ chỉ thay chi tiết, không đổi tổng toàn quỹ. Chế độ tháng bỏ bộ lọc chi tiết như trên web; các dòng gốc/đảo vẫn giữ để theo dõi điều chỉnh. Tệp là snapshot tại lúc xuất, có thể mới hơn lần tải màn hình trước đó nếu đã phát sinh giao dịch.
+
+
+## Nhập / xuất dữ liệu theo phân hệ (migration 014)
+
+Chỉ BQL. Base `/api/trao_doi_du_lieu`. `kind`: `can_ho`, `cu_dan`, `phuong_tien`, `chi_so`, `thiet_bi`, `hoa_don`, `bao_tri`, `dat_lich`. Ba phần cuối chỉ xuất.
+
+| Method | Path | Nội dung |
+|---|---|---|
+| GET | / | Danh mục, đường dẫn màn danh sách và cột/hướng dẫn nhập |
+| GET | /lich_su | 20 lô thành công gần nhất của chính người đang đăng nhập |
+| GET | /:kind/mau?dinh_dang=xlsx hoặc pdf | Excel sheet Nhap trống + hướng dẫn, hoặc PDF AcroForm có ô điền. PDF nhận so_dong=1..10, mặc định 3 |
+| POST | /:kind/xem_truoc | multipart tep: đúng 1 tệp .xlsx/PDF biểu mẫu, tối đa 5 MB. Trả rows [{line,values,error}],total,errors,xac_nhan |
+| POST | /:kind/nhap | multipart tep,xac_nhan từ bản xem trước không lỗi,khoa_yeu_cau UUID. Trả so_dong,ket_qua gồm ID,tai_khoan_moi nếu có |
+| GET | /:kind/xuat?dinh_dang=xlsx hoặc pdf | Xuất toàn bộ dòng theo bộ lọc, bỏ page. File attachment, không tạo URL công khai |
+
+Bộ lọc xuất dùng cùng validation/truy vấn danh sách: can_ho(q,tang), cu_dan(q,ma_can_ho,ma_cu_dan,trang_thai), phuong_tien(q,loai_xe,trang_thai,ma_can_ho,ma_cu_dan), chi_so(ma_can_ho,ky_thanh_toan), thiet_bi(q,loai,trang_thai,lich), hoa_don(q,ma_can_ho,ky_thanh_toan,trang_thai), bao_tri(q,ma_thiet_bi,loai,trang_thai,qua_han), dat_lich(q,ma_tien_ich,ngay,trang_thai). Excel tối đa 10.000 dòng, PDF 1.000. Cả COUNT và số dòng đọc thực tế được chặn vượt, không trả file bị cắt.
+
+Nhập chỉ thêm mới, không nhận ID để cập nhật, tài khoản cá nhân hay trạng thái duyệt. Cột đúng danh mục; Excel Nhap hàng đầu là key, giữ điện thoại/mã dạng text, ngày ISO. Không nhận công thức/ô liên kết, macro hoặc tệp nén phình quá giới hạn. PDF cần marker đúng phần và các text field rN.key của mẫu, trang trống được bỏ qua. Không xử lý ảnh scan, OCR, bảng PDF hoặc PDF đã flatten/print. Parser chạy worker tối đa 15 giây với giới hạn heap; zip kiểm tra kích thước giải nén trước khi đọc.
+
+Xem trước chạy các domain service trên cùng transaction rồi rollback. SAVEPOINT mỗi dòng để trả đầy đủ lỗi nghiệp vụ; deadlock/lỗi hệ thống hủy transaction. Token HMAC ràng buộc user + phiên token + kind + SHA256 tệp, hết hạn 15 phút hoặc khi server khởi động lại. Xác nhận đọc lại đúng tệp và kiểm tra lại domain guard dưới khóa; lỗi trả 409 IMPORT_CHANGED, rollback cả lô và lịch sử. Phiên hết hạn giữa quá trình cũng không commit.
+
+Ledger dot_nhap_du_lieu có UNIQUE(actor,UUID) và UNIQUE(actor,kind,SHA256), lưu kết quả ID/số dòng cùng transaction. Gửi lại trả da_nhap_truoc=true, không trả lại mật khẩu; nếu UUID dùng cho tệp khác trả 409 IMPORT_KEY_CONFLICT. Mật khẩu căn/chủ hộ mới chỉ trong response thành công lần đầu và không được lưu rõ trong ledger, log hay tệp xuất. Nếu response mất cần cấp lại ở màn tài khoản căn. Lịch sử chỉ hiện lô đã commit.
+
+422 cho tệp/cột sai, quá nhiều dòng, PDF không phải biểu mẫu; 413 IMPORT_UPLOAD_LIMIT khi vượt multipart/5 MB; 409 PREVIEW_REQUIRED/PREVIEW_EXPIRED khi sai/hết token; 429 FILE_BUSY khi đang xử lý tệp. Mỗi tài khoản một lượt, toàn tiến trình hai lượt (dùng chung slot xuất báo cáo tài chính), luôn giải phóng khi xử lý xong. API ghi giữ CSRF X-App-Request:1 và kiểm tra quyền/phiên như phần còn lại.

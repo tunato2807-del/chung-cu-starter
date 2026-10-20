@@ -1574,3 +1574,61 @@ footer {
     flex-basis: 100%;
   }
 }
+/* Data exchange shares the active list filters and keeps previews inside the card. */
+.data-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0;
+}
+.data-tools .report-export {
+  margin: 0;
+  flex: 1 1 360px;
+  min-width: 0;
+}
+.data-import {
+  margin-top: 20px;
+  min-width: 0;
+}
+.import-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  padding-left: 22px;
+  color: #14635a;
+}
+.import-help {
+  margin: 20px 0;
+  padding: 16px;
+  background: #f2f6f4;
+  border-radius: 12px;
+}
+.import-help summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.import-preview {
+  margin-top: 24px;
+  border-top: 1px solid #dce5df;
+  padding-top: 16px;
+}
+.import-preview .table-wrap {
+  max-height: 520px;
+  margin: 16px 0;
+}
+.import-row-error {
+  color: #aa3424;
+  min-width: 240px;
+}
+.import-result {
+  padding: 20px;
+  margin-top: 24px;
+  background: #e4f2e9;
+  border: 1px solid #bdd8c7;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+.data-import input[type="file"] {
+  max-width: 100%;
+}

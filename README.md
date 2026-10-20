@@ -1,6 +1,6 @@
 # Quản lý chung cư · Phản ánh QR
 
-React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web, báo cáo công nợ/thu phí, bảo trì thiết bị, đặt lịch tiện ích, thu chi/quỹ và xuất báo cáo Excel/PDF** theo ba tài liệu thiết kế.
+React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web, báo cáo công nợ/thu phí, bảo trì thiết bị, đặt lịch tiện ích, thu chi/quỹ và nhập/xuất Excel/PDF** theo ba tài liệu thiết kế.
 
 ## Chạy môi trường phát triển
 
@@ -49,7 +49,7 @@ Sau khi cập nhật mã nguồn, chạy `npm run db:migrate` trước khi khở
 
 Ngày cư trú là ngày lịch tại Việt Nam, không nhận ngày tương lai. Khoảng cư trú là `[từ ngày, đến ngày)`; ngày kết thúc có thể bằng ngày bắt đầu để ghi nhận chuyển căn hoặc chuyển đi ngay trong ngày. Có thể chuyển nhiều lần trong ngày; các đợt cũ vẫn được giữ và đánh dấu “Chuyển trong ngày”, thứ tự theo mã lịch sử. Ngày chuyển thuộc đợt mới, đợt cũ cùng ngày không đại diện thêm một ngày cư trú. Hệ thống chưa phân chia theo giờ. Mỗi cư dân có tối đa một đợt đang mở; hồ sơ cũ không được ghi đè khi hai người sửa đồng thời. Trạng thái căn hộ trống/có người ở được suy ra từ các đợt đang mở. Cờ tính phí dịch vụ độc lập với trạng thái trống và được dùng khi lập hóa đơn.
 
-Danh bạ căn hộ, cư dân và lịch sử chỉ dành cho BQL ở cả giao diện và API. Chuyển đi giữ tài khoản cá nhân; riêng người phụ trách thanh toán chuyển đi thì tài khoản căn hộ bị tạm khóa và kết thúc phiên cũ. Phiên bản này chưa có màn cư dân tự xem hồ sơ, nhập dữ liệu hàng loạt hoặc chỉnh sửa hồi tố các đợt đã kết thúc. Xem [API](docs/api.md).
+Danh bạ căn hộ, cư dân và lịch sử chỉ dành cho BQL ở cả giao diện và API. Chuyển đi giữ tài khoản cá nhân; riêng người phụ trách thanh toán chuyển đi thì tài khoản căn hộ bị tạm khóa và kết thúc phiên cũ. BQL có thể nhập thêm mới theo mẫu Excel/PDF tại Nhập / xuất dữ liệu. Phiên bản này chưa có màn cư dân tự xem hồ sơ hoặc chỉnh sửa hồi tố các đợt đã kết thúc. Xem [API](docs/api.md).
 
 ## Tài khoản thanh toán căn hộ
 
@@ -172,6 +172,23 @@ npm install -w backend --save-exact exceljs@4.4.0 pdfmake@0.2.23
 BQL → **Công nợ & thu phí** hoặc mở một quỹ trong **Thu chi & quỹ** → áp dụng bộ lọc/cách xem → **Xuất Excel** / **Xuất PDF**. Tệp lấy toàn bộ kết quả khớp lọc, gồm các trang chưa mở; có tổng hợp, bộ lọc và thời điểm dữ liệu tại Việt Nam. Nếu phát sinh giao dịch sau khi tải màn hình, file là snapshot mới tại lúc xuất.
 
 Excel có hai sheet Tổng hợp/Chi tiết; mã/điện thoại giữ số 0 đầu, giá trị tiền lớn hơn 15 chữ số lưu văn bản để không bị Excel làm tròn. PDF A4 ngang có font tiếng Việt nhúng, tiêu đề bảng lặp và số trang; tải file trực tiếp, không cần cửa sổ in. Chỉ BQL xuất được. Excel tối đa 10.000 dòng, PDF 1.000 dòng; vượt giới hạn sẽ báo để thu hẹp lọc/chọn tổng hợp, không xuất thiếu dữ liệu.
+
+## Nhập / xuất dữ liệu theo phân hệ
+
+Xem [code đầy đủ từng file để cập nhật trong VS Code](docs/cap-nhat-nhap-xuat-du-lieu-vscode.md). Bản này cần migration **014_data_imports.sql**, không sửa 001–013 đã chạy.
+
+```bash
+npm install -w backend --save-exact pdf-lib@1.17.1 @pdf-lib/fontkit@1.1.1 yauzl@3.4.0
+npm run db:migrate
+```
+
+BQL → **Nhập / xuất Excel, PDF**, hoặc bấm **Nhập Excel / PDF** ngay tại danh sách. Nhập thêm mới căn hộ, cư dân/đợt cư trú đầu, phương tiện, chỉ số điện nước và thiết bị. Tải mẫu, điền, chọn tệp → Xem trước → sửa hết lỗi → Xác nhận. Xem trước không lưu hồ sơ; xác nhận kiểm tra lại và lưu toàn bộ lô trong một transaction. Có một dòng lỗi thì không lưu dòng nào. Gửi lại cùng tệp không tạo trùng; lịch sử ghi nhận số dòng và người nhập, không lưu mật khẩu.
+
+Excel nhận `.xlsx` tối đa 100 dòng/5 MB, tên cột đúng mẫu. PDF nhận **biểu mẫu có ô điền** tải từ hệ thống, tối đa 10 trang/5 MB, mỗi trang một hồ sơ. Mở bằng Chrome/Acrobat, điền và **Save**, không Print to PDF. PDF scan, PDF bảng báo cáo và bản đã làm phẳng không có trường nhập được; dùng mẫu Excel khi dữ liệu nhiều. Không có OCR tự đoán dữ liệu.
+
+Xuất Excel/PDF toàn bộ danh sách theo bộ lọc ở **Căn hộ, Cư dân, Phương tiện, Chỉ số điện nước, Thiết bị, Phiếu bảo trì, Hóa đơn, Lượt đặt tiện ích**, không giới hạn trang đang xem. Báo cáo công nợ/thu phí và sổ quỹ giữ nút xuất hiện có. Giới hạn xuất: Excel 10.000 dòng, PDF 1.000 dòng; vượt thì báo lỗi, không cắt bớt.
+
+Nhập căn hộ vẫn tạo tài khoản riêng; mật khẩu mới chỉ trả một lần sau khi lưu, nếu mất kết quả cần cấp lại. Nhập chủ hộ không tự thay người phụ trách đang có. Nhập chỉ số không ghi đè kỳ đã có hoặc vượt khóa hóa đơn; xe phải thuộc cư dân đang ở đúng căn. Duyệt hóa đơn, xác nhận đã thu, ghi sổ quỹ, bàn giao chủ hộ và duyệt đặt lịch vẫn thực hiện qua màn nghiệp vụ.
 
 ## Kiểm tra
 

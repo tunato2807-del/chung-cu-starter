@@ -1,3 +1,4 @@
+import DataTools from "../../shared/DataTools.jsx";
 import React, { useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { getJson } from "../../shared/api/client.js";
@@ -262,6 +263,12 @@ export function Apartments() {
   return (
     <>
       <h1>Căn hộ</h1>
+      <DataTools
+        kind="can_ho"
+        params={params}
+        importable
+        disabled={resource.loading}
+      />
       <p>Trạng thái có người ở được xác định từ các đợt cư trú đang mở.</p>
       <form
         className="filters"
@@ -646,6 +653,12 @@ export function Residents() {
         </p>
       )}
       <ErrorBox error={action.error} />
+      <DataTools
+        kind="cu_dan"
+        params={filter}
+        importable
+        disabled={resource.loading}
+      />
       <Credentials action={action} />
       {adding && (
         <section className="card narrow">
