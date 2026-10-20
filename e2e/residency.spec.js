@@ -9,6 +9,21 @@ for (const width of [1440, 375])
   }) => {
     expect(process.env.DB_NAME).toBe("chung_cu_test");
     await page.setViewportSize({ width, height: 1000 });
+    // Exercise copying on LAN HTTP where the modern clipboard API is unavailable.
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, "clipboard", {
+        value: undefined,
+        configurable: true,
+      });
+      document.addEventListener("copy", () => {
+        const input = document.activeElement;
+        if (input?.tagName === "TEXTAREA")
+          window.__copiedResidentCode = input.value.slice(
+            input.selectionStart,
+            input.selectionEnd,
+          );
+      });
+    });
     const suffix = randomBytes(4).toString("hex"),
       password = randomBytes(16).toString("hex"),
       hash = await bcrypt.hash(password, 10);
@@ -106,6 +121,37 @@ for (const width of [1440, 375])
         page.getByRole("heading", { name: residentName, exact: true }),
       ).toBeVisible();
       profileId = Number(page.url().split("/").at(-1));
+      await expect(page.locator(".resident-code code")).toHaveText(
+        String(profileId),
+      );
+      await page
+        .getByRole("button", {
+          name: `Sao chép mã cư dân ${profileId}`,
+          exact: true,
+        })
+        .click();
+      await expect(page.locator(".resident-code [role='status']")).toHaveText(
+        `Đã sao chép mã ${profileId}.`,
+      );
+      expect(await page.evaluate(() => window.__copiedResidentCode)).toBe(
+        String(profileId),
+      );
+      await page.screenshot({
+        path: `/tmp/chung-cu-resident-code-${width}.png`,
+        fullPage: true,
+      });
+      await page
+        .getByRole("link", { name: "← Danh sách cư dân", exact: true })
+        .click();
+      await page.getByLabel("Mã cư dân (tùy chọn)").fill(String(profileId));
+      await page.getByRole("button", { name: "Tìm kiếm", exact: true }).click();
+      await expect(
+        page.getByRole("columnheader", { name: "Mã cư dân", exact: true }),
+      ).toBeVisible();
+      await expect(page.locator("tbody .resident-code code")).toHaveText(
+        String(profileId),
+      );
+      await page.getByRole("link", { name: residentName, exact: true }).click();
 
       // A slow account selector must not silently unlink an existing account.
       await page.evaluate(() => {

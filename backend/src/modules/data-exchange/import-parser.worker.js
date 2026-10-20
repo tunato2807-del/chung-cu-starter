@@ -1,8 +1,14 @@
 import { parentPort, workerData } from "node:worker_threads";
 import { catalog } from "./catalog.js";
 
-function invalid(message) {
-  throw new Error(message);
+function invalid(message, code = "INVALID_FILE") {
+  throw Object.assign(new Error(message), { publicMessage: true, code });
+}
+function wrongKind(actual, expected) {
+  invalid(
+    `Bạn đang chọn “${catalog[expected].title}” nhưng tệp thuộc phần “${catalog[actual].title}”. Hãy chọn “${catalog[actual].title}” ở Phần dữ liệu rồi xem trước lại.`,
+    "IMPORT_KIND_MISMATCH",
+  );
 }
 function scalar(value) {
   if (value == null) return "";
@@ -45,7 +51,7 @@ async function zipCheck(buffer) {
     });
   });
 }
-async function excel(buffer, fields) {
+async function excel(buffer, fields, kind) {
   await zipCheck(buffer);
   const { default: ExcelJS } = await import("exceljs"),
     wb = new ExcelJS.Workbook();
@@ -55,13 +61,21 @@ async function excel(buffer, fields) {
     !sheet ||
     wb.worksheets.length > 3 ||
     sheet.rowCount > 1001 ||
-    sheet.columnCount !== fields.length
+    sheet.columnCount > 20
   )
     invalid("Dùng sheet Nhap với đúng cột trong mẫu, tối đa 100 dòng dữ liệu.");
-  const headers = fields.map((_, i) =>
+  const headers = Array.from({ length: sheet.columnCount }, (_, i) =>
     scalar(sheet.getRow(1).getCell(i + 1).value),
   );
+  const detected = Object.keys(catalog).find(
+    (key) =>
+      catalog[key].fields?.length === headers.length &&
+      new Set(headers).size === headers.length &&
+      headers.every((h) => catalog[key].fields.some((f) => f.key === h)),
+  );
+  if (detected && detected !== kind) wrongKind(detected, kind);
   if (
+    headers.length !== fields.length ||
     new Set(headers).size !== fields.length ||
     headers.some((h) => !fields.some((f) => f.key === h))
   )
@@ -90,7 +104,15 @@ async function pdf(buffer, kind, fields) {
   const doc = await PDFDocument.load(buffer);
   if (doc.getPageCount() > 10) invalid("PDF biểu mẫu tối đa 10 trang.");
   const form = doc.getForm();
-  if (form.getTextField("cc_import").getText() !== `CC-IMPORT/1:${kind}`)
+  const marker = form.getTextField("cc_import").getText(),
+    actual = /^CC-IMPORT\/1:([a-z_]+)$/.exec(marker || "")?.[1];
+  if (
+    actual !== kind &&
+    Object.hasOwn(catalog, actual) &&
+    catalog[actual].importable
+  )
+    wrongKind(actual, kind);
+  if (marker !== `CC-IMPORT/1:${kind}`)
     invalid("PDF không đúng mẫu của phần đang nhập.");
   const allowed = new Set(fields.map((f) => f.key)),
     records = new Map();
@@ -114,7 +136,7 @@ try {
     buffer = Buffer.from(bytes),
     fields = catalog[kind].fields;
   const records = await (extension === "xlsx"
-    ? excel(buffer, fields)
+    ? excel(buffer, fields, kind)
     : pdf(buffer, kind, fields));
   if (!records.length || records.length > 100)
     invalid(
@@ -123,11 +145,14 @@ try {
   parentPort.postMessage({ records });
 } catch (error) {
   parentPort.postMessage({
-    error: /PDF|pdf|encrypt|field|Expected/.test(error.message)
-      ? "PDF cần là biểu mẫu tải từ hệ thống, được điền và Lưu (Save). PDF scan, bản in hoặc PDF đã làm phẳng không còn ô điền để nhập."
-      : error.message.startsWith("Tệp") ||
-          /Dùng sheet|Tên cột|Tệp cần|Excel quá/.test(error.message)
-        ? error.message
-        : "Không đọc được tệp. Dùng tệp mẫu Excel hoặc PDF biểu mẫu, không đặt mật khẩu bảo vệ tệp.",
+    code: error.publicMessage ? error.code : "INVALID_FILE",
+    error: error.publicMessage
+      ? error.message
+      : workerData.extension === "pdf"
+        ? "PDF cần là biểu mẫu tải từ hệ thống, được điền và Lưu (Save). PDF scan, bản in hoặc PDF đã làm phẳng không còn ô điền để nhập."
+        : error.message.startsWith("Tệp") ||
+            /Dùng sheet|Tên cột|Tệp cần|Excel quá/.test(error.message)
+          ? error.message
+          : "Không đọc được tệp. Dùng tệp mẫu Excel hoặc PDF biểu mẫu, không đặt mật khẩu bảo vệ tệp.",
   });
 }

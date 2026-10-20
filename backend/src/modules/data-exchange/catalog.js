@@ -62,7 +62,7 @@ export const catalog = {
         "ma_cu_dan",
         "Mã cư dân",
         "1",
-        "Lấy mã từ danh sách cư dân xuất Excel.",
+        "Mở Cư dân, sao chép mã số trên danh sách/hồ sơ. Không dùng tên tài khoản CH...",
       ),
       field("so_can_ho", "Số căn hộ chịu phí", "A101"),
       field("loai_xe", "Loại xe", "XE_MAY", "O_TO / XE_MAY / XE_DAP."),

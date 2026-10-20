@@ -48,7 +48,7 @@ export async function parseFile(file, kind) {
         reject(
           Object.assign(new Error(message.error), {
             status: 422,
-            code: "INVALID_FILE",
+            code: message.code || "INVALID_FILE",
           }),
         );
       else resolve(message.records);

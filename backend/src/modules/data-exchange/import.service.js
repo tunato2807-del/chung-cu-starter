@@ -104,9 +104,14 @@ async function write(db, kind, input, user) {
   }
   if (kind === "phuong_tien") {
     // Match the normal resident -> stay -> apartment write lock order.
-    const residentId = text(body.ma_cu_dan, "ma_cu_dan", 1, 10);
-    if (!/^\d+$/.test(residentId))
-      fail(422, "INVALID_RESIDENT", "Mã cư dân cần là số nguyên.");
+    const residentId =
+      typeof body.ma_cu_dan === "string" ? body.ma_cu_dan.trim() : "";
+    if (!/^\d{1,10}$/.test(residentId) || Number(residentId) === 0)
+      fail(
+        422,
+        "INVALID_RESIDENT",
+        "Mã cư dân phải là số. Mở Cư dân và sao chép mã của người đang ở đúng căn; thay THAY_MA_CU_DAN_1/2 bằng mã đó, không dùng tên tài khoản CH...",
+      );
     await rows(
       db,
       "SELECT ma_cu_dan FROM cu_dan WHERE ma_cu_dan=? FOR UPDATE",

@@ -175,6 +175,8 @@ Excel có hai sheet Tổng hợp/Chi tiết; mã/điện thoại giữ số 0 đ
 
 ## Nhập / xuất dữ liệu theo phân hệ
 
+Bản sửa mới: [code đầy đủ 7 file — mã cư dân và thông báo nhập PDF](docs/cap-nhat-ma-cu-dan-va-nhap-pdf-vscode.md). Mã số cư dân hiện ngay trong danh sách/hồ sơ, có Sao chép dùng được qua HTTP LAN và lọc theo mã. Tên đăng nhập căn CH... là mã khác. Nhập nhầm PDF/Excel sang phần dữ liệu khác sẽ chỉ rõ phần đúng cần chọn; PDF biểu mẫu vẫn được hỗ trợ.
+
 Có [bộ Excel/PDF đã điền sẵn để test](samples/nhap-du-lieu/README.md): 10 tệp cho 5 phần nhập, hai bộ dùng mã khác nhau, kèm 2 tệp cố ý có lỗi. Không cần sửa code để dùng; tệp xe cần điền mã cư dân thật sau bước nhập cư dân.
 
 Xem [code đầy đủ từng file để cập nhật trong VS Code](docs/cap-nhat-nhap-xuat-du-lieu-vscode.md). Bản này cần migration **014_data_imports.sql**, không sửa 001–013 đã chạy.

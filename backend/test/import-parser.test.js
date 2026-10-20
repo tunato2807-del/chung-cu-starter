@@ -1,8 +1,53 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import ExcelJS from "exceljs";
 import { parseFile } from "../src/modules/data-exchange/import-files.js";
 import { catalog } from "../src/modules/data-exchange/catalog.js";
+
+test("shipped filled PDFs can be read; wrong PDF/Excel category names the actual and selected modules", async () => {
+  for (const [index, kind] of [
+    "can_ho",
+    "cu_dan",
+    "phuong_tien",
+    "chi_so",
+    "thiet_bi",
+  ].entries()) {
+    const name = `${String(index + 1).padStart(2, "0")}_${kind}`;
+    const pdf = await readFile(
+      new URL(`../../samples/nhap-du-lieu/${name}.pdf`, import.meta.url),
+    );
+    const records = await parseFile(
+      { originalname: `${name}.pdf`, buffer: pdf },
+      kind,
+    );
+    assert.ok(records.length > 0);
+    if (kind === "cu_dan")
+      assert.match(records[0].values.ho_va_ten, /Nguyễn Minh An/);
+    const wrong = kind === "can_ho" ? "cu_dan" : "can_ho";
+    for (const format of ["xlsx", "pdf"]) {
+      const buffer =
+        format === "pdf"
+          ? pdf
+          : await readFile(
+              new URL(
+                `../../samples/nhap-du-lieu/${name}.xlsx`,
+                import.meta.url,
+              ),
+            );
+      await assert.rejects(
+        parseFile({ originalname: `${name}.${format}`, buffer }, wrong),
+        (error) => {
+          assert.equal(error.code, "IMPORT_KIND_MISMATCH");
+          assert.match(error.message, new RegExp(catalog[kind].title));
+          assert.match(error.message, new RegExp(catalog[wrong].title));
+          assert.doesNotMatch(error.message, /scan|làm phẳng/);
+          return true;
+        },
+      );
+    }
+  }
+});
 
 test("import parser rejects a small ZIP whose Excel string expands beyond the entry budget", async () => {
   const wb = new ExcelJS.Workbook(),

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
+import { readFile } from "node:fs/promises";
 import bcrypt from "bcryptjs";
 import ExcelJS from "exceljs";
 import { PDFDocument } from "pdf-lib";
@@ -282,6 +283,15 @@ test("data exchange: bounded real files, preview rollback, atomic imports, domai
           bien_so: `59${suffix.toUpperCase()}1`,
           ngay_dang_ky: day,
         };
+        const placeholder = await preview(
+          "phuong_tien",
+          await xlsx("phuong_tien", [
+            { ...bike, ma_cu_dan: "THAY_MA_CU_DAN_1" },
+          ]),
+        );
+        assert.equal(placeholder.json.data.errors, 1);
+        assert.match(placeholder.json.data.rows[0].error, /Mở Cư dân/);
+        assert.match(placeholder.json.data.rows[0].error, /THAY_MA_CU_DAN_1/);
         await importGood("phuong_tien", await xlsx("phuong_tien", [bike]));
         const duplicate = await preview(
           "phuong_tien",
@@ -343,6 +353,47 @@ test("data exchange: bounded real files, preview rollback, atomic imports, domai
         );
         const p2 = await preview("thiet_bi", file);
         assert.equal(p2.json.data.errors, 1);
+      },
+    );
+    await t.test(
+      "resident PDF reports the wrong category and commits all four residents in the correct category",
+      async () => {
+        const source = await readFile(
+          new URL("../../samples/nhap-du-lieu/02_cu_dan.pdf", import.meta.url),
+        );
+        const wrong = await preview("can_ho", source, "02_cu_dan.pdf");
+        assert.equal(wrong.status, 422);
+        assert.equal(wrong.json.error.code, "IMPORT_KIND_MISMATCH");
+        assert.match(wrong.json.error.message, /Căn hộ.*Cư dân/);
+        const doc = await PDFDocument.load(source);
+        for (let n = 1; n <= 3; n++) {
+          await rows(
+            pool,
+            "INSERT INTO can_ho (so_can_ho,khoi,tang,dien_tich_m2) VALUES (?,?,1,60)",
+            [`${suffix}-P${n}`, block],
+          );
+        }
+        for (let n = 1; n <= 4; n++) {
+          doc
+            .getForm()
+            .getTextField(`r${n}.so_can_ho`)
+            .setText(`${suffix}-P${n <= 2 ? 1 : n - 1}`);
+          doc.getForm().getTextField(`r${n}.so_dien_thoai`).setText(phone());
+          doc.getForm().getTextField(`r${n}.ngay`).setText(day);
+        }
+        const file = Buffer.from(
+          await doc.save({ updateFieldAppearances: false }),
+        );
+        const result = await importGood("cu_dan", file, "02_cu_dan.pdf");
+        assert.equal(result.so_dong, 4);
+        for (const row of result.ket_qua) {
+          const [person] = await rows(
+            pool,
+            "SELECT ho_va_ten FROM cu_dan WHERE ma_cu_dan=?",
+            [row.ma_cu_dan],
+          );
+          assert.match(person.ho_va_ten, /TEST P/);
+        }
       },
     );
     await t.test(
@@ -437,7 +488,7 @@ test("data exchange: bounded real files, preview rollback, atomic imports, domai
             /mật khẩu|token/i,
           );
           if (kind === "can_ho") {
-            assert.equal(sheet.rowCount, 26);
+            assert.equal(sheet.rowCount, 29);
             assert.equal(sheet.getCell("E2").type, ExcelJS.ValueType.Number);
           }
           if (kind === "cu_dan") {

@@ -330,3 +330,10 @@ Xem trước chạy các domain service trên cùng transaction rồi rollback. 
 Ledger dot_nhap_du_lieu có UNIQUE(actor,UUID) và UNIQUE(actor,kind,SHA256), lưu kết quả ID/số dòng cùng transaction. Gửi lại trả da_nhap_truoc=true, không trả lại mật khẩu; nếu UUID dùng cho tệp khác trả 409 IMPORT_KEY_CONFLICT. Mật khẩu căn/chủ hộ mới chỉ trong response thành công lần đầu và không được lưu rõ trong ledger, log hay tệp xuất. Nếu response mất cần cấp lại ở màn tài khoản căn. Lịch sử chỉ hiện lô đã commit.
 
 422 cho tệp/cột sai, quá nhiều dòng, PDF không phải biểu mẫu; 413 IMPORT_UPLOAD_LIMIT khi vượt multipart/5 MB; 409 PREVIEW_REQUIRED/PREVIEW_EXPIRED khi sai/hết token; 429 FILE_BUSY khi đang xử lý tệp. Mỗi tài khoản một lượt, toàn tiến trình hai lượt (dùng chung slot xuất báo cáo tài chính), luôn giải phóng khi xử lý xong. API ghi giữ CSRF X-App-Request:1 và kiểm tra quyền/phiên như phần còn lại.
+
+
+### Chọn sai phần dữ liệu và mã cư dân trong tệp xe
+
+Parser nhận diện đúng danh mục từ marker PDF hoặc tập header Excel có trong catalog. Nếu tệp thuộc phần khác phần được chọn: 422 `IMPORT_KIND_MISMATCH`, message ghi rõ tên phần đang chọn, tên phần tệp thuộc về và yêu cầu chọn lại. Không tự đổi phần hoặc lưu sang phần khác. Lỗi PDF không phải biểu mẫu/đã làm phẳng vẫn có thông báo riêng; không trộn với lỗi chọn sai phần. Các lỗi do hệ thống xác định có message công khai, lỗi thư viện vẫn được che nội dung nội bộ.
+
+Import phương tiện chặn mã không phải số hoặc placeholder THAY_MA_CU_DAN_1/2 bằng thông báo hướng dẫn lấy mã tại Cư dân. Mã cư dân là ma_cu_dan của hồ sơ, không phải tên đăng nhập CH... của căn hộ. Các API danh sách/chi tiết đã trả mã này; giao diện mới hiển thị mã, nút sao chép và dùng bộ lọc ma_cu_dan hiện có. Không thay schema, quyền hoặc logic bàn giao tài khoản.

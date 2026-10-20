@@ -1632,3 +1632,21 @@ footer {
 .data-import input[type="file"] {
   max-width: 100%;
 }
+.resident-code {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.resident-code code {
+  padding: 4px 10px;
+  background: #e4f2e9;
+  border-radius: 6px;
+  color: #14635a;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.resident-code small {
+  flex-basis: 100%;
+  color: #41675b;
+}

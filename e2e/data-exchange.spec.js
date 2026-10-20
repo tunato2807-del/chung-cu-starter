@@ -210,6 +210,21 @@ for (const width of [1440, 375])
       await expect(
         page.getByRole("button", { name: /Xác nhận nhập/ }),
       ).toHaveCount(0);
+      await picker.setInputFiles({
+        name: "02_cu_dan.pdf",
+        mimeType: "application/pdf",
+        buffer: await readFile(
+          new URL("../samples/nhap-du-lieu/02_cu_dan.pdf", import.meta.url),
+        ),
+      });
+      await page
+        .getByRole("button", { name: "Xem trước tệp", exact: true })
+        .click();
+      await expect(page.getByRole("alert")).toContainText(
+        "Bạn đang chọn “Căn hộ” nhưng tệp thuộc phần “Cư dân”",
+      );
+      await expect(page.getByRole("alert")).not.toContainText("scan");
+      await expect(page.getByLabel("Phần dữ liệu")).toHaveValue("can_ho");
       await page.goto(`/quan-tri/can-ho?q=${block}&page=2`);
       await expect(
         page.getByRole("button", { name: "Xuất Excel", exact: true }),

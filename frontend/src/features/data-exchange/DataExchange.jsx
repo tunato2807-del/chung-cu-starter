@@ -125,6 +125,17 @@ function ImportPanel({ config, onDone }) {
           </table>
         </div>
       </details>
+      <p className="note">
+        Phần đang nhập: <strong>{config.title}</strong>. Tệp phải thuộc đúng
+        phần này.
+      </p>
+      {config.key === "phuong_tien" && (
+        <p className="note">
+          Mở <Link to="/quan-tri/cu-dan">Cư dân &amp; cư trú</Link>, bấm Sao
+          chép ở mã cư dân và điền số đó vào cột ma_cu_dan trong tệp xe. Thay
+          các ô THAY_MA_CU_DAN_1/2; không dùng tên tài khoản CH...
+        </p>
+      )}
       <Field label="Chọn tệp Excel hoặc PDF biểu mẫu (tối đa 5 MB)">
         <input
           type="file"

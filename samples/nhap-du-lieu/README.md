@@ -22,7 +22,7 @@ Trên GitHub, mở file rồi bấm **Download raw file** để tải. Khi đã 
 
 1. Nhập **01_can_ho** trước: tạo 3 căn và tài khoản căn. Giữ mật khẩu tạm thời vừa hiện để thử đăng nhập; mật khẩu chỉ hiện một lần.
 2. Nhập **02_cu_dan** sau: An là chủ hộ căn 01, Mai là thành viên căn 01, Bình thuê căn 02, Hà là chủ hộ căn 03. Tài khoản căn 01/03 được bàn giao cho chủ hộ, nên dùng mật khẩu mới ở kết quả nhập cư dân.
-3. **03_phuong_tien cần sửa mã trước khi nhập.** Mã cư dân do database trên máy bạn sinh ra, bộ mẫu không thể biết sẵn. Mở danh sách Cư dân, tìm TEST X hoặc TEST P, xuất Excel để lấy cột **Mã cư dân**:
+3. **03_phuong_tien cần sửa mã trước khi nhập.** Mã cư dân do database trên máy bạn sinh ra, bộ mẫu không thể biết sẵn. Mở danh sách Cư dân, tìm TEST X hoặc TEST P. Bản sửa mới hiển thị **Mã cư dân** ngay trên danh sách/hồ sơ và có nút **Sao chép**. Nếu chưa cập nhật bản sửa, xuất Excel để lấy cột Mã cư dân:
    - Thay mọi `THAY_MA_CU_DAN_1` bằng mã **Nguyễn Minh An** của đúng nhóm X/P.
    - Thay `THAY_MA_CU_DAN_2` bằng mã **Lê Quang Bình** của đúng nhóm X/P.
    - Giữ nguyên số căn. Với Excel, sửa sheet **Nhap**. Với PDF, mở bằng Chrome/Acrobat, sửa ô mã cư dân và **Save**. Nếu chưa thay mã thì bản xem trước sẽ báo lỗi; đây là bước cần làm, không phải lỗi đọc tệp.

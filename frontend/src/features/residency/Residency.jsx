@@ -25,6 +25,60 @@ const today = () =>
 const values = (event) => Object.fromEntries(new FormData(event.currentTarget));
 const displayDay = (day) => day.split("-").reverse().join("/");
 
+function ResidentCode({ value, label = false }) {
+  const [notice, setNotice] = useState("");
+  async function copy() {
+    const code = String(value);
+    let copied = false;
+    if (window.isSecureContext && navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(code);
+        copied = true;
+      } catch {
+        /* Use the LAN-compatible fallback below. */
+      }
+    }
+    if (!copied) {
+      const previous = document.activeElement,
+        input = document.createElement("textarea");
+      input.value = code;
+      input.readOnly = true;
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.append(input);
+      try {
+        input.focus();
+        input.select();
+        copied = document.execCommand("copy");
+      } catch {
+        copied = false;
+      } finally {
+        input.remove();
+        previous?.focus?.({ preventScroll: true });
+      }
+    }
+    setNotice(
+      copied
+        ? `Đã sao chép mã ${code}.`
+        : "Chưa sao chép được. Hãy bôi đen mã số và sao chép thủ công.",
+    );
+  }
+  return (
+    <div className="resident-code">
+      {label && <span>Mã cư dân:</span>}
+      <code>{value}</code>
+      <button
+        type="button"
+        aria-label={`Sao chép mã cư dân ${value}`}
+        onClick={copy}
+      >
+        Sao chép
+      </button>
+      {notice && <small role="status">{notice}</small>}
+    </div>
+  );
+}
+
 function Pager({ resource }) {
   const [params, setParams] = useSearchParams();
   const page = resource.result?.page || 1,
@@ -700,6 +754,15 @@ export function Residents() {
           maxLength={100}
           defaultValue={params.get("q") || ""}
         />
+        <Field
+          label="Mã cư dân (tùy chọn)"
+          name="ma_cu_dan"
+          type="number"
+          min={1}
+          max={4294967295}
+          step={1}
+          defaultValue={params.get("ma_cu_dan") || ""}
+        />
         <Field label="Tình trạng cư trú">
           <select
             name="trang_thai"
@@ -719,6 +782,7 @@ export function Residents() {
           <table>
             <thead>
               <tr>
+                <th>Mã cư dân</th>
                 <th>Họ tên</th>
                 <th>Số điện thoại</th>
                 <th>Căn hộ hiện tại</th>
@@ -728,6 +792,9 @@ export function Residents() {
             <tbody>
               {resource.result?.data.map((r) => (
                 <tr key={r.ma_cu_dan}>
+                  <td>
+                    <ResidentCode value={r.ma_cu_dan} />
+                  </td>
                   <td>
                     <Link to={`/quan-tri/cu-dan/${r.ma_cu_dan}`}>
                       {r.ho_va_ten}
@@ -770,6 +837,11 @@ export function ResidentDetail() {
       {resident && (
         <>
           <h1>{resident.ho_va_ten}</h1>
+          <ResidentCode value={resident.ma_cu_dan} label />
+          <p className="muted">
+            Dùng mã số này khi nhập phương tiện. Tên đăng nhập CH... là tài
+            khoản căn hộ, không phải mã cư dân.
+          </p>
           <p>
             {resident.so_dien_thoai} ·{" "}
             {current ? `Đang ở căn ${current.so_can_ho}` : "Đã chuyển đi"}
