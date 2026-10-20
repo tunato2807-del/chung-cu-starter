@@ -1,4 +1,5 @@
 import express from "express";
+import { dashboardRouter } from "./modules/dashboard/dashboard.routes.js";
 import { dataExchangeRouter } from "./modules/data-exchange/data-exchange.routes.js";
 import { healthRouter } from "./modules/health/health.routes.js";
 import { errorHandler } from "./middleware/error-handler.js";
@@ -87,6 +88,7 @@ app.get("/api/ready", async (req, res) => {
   res.json({ data: { status: "ok", database: "connected" } });
 });
 app.use("/api/xac_thuc", authRouter);
+app.use("/api/tong_quan", dashboardRouter);
 app.use("/api/trao_doi_du_lieu", dataExchangeRouter);
 app.use("/api/nguoi_dung", usersRouter);
 app.use("/api/can_ho", apartmentsRouter);

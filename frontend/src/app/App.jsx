@@ -21,6 +21,7 @@ import {
 } from "../features/announcements/Announcements.jsx";
 import FinancialReports from "../features/financial-reports/FinancialReports.jsx";
 import DataExchange from "../features/data-exchange/DataExchange.jsx";
+import Dashboard from "../features/dashboard/Dashboard.jsx";
 import {
   EquipmentList,
   EquipmentDetail,
@@ -48,11 +49,7 @@ import {
   SubmitReport,
   LookupReport,
 } from "../features/incidents/PublicReports.jsx";
-import {
-  Dashboard,
-  ReportDetail,
-  ReportList,
-} from "../features/incidents/Reports.jsx";
+import { ReportDetail, ReportList } from "../features/incidents/Reports.jsx";
 import Locations from "../features/qr/Locations.jsx";
 import Vehicles from "../features/vehicles/Vehicles.jsx";
 import {

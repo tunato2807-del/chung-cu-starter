@@ -27,59 +27,6 @@ export const reportBase = (user) =>
     : user.vai_tro === "KY_THUAT_VIEN"
       ? "/ky-thuat/cong-viec"
       : "/cu-dan/phan-anh";
-export function Dashboard() {
-  const cards = [
-    ["MOI", "Mới tiếp nhận"],
-    ["DA_PHAN_CONG", "Đã phân công"],
-    ["DANG_XU_LY", "Đang xử lý"],
-    ["DA_XU_LY", "Chờ nghiệm thu"],
-  ];
-  const resource = useResource("/phan_anh");
-  return (
-    <>
-      <p className="eyebrow">VẬN HÀNH TÒA NHÀ</p>
-      <h1>Tổng quan phản ánh</h1>
-      <p className="muted">
-        Tiếp nhận nhanh, phân công rõ ràng, theo dõi từng bước.
-      </p>
-      <div className="stats">
-        {cards.map(([code, title]) => (
-          <StatCard key={code} code={code} title={title} />
-        ))}
-      </div>
-      <section className="card">
-        <div className="page-heading">
-          <h2>Phản ánh gần đây</h2>
-          <Link to="/quan-tri/phan-anh">Xem tất cả</Link>
-        </div>
-        {resource.loading ? (
-          <Loading />
-        ) : (
-          <>
-            <ErrorBox error={resource.error} />
-            {resource.result && (
-              <ReportTable
-                items={resource.result.data.slice(0, 5)}
-                base="/quan-tri/phan-anh"
-              />
-            )}
-          </>
-        )}
-      </section>
-    </>
-  );
-}
-function StatCard({ code, title }) {
-  const r = useResource(`/phan_anh?trang_thai=${code}`);
-  return (
-    <Link className="stat card" to={`/quan-tri/phan-anh?trang_thai=${code}`}>
-      <span>{title}</span>
-      <strong>{r.result?.meta.total ?? "…"}</strong>
-      <ErrorBox error={r.error} />
-      <small>Xem danh sách →</small>
-    </Link>
-  );
-}
 function ReportTable({ items, base, search = "" }) {
   if (!items.length)
     return (
@@ -168,7 +115,10 @@ export function ReportList() {
               value={params.get("trang_thai") || ""}
               onChange={(e) => filter("trang_thai", e.target.value)}
             >
-              <Options values={statuses} empty="Tất cả trạng thái" />
+              <Options
+                values={{ DANG_MO: "Đang mở (chưa đóng)", ...statuses }}
+                empty="Tất cả trạng thái"
+              />
             </select>
           </Field>
           <Field label="Loại sự cố">

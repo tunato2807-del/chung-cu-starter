@@ -70,7 +70,7 @@ test("guest → management → technician → acceptance → private public look
   try {
     await login(admin, 0);
     await expect(
-      admin.getByRole("heading", { name: "Tổng quan phản ánh" }),
+      admin.getByRole("heading", { name: "Tổng quan vận hành" }),
     ).toBeVisible();
     await admin.getByRole("link", { name: "Vị trí & QR", exact: true }).click();
     await admin.getByLabel("Tên vị trí").fill(locationName);
@@ -184,7 +184,7 @@ test("guest → management → technician → acceptance → private public look
     await fit(guest);
     await admin.goto(origin + "/quan-tri");
     await expect(
-      admin.getByRole("heading", { name: "Tổng quan phản ánh" }),
+      admin.getByRole("heading", { name: "Tổng quan vận hành" }),
     ).toBeVisible();
     await admin.screenshot({
       path: "test-results/dashboard-desktop.png",

@@ -337,3 +337,15 @@ Ledger dot_nhap_du_lieu có UNIQUE(actor,UUID) và UNIQUE(actor,kind,SHA256), l�
 Parser nhận diện đúng danh mục từ marker PDF hoặc tập header Excel có trong catalog. Nếu tệp thuộc phần khác phần được chọn: 422 `IMPORT_KIND_MISMATCH`, message ghi rõ tên phần đang chọn, tên phần tệp thuộc về và yêu cầu chọn lại. Không tự đổi phần hoặc lưu sang phần khác. Lỗi PDF không phải biểu mẫu/đã làm phẳng vẫn có thông báo riêng; không trộn với lỗi chọn sai phần. Các lỗi do hệ thống xác định có message công khai, lỗi thư viện vẫn được che nội dung nội bộ.
 
 Import phương tiện chặn mã không phải số hoặc placeholder THAY_MA_CU_DAN_1/2 bằng thông báo hướng dẫn lấy mã tại Cư dân. Mã cư dân là ma_cu_dan của hồ sơ, không phải tên đăng nhập CH... của căn hộ. Các API danh sách/chi tiết đã trả mã này; giao diện mới hiển thị mã, nút sao chép và dùng bộ lọc ma_cu_dan hiện có. Không thay schema, quyền hoặc logic bàn giao tài khoản.
+
+
+## Tổng quan vận hành (chỉ BQL)
+
+GET `/api/tong_quan` trả `{data:{tai_luc,ngay_hien_tai,gio_hien_tai,tu_ngay_thu,den_ngay_thu,tai_chinh,phan_anh,bao_tri,tien_ich}}`. UTC timestamp tai_luc, ngày/giờ nghiệp vụ Việt Nam UTC+07. 401 cho khách/phiên hết, 403 cho KTV/cư dân; no-store/nosniff theo middleware chung. Không nhận bộ lọc từng khối vì đây là tổng quan toàn hệ thống.
+
+- tai_chinh: con_phai_thu, no_qua_han, thu_trong_thang là chuỗi nguyên đồng; hoa_don_chua_thu, hoa_don_qua_han, can_con_no là số đếm; hoa_don tối đa 5 dòng ID/số hóa đơn/căn/kỳ/tiền/hạn/quá hạn. Nợ chỉ DA_GUI, không NHAP/DA_DUYET/HUY/DA_THANH_TOAN; hạn hôm nay/null không quá hạn. Thu tháng tính DA_THANH_TOAN theo timestamp xác nhận từ 00:00 ngày đầu tháng đến trước 00:00 ngày mai, đổi ranh giới Việt Nam sang UTC trước truy vấn.
+- phan_anh: moi,da_phan_cong,dang_xu_ly,cho_nghiem_thu,dang_mo và danh_sach tối đa 5 bản chưa đóng, ưu tiên KHAN_CAP/CAO/TRUNG_BINH/THAP rồi ngày tạo cũ trước. Không trả thông tin liên hệ/mã tra cứu. GET /phan_anh?trang_thai=DANG_MO là bộ lọc đọc gồm MOI/DA_PHAN_CONG/DANG_XU_LY/DA_XU_LY, vẫn AND phạm vi người dùng; không phải trạng thái ghi mới.
+- bao_tri: phieu_qua_han,cho_nghiem_thu,phieu_dang_mo cho các phiếu chưa kết thúc; thiet_bi_qua_han,thiet_bi_sap_den_han theo ngày kế tiếp/nhắc trước của thiết bị chưa ngừng sử dụng, giống bộ lọc màn thiết bị. danh_sach tối đa 5 phiếu mở, quá hạn trước, ngày đến hạn tăng dần. Phiếu hôm nay không quá hạn.
+- tien_ich: cho_duyet gồm mọi CHO_DUYET kể cả đã qua giờ; da_duyet_hom_nay theo ngày bắt đầu tại Việt Nam. danh_sach tối đa 5 gồm CHO_DUYET có giờ bắt đầu tương lai hoặc DA_DUYET chưa hết giờ, loại bỏ hủy/từ chối/lịch đã kết thúc.
+
+Mọi truy vấn trong response cùng transaction REPEATABLE READ, CONSISTENT SNAPSHOT READ ONLY. Tất cả ngày/giờ dùng mốc clock SQL đầu transaction, tránh lệch khi qua nửa đêm. Count là toàn bộ kết quả, giới hạn 5 chỉ cho từng hàng đợi. GET không ghi audit, tạo công việc, gửi nhắc phí hoặc thay trạng thái. Frontend không hiển thị số 0 thay cho lỗi mạng, không dùng dữ liệu cũ sau khi bấm refresh nếu request mới lỗi.

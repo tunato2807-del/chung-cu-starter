@@ -170,3 +170,12 @@ Preview dùng transaction thật để kiểm tra ràng buộc và quan hệ gi�
 ExcelJS đọc XLSX trong worker riêng. Yauzl 3.4.0 kiểm tra trước: tối đa 1.000 entry, tổng 20 MB sau giải nén, mỗi entry 8 MB; không macro. Nhận scalar/date, báo lỗi công thức/linked/rich cell, header đúng mẫu, 1–100 dòng dữ liệu. PDF-lib đọc AcroForm từ mẫu được tạo bằng chính PDF-lib/fontkit/Roboto có sẵn trong pdfmake. PDF biểu mẫu tối đa 10 trang, 120 field; field đúng namespace/phân hệ; không OCR/trích text đoán cột, không thực thi JavaScript PDF hay tải URL. Worker có heap 128 MB và thời hạn 15 giây, đầu vào tối đa 5 MB, không ghi file vào thư mục công khai. pdf-parse vẫn chỉ dùng trong test đọc PDF xuất.
 
 Slot đọc/ghi tệp dùng chung giới hạn renderer một/account, hai/process, giữ slot đến khi tác vụ máy chủ hoàn tất. Các API xuất báo cáo tài chính giữ snapshot riêng như trước; danh sách module lấy dữ liệu mới tại SELECT và tổng số dòng xuất từ chính tập trả về. Trang import không ghi draft/credential vào localStorage. Đổi phần dữ liệu tạo panel mới, bỏ bản xem trước/tệp/token cũ; đổi tệp bắt buộc xem trước lại.
+
+
+## Tổng quan vận hành
+
+Dashboard BQL thay trang tổng quan chỉ phản ánh. Module backend dashboard có một API /api/tong_quan, kiểm tra BQL và đọc một connection trong snapshot chỉ đọc; UTC_TIMESTAMP và ngày/giờ Việt Nam lấy chung đầu transaction. Các aggregate tài chính CAST CHAR giữ tiền chính xác, frontend BigInt/locale vi-VN; count/queues không ghép dữ liệu từ nhiều request khác thời điểm. Thu theo ngày xác nhận, công nợ theo trạng thái đã gửi còn nợ, không tự cộng phiếu quỹ thủ công vào thu hóa đơn.
+
+Hàng đợi bốn nhóm tối đa 5 mục, có whitelist cột và thứ tự ưu tiên rõ. Không trả mật khẩu, token, dữ liệu tra cứu QR, ngân hàng hoặc liên hệ khách. Truy vấn đọc không khóa đối tượng nghiệp vụ hoặc tạo side effect. Test xen một INSERT phản ánh sau truy vấn tài chính để chứng minh các nhóm còn lại giữ cùng snapshot và chỉ đổi ở lần tải tiếp theo.
+
+Frontend Dashboard riêng và CSS có prefix overview, thay import Dashboard cũ từ Reports; Reports giữ danh sách/chi tiết và thêm virtual filter DANG_MO chỉ cho đọc, repository vẫn AND scope người gửi/phụ trách. Hook tổng quan gắn kết quả với revision, abort request cũ, bỏ dữ liệu khi tải mới/lỗi, có retry thủ công. BQL xem các thẻ và điều hướng sang màn xử lý có quyền hiện có; không thêm luồng duyệt/thu tiền trong dashboard. Không migration hoặc dependency mới.

@@ -1,5 +1,7 @@
 # Nhập / xuất Excel và PDF — code đầy đủ từng file cho VS Code
 
+> Trang Tổng quan mới nằm trong [Tổng quan vận hành — code đầy đủ 8 file](cap-nhat-tong-quan-van-hanh-vscode.md). Sau khi áp dụng bản đó, không chép lại `backend/src/app.js` hoặc `frontend/src/app/App.jsx` cũ bên dưới đè lên.
+
 > Có bản sửa mới: [mã cư dân và thông báo nhập PDF — code đầy đủ 7 file](cap-nhat-ma-cu-dan-va-nhap-pdf-vscode.md). Sau khi áp dụng bản sửa, không chép lại worker, service, giao diện cư dân/nhập dữ liệu và CSS cũ bên dưới đè lên.
 
 Bản tiếp theo sau [bản xuất báo cáo ffb4666](https://github.com/tunato2807-del/chung-cu-starter/tree/ffb4666a442dcb6efbfb09f658e1c85af0d90df3). Dành cho dự án đã có căn hộ/cư trú, phương tiện, hóa đơn, bảo trì, tiện ích và thu chi/quỹ. Hướng dẫn này chứa **26 file chạy ứng dụng** với code đầy đủ để chép, không cần tải ZIP. Không lấy lại service/CSS/App từ hướng dẫn cũ đè lên sau khi áp dụng bản này.

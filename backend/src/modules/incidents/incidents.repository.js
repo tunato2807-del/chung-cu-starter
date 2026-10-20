@@ -102,6 +102,12 @@ export async function list(user, query) {
   }
   for (const key of ["trang_thai", "loai_su_co"])
     if (typeof query[key] === "string" && query[key]) {
+      if (key === "trang_thai" && query[key] === "DANG_MO") {
+        clauses.push(
+          "p.trang_thai IN ('MOI','DA_PHAN_CONG','DANG_XU_LY','DA_XU_LY')",
+        );
+        continue;
+      }
       clauses.push(`p.${key}=?`);
       params.push(query[key]);
     }
