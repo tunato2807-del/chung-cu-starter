@@ -26,6 +26,8 @@ import {
   selfAnnouncementsRouter,
 } from "./modules/announcements/announcements.routes.js";
 
+import { financialReportsRouter } from "./modules/financial-reports/financial-reports.routes.js";
+
 export const app = express();
 app.disable("x-powered-by");
 app.use(requestContext);
@@ -70,6 +72,7 @@ app.use("/api/phuong_tien", vehiclesRouter);
 app.use("/api/cau_hinh_phi", ratesRouter);
 app.use("/api/chi_so_dich_vu", metersRouter);
 app.use("/api/hoa_don", billsRouter);
+app.use("/api/bao_cao", financialReportsRouter);
 app.use("/api/thong_bao", announcementsRouter);
 app.use("/api/cua_toi/thong_bao", selfAnnouncementsRouter);
 app.use("/api/cua_toi/hoa_don", selfBillsRouter);

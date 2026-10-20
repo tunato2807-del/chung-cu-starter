@@ -976,3 +976,154 @@ footer {
   border-radius: 0.8rem;
   background: #f5f9f7;
 }
+
+.finance-filters {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: end;
+  margin-bottom: 1rem;
+}
+.finance-filters .field {
+  margin-bottom: 0;
+}
+.finance-filters > button {
+  align-self: end;
+  min-height: 44px;
+}
+@media (max-width: 1150px) {
+  .finance-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .finance-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.finance-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.finance-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.finance-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0.6rem;
+  padding: 1.2rem;
+  border: 1px solid #dce5df;
+  border-radius: 0.8rem;
+  background: white;
+  text-align: left;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.finance-metric strong {
+  font-size: clamp(1.15rem, 1.7vw, 1.65rem);
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+}
+.finance-metric-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #47645b;
+}
+.finance-metric small {
+  font-weight: 400;
+  color: #627c73;
+}
+.finance-metric.is-paid {
+  border-top: 4px solid #14635a;
+}
+.finance-metric.is-overdue {
+  border-top: 4px solid #ad3f2b;
+}
+.finance-metric.is-overdue strong,
+.finance-overdue {
+  color: #a33225;
+  font-weight: 700;
+}
+.finance-progress {
+  padding: 1rem 1.2rem;
+  border-radius: 0.6rem;
+  background: #e7f0eb;
+}
+.finance-progress > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+.finance-progress progress {
+  width: 100%;
+  height: 0.6rem;
+  accent-color: #14635a;
+}
+.finance-snapshot {
+  font-size: 0.8rem;
+  color: #627c73;
+}
+.finance-results th {
+  white-space: nowrap;
+}
+.finance-results td {
+  vertical-align: top;
+}
+.finance-number {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.finance-contact {
+  display: block;
+  color: #627c73;
+}
+.finance-pager {
+  margin-top: 1rem;
+}
+.finance-empty {
+  text-align: center;
+  color: #627c73;
+  padding: 1rem;
+}
+.finance-metrics-cash {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+}
+.finance-date-range {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1.2rem;
+  border: 1px solid #dce5df;
+  border-radius: 0.8rem;
+}
+.finance-date-range small {
+  color: #627c73;
+}
+@media (max-width: 1150px) {
+  .finance-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .finance-metrics,
+  .finance-metrics-cash {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .finance-results {
+    padding: 1rem;
+  }
+  .finance-metric strong {
+    font-size: 1.5rem;
+  }
+}

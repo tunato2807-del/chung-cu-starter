@@ -1,6 +1,6 @@
 # Quản lý chung cư · Phản ánh QR
 
-React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn và thông báo/nhắc phí trên web** theo ba tài liệu thiết kế.
+React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web và báo cáo công nợ/thu phí** theo ba tài liệu thiết kế.
 
 ## Chạy môi trường phát triển
 
@@ -104,6 +104,16 @@ Cập nhật bằng [code đầy đủ 9 file trong VS Code](docs/cap-nhat-thong
 - Nhắc phí chỉ đến tài khoản căn và tài khoản cá nhân của người phụ trách hiện tại nếu có quyền xem kỳ hóa đơn. Thành viên khác không thấy nhắc phí. Tài khoản căn xem được sổ hóa đơn cũ; tài khoản cá nhân vẫn giới hạn theo đợt cư trú. Hóa đơn đã thu còn xem thông báo nhưng không tính chưa đọc; hóa đơn hủy thì nhắc phí bị ẩn.
 
 Phiên bản này là hộp thông báo **trên web**. BQL chủ động gửi nhắc; chưa có lịch tự động, SMS, email hoặc thông báo đẩy trên điện thoại. Số chưa đọc cập nhật khi đổi trang, quay lại tab và mỗi 60 giây khi mở web.
+
+## Báo cáo công nợ và thu phí
+
+BQL → **Công nợ & thu phí** tại `/quan-tri/bao-cao-tai-chinh`. Xem [code đầy đủ 7 file để chép vào VS Code](docs/cap-nhat-bao-cao-cong-no-vscode.md). Bản này không thêm migration/dependency; cần bản thông báo đã có schema đến 009.
+
+- **Công nợ theo kỳ hóa đơn**: tổng đã gửi, đã thu của các kỳ đã chọn, còn phải thu, phần nợ quá hạn và tỷ lệ đã thu. Mặc định tất cả kỳ để giữ nợ cũ. Chỉ DA_GUI/DA_THANH_TOAN được tính; nháp, chưa gửi và hủy bị loại, kể cả hóa đơn đã lập thay thế. Số dư là hiện tại, không phải số dư hồi tố theo ngày.
+- Lọc từ kỳ/đến kỳ, khối và số căn; xem công nợ theo căn, hóa đơn chưa thu hoặc tổng hợp theo kỳ. Chọn căn để xem hóa đơn riêng; mở hóa đơn để nhắc phí/xác nhận thu theo luồng đã có. Bộ lọc chỉ quá hạn đổi bảng chi tiết, không đổi tổng phía trên; mỗi căn có nợ quá hạn vẫn hiện toàn bộ nợ của căn trong các kỳ đã chọn.
+- **Thu phí theo ngày xác nhận**: tiền BQL đã xác nhận thu trong khoảng ngày Việt Nam, mặc định đầu tháng đến hôm nay. Có bảng từng khoản/tham chiếu/người xác nhận và tổng hợp theo ngày. Thu cho kỳ cũ vẫn vào đúng ngày xác nhận. Đây không phải ngày chuyển khoản từ ngân hàng.
+
+Hạn hôm nay chưa quá hạn; chỉ quá hạn khi hạn trả nhỏ hơn ngày hiện tại tại Việt Nam. Tiền trả API ở dạng chuỗi đồng nguyên, tổng hợp giữ chính xác cả khi vượt giới hạn số nguyên JavaScript. Tổng, số dòng và bảng chi tiết cùng một snapshot nhất quán khi có người thu tiền đồng thời. Chỉ BQL được truy cập cả API và giao diện. Người phụ trách căn hiển thị theo hiện tại, không tự thay nghĩa vụ tài chính của hóa đơn cũ.
 
 ## Ảnh hiện trường và QR
 

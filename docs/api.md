@@ -177,3 +177,27 @@ Body bản nháp: `{tieu_de,noi_dung,pham_vi,muc_do,khoi?,ma_can_ho?}`. Tiêu đ
 Phạm vi đọc xét lại trong SQL theo căn cố định hoặc cư trú đang mở, không dựa số điện thoại hay căn client. Nhắc phí chỉ tài khoản căn hoặc cá nhân của người phụ trách hiện tại; cá nhân cần ngày bắt đầu cư trú không sau ngày chốt hóa đơn. Cư dân không có căn đang ở nhận hộp rỗng. Chủ hộ mới có receipt riêng trên cùng tài khoản căn; người cũ không xem nhắc phí qua tài khoản cá nhân sau bàn giao.
 
 Nhắc phí lấy nội dung, tiền, kỳ và hạn từ server; khóa căn/hóa đơn và UNIQUE(ma_hoa_don,ngay_nhac) với ngày Asia/Ho_Chi_Minh. Gọi lại cùng ngày trả ID cũ/da_ton_tai=true, kể cả đã thu hồi thông báo; không nhân đôi hoặc đổi hóa đơn. Hóa đơn đã thu trả INVALID_STATE khi nhắc mới, nhắc cũ vẫn xem được nhưng chua_doc=0; hóa đơn hủy ẩn nhắc cũ khỏi cư dân. Đây là nhắc trên web bằng thao tác BQL, không có SMS/email/cron.
+
+## Báo cáo công nợ và thu phí
+
+Chỉ QUAN_TRI_VIEN. CU_DAN/KY_THUAT_VIEN trả 403, khách trả 401. Tất cả endpoint chỉ GET, không ghi hóa đơn/nhắc phí. Không có migration mới; dùng dữ liệu hóa đơn hiện có. Tiền là chuỗi số nguyên đồng, không chuyển sang số thực để cộng tổng.
+
+| Endpoint | Kết quả |
+| --- | --- |
+| GET /api/bao_cao/bo_loc | {data:[{khoi}]}: khối có căn để chọn lọc |
+| GET /api/bao_cao/cong_no | {data,summary,total,page,filters,ngay_bao_cao,tai_luc} |
+| GET /api/bao_cao/thu_phi | Cùng cấu trúc, tổng hợp/chi tiết theo ngày xác nhận thu |
+
+Cả hai nhận `khoi` (khớp chính xác, tối đa 10 ký tự), `q` (tìm số căn, tối đa 100), `ma_can_ho` (ID dương) và `page` (1–100000, 20 dòng/trang). Lọc q/ma_can_ho/khối tác động cả tổng hợp và chi tiết. Trường thời gian tai_luc ở UTC; ngay_bao_cao là ngày lịch Việt Nam. Mỗi response dùng một read-only consistent snapshot, không khóa hóa đơn.
+
+Công nợ nhận thêm `tu_ky`, `den_ky` dạng YYYY-MM, để trống = không giới hạn; từ kỳ không sau đến kỳ. `che_do=CAN_HO` mặc định (gom căn còn nợ), `HOA_DON` (chỉ hóa đơn DA_GUI), `THEO_KY` (gom kỳ, gồm sent/paid). `qua_han=0|1` chỉ dùng với CAN_HO/HOA_DON. Khi CAN_HO + quá hạn: chọn căn có ít nhất một hóa đơn quá hạn nhưng vẫn cộng toàn bộ nợ của căn trong bộ lọc. Khi HOA_DON + quá hạn: chỉ lấy hóa đơn quá hạn. Bộ lọc này không đổi summary.
+
+summary công nợ: `tong_da_gui`, `da_thu`, `con_phai_thu`, `no_qua_han`, `so_hoa_don`, `so_hoa_don_da_thu`, `so_hoa_don_chua_thu`, `so_hoa_don_qua_han`, `so_can_con_no`, `ty_le_da_thu` (phần trăm làm tròn 2 số lẻ). Chỉ DA_GUI/DA_THANH_TOAN được tính; tổng đã gửi = đã thu + còn phải thu trong mô hình thu đủ một lần. Nợ quá hạn là một phần của còn phải thu: DA_GUI và hạn không NULL, nhỏ hơn ngày Việt Nam. NHAP/DA_DUYET/HUY loại khỏi toàn bộ công nợ; không suy tổng từ dòng phí hoặc cộng bản bị thay thế đã hủy. Kỳ là kỳ hóa đơn, không phải kỳ phát sinh dòng tiền. Đây là công nợ hiện tại của các kỳ, chưa có số dư hồi tố tại ngày quá khứ.
+
+Data CAN_HO có căn/khối, số hóa đơn chưa thu, còn phải thu, nợ quá hạn, hạn sớm nhất và thông tin người phụ trách **hiện tại** (có thể NULL). HOA_DON có mã/số hóa đơn, căn/khối/kỳ, tổng/hạn và qua_han=0|1. THEO_KY có kỳ và các tổng/counters như summary, phân trang theo kỳ. Tổng hợp không bị giới hạn bởi 20 dòng chi tiết.
+
+Thu phí nhận `tu_ngay`, `den_ngay` YYYY-MM-DD, mặc định đầu tháng/hôm nay; không sau hôm nay, từ ngày không sau đến ngày. `che_do=GIAO_DICH` mặc định (từng hóa đơn đã thu) hoặc `THEO_NGAY` (gom ngày Việt Nam). Không lọc theo kỳ hóa đơn ở endpoint này; `ky_thanh_toan` chỉ là thông tin trong mỗi khoản thu. Khoảng ngày bao gồm cả ngày cuối: UTC timestamp >= đầu ngày Việt Nam và < đầu ngày kế tiếp. Không cần dữ liệu timezone table của MySQL vì dùng offset +07:00.
+
+summary thu phí: `tong_da_thu`, `so_khoan_thu`, `so_can_da_thu`. Chỉ DA_THANH_TOAN có ngay_thanh_toan trong khoảng mới được tính; dùng so_tien_da_thu, không suy tiền từ việc quét QR hoặc nội dung chuyển khoản. Data GIAO_DICH có hóa đơn/căn/kỳ, số tiền đã thu, tham chiếu, thời điểm và tên người xác nhận; không trả số tài khoản ngân hàng/hash/mật khẩu. THEO_NGAY có ngay_thu, da_thu và so_khoan_thu. Ngày xác nhận là ngày BQL ghi nhận trên hệ thống, có thể khác ngày chuyển khoản; hóa đơn đã thu thiếu thời điểm không thể vào báo cáo theo ngày.
+
+Ví dụ: `/api/bao_cao/cong_no?tu_ky=2026-09&den_ky=2026-10&khoi=A&che_do=HOA_DON&qua_han=1` và `/api/bao_cao/thu_phi?tu_ngay=2026-10-01&den_ngay=2026-10-20&khoi=A`. Khoảng đảo ngược trả 422 INVALID_PERIOD_RANGE/INVALID_DATE_RANGE; chọn sai chế độ/quá hạn theo kỳ trả 422. Truy cập báo cáo không tự gửi nhắc hoặc ghi nhận đã thu.

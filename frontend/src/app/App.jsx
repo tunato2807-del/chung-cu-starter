@@ -19,6 +19,7 @@ import {
   AnnouncementDetail,
   useUnreadCount,
 } from "../features/announcements/Announcements.jsx";
+import FinancialReports from "../features/financial-reports/FinancialReports.jsx";
 import Users from "../features/auth/Users.jsx";
 import ApartmentAccounts from "../features/residency/ApartmentAccounts.jsx";
 import {
@@ -71,6 +72,7 @@ function Shell() {
           ["/quan-tri/don-gia", "Đơn giá phí"],
           ["/quan-tri/chi-so", "Chỉ số điện nước"],
           ["/quan-tri/hoa-don", "Phí & hóa đơn"],
+          ["/quan-tri/bao-cao-tai-chinh", "Công nợ & thu phí"],
           ["/quan-tri/thong-bao", "Thông báo"],
           ["/quan-tri/vi-tri-qr", "Vị trí & QR"],
           ["/quan-tri/nhan-su", "Nhân sự & tài khoản"],
@@ -184,6 +186,7 @@ function Shell() {
               ["/quan-tri/chi-so", <Meters />],
               ["/quan-tri/hoa-don", <Bills />],
               ["/quan-tri/hoa-don/:id", <BillDetail />],
+              ["/quan-tri/bao-cao-tai-chinh", <FinancialReports />],
               ["/quan-tri/thong-bao", <Announcements />],
               ["/quan-tri/thong-bao/:id", <AnnouncementDetail />],
             ].map(([path, element]) => (

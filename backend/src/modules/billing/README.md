@@ -7,3 +7,5 @@ Không tin tổng/đơn giá từ client; không sửa giá/chi tiết hóa đơ
 billing.electricity.js kiểm tra và tính điện bậc thang/thuế bằng BigInt; mỗi dòng lưu ngưỡng/giá/chỉ số, thuế chỉ trên tiền điện. Tương thích snapshot điện đơn giá cũ. Một biểu giá tại ngày chốt, chưa tách kỳ đổi giá/định mức nhiều hộ.
 
 Tài khoản căn cố định xem DA_GUI/DA_THANH_TOAN đúng căn qua mọi đợt; SQL kiểm tra lại active/token version. Tài khoản cá nhân vẫn theo đợt đang mở. Bàn giao không tự đánh dấu hóa đơn đã thu.
+
+Thời điểm xác nhận thu ghi UTC_TIMESTAMP() để báo cáo thu phí chuyển đúng sang ngày Việt Nam; không đổi tiền hoặc thời điểm lịch sử. Module financial-reports đọc snapshot các hóa đơn hiện có, không ghi thêm trạng thái khi xem.

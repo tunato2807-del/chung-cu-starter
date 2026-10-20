@@ -1,5 +1,7 @@
 # Thông báo và nhắc phí — code từng file cho VS Code
 
+> Bản tiếp theo: [Báo cáo công nợ và thu phí — code 7 file](cap-nhat-bao-cao-cong-no-vscode.md). Nếu đã cập nhật bản đó, không chép App.jsx/app.js/global.css cũ bên dưới đè lại.
+
 Bản tiếp theo sau `f1a1703` (danh sách tài khoản căn hộ và đăng nhập SĐT chủ hộ). Chép đủ **9 file** bên dưới, không cần tải ZIP hoặc cài dependency mới. Nếu chưa có bản tài khoản căn hộ, cập nhật [bản danh sách/đăng nhập](cap-nhat-danh-sach-tai-khoan-can-ho-vscode.md) trước. Các file đầy đủ bên dưới giữ các phần hóa đơn, VietQR, ngân hàng chọn sẵn và tài khoản căn đã có.
 
 ## Cách cập nhật
