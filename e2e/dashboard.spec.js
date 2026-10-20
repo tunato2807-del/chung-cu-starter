@@ -99,6 +99,65 @@ for (const width of [1440, 375])
         await expect(
           page.getByRole("heading", { name: title, exact: true }),
         ).toBeVisible();
+      const charts = page.locator(".trends");
+      await expect(charts.locator(".trend-card")).toHaveCount(4);
+      const financeChart = charts.locator(".trend-card").filter({
+        has: page.getByRole("heading", {
+          name: "Thu phí và hạn công nợ",
+          exact: true,
+        }),
+      });
+      async function chartLoaded(action) {
+        const response = page.waitForResponse(
+          (r) => new URL(r.url()).pathname === "/api/tong_quan/thong_ke",
+        );
+        await action();
+        const r = await response;
+        expect(r.status()).toBe(200);
+        await expect(
+          charts.getByRole("button", { name: "Cập nhật biểu đồ", exact: true }),
+        ).toBeEnabled();
+        return (await r.json()).data;
+      }
+      for (const [period, count] of [
+        ["NGAY", 24],
+        ["TUAN", 7],
+        [
+          "THANG",
+          new Date(
+            Date.UTC(
+              Number(today().slice(0, 4)),
+              Number(today().slice(5, 7)),
+              0,
+            ),
+          ).getUTCDate(),
+        ],
+        ["QUY", 3],
+        ["NAM", 12],
+      ]) {
+        const result = await chartLoaded(() =>
+          charts
+            .getByLabel("Khoảng thống kê", { exact: true })
+            .selectOption(period),
+        );
+        expect(result.diem).toHaveLength(count);
+        await expect(financeChart.locator('svg g[role="button"]')).toHaveCount(
+          count,
+        );
+        await expect(financeChart.locator(".trend-totals")).toContainText(
+          money(result.tong.con_no),
+        );
+      }
+      const columns = financeChart.locator('svg g[role="button"]');
+      await columns.nth(1).focus();
+      await page.keyboard.press("ArrowRight");
+      await expect(columns.nth(2)).toBeFocused();
+      await expect(financeChart.locator(".trend-detail > strong")).toHaveText(
+        `Tháng 03/${today().slice(0, 4)}`,
+      );
+      await financeChart.locator("summary").click();
+      await expect(financeChart.locator("tbody tr")).toHaveCount(12);
+      await financeChart.locator("summary").click();
       await expect(
         page
           .locator(".overview-metric")
@@ -119,6 +178,11 @@ for (const width of [1440, 375])
       await debt().click();
       await expect(page).toHaveURL(/che_do=HOA_DON/);
       current = await loaded(() => page.goto("/quan-tri"));
+      await chartLoaded(() =>
+        charts
+          .getByLabel("Khoảng thống kê", { exact: true })
+          .selectOption("NAM"),
+      );
       await rows(
         pool,
         "UPDATE hoa_don SET tong_tien=tong_tien+1 WHERE ma_hoa_don=?",
@@ -135,6 +199,43 @@ for (const width of [1440, 375])
       await expect(debt().locator("strong")).toHaveText(
         money(updated.tai_chinh.con_phai_thu),
       );
+      await expect(
+        charts.getByLabel("Khoảng thống kê", { exact: true }),
+      ).toHaveValue("NAM");
+      await expect(charts.locator(".trend-card")).toHaveCount(4);
+      const noData = await chartLoaded(() =>
+        charts.getByLabel("Ngày trong kỳ", { exact: true }).fill("1901-01-01"),
+      );
+      expect(noData.tong.da_thu).toBe("0");
+      await expect(charts.locator(".trend-empty")).toHaveCount(4);
+      const chartFailure = async (route) =>
+        route.fulfill({
+          status: 503,
+          contentType: "application/json",
+          body: JSON.stringify({
+            error: {
+              code: "DATABASE_UNAVAILABLE",
+              message: "Không tải được biểu đồ. Hãy thử lại.",
+            },
+          }),
+        });
+      await page.route("**/api/tong_quan/thong_ke?*", chartFailure);
+      await charts
+        .getByRole("button", { name: "Cập nhật biểu đồ", exact: true })
+        .click();
+      await expect(charts.getByRole("alert")).toContainText(
+        "Không tải được biểu đồ",
+      );
+      await expect(charts.locator(".trend-card")).toHaveCount(0);
+      await page.unroute("**/api/tong_quan/thong_ke?*", chartFailure);
+      await chartLoaded(() =>
+        charts
+          .getByRole("button", { name: "Về kỳ hiện tại", exact: true })
+          .click(),
+      );
+      await expect(
+        charts.getByLabel("Ngày trong kỳ", { exact: true }),
+      ).toHaveValue(today());
       const failure = async (route) =>
         route.fulfill({
           status: 503,

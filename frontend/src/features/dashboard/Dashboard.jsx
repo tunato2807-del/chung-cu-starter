@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getJson } from "../../shared/api/client.js";
 import { Badge, ErrorBox, Loading, priorities } from "../../shared/ui.jsx";
 import "./Dashboard.css";
+import DashboardCharts from "./DashboardCharts.jsx";
 
 const amount = (value) => `${BigInt(value || 0).toLocaleString("vi-VN")} đ`;
 const day = (value) =>
@@ -42,6 +43,7 @@ function useOverview() {
   }, [revision]);
   return {
     ...(state.revision === revision ? state : { loading: true }),
+    revision,
     reload: () => setRevision((n) => n + 1),
   };
 }
@@ -154,6 +156,11 @@ export default function Dashboard() {
               alert={data.bao_tri.phieu_qua_han > 0}
             />
           </section>
+        </>
+      )}
+      <DashboardCharts refresh={resource.revision} />
+      {data && (
+        <>
           <div className="overview-grid">
             <Panel
               title="Công nợ cần theo dõi"

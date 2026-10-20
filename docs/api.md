@@ -349,3 +349,21 @@ GET `/api/tong_quan` trả `{data:{tai_luc,ngay_hien_tai,gio_hien_tai,tu_ngay_th
 - tien_ich: cho_duyet gồm mọi CHO_DUYET kể cả đã qua giờ; da_duyet_hom_nay theo ngày bắt đầu tại Việt Nam. danh_sach tối đa 5 gồm CHO_DUYET có giờ bắt đầu tương lai hoặc DA_DUYET chưa hết giờ, loại bỏ hủy/từ chối/lịch đã kết thúc.
 
 Mọi truy vấn trong response cùng transaction REPEATABLE READ, CONSISTENT SNAPSHOT READ ONLY. Tất cả ngày/giờ dùng mốc clock SQL đầu transaction, tránh lệch khi qua nửa đêm. Count là toàn bộ kết quả, giới hạn 5 chỉ cho từng hàng đợi. GET không ghi audit, tạo công việc, gửi nhắc phí hoặc thay trạng thái. Frontend không hiển thị số 0 thay cho lỗi mạng, không dùng dữ liệu cũ sau khi bấm refresh nếu request mới lỗi.
+
+### Biểu đồ vận hành
+
+GET `/api/tong_quan/thong_ke?khoang=THANG&ngay=2026-10-20`, chỉ BQL, 401/403/no-store như Tổng quan. `khoang`: NGAY/TUAN/THANG/QUY/NAM, mặc định THANG; `ngay`: ngày bất kỳ trong kỳ, mặc định hôm nay Việt Nam, kiểm tra ngày thật 1900–2199; cho phép xem kỳ tương lai để theo dõi hạn trả/lịch tiện ích. Giá trị sai/lặp tham số trả 422.
+
+Response `{data:{tai_luc,khoang,ngay,tu_ngay,den_ngay,den_truoc_ngay,don_vi,nhan_khoang,diem,tong}}`. Khoảng truy vấn nửa mở `[tu_ngay,den_truoc_ngay)`; den_ngay là ngày cuối để hiển thị. Tuần thứ Hai–Chủ nhật; quý theo lịch Jan–Mar/Apr–Jun/Jul–Sep/Oct–Dec. NGAY trả 24 mốc GIO; TUAN 7 mốc NGAY; THANG 28–31 mốc NGAY; QUY 3 mốc THANG; NAM 12 mốc THANG. Mốc không có dữ liệu được điền 0.
+
+Mỗi điểm `{moc,nhan,da_thu,con_no,tiep_nhan,da_dong,lap_moi,nghiem_thu,cho_duyet,da_duyet,da_huy,tu_choi}`. tong cộng các chuỗi; da_thu/con_no là chuỗi nguyên đồng cả tổng và từng điểm, các trường còn lại là số đếm. Định nghĩa:
+
+- da_thu: DA_THANH_TOAN theo ngay_thanh_toan UTC đổi sang Việt Nam, tiền so_tien_da_thu.
+- con_no: DA_GUI hiện tại theo han_thanh_toan DATE, loại hạn null. Đây là công nợ hiện tại phân bổ theo hạn trả, không tái dựng số dư công nợ lịch sử.
+- tiep_nhan: tất cả phản ánh theo ngay_tao UTC (gồm cả hồ sơ hiện đã từ chối/trùng). da_dong: DA_DONG theo ngay_dong UTC. Là hai luồng sự kiện độc lập, không phải tỷ lệ đóng của cùng cohort.
+- lap_moi: phiếu chưa hủy theo ngay_lap DATE; nghiem_thu: HOAN_THANH theo ngay_nghiem_thu UTC. Phiếu lập ở kỳ cũ có thể nghiệm thu kỳ đang xem.
+- cho_duyet/da_duyet/da_huy/tu_choi: lượt đặt theo bat_dau giờ Việt Nam, dùng trạng thái hiện tại, không đổi UTC lần nữa. Bao gồm lịch tương lai trong kỳ được chọn; trạng thái có thể thay đổi sau khi duyệt/hủy.
+
+Riêng NGAY: con_no và lap_moi chỉ có tổng ngày trong tong; các điểm giờ của hai chuỗi để 0 và frontend không vẽ hai chuỗi đó theo giờ. Không gán giả 00h cho trường chỉ có DATE. Các mốc tiền/sự kiện UTC truy vấn bằng ranh giới UTC tương ứng rồi GROUP BY giờ/ngày/tháng Việt Nam; ngày nghiệp vụ và giờ đặt lịch giữ nguyên.
+
+Các biểu đồ dùng một snapshot REPEATABLE READ READ ONLY riêng với tai_luc; các thẻ/hàng đợi dùng API Tổng quan riêng. Mỗi phần hiển thị thời điểm đọc riêng. Không ghi dữ liệu hoặc audit. Frontend gắn response vào URL/kỳ/revision để bỏ request cũ, abort khi đổi bộ lọc, không render dữ liệu kỳ trước dưới nhãn kỳ mới. Không đổi phân quyền hoặc endpoint báo cáo hiện có.

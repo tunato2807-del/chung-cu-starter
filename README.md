@@ -31,6 +31,8 @@ Docker lưu MySQL trong volume `mysql_data`; ảnh nằm tại `backend/storage/
 
 BQL đăng nhập vào trang Tổng quan để xem công nợ, khoản đã thu từ đầu tháng đến hôm nay, phản ánh đang mở, phiếu/lịch bảo trì và đặt lịch tiện ích. Xem [code đầy đủ 8 file cập nhật trong VS Code](docs/cap-nhat-tong-quan-van-hanh-vscode.md). Không có migration hoặc thư viện mới.
 
+Trang có thêm **Biểu đồ vận hành** với bộ chọn ngày/tuần/tháng/quý/năm và ngày trong kỳ: thu phí/công nợ theo hạn, tiếp nhận/đóng phản ánh, lập/nghiệm thu bảo trì, lượt đặt tiện ích theo trạng thái. Ngày chia 24 giờ, tuần từ thứ Hai đến Chủ nhật, tháng chia từng ngày, quý/năm chia từng tháng. Chạm cột hoặc mở bảng để xem số chính xác; cập nhật không mất bộ lọc. Xem [code đầy đủ 5 file thêm biểu đồ](docs/cap-nhat-bieu-do-tong-quan-vscode.md). Bộ lọc chỉ áp dụng biểu đồ, không thay cách tính các thẻ số liệu hiện tại.
+
 Một API `/api/tong_quan` đọc tất cả nhóm trong cùng snapshot chỉ đọc; số tiền giữ dạng chuỗi nguyên đồng. Nút Cập nhật số liệu tải lại toàn bộ, có thời điểm Việt Nam. Mỗi nhóm tối đa 5 việc cần xem, số đếm tính toàn bộ dữ liệu; các thẻ/chi tiết có liên kết đến màn xử lý sẵn có. Phản ánh thêm bộ lọc Đang mở (chưa đóng), vẫn giữ phạm vi quyền BQL/KTV/cư dân như cũ.
 
 Công nợ chỉ gồm hóa đơn DA_GUI chưa thu ở mọi kỳ; quá hạn là hạn trước hôm nay. Thu phí theo ngày xác nhận, không theo kỳ hóa đơn, không gồm phiếu thu quỹ thủ công. Thiết bị ngừng sử dụng, phiếu bảo trì hủy/hoàn thành, lịch tiện ích hủy/từ chối không nằm trong hàng đợi đang theo dõi. Số chờ duyệt tiện ích vẫn gồm lịch đã qua giờ, còn danh sách sắp tới chỉ giữ lịch đang diễn ra hoặc chưa bắt đầu. Trang tổng quan không tự phát thông báo, duyệt hoặc ghi nhận thanh toán.

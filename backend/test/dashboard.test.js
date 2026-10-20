@@ -381,6 +381,144 @@ test("operations dashboard: exact money, Vietnam dates, queues, authorization an
       },
     );
     await t.test(
+      "statistics API is BQL-only, validates filters and zero fills empty periods",
+      async () => {
+        assert.equal((await req("/tong_quan/thong_ke", null)).status, 401);
+        assert.equal(
+          (await req("/tong_quan/thong_ke", resident.cookie)).status,
+          403,
+        );
+        assert.equal(
+          (await req("/tong_quan/thong_ke", tech.cookie)).status,
+          403,
+        );
+        for (const query of [
+          "khoang=INVALID",
+          "ngay=2023-02-29",
+          "khoang=NAM&khoang=TUAN",
+          "ngay=2200-01-01",
+        ])
+          assert.equal((await req(`/tong_quan/thong_ke?${query}`)).status, 422);
+        const r = await req("/tong_quan/thong_ke?khoang=NAM&ngay=1901-01-01");
+        assert.equal(r.status, 200);
+        assert.equal(r.headers.get("cache-control"), "no-store");
+        assert.equal(r.body.data.diem.length, 12);
+        for (const value of Object.values(r.body.data.tong))
+          assert.equal(BigInt(value), 0n);
+        assert.doesNotMatch(
+          JSON.stringify(r.body),
+          /mat_khau|so_dien_thoai|ma_tra_cuu/,
+        );
+      },
+    );
+    await t.test(
+      "statistics preserve exact money and Vietnam hourly boundaries; DATE debt has no invented hour",
+      async () => {
+        const url = "/tong_quan/thong_ke?khoang=NGAY&ngay=2024-02-29";
+        const before = (await req(url)).body.data;
+        await bill("DA_THANH_TOAN", "91", null, "2024-02-28 16:59:59");
+        for (let n = 0; n < 12; n++)
+          await bill(
+            "DA_THANH_TOAN",
+            "99999999999999",
+            null,
+            "2024-02-28 17:00:00",
+          );
+        await bill("DA_THANH_TOAN", "333", null, "2024-02-29 16:59:59");
+        await bill("DA_THANH_TOAN", "999", null, "2024-02-29 17:00:00");
+        await bill("DA_GUI", "123456", "2024-02-29");
+        await bill("DA_DUYET", "999999", "2024-02-29");
+        const r = (await req(url)).body.data;
+        assert.equal(r.diem.length, 24);
+        assert.equal(
+          BigInt(r.tong.da_thu) - BigInt(before.tong.da_thu),
+          12n * 99999999999999n + 333n,
+        );
+        assert.equal(
+          BigInt(r.diem[0].da_thu) - BigInt(before.diem[0].da_thu),
+          12n * 99999999999999n,
+        );
+        assert.equal(
+          BigInt(r.diem[23].da_thu) - BigInt(before.diem[23].da_thu),
+          333n,
+        );
+        assert.equal(
+          BigInt(r.tong.con_no) - BigInt(before.tong.con_no),
+          123456n,
+        );
+        assert.ok(r.diem.every((p) => p.con_no === "0"));
+        const month = (
+          await req("/tong_quan/thong_ke?khoang=THANG&ngay=2024-02-29")
+        ).body.data;
+        assert.equal(month.diem.length, 29);
+        assert.equal(month.diem[28].da_thu, r.tong.da_thu);
+        assert.equal(month.diem[28].con_no, r.tong.con_no);
+        for (const khoang of ["QUY", "NAM"]) {
+          const grouped = (
+            await req(`/tong_quan/thong_ke?khoang=${khoang}&ngay=2024-02-29`)
+          ).body.data;
+          const february = grouped.diem.find((p) => p.moc === "2024-02");
+          assert.equal(february.da_thu, month.tong.da_thu);
+          assert.equal(february.con_no, month.tong.con_no);
+        }
+        const receipts = await req(
+          "/bao_cao/thu_phi?tu_ngay=2024-02-29&den_ngay=2024-02-29",
+        );
+        assert.equal(r.tong.da_thu, receipts.body.summary.tong_da_thu);
+      },
+    );
+    await t.test(
+      "statistics separate creation and completion dates and do not shift Vietnam booking wall-clock time",
+      async () => {
+        const url = "/tong_quan/thong_ke?khoang=NGAY&ngay=2024-02-29";
+        const before = (await req(url)).body.data;
+        const incidentId = (await incident("DA_DONG")).insertId;
+        await rows(
+          pool,
+          "UPDATE phan_anh SET ngay_tao='2024-02-28 17:00:00',ngay_dong='2024-02-29 16:59:59' WHERE ma_phan_anh=?",
+          [incidentId],
+        );
+        await rows(
+          pool,
+          "INSERT INTO phieu_bao_tri (ma_thiet_bi,loai,tieu_de,noi_dung,ten_thiet_bi_luc_lap,vi_tri_luc_lap,ngay_lap,ngay_den_han,trang_thai,ma_ky_thuat_vien,ma_nguoi_lap,khoa_yeu_cau,van_tay,ket_qua,ngay_thuc_hien,ma_nguoi_nghiem_thu,ngay_nghiem_thu) VALUES (?,'DOT_XUAT','Biểu đồ','Thử nghiệm','Thiết bị','Tầng 1','2024-02-28','2024-02-29','HOAN_THANH',?,?,?,?,'Đã kiểm tra xong.','2024-02-29',?,'2024-02-28 17:00:00')",
+          [
+            equipment[0],
+            tech.id,
+            admin.id,
+            randomUUID(),
+            "a".repeat(64),
+            admin.id,
+          ],
+        );
+        await rows(
+          pool,
+          "INSERT INTO phieu_bao_tri (ma_thiet_bi,loai,tieu_de,noi_dung,ten_thiet_bi_luc_lap,vi_tri_luc_lap,ngay_lap,ngay_den_han,trang_thai,ma_nguoi_lap,khoa_yeu_cau,van_tay,ket_qua) VALUES (?,'DOT_XUAT','Biểu đồ','Thử nghiệm','Thiết bị','Tầng 1','2024-02-29','2024-02-29','MOI',?,?,?,'')",
+          [equipment[0], admin.id, randomUUID(), "a".repeat(64)],
+        );
+        const [booking] = await rows(
+          pool,
+          "SELECT ma_dat_lich FROM dat_lich_tien_ich WHERE ma_tien_ich=? AND trang_thai='DA_DUYET' LIMIT 1",
+          [facility],
+        );
+        await rows(
+          pool,
+          "UPDATE dat_lich_tien_ich SET bat_dau='2024-02-29 23:00:00',ket_thuc='2024-02-29 23:30:00' WHERE ma_dat_lich=?",
+          [booking.ma_dat_lich],
+        );
+        const r = (await req(url)).body.data;
+        assert.equal(r.diem[0].tiep_nhan, before.diem[0].tiep_nhan + 1);
+        assert.equal(r.diem[23].da_dong, before.diem[23].da_dong + 1);
+        assert.equal(r.diem[0].nghiem_thu, before.diem[0].nghiem_thu + 1);
+        assert.equal(r.tong.lap_moi, before.tong.lap_moi + 1);
+        assert.ok(r.diem.every((p) => p.lap_moi === 0));
+        assert.equal(r.diem[23].da_duyet, before.diem[23].da_duyet + 1);
+        const month = (
+          await req("/tong_quan/thong_ke?khoang=THANG&ngay=2024-02-29")
+        ).body.data;
+        assert.equal(month.diem[28].lap_moi, r.tong.lap_moi);
+      },
+    );
+    await t.test(
       "a concurrent write between financial and incident reads appears only in the next snapshot",
       async () => {
         const before = await read(),

@@ -1,5 +1,7 @@
 # Tổng quan vận hành — code đầy đủ 8 file cho VS Code
 
+> Có bản bổ sung [biểu đồ ngày/tuần/tháng/quý/năm — code đầy đủ 5 file](cap-nhat-bieu-do-tong-quan-vscode.md). Áp dụng sau hướng dẫn này. Sau khi thêm biểu đồ, không chép lại Dashboard.jsx hoặc dashboard.routes.js cũ bên dưới đè lên.
+
 Áp dụng sau bản sửa mã cư dân/PDF `f6881f3` trên nhánh `codex/auth-qr-incidents`. Đây là trang **Tổng quan** mới của ban quản lý, tổng hợp công nợ, phản ánh, bảo trì và tiện ích từ dữ liệu hiện có. Chép đủ **8 file** dưới đây vào VS Code; không cần tải ZIP, cài thêm thư viện hoặc chạy migration cho bản cập nhật này.
 
 ## Chức năng
