@@ -1,5 +1,6 @@
 import DataTools from "../../shared/DataTools.jsx";
 import BatchBills from "./BatchBills.jsx";
+import BatchBillActions from "./BatchBillActions.jsx";
 import React, { useEffect, useState } from "react";
 import {
   Link,
@@ -673,6 +674,7 @@ export function Bills() {
     resource = useResource(`${api}?${params}`),
     [adding, setAdding] = useState(false),
     [batchAdding, setBatchAdding] = useState(false),
+    [batchProcessing, setBatchProcessing] = useState(false),
     [batchBusy, setBatchBusy] = useState(false),
     navigate = useNavigate(),
     action = useAction(resource.reload);
@@ -686,8 +688,22 @@ export function Bills() {
               type="button"
               disabled={action.pending || batchBusy}
               onClick={() => {
+                setBatchProcessing(!batchProcessing);
+                setBatchAdding(false);
+                setAdding(false);
+              }}
+            >
+              {batchProcessing
+                ? "Đóng duyệt/gửi hàng loạt"
+                : "Duyệt/gửi hàng loạt"}
+            </button>
+            <button
+              type="button"
+              disabled={action.pending || batchBusy}
+              onClick={() => {
                 setBatchAdding(!batchAdding);
                 setAdding(false);
+                setBatchProcessing(false);
               }}
             >
               {batchAdding ? "Đóng lập hàng loạt" : "Lập hàng loạt"}
@@ -698,6 +714,7 @@ export function Bills() {
               onClick={() => {
                 setAdding(!adding);
                 setBatchAdding(false);
+                setBatchProcessing(false);
               }}
             >
               {adding ? "Đóng biểu mẫu" : "Lập hóa đơn"}
@@ -706,6 +723,9 @@ export function Bills() {
         )}
       </div>
       <Feedback action={action} />
+      {batchProcessing && (
+        <BatchBillActions onDone={resource.reload} onBusy={setBatchBusy} />
+      )}
       {batchAdding && (
         <BatchBills onDone={resource.reload} onBusy={setBatchBusy} />
       )}

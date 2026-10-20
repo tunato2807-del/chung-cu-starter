@@ -4,6 +4,7 @@ import { optionalAuth, requireAuth, roles } from "../auth/auth.middleware.js";
 import * as service from "./billing.service.js";
 import { remindBill } from "../announcements/announcements.service.js";
 import { batchBills } from "./billing-batch.service.js";
+import { batchBillActions } from "./billing-batch-actions.service.js";
 export const ratesRouter = Router(),
   metersRouter = Router(),
   billsRouter = Router(),
@@ -31,6 +32,12 @@ billsRouter.post("/hang_loat/xem_truoc", async (req, res) =>
 );
 billsRouter.post("/hang_loat/xac_nhan", async (req, res) =>
   res.status(201).json({ data: await batchBills(req.body, req.user, true) }),
+);
+billsRouter.post("/xu_ly_hang_loat/xem_truoc", async (req, res) =>
+  res.json({ data: await batchBillActions(req.body, req.user) }),
+);
+billsRouter.post("/xu_ly_hang_loat/xac_nhan", async (req, res) =>
+  res.json({ data: await batchBillActions(req.body, req.user, true) }),
 );
 for (const router of [billsRouter, selfBillsRouter]) {
   router.get("/", async (req, res) =>

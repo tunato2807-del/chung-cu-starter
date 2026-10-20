@@ -12,7 +12,7 @@ import { lockApartment } from "./billing.guards.js";
 import { generate, prepareDraft } from "./billing.service.js";
 
 const signingKey = randomBytes(32);
-const hash = (x) =>
+export const hash = (x) =>
   createHash("sha256").update(JSON.stringify(x)).digest("hex");
 const mac = (s) =>
   createHmac("sha256", signingKey).update(s).digest("base64url");
@@ -34,7 +34,7 @@ function input(body) {
     ...options(body),
   };
 }
-async function actor(db, user) {
+export async function actor(db, user) {
   const found = await rows(
     db,
     "SELECT ma_nguoi_dung FROM nguoi_dung WHERE ma_nguoi_dung=? AND vai_tro='QUAN_TRI_VIEN' AND dang_hoat_dong=1 AND phien_ban_token=? FOR SHARE",
@@ -44,10 +44,10 @@ async function actor(db, user) {
     fail(
       401,
       "SESSION_EXPIRED",
-      "Phiên đã hết hạn. Đăng nhập lại trước khi lập hóa đơn.",
+      "Phiên đã hết hạn. Đăng nhập lại trước khi xử lý hóa đơn.",
     );
 }
-function tokenFor(bodyHash, quoteHash, user) {
+export function tokenFor(bodyHash, quoteHash, user) {
   const payload = Buffer.from(
     JSON.stringify({
       bodyHash,
@@ -59,7 +59,7 @@ function tokenFor(bodyHash, quoteHash, user) {
   ).toString("base64url");
   return `${payload}.${mac(payload)}`;
 }
-function verify(token, bodyHash, user) {
+export function verify(token, bodyHash, user) {
   const [payload, signature, extra] =
     typeof token === "string" ? token.split(".") : [];
   if (!payload || !signature || extra || token.length > 2000)

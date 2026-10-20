@@ -92,6 +92,8 @@ Danh bạ và mọi thao tác xe chỉ dành cho BQL. Module hóa đơn đọc s
 
 Trong **Phí & hóa đơn → Lập hàng loạt**, BQL chọn tối đa 50 căn, kỳ và ngày chốt, xem trước từng khoản thu và lỗi trước khi xác nhận. Có chọn các căn trên trang, giữ lựa chọn khi tìm/chuyển trang và bỏ các căn lỗi để xem trước lại. Chỉ tạo bản nháp khi toàn bộ đợt hợp lệ và dữ liệu nguồn còn khớp; không tự duyệt/gửi/thu tiền. Retry sau lỗi mạng giữ UUID để nhận lại đúng kết quả cũ. Cần chạy migration **015_bill_batches.sql**; xem [code đầy đủ 8 file cho VS Code](docs/cap-nhat-hoa-don-hang-loat-vscode.md).
 
+Trong **Duyệt/gửi hàng loạt**, chọn 1–50 hóa đơn theo kỳ/từ khóa, xem trước và xác nhận từng thao tác riêng: duyệt NHAP → DA_DUYET; gửi DA_DUYET → DA_GUI. Khi gửi, chọn ngân hàng và hạn trả/tài khoản nhận chung; hóa đơn hiển thị trên web cư dân kèm VietQR. Kiểm tra phiên bản/nguồn trước duyệt, giữ snapshot đã duyệt khi gửi; đợt có lỗi không xử lý một phần. Retry lấy lại đúng kết quả cũ, không duyệt/gửi lặp. Cần migration **016_bill_actions.sql**; xem [code đầy đủ 9 file cập nhật VS Code](docs/cap-nhat-duyet-gui-hang-loat-vscode.md).
+
 Cập nhật giao diện sau bản điện bậc thang: [3 file sửa định dạng số, chọn ngân hàng và QR thanh toán](docs/cap-nhat-giao-dien-thanh-toan-vscode.md). Không cần migration mới.
 
 Chạy `npm run db:migrate` để áp dụng đến `006_electricity_tiers.sql`, giữ nguyên migration cũ và dữ liệu đã có. Bản hóa đơn ban đầu: [code 11 file](docs/cap-nhat-hoa-don-vscode.md). Nếu đã có bản đó, cập nhật [5 file điện bậc thang](docs/cap-nhat-dien-bac-thang-vscode.md).

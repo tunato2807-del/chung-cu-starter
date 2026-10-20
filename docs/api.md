@@ -349,6 +349,18 @@ POST `/api/hoa_don/hang_loat/xac_nhan` nhận cùng input và `{xac_nhan,khoa_ye
 
 Lỗi `BATCH_SIZE`/`BATCH_APARTMENTS`/validation 422; `PREVIEW_REQUIRED`/`PREVIEW_EXPIRED` 409 cần xem trước; `BATCH_CHANGED` 409 chưa ghi căn nào; `BATCH_KEY_CONFLICT` 409 khi UUID cũ đi với input khác. Deadlock/lock timeout trả 409 CONCURRENT_UPDATE theo handler chung. Khi lỗi mạng, giữ nguyên input/token/UUID và retry: ledger UNIQUE(actor,UUID) trả lại ID cũ mà không tạo thêm, kể cả token đã hết hạn hoặc máy chủ restart. Đợt đã ghi chỉ trả kết quả cũ sau kiểm tra phiên/actor, không tính lại số tiền theo trạng thái hiện tại. Đổi UUID vẫn bị khóa hóa đơn còn hiệu lực theo căn/kỳ; hóa đơn hủy phải lập thay thế qua màn riêng. Các API đơn lẻ giữ nguyên hợp đồng, vẫn cho tạo nháp thiếu dữ liệu để sửa từng căn.
 
+## Duyệt/gửi hàng loạt (chỉ BQL)
+
+GET `/api/hoa_don` bổ sung `phien_ban` cho từng dòng, vẫn giữ phạm vi quyền và phân trang cũ. POST `/api/hoa_don/xu_ly_hang_loat/xem_truoc` nhận `{thao_tac:'DUYET'|'GUI',hoa_don:[{ma_hoa_don,phien_ban}]}`; chọn 1–50 cặp ID/version, ID dương không lặp, version nguyên không âm. GUI thêm `han_thanh_toan,ma_ngan_hang,so_tai_khoan,ten_nguoi_nhan` chung. Chỉ BQL, X-App-Request bắt buộc, no-store.
+
+Trả 200 `{data:{thao_tac,rows,so_hoa_don,so_loi,tong_tien,xac_nhan}}`; rows gồm ID/số hóa đơn/căn/kỳ/tiền/trạng thái/phiên bản hiện tại và loi[]. Không trả hash nội bộ. Tổng chỉ cộng dòng hợp lệ, tiền string nguyên đồng. Có lỗi thì token null; không ghi phiên bản/trạng thái/audit. DUYET dùng cùng kiểm tra nguồn/snapshot/tiền dương với duyệt đơn lẻ. GUI giữ snapshot đã duyệt, kiểm tra phiên bản, trạng thái và thông tin nhận tiền/hạn như gửi đơn lẻ.
+
+POST `/api/hoa_don/xu_ly_hang_loat/xac_nhan` thêm `{xac_nhan,khoa_yeu_cau}`. Token hạn 15 phút gắn người dùng/version, input chuẩn hóa và bản xem trước. Toàn bộ dòng hợp lệ và khớp mới chuyển trạng thái trong một giao dịch: DUYET NHAP→DA_DUYET, GUI DA_DUYET→DA_GUI. Trả 200 `{data:{ma_dot_xu_ly,thao_tac,so_hoa_don,tong_tien,hoa_don:[{ma_hoa_don,so_hoa_don,so_can_ho,tong_tien,trang_thai_luc_xu_ly}],da_xu_ly_truoc}}`.
+
+Lỗi validation 422; `BATCH_CHANGED` 409 chưa xử lý dòng nào và yêu cầu lấy phiên bản mới/xem lại; `PREVIEW_REQUIRED`/`PREVIEW_EXPIRED` 409 cần xem lại; `BATCH_KEY_CONFLICT` 409 khi cùng UUID khác input/thao tác. Khóa lỗi trả CONCURRENT_UPDATE theo handler chung. Ledger016 UNIQUE(actor,UUID) chống lặp, giữ ID/tổng/trạng thái lúc xử lý và commit cùng mọi audit; replay cùng input trả lại receipt cũ dù token hết hạn/restart hoặc hạn gửi đã qua, không đổi trạng thái hiện tại. Đợt có lỗi không tự bỏ qua dòng; client có thể bỏ dòng lỗi rồi xem lại với UUID mới.
+
+Gửi làm hóa đơn hiển thị trong cổng cư dân theo quyền căn/cư trú hiện có và VietQR đọc từ snapshot; chưa xác nhận thu tiền hoặc tự nhắc phí. Chỉ duyệt vẫn chưa hiển thị cho cư dân. API đơn lẻ giữ nguyên payload/response; check action dùng chung với batch, connection ngoài chỉ là chi tiết nội bộ.
+
 ## Tổng quan vận hành (chỉ BQL)
 
 GET `/api/tong_quan` trả `{data:{tai_luc,ngay_hien_tai,gio_hien_tai,tu_ngay_thu,den_ngay_thu,tai_chinh,phan_anh,bao_tri,tien_ich}}`. UTC timestamp tai_luc, ngày/giờ nghiệp vụ Việt Nam UTC+07. 401 cho khách/phiên hết, 403 cho KTV/cư dân; no-store/nosniff theo middleware chung. Không nhận bộ lọc từng khối vì đây là tổng quan toàn hệ thống.

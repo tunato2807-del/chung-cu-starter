@@ -460,7 +460,74 @@ async function lockedBill(db, id) {
   );
   return { bill, apartment };
 }
-export async function action(id, action, body, user) {
+export function paymentDetails(body, cutoff = "1900-01-01", checkToday = true) {
+  const due = v.day(body.han_thanh_toan, true),
+    bin = text(body.ma_ngan_hang, "ma_ngan_hang", 6, 6),
+    account = text(body.so_tai_khoan, "so_tai_khoan", 6, 30),
+    name = text(body.ten_nguoi_nhan, "ten_nguoi_nhan", 2, 100);
+  if (
+    due < cutoff ||
+    (checkToday && due < v.today()) ||
+    !/^\d{6}$/.test(bin) ||
+    !/^\d{6,30}$/.test(account)
+  )
+    fail(
+      422,
+      "INVALID_PAYMENT_DETAILS",
+      "Hạn trả phải từ hôm nay và không trước ngày chốt; BIN gồm 6 số, tài khoản gồm 6–30 số.",
+    );
+  return {
+    han_thanh_toan: due,
+    ma_ngan_hang: bin,
+    so_tai_khoan: account,
+    ten_nguoi_nhan: name,
+  };
+}
+export async function prepareBillAction(db, bill, apartment, operation, body) {
+  v.version(bill, body.phien_ban);
+  if (operation === "duyet") {
+    state(bill, ["NHAP"]);
+    const current = await calculate(
+      db,
+      apartment,
+      bill.ky_thanh_toan,
+      bill.ngay_chot_phi,
+      opts(bill),
+    );
+    if (current.errors.length || BigInt(current.total) <= 0n)
+      fail(
+        422,
+        "INCOMPLETE_BILL",
+        "Hóa đơn còn thiếu dữ liệu hoặc tổng bằng 0. Bổ sung và tính lại bản nháp.",
+      );
+    if (current.hash !== bill.dau_van_tay || current.total !== bill.tong_tien)
+      fail(
+        409,
+        "STALE_BILL_SOURCE",
+        "Dữ liệu nguồn đã thay đổi. Hãy tính lại bản nháp trước khi duyệt.",
+      );
+    const saved = await rows(
+      db,
+      "SELECT * FROM chi_tiet_hoa_don WHERE ma_hoa_don=? ORDER BY ma_chi_tiet_hoa_don",
+      [bill.ma_hoa_don],
+    );
+    const lines = saved.map(({ ma_hoa_don, ma_chi_tiet_hoa_don, ...l }) => ({
+      ...l,
+      du_lieu_nguon: json(l.du_lieu_nguon),
+    }));
+    if (digest({ lines, errors: json(bill.loi_du_lieu) }) !== bill.dau_van_tay)
+      fail(
+        409,
+        "BILL_TOTAL_MISMATCH",
+        "Chi tiết hóa đơn không khớp dữ liệu đã lập. Hãy tính lại.",
+      );
+    return {};
+  }
+  state(bill, ["DA_DUYET"]);
+  return paymentDetails(body, bill.ngay_chot_phi);
+}
+
+export async function action(id, action, body, user, connection = null) {
   return transaction(async (db) => {
     const { bill, apartment } = await lockedBill(db, id);
     if (
@@ -507,43 +574,7 @@ export async function action(id, action, body, user) {
         [day, options.tinh_nuoc, options.tinh_dien, options.tinh_xe, id],
       );
     } else if (action === "duyet") {
-      state(bill, ["NHAP"]);
-      const current = await calculate(
-        db,
-        apartment,
-        bill.ky_thanh_toan,
-        bill.ngay_chot_phi,
-        opts(bill),
-      );
-      if (current.errors.length || BigInt(current.total) <= 0n)
-        fail(
-          422,
-          "INCOMPLETE_BILL",
-          "Hóa đơn còn thiếu dữ liệu hoặc tổng bằng 0. Bổ sung và tính lại bản nháp.",
-        );
-      if (current.hash !== bill.dau_van_tay || current.total !== bill.tong_tien)
-        fail(
-          409,
-          "STALE_BILL_SOURCE",
-          "Dữ liệu nguồn đã thay đổi. Hãy tính lại bản nháp trước khi duyệt.",
-        );
-      const saved = await rows(
-        db,
-        "SELECT * FROM chi_tiet_hoa_don WHERE ma_hoa_don=? ORDER BY ma_chi_tiet_hoa_don",
-        [id],
-      );
-      const lines = saved.map(({ ma_hoa_don, ma_chi_tiet_hoa_don, ...l }) => ({
-        ...l,
-        du_lieu_nguon: json(l.du_lieu_nguon),
-      }));
-      if (
-        digest({ lines, errors: json(bill.loi_du_lieu) }) !== bill.dau_van_tay
-      )
-        fail(
-          409,
-          "BILL_TOTAL_MISMATCH",
-          "Chi tiết hóa đơn không khớp dữ liệu đã lập. Hãy tính lại.",
-        );
+      await prepareBillAction(db, bill, apartment, action, body);
       await rows(
         db,
         "UPDATE hoa_don SET trang_thai='DA_DUYET',ma_nguoi_duyet=?,ngay_duyet=CURRENT_TIMESTAMP WHERE ma_hoa_don=?",
@@ -551,21 +582,19 @@ export async function action(id, action, body, user) {
       );
     } else if (action === "gui") {
       state(bill, ["DA_DUYET"]);
-      const due = v.day(body.han_thanh_toan, true),
-        bin = text(body.ma_ngan_hang, "ma_ngan_hang", 6, 6),
-        account = text(body.so_tai_khoan, "so_tai_khoan", 6, 30),
-        name = text(body.ten_nguoi_nhan, "ten_nguoi_nhan", 2, 100);
-      if (
-        due < bill.ngay_chot_phi ||
-        due < v.today() ||
-        !/^\d{6}$/.test(bin) ||
-        !/^\d{6,30}$/.test(account)
-      )
-        fail(
-          422,
-          "INVALID_PAYMENT_DETAILS",
-          "Hạn trả phải từ hôm nay và không trước ngày chốt; BIN gồm 6 số, tài khoản gồm 6–30 số.",
-        );
+      const details = await prepareBillAction(
+        db,
+        bill,
+        apartment,
+        action,
+        body,
+      );
+      const {
+        han_thanh_toan: due,
+        ma_ngan_hang: bin,
+        so_tai_khoan: account,
+        ten_nguoi_nhan: name,
+      } = details;
       await rows(
         db,
         "UPDATE hoa_don SET trang_thai='DA_GUI',han_thanh_toan=?,ma_ngan_hang=?,so_tai_khoan=?,ten_nguoi_nhan=?,ma_nguoi_gui=?,ngay_gui=CURRENT_TIMESTAMP WHERE ma_hoa_don=?",
@@ -608,7 +637,7 @@ export async function action(id, action, body, user) {
       action === "huy" ? text(body.ly_do, "ly_do", 3, 255) : "",
     );
     return { ma_hoa_don: id };
-  });
+  }, connection);
 }
 
 function access(user, where, values) {
@@ -672,7 +701,7 @@ export async function list(query, user, exportFormat = null) {
   check(count.total);
   const data = await rows(
     pool,
-    `SELECT h.ma_hoa_don,h.so_hoa_don,h.ky_thanh_toan,h.ngay_chot_phi,h.trang_thai,h.tong_tien,h.han_thanh_toan,a.so_can_ho FROM hoa_don h JOIN can_ho a ON a.ma_can_ho=h.ma_can_ho ${condition} ORDER BY h.ma_hoa_don DESC LIMIT ${exportFormat ? limit + 1 : limit} OFFSET ${offset}`,
+    `SELECT h.ma_hoa_don,h.so_hoa_don,h.ky_thanh_toan,h.ngay_chot_phi,h.trang_thai,h.phien_ban,h.tong_tien,h.han_thanh_toan,a.so_can_ho FROM hoa_don h JOIN can_ho a ON a.ma_can_ho=h.ma_can_ho ${condition} ORDER BY h.ma_hoa_don DESC LIMIT ${exportFormat ? limit + 1 : limit} OFFSET ${offset}`,
     values,
   );
   check(data.length);

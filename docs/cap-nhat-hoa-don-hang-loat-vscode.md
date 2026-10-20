@@ -1,5 +1,7 @@
 # Lập hóa đơn hàng loạt — code đầy đủ 8 file cho VS Code
 
+> Có bản [duyệt và gửi hàng loạt — code đầy đủ 9 file](cap-nhat-duyet-gui-hang-loat-vscode.md), migration 016. Sau khi áp dụng, không chép app.js, service/router hóa đơn, billing-batch.service.js hoặc Billing.jsx cũ bên dưới đè lên.
+
 Áp dụng sau bản chọn kiểu/ẩn hiện biểu đồ `6e92127` trên nhánh `codex/auth-qr-incidents`. Chép đủ **8 file** dưới đây, không cần tải lại ZIP. Có migration mới **015_bill_batches.sql**, không thêm thư viện. Giữ nguyên migration 001–014 đã chạy.
 
 ## Cách sử dụng
