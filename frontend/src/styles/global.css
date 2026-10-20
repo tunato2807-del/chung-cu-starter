@@ -1559,3 +1559,18 @@ footer {
     width: 100%;
   }
 }
+
+.report-export {
+  margin: 1rem 0 1.5rem;
+}
+.report-export small {
+  color: #627c73;
+}
+.report-export .note {
+  margin: 0.6rem 0;
+}
+@media (max-width: 600px) {
+  .report-export small {
+    flex-basis: 100%;
+  }
+}

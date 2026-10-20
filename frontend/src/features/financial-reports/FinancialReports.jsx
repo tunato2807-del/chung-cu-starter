@@ -3,6 +3,8 @@ import { Link, useSearchParams } from "react-router-dom";
 import { getJson } from "../../shared/api/client.js";
 import { ErrorBox, Field, Loading, useResource } from "../../shared/ui.jsx";
 
+import ReportExport from "../../shared/ReportExport.jsx";
+
 const money = (n) => `${BigInt(n || 0).toLocaleString("vi-VN")} đ`;
 const day = (value) =>
   value ? value.split("-").reverse().join("/") : "Chưa đặt hạn";
@@ -264,6 +266,10 @@ export default function FinancialReports() {
           Xóa bộ lọc
         </button>
       </form>
+      <ReportExport
+        path={`/bao_cao/${endpoint}/xuat?${query}`}
+        disabled={resource.loading || !result}
+      />
       <ErrorBox error={blocks.error} />
       <ErrorBox error={resource.error} />
       {resource.loading && <Loading />}

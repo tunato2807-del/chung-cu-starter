@@ -1,5 +1,7 @@
 # Thu chi và quỹ chung cư — code từng file cho VS Code
 
+> Bản tiếp theo: [Xuất báo cáo Excel/PDF — code đầy đủ 11 file](cap-nhat-xuat-bao-cao-vscode.md). Nếu đã cập nhật xuất báo cáo, không dùng service/giao diện/CSS bên dưới đè lên bản mới.
+
 Bản tiếp theo sau `e73e4c4` (đặt lịch tiện ích). Chép đủ **9 file** dưới đây vào dự án đang có, không cần tải ZIP hoặc cài thêm thư viện. Nếu chưa có phần tiện ích, cập nhật [bản 8 file đặt lịch tiện ích](cap-nhat-dat-lich-tien-ich-vscode.md) trước. Bản này giữ các chức năng đã triển khai và bổ sung mục BQL **Thu chi & quỹ**.
 
 ## Cách cập nhật trên Windows

@@ -8,6 +8,7 @@ import {
 import { getJson } from "../../shared/api/client.js";
 import { Field, ErrorBox, Loading, Options } from "../../shared/ui.jsx";
 import { newRequestKey } from "../../shared/request-key.js";
+import ReportExport from "../../shared/ReportExport.jsx";
 const money = (n) => `${BigInt(n || 0).toLocaleString("vi-VN")} đ`;
 const today = () =>
   new Intl.DateTimeFormat("en-CA", {
@@ -420,6 +421,10 @@ export function FundDetail() {
               </Field>
               <button>Lọc sổ quỹ</button>
             </form>
+            <ReportExport
+              path={`/quy/${id}/so_quy/xuat?${params}`}
+              disabled={resource.loading || !r}
+            />
             <div className="treasury-metrics" aria-label="Tổng hợp số dư">
               {[
                 ["Đầu kỳ", s.dau_ky],

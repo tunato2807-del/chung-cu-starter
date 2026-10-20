@@ -1,6 +1,6 @@
 # Quản lý chung cư · Phản ánh QR
 
-React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web, báo cáo công nợ/thu phí, bảo trì thiết bị, đặt lịch tiện ích và thu chi/quỹ** theo ba tài liệu thiết kế.
+React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web, báo cáo công nợ/thu phí, bảo trì thiết bị, đặt lịch tiện ích, thu chi/quỹ và xuất báo cáo Excel/PDF** theo ba tài liệu thiết kế.
 
 ## Chạy môi trường phát triển
 
@@ -161,6 +161,18 @@ Xem [code đầy đủ 9 file để cập nhật trong VS Code](docs/cap-nhat-th
 - Sổ quỹ có đầu kỳ, thu/chi trong kỳ, cuối kỳ; xem từng giao dịch hoặc tổng hợp theo tháng, tìm nguồn/đối tác/mã phiếu. Lọc chi tiết không làm đổi tổng toàn quỹ theo khoảng ngày. Số dư theo dữ liệu phần mềm, cần đối soát tiền mặt/ngân hàng; ngày hạch toán lùi có thể làm báo cáo hồi tố âm. Chưa có khóa sổ kỳ, chuyển giữa quỹ hoặc giao dịch ngân hàng tự động.
 - Chỉ BQL xem/ghi và tải chứng từ. Tệp ảnh/PDF tối đa 5 MB, tối đa 5/phiếu; binary nằm trong database, không có thư mục công khai. Sao lưu cả database lẫn thư mục ảnh phản ánh hiện có.
 
+## Xuất báo cáo Excel / PDF
+
+Xem [code đầy đủ 11 file để cập nhật trong VS Code](docs/cap-nhat-xuat-bao-cao-vscode.md). Không có migration mới; thêm thư viện backend rồi khởi động lại.
+
+```bash
+npm install -w backend --save-exact exceljs@4.4.0 pdfmake@0.2.23
+```
+
+BQL → **Công nợ & thu phí** hoặc mở một quỹ trong **Thu chi & quỹ** → áp dụng bộ lọc/cách xem → **Xuất Excel** / **Xuất PDF**. Tệp lấy toàn bộ kết quả khớp lọc, gồm các trang chưa mở; có tổng hợp, bộ lọc và thời điểm dữ liệu tại Việt Nam. Nếu phát sinh giao dịch sau khi tải màn hình, file là snapshot mới tại lúc xuất.
+
+Excel có hai sheet Tổng hợp/Chi tiết; mã/điện thoại giữ số 0 đầu, giá trị tiền lớn hơn 15 chữ số lưu văn bản để không bị Excel làm tròn. PDF A4 ngang có font tiếng Việt nhúng, tiêu đề bảng lặp và số trang; tải file trực tiếp, không cần cửa sổ in. Chỉ BQL xuất được. Excel tối đa 10.000 dòng, PDF 1.000 dòng; vượt giới hạn sẽ báo để thu hẹp lọc/chọn tổng hợp, không xuất thiếu dữ liệu.
+
 ## Kiểm tra
 
 ```bash
@@ -169,7 +181,7 @@ npm test
 npm run test:e2e
 ```
 
-- `npm test`: tạo/migrate database riêng `chung_cu_test`, chạy kiểm thử HTTP với MySQL thật. Gồm xác thực, khóa phiên, quyền bản ghi/ảnh, QR thu hồi, gửi lặp đồng thời, chuyển trạng thái, nghiệm thu mới, gộp trùng, giới hạn gửi, hóa đơn/cư trú/tài khoản căn, phạm vi thông báo, receipt sau bàn giao, nhắc phí đồng thời, bảo trì thiết bị, đặt lịch tiện ích đồng thời, thu chi/quỹ, chứng từ và rollback khi lịch sử lỗi.
+- `npm test`: tạo/migrate database riêng `chung_cu_test`, chạy kiểm thử HTTP với MySQL thật. Gồm xác thực, khóa phiên, quyền bản ghi/ảnh, QR thu hồi, gửi lặp đồng thời, chuyển trạng thái, nghiệm thu mới, gộp trùng, giới hạn gửi, hóa đơn/cư trú/tài khoản căn, phạm vi thông báo, receipt sau bàn giao, nhắc phí đồng thời, bảo trì thiết bị, đặt lịch tiện ích đồng thời, thu chi/quỹ, chứng từ, file Excel/PDF và rollback khi lịch sử lỗi.
 - `npm run test:e2e`: chạy API/Vite riêng ở 3101/5174, mở Chromium và đi hết luồng qua giao diện ở 1440 px và 375 px. Browser Linux được đóng gói trong dependency `@sparticuz/chromium`, không cần tải thêm từ CDN. Kiểm thử không thay dữ liệu database phát triển. Hai lệnh test nên chạy lần lượt.
 - `/api/health` kiểm tra tiến trình; `/api/ready` kiểm tra database và migration. Không coi một cổng mở là đã sẵn sàng.
 

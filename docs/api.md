@@ -288,3 +288,21 @@ Quỹ vận hành mặc định đọc các hoa_don DA_THANH_TOAN có ngay_thanh
 Sổ tính dau_ky = thu − chi trước từ ngày; tong_thu/tong_chi trong khoảng ngày bao gồm cả hai đầu, cuoi_ky = dau_ky + thu − chi. Tham số nguon PHIEU/HOA_DON, loai THU/CHI và q (mã chứng từ/đối tác/diễn giải) chỉ lọc danh sách GIAO_DICH, không đổi tổng số dư. THEO_THANG tổng hợp toàn quỹ trong khoảng ngày, bỏ các bộ lọc chi tiết, trả tháng có giao dịch cùng tổng thu/chi. Báo cáo dùng một snapshot chỉ đọc cho tổng/count/trang. Số dư có thể thay đổi hồi tố khi BQL ghi phiếu lùi ngày; không có khóa sổ kỳ trong bản này. Kiểm tra không vượt quỹ dùng **số dư hiện tại khi duyệt**, không phải số dư quá khứ tại ngày hạch toán; báo cáo quá khứ có thể âm.
 
 Khóa theo quỹ → phiếu → actor; mọi lập/sửa/đính kèm/duyệt/đảo cùng quỹ được tuần tự hóa. UUID + fingerprint bảo vệ tạo nháp lặp; cùng request 200 với ID cũ, mới 201, khác input cùng UUID 409. Không có bản ghi tiền tự động nào được tạo khi xem sổ hoặc migrate. Chứng từ PDF kiểm tra đầu/đuôi tệp và chỉ phục vụ tải xuống; ảnh được decode JPEG/PNG/WebP tĩnh ≤25 triệu pixel, xoay/thu nhỏ/bỏ metadata/encode JPEG. SHA256 nội dung chuẩn hóa chống upload trùng; retry toàn bộ tệp đã có trả thành công trước kiểm tra phiên bản, không tăng version. Tệp trùng một phần + tệp mới vẫn cần version hiện tại. Binary lưu trong database, không có URL storage công khai. Mọi thay đổi phiếu/chứng từ/audit cùng transaction.
+
+## Xuất báo cáo Excel / PDF
+
+Không có migration mới. Endpoint GET chỉ dành cho BQL, áp dụng cùng quyền và bộ lọc của báo cáo JSON; không ghi/sửa trạng thái tài chính. Trả file đính kèm, không phải JSON khi thành công; lỗi vẫn trả `{error:{code,message,...}}`.
+
+| GET dưới /api | Nội dung / bộ lọc |
+|---|---|
+| /bao_cao/cong_no/xuat?dinh_dang=xlsx hoặc pdf | Cùng q,khoi,ma_can_ho,tu_ky,den_ky,che_do CAN_HO/HOA_DON/THEO_KY,qua_han như /cong_no |
+| /bao_cao/thu_phi/xuat?dinh_dang=xlsx hoặc pdf | Cùng q,khoi,ma_can_ho,tu_ngay,den_ngay,che_do GIAO_DICH/THEO_NGAY như /thu_phi |
+| /quy/:id/so_quy/xuat?dinh_dang=xlsx hoặc pdf | Cùng tu_ngay,den_ngay,che_do GIAO_DICH/THEO_THANG,nguon,loai,q như /so_quy |
+
+Dinh_dang mặc định xlsx, chỉ nhận xlsx/pdf. Xuất toàn bộ các dòng khớp bộ lọc, bỏ page; JSON thường vẫn 20/trang. Không lặp gọi từng trang ở nhiều transaction. Cùng mã truy vấn/validation/snapshot được dùng cho cả JSON và xuất, bao gồm tổng/count/chi tiết. Header `X-Export-Rows` là số dòng chi tiết thực tế, `Content-Disposition: attachment` có tên ASCII và ngày, `Cache-Control: no-store`, `X-Content-Type-Options: nosniff`. Không tạo URL lưu trữ công khai.
+
+Giới hạn Excel **10.000 dòng**, PDF **1.000 dòng** sau khi áp dụng chế độ xem/lọc. Nếu vượt, trả 422 EXPORT_TOO_LARGE trước SELECT chi tiết; không cắt bớt hoặc trả một tệp thiếu dòng. Thu hẹp khoảng thời gian/khối/căn/quỹ hoặc chọn tổng hợp/chọn Excel khi vượt PDF. Tối đa một lượt tạo tệp mỗi tài khoản và hai lượt toàn tiến trình; bận trả 429 EXPORT_BUSY với Retry-After: 3. Lỗi vẫn giải phóng lượt để thử lại.
+
+Excel .xlsx có hai sheet Tổng hợp và Chi tiết: thời điểm dữ liệu Việt Nam, bộ lọc đã áp dụng, tổng hợp và ghi chú ý nghĩa; dữ liệu đầy đủ, bộ lọc cột và cố định tiêu đề. Số tiền nguyên đồng tới 15 chữ số ghi ô số; giá trị lớn hơn 15 chữ số ghi chuỗi thập phân nguyên gốc để tránh Excel làm tròn, kèm ghi chú. Mã căn, điện thoại, mã tham chiếu và nội dung người dùng luôn là chuỗi, không tạo formula/hyperlink từ nội dung nhập. Không dùng SUM formula để tạo tổng có nguy cơ sai độ chính xác; tổng lấy trực tiếp từ snapshot DB/BigInt.
+
+PDF thật A4 ngang, font Roboto từ gói pdfmake được nhúng, giữ tiếng Việt và nguyên số tiền, có tổng hợp/bộ lọc/thời điểm, bảng lặp header khi sang trang và số trang. Không dùng cửa sổ in, không gọi dịch vụ/font/CDN ngoài khi xuất. Cả hai định dạng giữ quy tắc hiện có: lọc quá hạn chỉ thay chi tiết công nợ; lọc nguồn/loại/từ khóa sổ quỹ chỉ thay chi tiết, không đổi tổng toàn quỹ. Chế độ tháng bỏ bộ lọc chi tiết như trên web; các dòng gốc/đảo vẫn giữ để theo dõi điều chỉnh. Tệp là snapshot tại lúc xuất, có thể mới hơn lần tải màn hình trước đó nếu đã phát sinh giao dịch.

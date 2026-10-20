@@ -1,11 +1,8 @@
 import { pool, rows } from "../../lib/db.js";
 import { choice, fail, integer, text } from "../../lib/http.js";
-import {
-  day,
-  pagination,
-  period,
-  today,
-} from "../billing/billing.validation.js";
+import { day, period, today } from "../billing/billing.validation.js";
+
+import { reportPage } from "../report-exports/report-files.js";
 
 // All queries in one response read the same committed snapshot, without locking bills.
 async function snapshot(work) {
@@ -67,10 +64,11 @@ function aggregates(overdue) {
 export async function blocks() {
   return rows(pool, "SELECT DISTINCT khoi FROM can_ho ORDER BY khoi");
 }
-export async function debts(query) {
+export async function debts(query, exportFormat) {
   const calendarDay = today(),
     f = filters(query),
-    { page, offset } = pagination(query);
+    window = reportPage(query, exportFormat),
+    { page, offset, limit } = window;
   f.tu_ky = query.tu_ky ? period(query.tu_ky) : "";
   f.den_ky = query.den_ky ? period(query.den_ky) : "";
   f.che_do = choice(query.che_do || "CAN_HO", "che_do", [
@@ -143,9 +141,10 @@ export async function debts(query) {
         : f.che_do === "THEO_KY"
           ? "d.*"
           : `h.ma_hoa_don,h.so_hoa_don,h.ma_can_ho,h.ky_thanh_toan,h.tong_tien,h.han_thanh_toan,a.so_can_ho,a.khoi,${overdue} AS qua_han`;
+    window.check(count.total);
     const data = await rows(
       db,
-      `SELECT ${fields} ${source} ${order} LIMIT 20 OFFSET ${offset}`,
+      `SELECT ${fields} ${source} ${order} LIMIT ${limit} OFFSET ${offset}`,
       args,
     );
     return {
@@ -164,10 +163,11 @@ function utcMidnight(vietnamDay, next = false) {
     new Date(`${vietnamDay}T00:00:00+07:00`).getTime() + (next ? 86400000 : 0);
   return new Date(timestamp).toISOString().slice(0, 19).replace("T", " ");
 }
-export async function collections(query) {
+export async function collections(query, exportFormat) {
   const calendarDay = today(),
     f = filters(query),
-    { page, offset } = pagination(query);
+    window = reportPage(query, exportFormat),
+    { page, offset, limit } = window;
   f.tu_ngay = day(query.tu_ngay || `${calendarDay.slice(0, 7)}-01`);
   f.den_ngay = day(query.den_ngay || calendarDay);
   f.che_do = choice(query.che_do || "GIAO_DICH", "che_do", [
@@ -198,6 +198,7 @@ export async function collections(query) {
       `SELECT COUNT(*) AS total ${source}`,
       values,
     );
+    window.check(count.total);
     const fields =
       f.che_do === "THEO_NGAY"
         ? "d.*"
@@ -208,7 +209,7 @@ export async function collections(query) {
         : "h.ngay_thanh_toan DESC,h.ma_hoa_don DESC";
     const data = await rows(
       db,
-      `SELECT ${fields} ${source} ORDER BY ${order} LIMIT 20 OFFSET ${offset}`,
+      `SELECT ${fields} ${source} ORDER BY ${order} LIMIT ${limit} OFFSET ${offset}`,
       values,
     );
     return {

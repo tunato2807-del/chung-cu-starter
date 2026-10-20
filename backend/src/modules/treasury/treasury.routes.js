@@ -3,6 +3,7 @@ import { integer } from "../../lib/http.js";
 import { optionalAuth, requireAuth, roles } from "../auth/auth.middleware.js";
 import * as service from "./treasury.service.js";
 import { upload } from "./treasury.proofs.js";
+import { download } from "../report-exports/report-exports.service.js";
 export const fundsRouter = Router(),
   vouchersRouter = Router();
 for (const router of [fundsRouter, vouchersRouter])
@@ -89,3 +90,7 @@ vouchersRouter.get("/:id/chung_tu/:proof", async (req, res) => {
   res.set("Content-Security-Policy", "sandbox; default-src 'none'");
   res.send(f.noi_dung);
 });
+
+fundsRouter.get("/:id/so_quy/xuat", async (req, res) =>
+  download(req, res, "so_quy", integer(req.params.id, "id")),
+);

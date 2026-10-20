@@ -3,6 +3,7 @@ import { pool, rows, transaction } from "../../lib/db.js";
 import { choice, fail, text } from "../../lib/http.js";
 import * as v from "./treasury.validation.js";
 import { prepare } from "./treasury.proofs.js";
+import { reportPage } from "../report-exports/report-files.js";
 const missing = () =>
   fail(404, "NOT_FOUND", "Không tìm thấy quỹ, phiếu hoặc chứng từ.");
 async function actor(db, user) {
@@ -461,9 +462,10 @@ export async function proof(id, proofId) {
   if (!f) missing();
   return f;
 }
-export async function ledger(id, query) {
+export async function ledger(id, query, exportFormat) {
   const range = v.range(query),
-    { page, offset } = v.pagination(query),
+    window = reportPage(query, exportFormat),
+    { page, offset, limit } = window,
     mode = choice(query.che_do || "GIAO_DICH", "che_do", [
       "GIAO_DICH",
       "THEO_THANG",
@@ -505,19 +507,26 @@ export async function ledger(id, query) {
       dataFrom = grouped
         ? `FROM (SELECT DATE_FORMAT(ngay,'%Y-%m') AS ky,CAST(SUM(IF(loai='THU',so_tien,0)) AS CHAR) AS tong_thu,CAST(SUM(IF(loai='CHI',so_tien,0)) AS CHAR) AS tong_chi ${"FROM " + source(id)} WHERE ${clause} GROUP BY DATE_FORMAT(ngay,'%Y-%m')) m`
         : `FROM ${source(id)} WHERE ${clause}`;
-    const [n] = await rows(db, `SELECT COUNT(*) AS total ${dataFrom}`, args),
-      data = await rows(
-        db,
-        `SELECT ${grouped ? "m.*" : "s.*"} ${dataFrom} ORDER BY ${grouped ? "ky DESC" : "ngay DESC,nguon,ma_ban_ghi DESC"} LIMIT 20 OFFSET ${offset}`,
-        args,
-      );
+    const [n] = await rows(db, `SELECT COUNT(*) AS total ${dataFrom}`, args);
+    window.check(n.total);
+    const data = await rows(
+      db,
+      `SELECT ${grouped ? "m.*" : "s.*"} ${dataFrom} ORDER BY ${grouped ? "ky DESC" : "ngay DESC,nguon,ma_ban_ghi DESC"} LIMIT ${limit} OFFSET ${offset}`,
+      args,
+    );
     return {
       fund,
       data,
       total: n.total,
       page,
       summary: s,
-      filters: { ...range, che_do: mode },
+      filters: {
+        ...range,
+        che_do: mode,
+        loai: grouped ? "" : query.loai || "",
+        nguon: grouped ? "" : query.nguon || "",
+        q: grouped ? "" : (query.q || "").trim(),
+      },
       ...stamp,
     };
   });
