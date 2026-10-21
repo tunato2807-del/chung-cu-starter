@@ -3,6 +3,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { getJson } from "../../shared/api/client.js";
 import { useReportDraft } from "../../shared/use-report-draft.js";
 import { useAuth } from "../auth/Auth.jsx";
+import Icon from "../../shared/Icon.jsx";
+import BuildingArt from "../../shared/BuildingArt.jsx";
 import {
   Badge,
   categories,
@@ -17,26 +19,48 @@ import {
 export function Portal() {
   return (
     <>
-      <section className="hero">
-        <p className="eyebrow">CỔNG DỊCH VỤ CHUNG CƯ</p>
-        <h1>
-          Một phản ánh.
-          <br />
-          Một không gian sống tốt hơn.
-        </h1>
-        <p>
-          Gửi sự cố ngay tại vị trí, theo dõi tiến độ xử lý và kết nối với Ban
-          quản lý.
-        </p>
-        <div className="actions">
-          <Link className="button primary" to="/quet-qr">
-            Quét QR để phản ánh
-          </Link>
-          <Link className="button" to="/tra-cuu">
-            Tra cứu tiến độ
-          </Link>
+      <section className="portal-hero">
+        <div className="hero">
+          <p className="eyebrow">CỔNG DỊCH VỤ CHUNG CƯ</p>
+          <h1>
+            Một phản ánh.
+            <br />
+            <span>Một không gian sống tốt hơn.</span>
+          </h1>
+          <p>
+            Gửi sự cố ngay tại vị trí, theo dõi tiến độ xử lý và kết nối với Ban
+            quản lý.
+          </p>
+          <div className="actions">
+            <Link className="button primary" to="/quet-qr">
+              <Icon name="qr" />
+              Quét QR để phản ánh
+            </Link>
+            <Link className="button" to="/tra-cuu">
+              Tra cứu tiến độ
+              <Icon name="arrow" size={18} />
+            </Link>
+          </div>
+          <p className="hero-footnote">
+            <Icon name="shield" size={17} />
+            Gửi phản ánh qua QR, không cần tài khoản
+          </p>
+        </div>
+        <div className="portal-illustration">
+          <BuildingArt />
+          <div className="portal-art-caption">
+            <span className="live-dot" />
+            Kết nối cư dân & Ban quản lý
+          </div>
         </div>
       </section>
+      <div className="portal-section-heading">
+        <p className="eyebrow">ĐƠN GIẢN & THUẬN TIỆN</p>
+        <h2>Từ phản ánh đến giải quyết</h2>
+        <p className="muted">
+          Ba bước để vấn đề của bạn được tiếp nhận và theo dõi.
+        </p>
+      </div>
       <div className="three-columns">
         {[
           [
@@ -56,7 +80,13 @@ export function Portal() {
           ],
         ].map(([n, t, d]) => (
           <article className="card" key={n}>
-            <span className="step">{n}</span>
+            <div className="portal-step-top">
+              <Icon
+                name={n === "01" ? "qr" : n === "02" ? "message" : "chart"}
+                size={24}
+              />
+              <span className="step">{n}</span>
+            </div>
             <h2>{t}</h2>
             <p className="muted">{d}</p>
           </article>

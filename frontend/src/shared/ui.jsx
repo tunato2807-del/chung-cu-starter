@@ -119,7 +119,8 @@ export function useResource(path) {
 }
 export function Loading() {
   return (
-    <p className="muted" role="status">
+    <p className="muted loading-state" role="status">
+      <span className="loading-spinner" aria-hidden="true" />
       Đang tải dữ liệu…
     </p>
   );

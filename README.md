@@ -2,6 +2,8 @@
 
 React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web, báo cáo công nợ/thu phí, bảo trì thiết bị, đặt lịch tiện ích, thu chi/quỹ và nhập/xuất Excel/PDF** theo ba tài liệu thiết kế.
 
+Giao diện được thống nhất cho BQL, cư dân và kỹ thuật viên: menu chia nhóm có biểu tượng, menu mở rộng trên điện thoại, bảng/biểu mẫu/thống kê cùng phong cách, cổng cư dân và đăng nhập mới. Xem [ảnh minh họa và code đầy đủ từng file để cập nhật VS Code](docs/cap-nhat-giao-dien-chuyen-nghiep-vscode.md).
+
 ## Chạy môi trường phát triển
 
 Cần Node.js 24, npm và Docker có Compose. Chạy tại thư mục gốc repository:

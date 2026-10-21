@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { getJson } from "../../shared/api/client.js";
+import Icon from "../../shared/Icon.jsx";
+import BuildingArt from "../../shared/BuildingArt.jsx";
 import {
   ErrorBox,
   Field,
@@ -46,69 +48,104 @@ export function Login() {
   const { user, setUser } = useAuth(),
     navigate = useNavigate();
   const [error, setError] = useState(),
-    [pending, setPending] = useState(false);
+    [pending, setPending] = useState(false),
+    [showPassword, setShowPassword] = useState(false);
   if (user) return <Navigate to={homeFor(user)} replace />;
   return (
-    <section className="card narrow">
-      <p className="eyebrow">KHÔNG GIAN CƯ DÂN & VẬN HÀNH</p>
-      <h1>Đăng nhập</h1>
-      <p className="muted">Sử dụng tài khoản do Ban quản lý cấp.</p>
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          setPending(true);
-          setError(null);
-          try {
-            const result = await getJson("/xac_thuc/dang_nhap", {
-              method: "POST",
-              body: Object.fromEntries(new FormData(e.currentTarget)),
-            });
-            setUser(result.data);
-            navigate(homeFor(result.data));
-          } catch (err) {
-            setError(err);
-          } finally {
-            setPending(false);
-          }
-        }}
-      >
-        <Field
-          label="Số điện thoại hoặc tài khoản căn hộ"
-          name="so_dien_thoai"
-          type="text"
-          required
-          autoComplete="username"
-        />
-        <Field label="Loại tài khoản">
-          <select name="loai_tai_khoan" defaultValue="TU_DONG">
-            <option value="TU_DONG">Tự nhận diện</option>
-            <option value="CAN_HO">Tài khoản căn hộ</option>
-            <option value="CA_NHAN">Tài khoản cá nhân / Ban quản lý</option>
-          </select>
-        </Field>
-        <p className="note">
-          Tài khoản căn hộ dùng số điện thoại của chủ hộ phụ trách hiện tại hoặc
-          mã CH. Nếu số điện thoại dùng chung với tài khoản cá nhân, chọn loại
-          tài khoản phù hợp.
+    <div className="auth-layout">
+      <aside className="auth-story">
+        <span className="auth-story-label">
+          <Icon name="building" size={18} />
+          KẾT NỐI KHÔNG GIAN SỐNG
+        </span>
+        <h2>
+          Mọi tiện ích.
+          <br />
+          Một nơi kết nối.
+        </h2>
+        <p>
+          Theo dõi hóa đơn, gửi phản ánh và sử dụng dịch vụ chung cư ngay trong
+          tài khoản của bạn.
         </p>
-        <Field
-          label="Mật khẩu"
-          name="mat_khau"
-          type="password"
-          required
-          autoComplete="current-password"
-        />
-        <ErrorBox error={error} />
-        <button className="primary" disabled={pending}>
-          {pending ? "Đang đăng nhập…" : "Đăng nhập"}
-        </button>
-      </form>
-      <p className="muted">
-        Chưa có tài khoản hoặc quên mật khẩu? Liên hệ Ban quản lý để được xác
-        minh.
-      </p>
-      <Link to="/">Về cổng dịch vụ</Link>
-    </section>
+        <BuildingArt />
+        <div className="auth-trust">
+          <Icon name="shield" />
+          <span>Đúng tài khoản. Đúng không gian của bạn.</span>
+        </div>
+      </aside>
+      <section className="card auth-form">
+        <p className="eyebrow">KHÔNG GIAN CƯ DÂN & VẬN HÀNH</p>
+        <h1>Đăng nhập</h1>
+        <p className="muted">Sử dụng tài khoản do Ban quản lý cấp.</p>
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            setPending(true);
+            setError(null);
+            try {
+              const result = await getJson("/xac_thuc/dang_nhap", {
+                method: "POST",
+                body: Object.fromEntries(new FormData(e.currentTarget)),
+              });
+              setUser(result.data);
+              navigate(homeFor(result.data));
+            } catch (err) {
+              setError(err);
+            } finally {
+              setPending(false);
+            }
+          }}
+        >
+          <Field
+            label="Số điện thoại hoặc tài khoản căn hộ"
+            name="so_dien_thoai"
+            type="text"
+            required
+            autoComplete="username"
+          />
+          <Field label="Loại tài khoản">
+            <select name="loai_tai_khoan" defaultValue="TU_DONG">
+              <option value="TU_DONG">Tự nhận diện</option>
+              <option value="CAN_HO">Tài khoản căn hộ</option>
+              <option value="CA_NHAN">Tài khoản cá nhân / Ban quản lý</option>
+            </select>
+          </Field>
+          <p className="note">
+            Tài khoản căn hộ dùng số điện thoại của chủ hộ phụ trách hiện tại
+            hoặc mã CH. Nếu số điện thoại dùng chung với tài khoản cá nhân, chọn
+            loại tài khoản phù hợp.
+          </p>
+          <div className="password-field">
+            <Field
+              label="Mật khẩu"
+              name="mat_khau"
+              type={showPassword ? "text" : "password"}
+              required
+              autoComplete="current-password"
+            />
+            <button
+              type="button"
+              className="password-toggle"
+              aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+              aria-pressed={showPassword}
+              onClick={() => setShowPassword((value) => !value)}
+            >
+              <Icon name={showPassword ? "eyeOff" : "eye"} />
+            </button>
+          </div>
+          <ErrorBox error={error} />
+          <button className="primary auth-submit" disabled={pending}>
+            {pending ? "Đang đăng nhập…" : "Đăng nhập"}
+            <Icon name="arrow" size={18} />
+          </button>
+        </form>
+        <p className="muted">
+          Chưa có tài khoản hoặc quên mật khẩu? Liên hệ Ban quản lý để được xác
+          minh.
+        </p>
+        <Link to="/">Về cổng dịch vụ</Link>
+      </section>
+    </div>
   );
 }
 export function Account() {

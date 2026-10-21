@@ -4,6 +4,7 @@ import { getJson } from "../../shared/api/client.js";
 import { Badge, ErrorBox, Loading, priorities } from "../../shared/ui.jsx";
 import "./Dashboard.css";
 import DashboardCharts from "./DashboardCharts.jsx";
+import Icon from "../../shared/Icon.jsx";
 
 const amount = (value) => `${BigInt(value || 0).toLocaleString("vi-VN")} đ`;
 const day = (value) =>
@@ -53,7 +54,16 @@ function Metric({ title, value, hint, to, money = false, alert = false }) {
       className={`overview-metric${alert ? " overview-alert" : ""}`}
       to={to}
     >
-      <span>{title}</span>
+      <span className="metric-label">
+        {title}
+        <span className="metric-icon">
+          <Icon
+            name={
+              money ? "wallet" : to.includes("bao-tri") ? "tool" : "message"
+            }
+          />
+        </span>
+      </span>
       <strong>
         {money ? amount(value) : Number(value).toLocaleString("vi-VN")}
       </strong>
@@ -113,6 +123,7 @@ export default function Dashboard() {
           disabled={resource.loading}
           onClick={resource.reload}
         >
+          <Icon name="refresh" size={17} />
           {resource.loading ? "Đang cập nhật…" : "Cập nhật số liệu"}
         </button>
       </div>
