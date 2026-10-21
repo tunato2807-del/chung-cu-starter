@@ -29,6 +29,8 @@ Docker lưu MySQL trong volume `mysql_data`; ảnh nằm tại `backend/storage/
 
 ## Tổng quan vận hành
 
+Đối chiếu đề cương `1250080221_To_Hoang_Tuan.docx`: [nghiệp vụ đã có, giới hạn và phần báo cáo/kiểm thử còn thiếu](docs/doi-chieu-de-cuong-1250080221.md). Bản mới bổ sung **Sơ đồ tòa nhà** cho BQL: khối → tầng → căn hộ, số căn/cư dân, lọc trống/có người ở và mở quản lý căn/cư dân. Khối/tầng suy ra từ căn đã có, chưa tạo được khối/tầng trống. [Code đầy đủ 7 file để chép trong VS Code](docs/cap-nhat-so-do-toa-nha-vscode.md); không migration/thư viện mới.
+
 BQL đăng nhập vào trang Tổng quan để xem công nợ, khoản đã thu từ đầu tháng đến hôm nay, phản ánh đang mở, phiếu/lịch bảo trì và đặt lịch tiện ích. Xem [code đầy đủ 8 file cập nhật trong VS Code](docs/cap-nhat-tong-quan-van-hanh-vscode.md). Không có migration hoặc thư viện mới.
 
 Trang có thêm **Biểu đồ vận hành** với bộ chọn ngày/tuần/tháng/quý/năm và ngày trong kỳ: thu phí/công nợ theo hạn, tiếp nhận/đóng phản ánh, lập/nghiệm thu bảo trì, lượt đặt tiện ích theo trạng thái. Ngày chia 24 giờ, tuần từ thứ Hai đến Chủ nhật, tháng chia từng ngày, quý/năm chia từng tháng. Chạm cột hoặc mở bảng để xem số chính xác; cập nhật không mất bộ lọc. Xem [code đầy đủ 5 file thêm biểu đồ](docs/cap-nhat-bieu-do-tong-quan-vscode.md). Bộ lọc chỉ áp dụng biểu đồ, không thay cách tính các thẻ số liệu hiện tại.

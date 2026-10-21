@@ -1,6 +1,6 @@
 import { reportPage } from "../report-exports/report-files.js";
 import { pool, rows, transaction } from "../../lib/db.js";
-import { fail, integer, text } from "../../lib/http.js";
+import { choice, fail, integer, text } from "../../lib/http.js";
 import * as valid from "./residency.validation.js";
 import { lockApartment } from "../billing/billing.guards.js";
 import {
@@ -57,6 +57,20 @@ export async function listApartments(query, exportFormat = null) {
   const { page, offset, limit, check } = reportPage(query, exportFormat);
   const conditions = ["(so_can_ho LIKE ? OR khoi LIKE ?)"];
   const values = [q, q];
+  if (query.khoi !== undefined && query.khoi !== "") {
+    conditions.push("khoi=?");
+    values.push(text(query.khoi, "khoi", 1, 10));
+  }
+  if (query.ma_can_ho !== undefined && query.ma_can_ho !== "") {
+    conditions.push("ma_can_ho=?");
+    values.push(integer(query.ma_can_ho, "ma_can_ho"));
+  }
+  if (query.trang_thai !== undefined && query.trang_thai !== "") {
+    const status = choice(query.trang_thai, "trang_thai", ["DANG_O", "TRONG"]);
+    conditions.push(
+      `${status === "TRONG" ? "NOT " : ""}EXISTS (SELECT 1 FROM lich_su_cu_tru l WHERE l.ma_can_ho=c.ma_can_ho AND l.den_ngay IS NULL)`,
+    );
+  }
   if (query.tang !== undefined && query.tang !== "") {
     const floor = integer(query.tang, "tang");
     if (floor > 200) fail(422, "INVALID_FLOOR", "Tầng phải từ 0 đến 200.");
@@ -66,7 +80,7 @@ export async function listApartments(query, exportFormat = null) {
   const where = `WHERE ${conditions.join(" AND ")}`;
   const [count] = await rows(
     pool,
-    `SELECT COUNT(*) AS total FROM can_ho ${where}`,
+    `SELECT COUNT(*) AS total FROM can_ho c ${where}`,
     values,
   );
   check(count.total);

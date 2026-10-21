@@ -35,7 +35,8 @@ Mọi endpoint bên dưới yêu cầu phiên BQL; cư dân và KTV không đư�
 
 | Method | URL | Nội dung |
 |---|---|---|
-| GET | `/api/can_ho?q=&tang=&page=1` | Tìm số căn/khối và lọc tầng; trả số cư dân đang ở |
+| GET | `/api/can_ho?q=&khoi=&tang=&trang_thai=&ma_can_ho=&page=1` | BQL; q tìm số căn/khối, khoi lọc đúng khối, tang 0–200, trang_thai rỗng/DANG_O/TRONG theo cư trú đang mở, ma_can_ho lọc đúng ID; 20 căn/trang, trả số cư dân đang ở |
+| GET | `/api/can_ho/so_do` | BQL; tổng và phân cấp khối/tầng từ tất cả căn, số căn/có người ở/trống/cư dân; không thông tin cá nhân hoặc tài khoản |
 | GET | `/api/can_ho/:id` | Thông tin căn và cư dân đang ở |
 | POST | `/api/can_ho` | `so_can_ho`, `khoi`, `tang`, `dien_tich_m2`, `tinh_phi_dich_vu` (boolean) |
 | PATCH | `/api/can_ho/:id` | Các trường như tạo và `phien_ban` hiện tại |

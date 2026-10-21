@@ -43,6 +43,7 @@ import {
 } from "../features/treasury/Treasury.jsx";
 import Users from "../features/auth/Users.jsx";
 import ApartmentAccounts from "../features/residency/ApartmentAccounts.jsx";
+import BuildingMap from "../features/residency/BuildingMap.jsx";
 import {
   Portal,
   Scanner,
@@ -83,6 +84,7 @@ function Shell() {
           ["/quan-tri", "Tổng quan"],
           ["/quan-tri/phan-anh", "Phản ánh"],
           ["/quan-tri/can-ho", "Căn hộ"],
+          ["/quan-tri/so-do-toa-nha", "Sơ đồ tòa nhà"],
           ["/quan-tri/tai-khoan-can-ho", "Tài khoản căn hộ"],
           ["/quan-tri/cu-dan", "Cư dân & cư trú"],
           ["/quan-tri/phuong-tien", "Phương tiện"],
@@ -203,6 +205,7 @@ function Shell() {
             />
             {[
               ["/quan-tri/can-ho", <Apartments />],
+              ["/quan-tri/so-do-toa-nha", <BuildingMap />],
               ["/quan-tri/tai-khoan-can-ho", <ApartmentAccounts />],
               ["/quan-tri/cu-dan", <Residents />],
               ["/quan-tri/cu-dan/:id", <ResidentDetail />],

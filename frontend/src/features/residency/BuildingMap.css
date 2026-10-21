@@ -1,0 +1,136 @@
+.building-map {
+  min-width: 0;
+}
+.building-map-stats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin: 24px 0 12px;
+}
+.building-map-stats > div {
+  padding: 16px;
+  background: white;
+  border: 1px solid #dae6e2;
+  border-radius: 12px;
+}
+.building-map-stats dt {
+  color: #526e6b;
+  font-size: 0.9rem;
+}
+.building-map-stats dd {
+  margin: 8px 0 0;
+  font-size: 1.6rem;
+  font-weight: 750;
+  color: #163f3b;
+}
+.building-map-blocks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 24px 0 18px;
+}
+.building-map-blocks button,
+.building-map-floors button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  text-align: left;
+}
+.building-map button[aria-pressed="true"] {
+  background: #e4f2eb;
+  border-color: #16665e;
+  box-shadow: inset 0 0 0 1px #16665e;
+  color: #124c46;
+}
+.building-map-blocks span,
+.building-map-floors span {
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+.building-map-layout {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.building-map-floors nav {
+  display: grid;
+  gap: 10px;
+  max-height: 560px;
+  overflow: auto;
+  padding: 3px;
+}
+.building-map .card {
+  min-width: 0;
+  margin: 0;
+}
+.building-map .filters {
+  align-items: end;
+}
+.building-map-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+}
+.building-map-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  padding: 18px;
+  border: 1px solid #d6e5e0;
+  border-top: 4px solid #237a68;
+  border-radius: 12px;
+  background: #f7fbf9;
+}
+.building-map-tile.vacant {
+  border-top-color: #869a96;
+  background: #fafbfb;
+}
+.building-map-tile h3 {
+  margin: 0 0 10px;
+}
+.building-map-tile p {
+  margin: 8px 0;
+  font-size: 0.9rem;
+}
+.building-map-state {
+  font-weight: 650;
+}
+.building-map-tile a {
+  display: block;
+  padding: 8px 0;
+}
+.building-map-pager {
+  margin-top: 20px;
+}
+@media (max-width: 1100px) {
+  .building-map-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .building-map-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .building-map-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .building-map-floors nav {
+    display: flex;
+    overflow-x: auto;
+    max-height: none;
+  }
+  .building-map-floors button {
+    flex: 0 0 auto;
+  }
+  .building-map-tiles {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .building-map .filters {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .building-map-blocks button {
+    flex: 1 1 130px;
+  }
+}

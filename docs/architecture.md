@@ -28,6 +28,8 @@ Frontend nhận ảnh thư viện tối đa 25 MB/tệp, kiểm tra chữ ký JP
 
 ## Căn hộ và cư trú
 
+Sơ đồ `/quan-tri/so-do-toa-nha` đọc `/api/can_ho/so_do` chỉ dành cho BQL. Một truy vấn tổng hợp các đợt chưa kết thúc theo căn trước khi nhóm khối/tầng, tránh nhân số căn theo số thành viên; trả tổng và nhóm của mọi căn, không lấy trang danh sách đầu tiên. Các cách viết khối nhóm theo collation hiện có của MySQL. Sơ đồ suy ra từ căn hộ, không thêm bảng khối/tầng hoặc khai báo tầng trống. Thẻ căn đọc riêng qua lọc khối chính xác/tầng/trạng thái và phân trang 20 căn. Tổng và thẻ là hai lần đọc nên có thể thay đổi nếu người khác chuyển cư dân giữa hai request; Cập nhật sơ đồ đọc lại cả hai. URL giữ bộ lọc; kết quả gắn path/revision và abort request cũ, không hiện thẻ tầng cũ khi chuyển nhanh hoặc lỗi. Màu có nhãn chữ; khối/tầng dùng nút bàn phím, tầng có vùng cuộn riêng trên điện thoại.
+
 Migration 002 thêm can_ho, cu_dan và lich_su_cu_tru; không thay schema phản ánh hoặc migration 001 đã áp dụng. Runner đọc các migration SQL theo thứ tự tên, kiểm tra checksum và giữ khóa MySQL. Migration 003 thay ràng buộc ngày kết thúc thành lớn hơn hoặc bằng ngày bắt đầu; không sửa các migration cũ đã chạy. Các migration 001–003 phải được giữ khi áp dụng migration 004 cho phương tiện; readiness kiểm tra cùng các migration phương tiện và hóa đơn hiện hành.
 
 Hồ sơ cu_dan giữ thông tin liên hệ, liên kết tài khoản tùy chọn/duy nhất và phien_ban. Căn hộ và quan hệ nằm trong đợt cư trú, không giữ thêm một nguồn mô tả căn hiện tại. Khoảng ngày nửa mở, không nhận ngày tương lai, không sửa hồi tố lịch sử đã đóng. Tình trạng đang ở/chuyển đi và số người trong căn được suy ra từ đợt chưa kết thúc. Cờ tính phí không phụ thuộc số người.

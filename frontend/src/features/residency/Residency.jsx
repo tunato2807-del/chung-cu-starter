@@ -317,6 +317,15 @@ export function Apartments() {
   return (
     <>
       <h1>Căn hộ</h1>
+      <Link className="button" to="/quan-tri/so-do-toa-nha">
+        Xem sơ đồ tòa nhà
+      </Link>
+      {params.has("ma_can_ho") && (
+        <p>
+          Đang xem căn hộ được chọn từ sơ đồ.{" "}
+          <Link to="/quan-tri/can-ho">Xem toàn bộ căn hộ</Link>
+        </p>
+      )}
       <DataTools
         kind="can_ho"
         params={params}

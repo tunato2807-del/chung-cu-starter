@@ -1,5 +1,7 @@
 # Duyệt và gửi hóa đơn hàng loạt — code đầy đủ 9 file cho VS Code
 
+> Đã có bản mới [Sơ đồ tòa nhà](cap-nhat-so-do-toa-nha-vscode.md). Nếu đã cập nhật sơ đồ, giữ `frontend/src/app/App.jsx` theo hướng dẫn mới; chép App.jsx ở bản này đè lên sẽ làm mất menu/route sơ đồ.
+
 Áp dụng sau bản lập nháp hàng loạt `7d53dcd` trên nhánh `codex/auth-qr-incidents`. Thay/tạo đủ **9 file** bên dưới. Có migration mới **016_bill_actions.sql**, không thêm thư viện. Giữ nguyên migration 001–015 và dữ liệu đang có. Không cần tải lại ZIP.
 
 ## Chức năng mới

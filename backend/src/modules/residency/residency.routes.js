@@ -2,6 +2,7 @@ import { Router } from "express";
 import { integer } from "../../lib/http.js";
 import { optionalAuth, requireAuth, roles } from "../auth/auth.middleware.js";
 import * as service from "./residency.service.js";
+import { buildingMap } from "./building-map.service.js";
 
 import {
   manageApartmentAccount,
@@ -18,6 +19,9 @@ apartmentsRouter.get("/", async (req, res) =>
 );
 apartmentsRouter.get("/tai_khoan", async (req, res) =>
   res.json(await listApartmentAccounts(req.query)),
+);
+apartmentsRouter.get("/so_do", async (req, res) =>
+  res.json(await buildingMap()),
 );
 apartmentsRouter.get("/:id", async (req, res) =>
   res.json({
