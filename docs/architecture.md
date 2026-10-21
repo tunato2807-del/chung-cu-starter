@@ -14,6 +14,12 @@ Backend tách middleware xác thực, service nghiệp vụ phản ánh và repo
 
 ## Quy trình phản ánh
 
+Migration 018 nối vi_tri_qr.ma_thiet_bi nullable với thiet_bi; chỉ vị trí THIET_BI được gán. Không đoán liên kết theo tên hoặc sửa dữ liệu lịch sử. qr.service gom tạo vị trí/liên kết/audit trong transaction; đổi liên kết giữ token, tăng phien_ban, ghi lich_su_lien_ket_qr. Link và submit đều khóa QR trước thiết bị; service bảo trì không khóa QR nên không đảo thứ tự khóa này. BQL xem lịch sử 20 lần gần nhất; thiết bị tạm dừng vẫn nhận phản ánh, thiết bị ngừng sử dụng không được gán mới. Các liên kết cũ không tự bị xóa hoặc tắt khi ngừng thiết bị, BQL chủ động vô hiệu vị trí nếu ngừng tiếp nhận.
+
+Public API QR chỉ whitelist tên/mô tả, phiên bản và tên/mã tài sản. Submit so phiên bản với QR hiện tại (QR có thiết bị bắt buộc có phiên bản), rồi đọc thiết bị FOR SHARE và lưu ID/mã/tên/vị trí lúc gửi ngay trong transaction phản ánh + lịch sử + ảnh. Client không quyết định thiết bị. Snapshot không thay đổi khi đổi tên/vị trí thiết bị hoặc gán QR khác. Fingerprint idempotency vẫn dựa nội dung gốc, không dựa liên kết hiện tại: yêu cầu đã thành công được replay receipt cũ ngay cả khi QR đã đổi; request chưa thành công với phiên bản cũ phải kiểm tra lại biểu mẫu. Mã tra cứu công khai giữ whitelist cũ.
+
+Repository phản ánh bổ sung lọc thiết bị snapshot vào cùng WHERE giới hạn quyền. Gộp/cảnh báo tương tự dùng cả thiết bị snapshot, không gộp sự cố hai thiết bị khác nhau chỉ vì cùng tem. EquipmentQrConnections dùng API BQL hiện có cho QR hiện tại và phản ánh snapshot; không mở quyền xem hồ sơ thiết bị cho KTV/cư dân. Picker tìm/phân trang 20 thiết bị và giữ lựa chọn riêng khi đổi trang/từ khóa; component kết quả remount theo query để không hiển thị kết quả truy vấn cũ.
+
 `MOI → DA_PHAN_CONG → DANG_XU_LY → DA_XU_LY → DA_DONG`.
 
 BQL có thể phân công lại khi đã phân công/đang xử lý, giữ trạng thái và ghi cả người cũ/mới trong lịch sử. BQL trả `DA_XU_LY → DANG_XU_LY` cần lý do và tăng lượt xử lý. Hoàn thành cần ghi chú và ảnh mới gửi trong cùng request. BQL có thể từ chối hoặc gộp khi `MOI`; gộp phải cùng vị trí, bản gốc còn mở, không tự gộp hoặc tạo chuỗi/vòng gộp.

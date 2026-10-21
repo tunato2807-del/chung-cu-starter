@@ -101,6 +101,21 @@ export function ReportList() {
         )}
       </div>
       <section className="card">
+        {params.get("ma_thiet_bi") && (
+          <p>
+            Đang lọc theo thiết bị được ghi nhận lúc gửi phản ánh.{" "}
+            <button
+              onClick={() => {
+                const next = new URLSearchParams(params);
+                next.delete("ma_thiet_bi");
+                next.delete("page");
+                setParams(next);
+              }}
+            >
+              Bỏ lọc thiết bị
+            </button>
+          </p>
+        )}
         <div className="filters">
           <Field label="Tìm tiêu đề hoặc vị trí">
             <input
@@ -220,6 +235,20 @@ export function ReportDetail() {
             <div>
               <section className="card">
                 <h2>{r.ten_vi_tri}</h2>
+                {r.ma_thiet_bi && (
+                  <div className="note">
+                    <p>
+                      Thiết bị lúc gửi: {r.ma_tai_san_luc_gui} ·{" "}
+                      {r.ten_thiet_bi_luc_gui}
+                    </p>
+                    <p>{r.vi_tri_thiet_bi_luc_gui}</p>
+                    {user.vai_tro === "QUAN_TRI_VIEN" && (
+                      <Link to={`/quan-tri/thiet-bi/${r.ma_thiet_bi}`}>
+                        Mở hồ sơ thiết bị
+                      </Link>
+                    )}
+                  </div>
+                )}
                 <div className="tags">
                   <span>{categories[r.loai_su_co]}</span>
                   <span>Ưu tiên: {priorities[r.do_uu_tien]}</span>

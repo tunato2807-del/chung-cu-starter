@@ -29,6 +29,8 @@ Docker lưu MySQL trong volume `mysql_data`; ảnh nằm tại `backend/storage/
 
 ## Tổng quan vận hành
 
+Đã nối **thiết bị → QR → phản ánh**: chọn hồ sơ thiết bị khi tạo/liên kết QR và xem lịch sử thay đổi; biểu mẫu quét nhận mã/tên thiết bị, phản ánh lưu thông tin thiết bị lúc gửi. Đổi/bỏ liên kết không sửa các phản ánh cũ. Hồ sơ thiết bị mở được QR hiện tại và phản ánh theo thiết bị lúc gửi. Giữ token QR cũ, không tự gán thiết bị cho phản ánh lịch sử. Cần migration **018_equipment_qr.sql**; [code đầy đủ 11 file tính năng và 2 file kiểm thử](docs/cap-nhat-thiet-bi-qr-vscode.md).
+
 BQL có thêm **Khối & tầng** để khai báo khối/tầng chưa có căn, đặt tên/mô tả, đổi mã/số đồng thời cập nhật các căn và xóa mục chưa sử dụng. Form căn hộ chọn từ danh mục, phát hiện khối/tầng đã thay đổi. Chạy `npm run db:migrate` để áp dụng **017_building_structure.sql**, giữ nguyên 001–016. Không thêm thư viện. [Code đầy đủ 12 file chạy tính năng và 7 file kiểm thử](docs/cap-nhat-khoi-tang-vscode.md).
 
 Đối chiếu đề cương `1250080221_To_Hoang_Tuan.docx`: [nghiệp vụ đã có, giới hạn và phần báo cáo/kiểm thử còn thiếu](docs/doi-chieu-de-cuong-1250080221.md). **Sơ đồ tòa nhà** cho BQL hiển thị khối → tầng → căn hộ, số căn/cư dân, lọc trống/có người ở và mở quản lý căn/cư dân. Từ migration 017, sơ đồ có cả khối/tầng được khai báo khi chưa có căn. [Hướng dẫn cũ của bản sơ đồ ban đầu](docs/cap-nhat-so-do-toa-nha-vscode.md) chỉ dành cho phiên bản trước 017; dùng hướng dẫn Khối & tầng để cập nhật bản mới.

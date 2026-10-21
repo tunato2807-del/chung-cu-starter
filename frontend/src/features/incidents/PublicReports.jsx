@@ -224,6 +224,12 @@ export function SubmitReport() {
     <section className="card narrow">
       <p className="eyebrow">PHẢN ÁNH TẠI VỊ TRÍ</p>
       <h1>{resource.result.data.ten_vi_tri}</h1>
+      {resource.result.data.thiet_bi && (
+        <p className="note">
+          Thiết bị: {resource.result.data.thiet_bi.ma_tai_san} ·{" "}
+          {resource.result.data.thiet_bi.ten_thiet_bi}
+        </p>
+      )}
       <p className="muted">{resource.result.data.mo_ta}</p>
       {draft.restored && (
         <p className="note" role="status">
@@ -244,6 +250,8 @@ export function SubmitReport() {
           draft.save(e.currentTarget);
           const data = new FormData(e.currentTarget);
           data.set("token_qr", token);
+          if (resource.result.data.phien_ban_qr !== undefined)
+            data.set("phien_ban_qr", String(resource.result.data.phien_ban_qr));
           data.set("khoa_yeu_cau", draft.requestKey);
           if (confirmed) data.set("xac_nhan_gui", "true");
           setPending(true);

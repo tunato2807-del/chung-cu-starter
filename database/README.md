@@ -1,5 +1,7 @@
 # MySQL 8.4
 
+`migrations/018_equipment_qr.sql` thêm FK thiết bị nullable và phiên bản vào `vi_tri_qr`, snapshot ID/mã/tên/vị trí thiết bị vào `phan_anh`, cùng ledger `lich_su_lien_ket_qr` cho BQL đổi/bỏ liên kết. CHECK chỉ cho vị trí loại THIET_BI có FK, snapshot phải đủ trường hoặc toàn bộ null; index theo thiết bị/mã phản ánh phục vụ lọc. Không backfill theo tên, không đổi token QR, nội dung/thiết bị phản ánh cũ hoặc trạng thái thu tiền/bảo trì. Link + phiên bản + lịch sử commit cùng giao dịch. FK ngăn xóa thiết bị đang được tham chiếu, lịch sử liên kết chỉ cascade khi công cụ test xóa vị trí. Production không có API xóa cứng thiết bị/vị trí/phản ánh. Giữ nguyên 001–017; readiness yêu cầu đủ 18 migration.
+
 `migrations/001_auth_qr_incidents.sql` triển khai 5 bảng nghiệp vụ: `nguoi_dung`, `vi_tri_qr`, `phan_anh`, `lich_su_phan_anh`, `hinh_anh_phan_anh`; cùng `yeu_cau_gui`, `gioi_han_gui` cho chống gửi lặp/giới hạn gửi và `schema_migrations` theo dõi phiên bản.
 
 Tại gốc repository: `npm run init:local`, `npm run db:up`, `npm run db:migrate`, `npm run db:seed`. Migration có khóa MySQL và checksum, không tự xóa dữ liệu, chạy lại không tạo bản ghi nghiệp vụ trùng. MySQL DDL không rollback toàn bộ; nếu lỗi giữa chừng, kiểm tra lỗi và các bảng đã tạo trước khi chạy lại. `IF NOT EXISTS` hỗ trợ tiếp tục migration đầu tiên bị gián đoạn, không phải cơ chế nâng cấp một schema cũ khác cấu trúc. Không sửa migration đã áp dụng; thêm migration tiếp theo.

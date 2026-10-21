@@ -1,5 +1,24 @@
 # API luồng phản ánh QR
 
+## Liên kết QR với hồ sơ thiết bị (migration 018)
+
+Các API quản lý QR chỉ BQL; POST/PATCH/PUT vẫn cần cookie và `X-App-Request: 1`.
+
+| Method | Đường dẫn dưới `/api` | Nội dung |
+|---|---|---|
+| GET | `/vi_tri_qr?q=&ma_thiet_bi=&page=1` | Tìm tên vị trí/mã tài sản/tên thiết bị, lọc thiết bị đang liên kết; `{data,total,page}`, 20 dòng/trang thay giới hạn 500 dòng cũ |
+| GET | `/vi_tri_qr/:id` | Chi tiết và 20 lần đổi liên kết gần nhất, người thực hiện và mã tài sản cũ/mới |
+| POST | `/vi_tri_qr` | Như trước, thêm `ma_thiet_bi` nullable, chỉ dùng khi loai=THIET_BI. Không bắt buộc gán thiết bị cho các vị trí tạo theo API cũ |
+| PUT | `/vi_tri_qr/:id/thiet_bi` | `ma_thiet_bi` (ID hoặc null), `phien_ban`, `xac_nhan_doi_lien_ket: true`; cập nhật liên kết và lịch sử cùng transaction. Chỉ THIET_BI, không nhận thiết bị NGUNG_SU_DUNG |
+| PATCH | `/vi_tri_qr/:id` | Trạng thái như trước; client mới gửi thêm phien_ban để chặn phiên bản cũ |
+| POST | `/vi_tri_qr/:id/sinh_lai_qr` | Giữ quy trình cũ, client mới gửi phien_ban. Thay mã mới thu hồi token cũ |
+| GET | `/cong_khai/vi_tri_qr/:token` | Công khai; tên/mô tả vị trí, phien_ban_qr và thiet_bi={ma_tai_san,ten_thiet_bi} hoặc null; không serial/ghi chú/lịch bảo trì/ID thiết bị |
+| GET | `/phan_anh?ma_thiet_bi=ID` | Lọc theo thiết bị được ghi nhận lúc gửi; vẫn AND quyền người gửi/người được giao, không mở quyền xem danh bạ thiết bị cho KTV/cư dân |
+
+Form mới gửi `phien_ban_qr` lấy từ QR công khai. Server khóa QR và thiết bị để lưu `ma_thiet_bi`, `ma_tai_san_luc_gui`, `ten_thiet_bi_luc_gui`, `vi_tri_thiet_bi_luc_gui`; không nhận các giá trị thiết bị từ client. Thiếu phiên bản trên QR có liên kết, hoặc phiên bản đã đổi, trả 409 QR_CHANGED. API cũ không gửi phiên bản vẫn gửi được ở QR chưa liên kết. Retry của yêu cầu đã thành công trả receipt cũ trước kiểm tra phiên bản mới, không tạo phản ánh lần hai.
+
+Đổi/bỏ liên kết giữ token và snapshot cũ; không backfill phản ánh lịch sử. Kiểm tra phản ánh tương tự và gộp trùng yêu cầu cùng thiết bị snapshot (kể cả null), ngoài điều kiện cùng vị trí. Tra cứu công khai bằng mã bí mật giữ các trường tối thiểu như trước. BQL có link từ chi tiết phản ánh sang hồ sơ thiết bị; KTV/cư dân chỉ thấy snapshot trong bản ghi họ được đọc.
+
 API trả `{ data }`, danh sách phản ánh thêm `meta: { page, page_size, total }` (20 dòng/trang). Lỗi trả `{ error: { code, message, field_errors?, request_id } }`. Request JSON có Content-Type application/json. Mọi request POST/PATCH phải có `X-App-Request: 1` và dùng cookie phiên cùng origin; không gửi role từ trình duyệt để quyết định quyền.
 
 | Method | Đường dẫn dưới /api | Quyền / nội dung |

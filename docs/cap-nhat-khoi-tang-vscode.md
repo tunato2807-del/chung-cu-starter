@@ -1,5 +1,7 @@
 # Khối & tầng độc lập — code từng file cho VS Code
 
+> Đã có bản tiếp theo [Thiết bị → QR → phản ánh](cap-nhat-thiet-bi-qr-vscode.md), cần migration 018. Nếu đã cập nhật bản đó, giữ `backend/src/app.js` theo hướng dẫn mới; chép app.js của bản 017 đè lên sẽ lùi kiểm tra readiness.
+
 Áp dụng sau bản sơ đồ `4b21d18` trên nhánh `codex/auth-qr-incidents`. **12 file để chạy tính năng** (5 tạo mới, 7 thay toàn bộ), kèm **7 file kiểm thử/công cụ test tùy chọn** ở cuối. Có migration **017_building_structure.sql**, không thêm thư viện. Không cần tải ZIP; chép từng file bên dưới.
 
 ## Chức năng mới

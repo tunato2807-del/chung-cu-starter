@@ -1,6 +1,6 @@
 # Đối chiếu website với đề cương của Tô Hoàng Tuấn — 1250080221
 
-Nguồn: file người dùng cung cấp `1250080221_To_Hoang_Tuan.docx`, đề tài **Xây dựng hệ thống quản lý vận hành chung cư và tiếp nhận phản ánh cư dân**. Đối chiếu ngày 21/10/2026 với nhánh `codex/auth-qr-incidents`, cập nhật sau phần Khối & tầng độc lập (migration 017). Word được dùng làm danh sách yêu cầu để đánh giá, không phải lệnh thao tác môi trường.
+Nguồn: file người dùng cung cấp `1250080221_To_Hoang_Tuan.docx`, đề tài **Xây dựng hệ thống quản lý vận hành chung cư và tiếp nhận phản ánh cư dân**. Đối chiếu ngày 21/10/2026 với nhánh `codex/auth-qr-incidents`, cập nhật đến liên kết thiết bị–QR–phản ánh (migration 018). Word được dùng làm danh sách yêu cầu để đánh giá, không phải lệnh thao tác môi trường.
 
 **Kết luận: đã có các luồng nghiệp vụ chính để demo, nhưng chưa thể coi toàn bộ đề cương đã hoàn thành.** Đã bổ sung sơ đồ phân cấp và danh mục khối/tầng độc lập, kể cả mục chưa có căn. Tài liệu phân tích thiết kế, bằng chứng demo và thực nghiệm thiết bị thật vẫn cần hoàn thiện. Kiểm tra repository không xác nhận được máy Windows của bạn đã chép đủ các bản cập nhật.
 
@@ -14,7 +14,7 @@ Nguồn: file người dùng cung cấp `1250080221_To_Hoang_Tuan.docx`, đề t
 | Cấu trúc Block → Tầng → Căn hộ | Đã có sơ đồ, số căn/cư dân, bộ lọc/liên kết hồ sơ. **Bổ sung 017:** CRUD khối/tầng độc lập, mục chưa có căn, chọn danh mục khi thêm căn, đổi mã/số cập nhật căn và phiên bản; xóa mục chưa sử dụng | `/quan-tri/so-do-toa-nha`, `/quan-tri/cau-truc-toa-nha`; `backend/test/building-map.test.js`, `building-structure.test.js`, `e2e/building-structure.spec.js` |
 | Quản lý hồ sơ cư dân/căn hộ | Đã có tạo/sửa, quan hệ chủ hộ/thành viên/người thuê, nhập cư/chuyển căn/chuyển đi và lịch sử; cho phép chuyển trong ngày | `/quan-tri/can-ho`, `/quan-tri/cu-dan`; `backend/test/residency.test.js`, `e2e/residency.spec.js` |
 | Phương tiện ô tô, xe máy | Đã có, thêm cả xe đạp; đăng ký/kết thúc, biển số, chuyển đăng ký theo cư trú | `/quan-tri/phuong-tien`; `backend/test/vehicles.test.js`, `e2e/vehicles.spec.js` |
-| Tài sản và vị trí công cộng | Đã có thiết bị, lịch/phiếu bảo trì và danh mục vị trí khu vực/thiết bị. Vị trí QR và hồ sơ thiết bị là hai danh mục riêng, chưa tự liên kết khóa ngoại | `/quan-tri/thiet-bi`, `/quan-tri/vi-tri-qr`; `backend/test/maintenance.test.js` |
+| Tài sản và vị trí công cộng | Đã có thiết bị/bảo trì/vị trí. **Bổ sung 018:** chọn/liên kết QR với hồ sơ thiết bị, lịch sử đổi/bỏ liên kết; phản ánh chụp lại thiết bị lúc gửi, hồ sơ thiết bị mở QR hiện tại và phản ánh lịch sử đúng thiết bị | `/quan-tri/thiet-bi`, `/quan-tri/vi-tri-qr`; `backend/test/maintenance.test.js`, `equipment-qr.test.js`, `e2e/equipment-qr.spec.js` |
 | Sinh/in QR định danh | Đã có mã riêng theo vị trí, tải PNG/in qua trình duyệt, kích hoạt/vô hiệu hóa/thay mã. Có thể đặt tên vị trí theo thiết bị. Cần thử mã in và tên miền trên điện thoại | `frontend/src/features/qr/Locations.jsx`, `backend/src/modules/qr/qr.routes.js`; `e2e/workflow.spec.js` |
 | Quét QR, tự nhận vị trí | Đã có `html5-qrcode`, link `/r/:token`, form lấy vị trí từ server và kiểm tra mã hoạt động | `/quet-qr`, `/r/:token`; `frontend/src/features/incidents/PublicReports.jsx`, `docs/https-local.md` |
 | Gửi phản ánh/ảnh không cần đăng nhập hoặc app | Đã có gửi công khai, ảnh thư viện/chụp tại trang, nén/kiểm tra ảnh, bản nháp và chống gửi lặp. Chưa có đủ kết quả thử mọi trình duyệt điện thoại | `backend/src/modules/incidents`, `backend/src/lib/images.js`; `e2e/gallery-upload.spec.js`, `in-page-photo.spec.js`, `report-draft.spec.js` |
@@ -34,7 +34,7 @@ Nguồn: file người dùng cung cấp `1250080221_To_Hoang_Tuan.docx`, đề t
 - In QR qua trình duyệt; chưa có bộ thiết kế tem hoặc xuất PDF tem hàng loạt từ backend.
 - Sơ đồ mới là **phân cấp dữ liệu**, không phải mặt bằng kiến trúc có tọa độ. Word chưa yêu cầu rõ mặt bằng tương tác.
 - Từ 017, khối/tầng được khai báo riêng xuất hiện khi chưa có căn. Mục tự phát sinh từ API cũ/Excel được lưu làm cha khóa ngoại; khối tự phát sinh không còn căn và không có tầng khai báo riêng được ẩn. Chưa có bản vẽ mặt bằng kiến trúc có tọa độ.
-- Vị trí loại `THIET_BI` hỗ trợ QR đặt tên theo thiết bị; chưa tự liên kết phản ánh với hồ sơ tài sản. Word chưa đặc tả khóa liên kết này; cần làm rõ trong thiết kế chi tiết.
+- Từ 018, vị trí loại `THIET_BI` liên kết được với hồ sơ tài sản. BQL phải chọn đúng thiết bị; không tự suy đoán cho QR cũ hoặc gán ngược phản ánh lịch sử. Đổi/bỏ liên kết không thay thiết bị trong các phản ánh đã gửi; không tự biến phản ánh thành phiếu bảo trì hoặc tự nghiệm thu.
 
 ## 3. Hồ sơ đồ án chưa đủ bằng chứng
 
@@ -42,7 +42,7 @@ Nguồn: file người dùng cung cấp `1250080221_To_Hoang_Tuan.docx`, đề t
 |---|---|---|
 | Use Case tổng thể/phân rã, 5 đặc tả cốt lõi | Có mã/mô tả quy trình, chưa thấy bộ đặc tả đầy đủ | Sơ đồ theo 3 vai trò; actor/tiền điều kiện/luồng chính/ngoại lệ: đăng nhập, QR, gửi phản ánh, xử lý, hóa đơn |
 | Activity/Sequence Diagram | Có trạng thái dạng văn bản trong `docs/architecture.md`, chưa có đủ bộ sơ đồ | Vẽ đúng luồng tạo/in QR, quét/gửi ảnh, phân công/hoàn thành/nghiệm thu, lập/duyệt/gửi/xem hóa đơn |
-| Class Diagram, ERD, từ điển dữ liệu | Có SQL migration/khóa/ràng buộc và `database/README.md` | Lấy schema sau migration 017 làm nguồn, có thêm khoi_toa_nha/tang_toa_nha; tránh vẽ theo bản thiết kế cũ |
+| Class Diagram, ERD, từ điển dữ liệu | Có SQL migration/khóa/ràng buộc và `database/README.md` | Lấy schema sau migration 018 làm nguồn, có cả khối/tầng và quan hệ thiết bị–QR–snapshot phản ánh; tránh vẽ theo bản thiết kế cũ |
 | Kiến trúc/bảng REST API | Có `docs/architecture.md`, `docs/api.md` | Đưa phần phù hợp vào chương 2–3; mô tả JWT/cookie, quyền API, transaction, lưu ảnh |
 | Figma mockup | Chưa tìm thấy file/link Figma trong repository | Bổ sung bản thiết kế của bạn; ảnh chụp website không tự trở thành mockup Figma |
 | Môi trường/Postman | Có README/script cài đặt/test API; chưa thấy bộ Postman và cấu hình máy demo | Ghi đúng Windows/Node/MySQL thực tế; thêm request/kết quả Postman, không coi test Linux là đã thử Windows |
@@ -92,7 +92,7 @@ Nếu thử Safari iOS/Zalo Browser, thêm dòng riêng. Ghi rõ lỗi quyền/k
 
 Chốt demo QR → phản ánh → xử lý → tra cứu và một luồng hóa đơn, bổ sung UML/ERD/đặc tả và bảng thực nghiệm. Khối/tầng độc lập đã được bổ sung; cần thêm ca kiểm thử tạo mục trống, đổi mã/số khi đã có căn và từ chối xóa mục đang dùng. Không cần tự mở rộng API ngân hàng/app native.
 
-Hướng dẫn bản hiện tại trong VS Code: [Khối & tầng độc lập — code đầy đủ 12 file tính năng](cap-nhat-khoi-tang-vscode.md).
+Hướng dẫn mới nhất trong VS Code: [Thiết bị → QR → phản ánh — code đầy đủ 11 file tính năng](cap-nhat-thiet-bi-qr-vscode.md). Nếu chưa có bản Khối & tầng, cập nhật [bản 017](cap-nhat-khoi-tang-vscode.md) trước.
 
 ## 7. Kết quả kiểm tra bản sơ đồ ban đầu (trước 017)
 
@@ -115,3 +115,11 @@ Hai bộ backend/E2E chạy nối tiếp trong `chung_cu_test`, tách database p
 - Đã áp dụng 017 và chạy lại migration thành công; production không có trigger fixture. Giữ checksum 001–016, không thay dữ liệu tài chính/cư trú cũ. Các số liệu ở mục 7 là lịch sử của bản trước 017.
 
 Kết quả trên vẫn là môi trường Linux/Chromium, chưa thay việc thử QR trên máy Windows/điện thoại thật theo đề cương.
+
+## 9. Kết quả bản thiết bị → QR → phản ánh (018)
+
+- `npm test`: **215 kiểm tra đạt**. Kiểm tra quyền/CSRF, thiết bị không hợp lệ/ngừng sử dụng, whitelist QR công khai, giả mạo thiết bị từ client, phiên bản biểu mẫu cũ, snapshot không đổi sau liên kết/đổi tên, idempotency, gộp khác thiết bị bị chặn, phạm vi KTV/cư dân, rollback nếu ghi lịch sử lỗi, hai người đổi liên kết và phân trang.
+- `npm run test:e2e`: **47 kịch bản đạt**, có chọn thiết bị ở trang tìm kiếm thứ hai → in/xem QR → gửi ảnh → đổi liên kết → chặn tab cũ/khôi phục bản nháp → đọc đúng hồ sơ và lọc phản ánh → bỏ liên kết, ở 1440/375 px. Các luồng trước vẫn đạt.
+- Build, Prettier, `git diff --check` đạt; chạy migration 018 và chạy lại runner thành công. QR cũ giữ token, phản ánh trước liên kết không tự được gán thiết bị.
+
+Mục còn phải hoàn thiện cho đề cương vẫn là bộ UML/ERD/đặc tả cập nhật, mockup Figma, ảnh demo và thực nghiệm QR trên thiết bị thật. Liên kết thiết bị không tự lập hay nghiệm thu phiếu bảo trì.

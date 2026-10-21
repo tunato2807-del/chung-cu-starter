@@ -1,4 +1,5 @@
 import DataTools from "../../shared/DataTools.jsx";
+import { EquipmentQrConnections } from "../qr/QrEquipment.jsx";
 import React, { useEffect, useState } from "react";
 import {
   Link,
@@ -700,6 +701,7 @@ export function EquipmentDetail() {
               )}
             </div>
           </section>
+          <EquipmentQrConnections key={e.ma_thiet_bi} id={e.ma_thiet_bi} />
           {editing && (
             <section className="card">
               <h2>Sửa thông tin và lịch</h2>

@@ -1,5 +1,5 @@
 import { pool, rows } from "../../lib/db.js";
-import { fail } from "../../lib/http.js";
+import { fail, integer } from "../../lib/http.js";
 export function canRead(user, r) {
   return (
     user.vai_tro === "QUAN_TRI_VIEN" ||
@@ -92,6 +92,10 @@ export async function detail(id, user) {
 export async function list(user, query) {
   const clauses = [],
     params = [];
+  if (query.ma_thiet_bi !== undefined && query.ma_thiet_bi !== "") {
+    clauses.push("p.ma_thiet_bi=?");
+    params.push(integer(query.ma_thiet_bi, "ma_thiet_bi"));
+  }
   if (user.vai_tro === "KY_THUAT_VIEN") {
     clauses.push("p.ma_ky_thuat_vien=?");
     params.push(user.ma_nguoi_dung);
@@ -130,7 +134,7 @@ export async function list(user, query) {
   );
   const data = await rows(
     pool,
-    `SELECT p.ma_phan_anh,p.tieu_de,p.loai_su_co,p.do_uu_tien,p.trang_thai,p.ngay_tao,p.phien_ban,v.ten_vi_tri,n.ho_va_ten AS ten_ky_thuat_vien` +
+    `SELECT p.ma_phan_anh,p.tieu_de,p.loai_su_co,p.do_uu_tien,p.trang_thai,p.ngay_tao,p.phien_ban,p.ma_thiet_bi,p.ma_tai_san_luc_gui,p.ten_thiet_bi_luc_gui,v.ten_vi_tri,n.ho_va_ten AS ten_ky_thuat_vien` +
       joins +
       where +
       ` ORDER BY p.ma_phan_anh DESC LIMIT ${size} OFFSET ${(page - 1) * size}`,

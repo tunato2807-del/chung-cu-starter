@@ -75,6 +75,24 @@ export async function submit(body, files, user, ip) {
           "QR_INVALID",
           "Mã QR đã bị thay hoặc vô hiệu hóa. Vui lòng quét lại.",
         );
+      if (
+        (loc.ma_thiet_bi !== null && body.phien_ban_qr === undefined) ||
+        (body.phien_ban_qr !== undefined &&
+          loc.phien_ban !== integer(body.phien_ban_qr, "phien_ban_qr"))
+      )
+        fail(
+          409,
+          "QR_CHANGED",
+          "Liên kết vị trí đã thay đổi. Hãy tải lại biểu mẫu và kiểm tra thiết bị trước khi gửi.",
+        );
+      const [equipment] =
+        loc.ma_thiet_bi === null
+          ? []
+          : await rows(
+              db,
+              "SELECT ma_tai_san,ten_thiet_bi,vi_tri FROM thiet_bi WHERE ma_thiet_bi=? FOR SHARE",
+              [loc.ma_thiet_bi],
+            );
       const rateKey = hash(b.phone + "|" + ip);
       await rows(
         db,
@@ -99,8 +117,8 @@ export async function submit(body, files, user, ip) {
         );
       const similar = await rows(
         db,
-        "SELECT 1 FROM phan_anh WHERE ma_vi_tri_qr=? AND loai_su_co=? AND trang_thai IN ('MOI','DA_PHAN_CONG','DANG_XU_LY','DA_XU_LY') LIMIT 1",
-        [loc.ma_vi_tri_qr, b.category],
+        "SELECT 1 FROM phan_anh WHERE ma_vi_tri_qr=? AND ma_thiet_bi <=> ? AND loai_su_co=? AND trang_thai IN ('MOI','DA_PHAN_CONG','DANG_XU_LY','DA_XU_LY') LIMIT 1",
+        [loc.ma_vi_tri_qr, loc.ma_thiet_bi, b.category],
       );
       if (
         similar.length &&
@@ -115,7 +133,7 @@ export async function submit(body, files, user, ip) {
       const lookup = randomBytes(32).toString("hex");
       const r = await rows(
         db,
-        `INSERT INTO phan_anh (ma_tra_cuu,khoa_yeu_cau,ma_vi_tri_qr,ma_nguoi_gui,ten_nguoi_gui,so_dien_thoai_nguoi_gui,can_ho_khai_bao,tieu_de,noi_dung,loai_su_co) VALUES (?,?,?,?,?,?,?,?,?,?)`,
+        `INSERT INTO phan_anh (ma_tra_cuu,khoa_yeu_cau,ma_vi_tri_qr,ma_nguoi_gui,ten_nguoi_gui,so_dien_thoai_nguoi_gui,can_ho_khai_bao,tieu_de,noi_dung,loai_su_co,ma_thiet_bi,ma_tai_san_luc_gui,ten_thiet_bi_luc_gui,vi_tri_thiet_bi_luc_gui) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
         [
           lookup,
           b.key,
@@ -127,6 +145,10 @@ export async function submit(body, files, user, ip) {
           b.title,
           b.content,
           b.category,
+          loc.ma_thiet_bi,
+          equipment?.ma_tai_san ?? null,
+          equipment?.ten_thiet_bi ?? null,
+          equipment?.vi_tri ?? null,
         ],
       );
       await addImages(db, r.insertId, names, "PHAN_ANH", 1, user);
@@ -315,6 +337,7 @@ export async function transition(id, body, files, actor) {
         if (
           !parent ||
           parent.ma_vi_tri_qr !== r.ma_vi_tri_qr ||
+          parent.ma_thiet_bi !== r.ma_thiet_bi ||
           !["MOI", "DA_PHAN_CONG", "DANG_XU_LY", "DA_XU_LY"].includes(
             parent.trang_thai,
           )
@@ -322,7 +345,7 @@ export async function transition(id, body, files, actor) {
           fail(
             422,
             "MERGE_INVALID",
-            "Phản ánh gốc phải cùng vị trí và đang được xử lý.",
+            "Phản ánh gốc phải cùng vị trí, cùng thiết bị lúc gửi và đang được xử lý.",
           );
         // A report which already has children cannot become a duplicate itself.
         if (

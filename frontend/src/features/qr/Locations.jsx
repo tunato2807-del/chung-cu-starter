@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import QRCode from "qrcode";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { EquipmentPicker, QrLinkEditor } from "./QrEquipment.jsx";
 import { getJson } from "../../shared/api/client.js";
 import {
   ErrorBox,
@@ -27,6 +28,11 @@ function QrCard({ location }) {
   return (
     <section className="qr-print card">
       <h2>{location.ten_vi_tri}</h2>
+      {location.ma_thiet_bi && (
+        <p>
+          {location.ma_tai_san} · {location.ten_thiet_bi}
+        </p>
+      )}
       <p>Quét mã để gửi phản ánh tại vị trí</p>
       {image && (
         <img
@@ -60,7 +66,13 @@ function QrCard({ location }) {
   );
 }
 export default function Locations() {
-  const resource = useResource("/vi_tri_qr"),
+  const [params, setParams] = useSearchParams();
+  const resource = useResource(`/vi_tri_qr?${params}`),
+    [type, setType] = useState(
+      params.get("ma_thiet_bi") ? "THIET_BI" : "KHU_VUC",
+    ),
+    [device, setDevice] = useState(null),
+    [editingLink, setEditingLink] = useState(null),
     [selected, setSelected] = useState(),
     [error, setError] = useState(),
     [pending, setPending] = useState(false),
@@ -72,6 +84,7 @@ export default function Locations() {
       await action();
       setSelected(null);
       setConfirmation(null);
+      setEditingLink(null);
       resource.reload();
     } catch (err) {
       setError(err);
@@ -88,6 +101,37 @@ export default function Locations() {
         </div>
       </div>
       <ErrorBox error={error} />
+      <form
+        className="filters no-print"
+        onSubmit={(event) => {
+          event.preventDefault();
+          const next = new URLSearchParams(params);
+          next.set("q", new FormData(event.currentTarget).get("q"));
+          next.delete("page");
+          setParams(next);
+        }}
+      >
+        <Field
+          label="Tìm vị trí hoặc thiết bị"
+          name="q"
+          maxLength={100}
+          defaultValue={params.get("q") || ""}
+        />
+        <button>Tìm vị trí</button>
+        <button
+          type="button"
+          onClick={() => {
+            setSelected(null);
+            setEditingLink(null);
+            resource.reload();
+          }}
+        >
+          Tải lại vị trí
+        </button>
+        {params.get("ma_thiet_bi") && (
+          <Link to="/quan-tri/vi-tri-qr">Xem tất cả vị trí</Link>
+        )}
+      </form>
       <div className="detail-grid">
         <section className="card no-print">
           <h2>Thêm vị trí</h2>
@@ -96,30 +140,52 @@ export default function Locations() {
               e.preventDefault();
               const form = e.currentTarget;
               const body = Object.fromEntries(new FormData(form));
+              body.ma_thiet_bi =
+                type === "THIET_BI" ? (device?.ma_thiet_bi ?? null) : null;
               change(async () => {
                 await getJson("/vi_tri_qr", { method: "POST", body });
                 form.reset();
+                setDevice(null);
+                setType("KHU_VUC");
               });
             }}
           >
-            <Field
-              label="Tên vị trí"
-              name="ten_vi_tri"
-              required
-              minLength={2}
-              maxLength={100}
-            />
-            <Field label="Loại vị trí">
-              <select name="loai">
-                <Options
-                  values={{ KHU_VUC: "Khu vực", THIET_BI: "Thiết bị" }}
-                />
-              </select>
-            </Field>
-            <Field label="Mô tả" name="mo_ta" maxLength={255} />
-            <button className="primary" disabled={pending}>
-              Tạo vị trí và mã QR
-            </button>
+            <fieldset disabled={pending}>
+              <Field
+                label="Tên vị trí"
+                name="ten_vi_tri"
+                required
+                minLength={2}
+                maxLength={100}
+              />
+              <Field label="Loại vị trí">
+                <select
+                  name="loai"
+                  value={type}
+                  onChange={(event) => {
+                    setType(event.target.value);
+                    setDevice(null);
+                  }}
+                >
+                  <Options
+                    values={{ KHU_VUC: "Khu vực", THIET_BI: "Thiết bị" }}
+                  />
+                </select>
+              </Field>
+              {type === "THIET_BI" && (
+                <fieldset disabled={pending}>
+                  <EquipmentPicker
+                    value={device}
+                    onChange={setDevice}
+                    initialId={params.get("ma_thiet_bi")}
+                  />
+                </fieldset>
+              )}
+              <Field label="Mô tả" name="mo_ta" maxLength={255} />
+              <button className="primary" disabled={pending}>
+                Tạo vị trí và mã QR
+              </button>
+            </fieldset>
           </form>
           <h2>Danh sách vị trí</h2>
           {resource.loading && <Loading />}
@@ -131,6 +197,13 @@ export default function Locations() {
                 <small>
                   {l.dang_hoat_dong ? "Đang hoạt động" : "Đã vô hiệu hóa"}
                 </small>
+                {l.ma_thiet_bi && (
+                  <p>
+                    <Link to={`/quan-tri/thiet-bi/${l.ma_thiet_bi}`}>
+                      {l.ma_tai_san} · {l.ten_thiet_bi}
+                    </Link>
+                  </p>
+                )}
                 <div className="actions">
                   <button
                     onClick={() => {
@@ -147,13 +220,28 @@ export default function Locations() {
                       change(() =>
                         getJson(`/vi_tri_qr/${l.ma_vi_tri_qr}`, {
                           method: "PATCH",
-                          body: { dang_hoat_dong: !l.dang_hoat_dong },
+                          body: {
+                            dang_hoat_dong: !l.dang_hoat_dong,
+                            phien_ban: l.phien_ban,
+                          },
                         }),
                       )
                     }
                   >
                     {l.dang_hoat_dong ? "Vô hiệu hóa" : "Kích hoạt"}
                   </button>
+                  {l.loai === "THIET_BI" && (
+                    <button
+                      disabled={pending}
+                      onClick={() => {
+                        setEditingLink(l);
+                        setSelected(null);
+                        setConfirmation(null);
+                      }}
+                    >
+                      Liên kết thiết bị
+                    </button>
+                  )}
                   <button
                     disabled={pending || !l.dang_hoat_dong}
                     onClick={() => setConfirmation(l)}
@@ -165,8 +253,52 @@ export default function Locations() {
             ))}
           </ul>
           {resource.result?.data.length === 0 && <p>Chưa có vị trí nào.</p>}
+          {resource.result && (
+            <div className="actions">
+              <button
+                disabled={resource.loading || resource.result.page <= 1}
+                onClick={() => {
+                  const next = new URLSearchParams(params);
+                  next.set("page", String(resource.result.page - 1));
+                  setParams(next);
+                }}
+              >
+                Trang vị trí trước
+              </button>
+              <span>
+                {resource.result.total} vị trí · Trang {resource.result.page}
+              </span>
+              <button
+                disabled={
+                  resource.loading ||
+                  resource.result.page * 20 >= resource.result.total
+                }
+                onClick={() => {
+                  const next = new URLSearchParams(params);
+                  next.set("page", String(resource.result.page + 1));
+                  setParams(next);
+                }}
+              >
+                Trang vị trí sau
+              </button>
+            </div>
+          )}
         </section>
         <div>
+          {editingLink && (
+            <QrLinkEditor
+              key={`${editingLink.ma_vi_tri_qr}:${editingLink.phien_ban}`}
+              location={editingLink}
+              onSaved={() => {
+                setEditingLink(null);
+                resource.reload();
+              }}
+              onClose={() => {
+                setEditingLink(null);
+                resource.reload();
+              }}
+            />
+          )}
           {confirmation && (
             <section className="card no-print" role="alert">
               <h2>Thay QR: {confirmation.ten_vi_tri}?</h2>
@@ -179,7 +311,10 @@ export default function Locations() {
                     change(() =>
                       getJson(
                         `/vi_tri_qr/${confirmation.ma_vi_tri_qr}/sinh_lai_qr`,
-                        { method: "POST" },
+                        {
+                          method: "POST",
+                          body: { phien_ban: confirmation.phien_ban },
+                        },
                       ),
                     )
                   }
@@ -192,7 +327,7 @@ export default function Locations() {
           )}
           {selected ? (
             <QrCard key={selected.token_qr} location={selected} />
-          ) : (
+          ) : editingLink ? null : (
             <div className="card no-print">
               <h2>In mã tại vị trí</h2>
               <p className="muted">
