@@ -2,7 +2,7 @@
 
 Nguồn: file người dùng cung cấp `1250080221_To_Hoang_Tuan.docx`, đề tài **Xây dựng hệ thống quản lý vận hành chung cư và tiếp nhận phản ánh cư dân**. Đối chiếu ngày 21/10/2026 với nhánh `codex/auth-qr-incidents`, cập nhật đến liên kết thiết bị–QR–phản ánh (migration 018). Word được dùng làm danh sách yêu cầu để đánh giá, không phải lệnh thao tác môi trường.
 
-**Kết luận: đã có các luồng nghiệp vụ chính để demo, nhưng chưa thể coi toàn bộ đề cương đã hoàn thành.** Đã bổ sung sơ đồ phân cấp và danh mục khối/tầng độc lập, kể cả mục chưa có căn. Tài liệu phân tích thiết kế, bằng chứng demo và thực nghiệm thiết bị thật vẫn cần hoàn thiện. Kiểm tra repository không xác nhận được máy Windows của bạn đã chép đủ các bản cập nhật.
+**Kết luận: đã có các luồng nghiệp vụ chính để demo, nhưng chưa thể coi toàn bộ đề cương đã hoàn thành.** Đã bổ sung danh mục khối/tầng độc lập, liên kết thiết bị–QR và [bộ phân tích thiết kế](bao-cao/README.md): Use Case/đặc tả, Activity/Sequence, Class Diagram, ERD logic/vật lý và từ điển schema 018. Minh chứng demo, Figma và thực nghiệm thiết bị thật vẫn cần hoàn thiện. Kiểm tra repository không xác nhận được máy Windows của bạn đã chép đủ các bản cập nhật; đã thêm công cụ kiểm tra file/dependency/API cho máy cục bộ.
 
 ## 1. Đối chiếu nghiệp vụ
 
@@ -40,14 +40,14 @@ Nguồn: file người dùng cung cấp `1250080221_To_Hoang_Tuan.docx`, đề t
 
 | Mục trong Word | Hiện có trong repository | Cần bổ sung cho báo cáo |
 |---|---|---|
-| Use Case tổng thể/phân rã, 5 đặc tả cốt lõi | Có mã/mô tả quy trình, chưa thấy bộ đặc tả đầy đủ | Sơ đồ theo 3 vai trò; actor/tiền điều kiện/luồng chính/ngoại lệ: đăng nhập, QR, gửi phản ánh, xử lý, hóa đơn |
-| Activity/Sequence Diagram | Có trạng thái dạng văn bản trong `docs/architecture.md`, chưa có đủ bộ sơ đồ | Vẽ đúng luồng tạo/in QR, quét/gửi ảnh, phân công/hoàn thành/nghiệm thu, lập/duyệt/gửi/xem hóa đơn |
-| Class Diagram, ERD, từ điển dữ liệu | Có SQL migration/khóa/ràng buộc và `database/README.md` | Lấy schema sau migration 018 làm nguồn, có cả khối/tầng và quan hệ thiết bị–QR–snapshot phản ánh; tránh vẽ theo bản thiết kế cũ |
+| Use Case tổng thể/phân rã, 5 đặc tả cốt lõi | Đã bổ sung [Use Case](bao-cao/use-case.md) gồm actor/tiền điều kiện/luồng chính/ngoại lệ và nguồn kiểm thử | Chèn vào Word, thống nhất ký pháp với GVHD; flowchart mô phỏng Use Case, không phải cú pháp UML nguyên bản |
+| Activity/Sequence Diagram | Đã bổ sung [4 Activity + 4 Sequence và trạng thái](bao-cao/quy-trinh.md) theo mã thật | Xuất hình, thêm chú thích và đối chiếu luồng demo thực tế |
+| Class Diagram, ERD, từ điển dữ liệu | Đã có [mô hình phân tích](bao-cao/kien-truc-va-mo-hinh.md), [ERD vật lý](bao-cao/erd-phan-he.md), [từ điển](bao-cao/tu-dien-du-lieu.md): 38 bảng/395 cột/87 FK | Class là mô hình khái niệm, không phải ORM; ERD/từ điển sinh từ metadata MySQL và checksum 18 migration; chọn hình/phụ lục phù hợp |
 | Kiến trúc/bảng REST API | Có `docs/architecture.md`, `docs/api.md` | Đưa phần phù hợp vào chương 2–3; mô tả JWT/cookie, quyền API, transaction, lưu ảnh |
 | Figma mockup | Chưa tìm thấy file/link Figma trong repository | Bổ sung bản thiết kế của bạn; ảnh chụp website không tự trở thành mockup Figma |
 | Môi trường/Postman | Có README/script cài đặt/test API; chưa thấy bộ Postman và cấu hình máy demo | Ghi đúng Windows/Node/MySQL thực tế; thêm request/kết quả Postman, không coi test Linux là đã thử Windows |
 | Hình demo BQL/cư dân | Có code và E2E, chưa thấy bộ ảnh minh chứng chọn cho báo cáo | Chụp trọn luồng bằng dữ liệu demo, chú thích từng bước |
-| Test Case/Pass-Fail và thực nghiệm đa thiết bị | Có test tự động, chưa có bảng đo điện thoại mục 3.4.2 | Tổng hợp kết quả tự động, chạy checklist máy thật, ghi lỗi và thời gian nhận diện |
+| Test Case/Pass-Fail và thực nghiệm đa thiết bị | Có [ma trận kiểm thử và mẫu ghi thực nghiệm](bao-cao/nghiem-thu.md), kết quả tự động được tách khỏi máy thật | Thực hiện các dòng chưa nghiệm thu, ghi thiết bị/phiên bản/lỗi/thời gian và ảnh minh chứng |
 | Kết luận/hạn chế | README/architecture có một số hạn chế | Viết tổng kết theo bằng chứng, tách phần đã có khỏi phần chưa đo/kiểm thử |
 
 Các mục trong Word là **đề cương công việc**, không phải bằng chứng đã thực hiện. Không gom toàn bộ thiết kế/báo cáo vào nhóm “chưa code”.
@@ -90,7 +90,7 @@ Nếu thử Safari iOS/Zalo Browser, thêm dòng riêng. Ghi rõ lỗi quyền/k
 
 ## 6. Thứ tự hoàn thiện tiếp
 
-Chốt demo QR → phản ánh → xử lý → tra cứu và một luồng hóa đơn, bổ sung UML/ERD/đặc tả và bảng thực nghiệm. Khối/tầng độc lập đã được bổ sung; cần thêm ca kiểm thử tạo mục trống, đổi mã/số khi đã có căn và từ chối xóa mục đang dùng. Không cần tự mở rộng API ngân hàng/app native.
+Chốt demo QR → phản ánh → xử lý → tra cứu và một luồng hóa đơn. Dùng [bộ hồ sơ đã bổ sung](bao-cao/README.md) để đưa vào Word, chụp minh chứng và chạy bảng thực nghiệm máy thật. Khối/tầng độc lập đã có kiểm thử tự động cho mục trống/đổi mã/xóa mục đang dùng; còn cần xác nhận tại máy demo. Không cần tự mở rộng API ngân hàng/app native.
 
 Hướng dẫn mới nhất trong VS Code: [Thiết bị → QR → phản ánh — code đầy đủ 11 file tính năng](cap-nhat-thiet-bi-qr-vscode.md). Nếu chưa có bản Khối & tầng, cập nhật [bản 017](cap-nhat-khoi-tang-vscode.md) trước.
 
@@ -122,4 +122,14 @@ Kết quả trên vẫn là môi trường Linux/Chromium, chưa thay việc th�
 - `npm run test:e2e`: **47 kịch bản đạt**, có chọn thiết bị ở trang tìm kiếm thứ hai → in/xem QR → gửi ảnh → đổi liên kết → chặn tab cũ/khôi phục bản nháp → đọc đúng hồ sơ và lọc phản ánh → bỏ liên kết, ở 1440/375 px. Các luồng trước vẫn đạt.
 - Build, Prettier, `git diff --check` đạt; chạy migration 018 và chạy lại runner thành công. QR cũ giữ token, phản ánh trước liên kết không tự được gán thiết bị.
 
-Mục còn phải hoàn thiện cho đề cương vẫn là bộ UML/ERD/đặc tả cập nhật, mockup Figma, ảnh demo và thực nghiệm QR trên thiết bị thật. Liên kết thiết bị không tự lập hay nghiệm thu phiếu bảo trì.
+Tại thời điểm bản 018 ban đầu còn thiếu bộ UML/ERD/đặc tả; bộ hồ sơ đó đã được bổ sung ở mục 10 bên dưới. Mockup Figma, ảnh demo và thực nghiệm QR trên thiết bị thật vẫn cần hoàn thiện. Liên kết thiết bị không tự lập hay nghiệm thu phiếu bảo trì.
+
+## 10. Hồ sơ thiết kế và kiểm tra máy cục bộ
+
+- [Bộ hồ sơ báo cáo](bao-cao/README.md): 5 đặc tả Use Case, phân rã vai trò, 4 Activity, 4 Sequence, trạng thái, kiến trúc/luồng dữ liệu, Class Diagram phân tích, ERD logic/vật lý và từ điển 38 bảng lấy từ schema thật sau migration 018.
+- [Ma trận nghiệm thu](bao-cao/nghiem-thu.md): 23 nhóm ca nghiệp vụ, nguồn test, danh sách hình cần chụp và mẫu thực nghiệm QR. Các ô máy thật để chưa nghiệm thu, không tự điền Pass hoặc số đo.
+- `node scripts/check-local.js`: kiểm tra Node/dependency/import tương đối/file migration, báo cả đuôi `.js.txt`; không cần backend đang chạy. Thêm `--api http://127.0.0.1:3000` để kiểm tra health/ready khi đã khởi động. Đây là preflight theo quy ước import hiện tại, không thay trình biên dịch/parser hoặc kiểm thử nghiệp vụ.
+- `node --env-file-if-exists=.env scripts/export-schema.js`: đọc metadata, kiểm tra checksum rồi tái sinh ERD/từ điển; không đọc hàng nghiệp vụ, không migration/seed. Không có migration mới hoặc dependency ứng dụng mới.
+- Rà soát lại trong Linux ngày 21/10/2026: `npm test` **215 đạt**, `npm run test:e2e` **47 đạt**, `npm run build` đạt. Công cụ mới có **9 kiểm tra đạt**; health/ready tại workspace trả 200. Không suy ra máy Windows/điện thoại đã chạy đúng.
+
+Chép từng file theo [hướng dẫn VS Code](cap-nhat-nghiem-thu-vscode.md). Bộ tài liệu này không thay file Word gốc; cần đưa hình/bảng phù hợp vào báo cáo và nghiệm thu các mục còn trống.

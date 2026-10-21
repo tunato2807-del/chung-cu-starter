@@ -216,6 +216,21 @@ Xuất Excel/PDF toàn bộ danh sách theo bộ lọc ở **Căn hộ, Cư dân
 
 Nhập căn hộ vẫn tạo tài khoản riêng; mật khẩu mới chỉ trả một lần sau khi lưu, nếu mất kết quả cần cấp lại. Nhập chủ hộ không tự thay người phụ trách đang có. Nhập chỉ số không ghi đè kỳ đã có hoặc vượt khóa hóa đơn; xe phải thuộc cư dân đang ở đúng căn. Duyệt hóa đơn, xác nhận đã thu, ghi sổ quỹ, bàn giao chủ hộ và duyệt đặt lịch vẫn thực hiện qua màn nghiệp vụ.
 
+## Hồ sơ thiết kế và kiểm tra file khi chép tay
+
+[Bộ tài liệu báo cáo](docs/bao-cao/README.md) có Use Case/đặc tả, Activity/Sequence, Class Diagram, ERD logic/vật lý, từ điển 38 bảng và ma trận nghiệm thu theo đề cương. [Hướng dẫn VS Code](docs/cap-nhat-nghiem-thu-vscode.md) có đầy đủ code từng file mới, không cần tải ZIP. Chưa có migration hoặc dependency ứng dụng mới trong bản này.
+
+```powershell
+# Bắt lỗi thiếu service, sai đuôi .js.txt, thiếu dependency/file migration:
+node scripts/check-local.js
+# Khi backend đang chạy:
+node scripts/check-local.js --api http://127.0.0.1:3000
+# Tái sinh ERD/từ điển từ metadata DB sau khi đã migrate đầy đủ:
+node --env-file-if-exists=.env scripts/export-schema.js
+```
+
+Preflight không đọc nội dung `.env` và không thay kiểm thử nghiệp vụ. Export schema chỉ đọc metadata và ghi ba tệp tài liệu, không đọc dữ liệu cư dân hoặc sửa database. Xem giới hạn và phần thử thiết bị thật còn thiếu trong [ma trận nghiệm thu](docs/bao-cao/nghiem-thu.md).
+
 ## Kiểm tra
 
 ```bash
