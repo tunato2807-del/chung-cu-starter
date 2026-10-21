@@ -36,7 +36,7 @@ for (const width of [1440, 768, 320]) {
       ).insertId;
       await page.goto("/");
       await expect(
-        page.getByRole("heading", { name: /Một phản ánh/ }),
+        page.getByRole("heading", { name: /Bạn cần hỗ trợ/ }),
       ).toBeVisible();
       await fit();
       await page.keyboard.press("Tab");

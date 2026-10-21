@@ -6,6 +6,11 @@ import { useAuth } from "../auth/Auth.jsx";
 import Icon from "../../shared/Icon.jsx";
 import PhotoCarousel from "../../shared/PhotoCarousel.jsx";
 import {
+  filterServices,
+  portalServices,
+  serviceCategories,
+} from "./portal-services.js";
+import {
   Badge,
   categories,
   ErrorBox,
@@ -17,84 +22,229 @@ import {
   useResource,
 } from "../../shared/ui.jsx";
 export function Portal() {
+  const { user } = useAuth();
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("all");
+  const catalog = useRef(null);
+  const services = portalServices(user);
+  const results = filterServices(services, query, category);
+  const technician = user?.vai_tro === "KY_THUAT_VIEN";
+  const suggestions = technician
+    ? ["Công việc", "Bảo trì", "Phản ánh"]
+    : ["Hóa đơn", "Đặt lịch", "Phản ánh"];
+  const categories = serviceCategories.filter(
+    ([id]) =>
+      id === "all" || services.some((service) => service.category === id),
+  );
+  function showCatalog(event) {
+    event.preventDefault();
+    catalog.current?.scrollIntoView({ block: "start", behavior: "instant" });
+  }
   return (
     <>
       <section className="portal-hero">
         <div className="hero">
-          <p className="eyebrow">CỔNG DỊCH VỤ CHUNG CƯ</p>
+          <p className="eyebrow">Dịch vụ dành cho cư dân</p>
           <h1>
-            Một phản ánh.
+            Bạn cần hỗ trợ
             <br />
-            <span>Một không gian sống tốt hơn.</span>
+            điều gì hôm nay?
           </h1>
           <p>
-            Gửi sự cố ngay tại vị trí, theo dõi tiến độ xử lý và kết nối với Ban
-            quản lý.
+            {technician
+              ? "Phản ánh sự cố, theo dõi công việc và bảo trì thiết bị. Tìm đúng dịch vụ và bắt đầu ngay tại đây."
+              : "Phản ánh sự cố, thanh toán hóa đơn hay đặt lịch tiện ích. Tìm đúng dịch vụ và bắt đầu ngay tại đây."}
           </p>
-          <div className="actions">
-            <Link className="button primary" to="/quet-qr">
-              <Icon name="qr" />
-              Quét QR để phản ánh
-            </Link>
-            <Link className="button" to="/tra-cuu">
-              Tra cứu tiến độ
+          <form
+            className="catalog-search"
+            role="search"
+            aria-label="Tìm dịch vụ cư dân"
+            onSubmit={showCatalog}
+          >
+            <label className="sr-only" htmlFor="service-search">
+              Tìm dịch vụ
+            </label>
+            <Icon name="search" size={22} />
+            <input
+              id="service-search"
+              type="search"
+              autoComplete="off"
+              maxLength={80}
+              placeholder="Bạn đang tìm dịch vụ gì?"
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setCategory("all");
+              }}
+            />
+            <button type="submit">
+              Tìm kiếm
               <Icon name="arrow" size={18} />
-            </Link>
+            </button>
+          </form>
+          <div className="hero-suggestions">
+            <span>Thường dùng:</span>
+            {suggestions.map((label) => (
+              <button
+                key={label}
+                type="button"
+                onClick={(event) => {
+                  setQuery(label);
+                  setCategory("all");
+                  showCatalog(event);
+                }}
+              >
+                {label}
+              </button>
+            ))}
           </div>
-          <p className="hero-footnote">
-            <Icon name="shield" size={17} />
-            Gửi phản ánh qua QR, không cần tài khoản
-          </p>
+          <Link className="hero-qr-link" to="/quet-qr">
+            <Icon name="qr" size={18} />
+            Quét QR để phản ánh
+            <Icon name="arrow" size={16} />
+          </Link>
         </div>
         <div className="portal-illustration">
           <PhotoCarousel />
-          <div className="portal-art-caption">
-            <span className="live-dot" />
-            Kết nối cư dân & Ban quản lý
-          </div>
         </div>
       </section>
-      <div className="portal-section-heading">
-        <p className="eyebrow">ĐƠN GIẢN & THUẬN TIỆN</p>
-        <h2>Từ phản ánh đến giải quyết</h2>
-        <p className="muted">
-          Ba bước để vấn đề của bạn được tiếp nhận và theo dõi.
-        </p>
-      </div>
-      <div className="three-columns">
-        {[
-          [
-            "01",
-            "Quét mã tại vị trí",
-            "Dùng camera điện thoại quét mã QR tại khu vực hoặc thiết bị.",
-          ],
-          [
-            "02",
-            "Mô tả sự cố",
-            "Chọn loại sự cố, nhập thông tin liên hệ và ảnh hiện trường.",
-          ],
-          [
-            "03",
-            "Theo dõi xử lý",
-            "Giữ mã tra cứu riêng để theo dõi tiến độ cùng số điện thoại.",
-          ],
-        ].map(([n, t, d]) => (
-          <article className="card" key={n}>
-            <div className="portal-step-top">
-              <Icon
-                name={n === "01" ? "qr" : n === "02" ? "message" : "chart"}
-                size={24}
-              />
-              <span className="step">{n}</span>
-            </div>
-            <h2>{t}</h2>
-            <p className="muted">{d}</p>
-          </article>
-        ))}
-      </div>
-      <p className="note">
-        Không cần tài khoản để gửi phản ánh qua QR. Trường hợp nguy hiểm tức
-        thời, hãy liên hệ trực tiếp Ban quản lý hoặc cơ quan khẩn cấp.
+      <section
+        className="service-catalog"
+        aria-labelledby="catalog-title"
+        id="dich-vu"
+        ref={catalog}
+      >
+        <div className="catalog-heading">
+          <div>
+            <h2 id="catalog-title">Chọn dịch vụ bạn cần</h2>
+            <p>Thông tin rõ ràng, thao tác ngay khi cần.</p>
+          </div>
+          <span role="status" aria-live="polite">
+            {results.length} dịch vụ
+            {query.trim() ? ` cho “${query.trim()}”` : ""}
+          </span>
+        </div>
+        <div
+          className="catalog-categories"
+          role="group"
+          aria-label="Danh mục dịch vụ"
+        >
+          {categories.map(([id, label]) => (
+            <button
+              type="button"
+              key={id}
+              aria-pressed={category === id}
+              onClick={() => setCategory(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        {results.length ? (
+          <ul className="service-grid" aria-label="Danh sách dịch vụ">
+            {results.map((service) => {
+              const needsLogin = !user && !service.access;
+              return (
+                <li key={service.id}>
+                  <Link
+                    className="service-card"
+                    aria-label={service.title}
+                    to={needsLogin ? "/dang-nhap" : service.path}
+                    state={needsLogin ? { service: service.id } : undefined}
+                  >
+                    <div
+                      className={`service-card-top service-tone-${service.category}`}
+                    >
+                      <span className="service-symbol">
+                        <Icon name={service.icon} size={24} />
+                      </span>
+                      <span>
+                        {
+                          serviceCategories.find(
+                            ([id]) => id === service.category,
+                          )?.[1]
+                        }
+                      </span>
+                    </div>
+                    <h3>{service.title}</h3>
+                    <p>{service.description}</p>
+                    <div className="service-card-bottom">
+                      <span>
+                        {service.access ||
+                          (needsLogin ? "Đăng nhập để sử dụng" : "Mở dịch vụ")}
+                      </span>
+                      <Icon name="arrow" size={18} />
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <div className="catalog-empty">
+            <Icon name="search" size={28} />
+            <h3>Chưa tìm thấy dịch vụ phù hợp</h3>
+            <p>
+              Thử từ khóa “hóa đơn”, “đặt lịch” hoặc xem lại tất cả dịch vụ.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setQuery("");
+                setCategory("all");
+              }}
+            >
+              Xem tất cả dịch vụ
+            </button>
+          </div>
+        )}
+      </section>
+      <section className="portal-how" aria-labelledby="how-title">
+        <div>
+          <p className="eyebrow">Khi có sự cố tại tòa nhà</p>
+          <h2 id="how-title">
+            Phản ánh dễ dàng.
+            <br />
+            Theo dõi rõ ràng.
+          </h2>
+          <p>
+            Không cần đăng nhập để gửi phản ánh qua QR. Mã tra cứu riêng giúp
+            bạn theo dõi từng bước xử lý.
+          </p>
+          <Link to="/tra-cuu">
+            Tôi đã gửi phản ánh
+            <Icon name="arrow" size={16} />
+          </Link>
+        </div>
+        <ol className="portal-steps">
+          {[
+            [
+              "Quét mã tại vị trí",
+              "Mở camera điện thoại và quét QR tại khu vực hoặc thiết bị.",
+            ],
+            [
+              "Mô tả và gửi ảnh",
+              "Chọn loại sự cố, nhập thông tin liên hệ và thêm ảnh hiện trường.",
+            ],
+            [
+              "Theo dõi kết quả",
+              "Lưu mã tra cứu, xem tiến độ và phản hồi sau khi xử lý.",
+            ],
+          ].map(([title, description], i) => (
+            <li key={title}>
+              <span aria-hidden="true">0{i + 1}</span>
+              <div>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+      <p className="portal-emergency">
+        <Icon name="shield" size={18} />
+        Trường hợp nguy hiểm tức thời, hãy liên hệ trực tiếp Ban quản lý hoặc cơ
+        quan khẩn cấp.
       </p>
     </>
   );

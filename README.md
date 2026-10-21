@@ -249,6 +249,10 @@ node --env-file-if-exists=.env scripts/export-schema.js
 
 Preflight không đọc nội dung `.env` và không thay kiểm thử nghiệp vụ. Export schema chỉ đọc metadata và ghi ba tệp tài liệu, không đọc dữ liệu cư dân hoặc sửa database. Xem giới hạn và phần thử thiết bị thật còn thiếu trong [ma trận nghiệm thu](docs/bao-cao/nghiem-thu.md).
 
+## Giao diện tìm kiếm và danh mục dịch vụ
+
+[Bản giao diện mới và code đầy đủ 9 file để chép vào VS Code](docs/cap-nhat-giao-dien-tim-kiem-danh-muc-vscode.md) có tìm/lọc dịch vụ cư dân, tìm nhanh chức năng theo vai trò, đăng nhập tiếp tục dịch vụ đã chọn và bố cục chung gọn hơn cho các phân hệ. Xem [ảnh chụp bản chạy](docs/giao-dien-danh-muc/README.md). Không thêm dependency hoặc migration. Tài liệu ghi rõ giới hạn truy cập bốn website tham khảo trong phiên thiết kế.
+
 ## Kiểm tra
 
 ```bash

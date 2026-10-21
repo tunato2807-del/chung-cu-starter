@@ -1,0 +1,674 @@
+[
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri",
+    "overflow": false,
+    "h1": "Tổng quan vận hành",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/phan-anh",
+    "overflow": false,
+    "h1": "Bàn làm việc phản ánh",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/thong-bao",
+    "overflow": false,
+    "h1": "Thông báo và nhắc phí",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/can-ho",
+    "overflow": false,
+    "h1": "Căn hộ",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/so-do-toa-nha",
+    "overflow": false,
+    "h1": "Sơ đồ tòa nhà",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/cau-truc-toa-nha",
+    "overflow": false,
+    "h1": "Khối & tầng",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/cu-dan",
+    "overflow": false,
+    "h1": "Cư dân",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/tai-khoan-can-ho",
+    "overflow": false,
+    "h1": "Tài khoản căn hộ",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/phuong-tien",
+    "overflow": false,
+    "h1": "Phương tiện",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/thiet-bi",
+    "overflow": false,
+    "h1": "Thiết bị và lịch bảo trì",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/tien-ich",
+    "overflow": false,
+    "h1": "Tiện ích chung cư",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/vi-tri-qr",
+    "overflow": false,
+    "h1": "Vị trí & mã QR",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/don-gia",
+    "overflow": false,
+    "h1": "Đơn giá phí",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/chi-so",
+    "overflow": false,
+    "h1": "Chỉ số điện nước",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/hoa-don",
+    "overflow": false,
+    "h1": "Phí và hóa đơn",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/bao-cao-tai-chinh",
+    "overflow": false,
+    "h1": "Báo cáo công nợ và thu phí",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/quy",
+    "overflow": false,
+    "h1": "Thu chi và quỹ",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/nhap-xuat",
+    "overflow": false,
+    "h1": "Nhập / xuất Excel và PDF",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/quan-tri/nhan-su",
+    "overflow": false,
+    "h1": "Nhân sự & tài khoản",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 1440,
+    "path": "/tai-khoan",
+    "overflow": false,
+    "h1": "Tài khoản",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri",
+    "overflow": false,
+    "h1": "Tổng quan vận hành",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/phan-anh",
+    "overflow": false,
+    "h1": "Bàn làm việc phản ánh",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/thong-bao",
+    "overflow": false,
+    "h1": "Thông báo và nhắc phí",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/can-ho",
+    "overflow": false,
+    "h1": "Căn hộ",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/so-do-toa-nha",
+    "overflow": false,
+    "h1": "Sơ đồ tòa nhà",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/cau-truc-toa-nha",
+    "overflow": false,
+    "h1": "Khối & tầng",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/cu-dan",
+    "overflow": false,
+    "h1": "Cư dân",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/tai-khoan-can-ho",
+    "overflow": false,
+    "h1": "Tài khoản căn hộ",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/phuong-tien",
+    "overflow": false,
+    "h1": "Phương tiện",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/thiet-bi",
+    "overflow": false,
+    "h1": "Thiết bị và lịch bảo trì",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/tien-ich",
+    "overflow": false,
+    "h1": "Tiện ích chung cư",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/vi-tri-qr",
+    "overflow": false,
+    "h1": "Vị trí & mã QR",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/don-gia",
+    "overflow": false,
+    "h1": "Đơn giá phí",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/chi-so",
+    "overflow": false,
+    "h1": "Chỉ số điện nước",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/hoa-don",
+    "overflow": false,
+    "h1": "Phí và hóa đơn",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/bao-cao-tai-chinh",
+    "overflow": false,
+    "h1": "Báo cáo công nợ và thu phí",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/quy",
+    "overflow": false,
+    "h1": "Thu chi và quỹ",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/nhap-xuat",
+    "overflow": false,
+    "h1": "Nhập / xuất Excel và PDF",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/quan-tri/nhan-su",
+    "overflow": false,
+    "h1": "Nhân sự & tài khoản",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 768,
+    "path": "/tai-khoan",
+    "overflow": false,
+    "h1": "Tài khoản",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri",
+    "overflow": false,
+    "h1": "Tổng quan vận hành",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/phan-anh",
+    "overflow": false,
+    "h1": "Bàn làm việc phản ánh",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/thong-bao",
+    "overflow": false,
+    "h1": "Thông báo và nhắc phí",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/can-ho",
+    "overflow": false,
+    "h1": "Căn hộ",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/so-do-toa-nha",
+    "overflow": false,
+    "h1": "Sơ đồ tòa nhà",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/cau-truc-toa-nha",
+    "overflow": false,
+    "h1": "Khối & tầng",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/cu-dan",
+    "overflow": false,
+    "h1": "Cư dân",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/tai-khoan-can-ho",
+    "overflow": false,
+    "h1": "Tài khoản căn hộ",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/phuong-tien",
+    "overflow": false,
+    "h1": "Phương tiện",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/thiet-bi",
+    "overflow": false,
+    "h1": "Thiết bị và lịch bảo trì",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/tien-ich",
+    "overflow": false,
+    "h1": "Tiện ích chung cư",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/vi-tri-qr",
+    "overflow": false,
+    "h1": "Vị trí & mã QR",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/don-gia",
+    "overflow": false,
+    "h1": "Đơn giá phí",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/chi-so",
+    "overflow": false,
+    "h1": "Chỉ số điện nước",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/hoa-don",
+    "overflow": false,
+    "h1": "Phí và hóa đơn",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/bao-cao-tai-chinh",
+    "overflow": false,
+    "h1": "Báo cáo công nợ và thu phí",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/quy",
+    "overflow": false,
+    "h1": "Thu chi và quỹ",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/nhap-xuat",
+    "overflow": false,
+    "h1": "Nhập / xuất Excel và PDF",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/quan-tri/nhan-su",
+    "overflow": false,
+    "h1": "Nhân sự & tài khoản",
+    "alerts": []
+  },
+  {
+    "role": "QUAN_TRI_VIEN",
+    "width": 320,
+    "path": "/tai-khoan",
+    "overflow": false,
+    "h1": "Tài khoản",
+    "alerts": []
+  },
+  {
+    "role": "KY_THUAT_VIEN",
+    "width": 1440,
+    "path": "/ky-thuat/cong-viec",
+    "overflow": false,
+    "h1": "Công việc của tôi",
+    "alerts": []
+  },
+  {
+    "role": "KY_THUAT_VIEN",
+    "width": 1440,
+    "path": "/ky-thuat/bao-tri",
+    "overflow": false,
+    "h1": "Bảo trì được giao",
+    "alerts": []
+  },
+  {
+    "role": "KY_THUAT_VIEN",
+    "width": 1440,
+    "path": "/tai-khoan",
+    "overflow": false,
+    "h1": "Tài khoản",
+    "alerts": []
+  },
+  {
+    "role": "KY_THUAT_VIEN",
+    "width": 768,
+    "path": "/ky-thuat/cong-viec",
+    "overflow": false,
+    "h1": "Công việc của tôi",
+    "alerts": []
+  },
+  {
+    "role": "KY_THUAT_VIEN",
+    "width": 768,
+    "path": "/ky-thuat/bao-tri",
+    "overflow": false,
+    "h1": "Bảo trì được giao",
+    "alerts": []
+  },
+  {
+    "role": "KY_THUAT_VIEN",
+    "width": 768,
+    "path": "/tai-khoan",
+    "overflow": false,
+    "h1": "Tài khoản",
+    "alerts": []
+  },
+  {
+    "role": "KY_THUAT_VIEN",
+    "width": 320,
+    "path": "/ky-thuat/cong-viec",
+    "overflow": false,
+    "h1": "Công việc của tôi",
+    "alerts": []
+  },
+  {
+    "role": "KY_THUAT_VIEN",
+    "width": 320,
+    "path": "/ky-thuat/bao-tri",
+    "overflow": false,
+    "h1": "Bảo trì được giao",
+    "alerts": []
+  },
+  {
+    "role": "KY_THUAT_VIEN",
+    "width": 320,
+    "path": "/tai-khoan",
+    "overflow": false,
+    "h1": "Tài khoản",
+    "alerts": []
+  },
+  {
+    "role": "CU_DAN",
+    "width": 1440,
+    "path": "/cu-dan/phan-anh",
+    "overflow": false,
+    "h1": "Phản ánh của tôi",
+    "alerts": []
+  },
+  {
+    "role": "CU_DAN",
+    "width": 1440,
+    "path": "/cu-dan/hoa-don",
+    "overflow": false,
+    "h1": "Hóa đơn của tôi",
+    "alerts": []
+  },
+  {
+    "role": "CU_DAN",
+    "width": 1440,
+    "path": "/cu-dan/tien-ich",
+    "overflow": false,
+    "h1": "Tiện ích chung cư",
+    "alerts": []
+  },
+  {
+    "role": "CU_DAN",
+    "width": 1440,
+    "path": "/cu-dan/thong-bao",
+    "overflow": false,
+    "h1": "Thông báo của tôi",
+    "alerts": []
+  },
+  {
+    "role": "CU_DAN",
+    "width": 1440,
+    "path": "/tai-khoan",
+    "overflow": false,
+    "h1": "Tài khoản",
+    "alerts": []
+  },
+  {
+    "role": "CU_DAN",
+    "width": 768,
+    "path": "/cu-dan/phan-anh",
+    "overflow": false,
+    "h1": "Phản ánh của tôi",
+    "alerts": []
+  },
+  {
+    "role": "CU_DAN",
+    "width": 768,
+    "path": "/cu-dan/hoa-don",
+    "overflow": false,
+    "h1": "Hóa đơn của tôi",
+    "alerts": []
+  },
+  {
+    "role": "CU_DAN",
+    "width": 768,
+    "path": "/cu-dan/tien-ich",
+    "overflow": false,
+    "h1": "Tiện ích chung cư",
+    "alerts": []
+  },
+  {
+    "role": "CU_DAN",
+    "width": 768,
+    "path": "/cu-dan/thong-bao",
+    "overflow": false,
+    "h1": "Thông báo của tôi",
+    "alerts": []
+  },
+  {
+    "role": "CU_DAN",
+    "width": 768,
+    "path": "/tai-khoan",
+    "overflow": false,
+    "h1": "Tài khoản",
+    "alerts": []
+  },
+  {
+    "role": "CU_DAN",
+    "width": 320,
+    "path": "/cu-dan/phan-anh",
+    "overflow": false,
+    "h1": "Phản ánh của tôi",
+    "alerts": []
+  },
+  {
+    "role": "CU_DAN",
+    "width": 320,
+    "path": "/cu-dan/hoa-don",
+    "overflow": false,
+    "h1": "Hóa đơn của tôi",
+    "alerts": []
+  },
+  {
+    "role": "CU_DAN",
+    "width": 320,
+    "path": "/cu-dan/tien-ich",
+    "overflow": false,
+    "h1": "Tiện ích chung cư",
+    "alerts": []
+  },
+  {
+    "role": "CU_DAN",
+    "width": 320,
+    "path": "/cu-dan/thong-bao",
+    "overflow": false,
+    "h1": "Thông báo của tôi",
+    "alerts": []
+  },
+  {
+    "role": "CU_DAN",
+    "width": 320,
+    "path": "/tai-khoan",
+    "overflow": false,
+    "h1": "Tài khoản",
+    "alerts": []
+  }
+]

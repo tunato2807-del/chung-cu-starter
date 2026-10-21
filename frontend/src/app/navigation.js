@@ -74,3 +74,17 @@ export const navigation = {
     account,
   ],
 };
+
+const aliases = {
+  "/quan-tri/thiet-bi": ["/quan-tri/bao-tri"],
+  "/quan-tri/tien-ich": ["/quan-tri/dat-lich"],
+  "/quan-tri/quy": ["/quan-tri/phieu-thu-chi"],
+  "/cu-dan/tien-ich": ["/cu-dan/dat-lich"],
+};
+
+export function isFunctionActive(pathname, path) {
+  if (path === "/quan-tri") return pathname === path;
+  return [path, ...(aliases[path] || [])].some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}

@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../features/auth/Auth.jsx";
 import { useUnreadCount } from "../features/announcements/Announcements.jsx";
 import { ErrorBox, homeFor, roleNames } from "../shared/ui.jsx";
 import Icon from "../shared/Icon.jsx";
-import { navigation } from "./navigation.js";
+import { navigation, isFunctionActive } from "./navigation.js";
+import FunctionSearch from "../shared/FunctionSearch.jsx";
 
 export default function Layout({ children }) {
   const { user, logout } = useAuth();
@@ -63,9 +64,14 @@ export default function Layout({ children }) {
             CHUNG CƯ<small>QUẢN LÝ VẬN HÀNH</small>
           </span>
         </Link>
-        <span className="topbar-context">
-          {workspace ? "Không gian làm việc" : "Cổng dịch vụ cư dân"}
-        </span>
+        {workspace ? (
+          <FunctionSearch groups={groups} />
+        ) : (
+          <nav className="public-nav" aria-label="Dịch vụ công khai">
+            <Link to="/">Dịch vụ cư dân</Link>
+            <Link to="/quet-qr">Gửi phản ánh</Link>
+          </nav>
+        )}
         <div className="top-links">
           <Link className="lookup-link" to="/tra-cuu">
             <Icon name="search" size={18} />
@@ -154,10 +160,15 @@ export default function Layout({ children }) {
                 <div className="nav-group" key={group.title}>
                   <p className="nav-group-label">{group.title}</p>
                   {group.items.map(([path, label, icon]) => (
-                    <NavLink
+                    <Link
                       key={path}
-                      end={path === "/quan-tri"}
                       to={path}
+                      className={
+                        isFunctionActive(pathname, path) ? "active" : undefined
+                      }
+                      aria-current={
+                        isFunctionActive(pathname, path) ? "page" : undefined
+                      }
                       onClick={() => setExpanded(false)}
                     >
                       <Icon name={icon} size={19} />
@@ -170,7 +181,7 @@ export default function Layout({ children }) {
                           {unread > 99 ? "99+" : unread}
                         </span>
                       )}
-                    </NavLink>
+                    </Link>
                   ))}
                 </div>
               ))}

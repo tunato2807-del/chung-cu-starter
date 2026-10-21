@@ -112,10 +112,10 @@ export default function Dashboard() {
     <div className="overview-page">
       <div className="page-heading">
         <div>
-          <p className="eyebrow">VẬN HÀNH TÒA NHÀ</p>
+          <p className="eyebrow">Không gian điều hành</p>
           <h1>Tổng quan vận hành</h1>
           <p className="muted">
-            Theo dõi khoản cần thu và công việc cần xử lý của ban quản lý.
+            Các khoản cần thu, phản ánh và công việc cần chú ý hôm nay.
           </p>
         </div>
         <button
@@ -133,7 +133,7 @@ export default function Dashboard() {
         <>
           <p className="overview-stamp">
             Dữ liệu lúc <strong>{clock(data.tai_luc, true)}</strong> · Giờ Việt
-            Nam · Các nhóm số liệu cùng thời điểm đọc.
+            Nam
           </p>
           <section
             className="overview-metrics"
