@@ -1,4 +1,5 @@
 import DataTools from "../../shared/DataTools.jsx";
+import ApartmentFloorPicker from "./ApartmentFloorPicker.jsx";
 import React, { useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { getJson } from "../../shared/api/client.js";
@@ -419,6 +420,7 @@ export function Apartments() {
               const form = e.currentTarget,
                 body = values(e);
               body.tinh_phi_dich_vu = body.tinh_phi_dich_vu === "1";
+              body.chon_cau_truc = true;
               if (editing) body.phien_ban = editing.phien_ban;
               action.change(
                 `/can_ho${editing ? `/${editing.ma_can_ho}` : ""}`,
@@ -439,24 +441,7 @@ export function Apartments() {
                 maxLength={20}
                 defaultValue={editing?.so_can_ho || ""}
               />
-              <div className="form-grid">
-                <Field
-                  label="Khối"
-                  name="khoi"
-                  required
-                  maxLength={10}
-                  defaultValue={editing?.khoi || ""}
-                />
-                <Field
-                  label="Tầng"
-                  name="tang"
-                  type="number"
-                  required
-                  min={0}
-                  max={200}
-                  defaultValue={editing?.tang ?? 1}
-                />
-              </div>
+              <ApartmentFloorPicker apartment={editing} />
               <Field
                 label="Diện tích (m²)"
                 name="dien_tich_m2"

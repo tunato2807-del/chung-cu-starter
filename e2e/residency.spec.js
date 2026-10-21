@@ -54,6 +54,14 @@ for (const width of [1440, 375])
         phones.push(phone);
       }
       await page.goto("/dang-nhap");
+      await rows(
+        pool,
+        "INSERT INTO khoi_toa_nha (khoi) VALUES ('E2E') ON DUPLICATE KEY UPDATE giu_khi_trong=1",
+      );
+      await rows(
+        pool,
+        "INSERT INTO tang_toa_nha (khoi,tang) VALUES ('E2E',5) ON DUPLICATE KEY UPDATE giu_khi_trong=1",
+      );
       await page.getByLabel("Số điện thoại").fill(phones[0]);
       await page.getByLabel("Mật khẩu", { exact: true }).fill(password);
       await page
@@ -66,8 +74,8 @@ for (const width of [1440, 375])
         await page
           .getByLabel("Số căn hộ", { exact: true })
           .fill(`${apartmentName}-${ending}`);
-        await page.getByLabel("Khối", { exact: true }).fill("E2E");
-        await page.getByLabel("Tầng", { exact: true }).fill("5");
+        await page.getByLabel("Khối", { exact: true }).selectOption("E2E");
+        await page.getByLabel("Tầng", { exact: true }).selectOption("5");
         await page.getByLabel("Diện tích (m²)").fill("75.50");
         await page.getByRole("button", { name: "Lưu căn hộ" }).click();
         await expect(

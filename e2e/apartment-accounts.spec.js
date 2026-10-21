@@ -83,10 +83,18 @@ for (const width of [1440, 375])
       );
       adminId = result.insertId;
       await login(admin, phone, password);
+      await rows(
+        pool,
+        "INSERT INTO khoi_toa_nha (khoi) VALUES ('TK') ON DUPLICATE KEY UPDATE giu_khi_trong=1",
+      );
+      await rows(
+        pool,
+        "INSERT INTO tang_toa_nha (khoi,tang) VALUES ('TK',1) ON DUPLICATE KEY UPDATE giu_khi_trong=1",
+      );
       await admin.getByRole("link", { name: "Căn hộ", exact: true }).click();
       await admin.getByLabel("Số căn hộ", { exact: true }).fill(apartmentName);
-      await admin.getByLabel("Khối", { exact: true }).fill("TK");
-      await admin.getByLabel("Tầng", { exact: true }).fill("1");
+      await admin.getByLabel("Khối", { exact: true }).selectOption("TK");
+      await admin.getByLabel("Tầng", { exact: true }).selectOption("1");
       await admin.getByLabel("Diện tích (m²)", { exact: true }).fill("50");
       const apartment = await saveResponse("/can_ho", "Lưu căn hộ");
       apartmentId = apartment.ma_can_ho;

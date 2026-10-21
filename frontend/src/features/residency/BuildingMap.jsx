@@ -71,6 +71,9 @@ export default function BuildingMap() {
           <h1>Sơ đồ tòa nhà</h1>
         </div>
         <div className="actions">
+          <Link className="button" to="/quan-tri/cau-truc-toa-nha">
+            Quản lý khối & tầng
+          </Link>
           <Link className="button" to="/quan-tri/can-ho">
             Quản lý căn hộ
           </Link>
@@ -107,13 +110,15 @@ export default function BuildingMap() {
           </dl>
           <p className="muted">
             “Trống” nghĩa là chưa có cư dân đang ở trong hệ thống; không thể
-            hiện tình trạng mua bán, cho thuê hoặc miễn phí dịch vụ. Chỉ hiển
-            thị khối và tầng đã có căn hộ.
+            hiện tình trạng mua bán, cho thuê hoặc miễn phí dịch vụ. Khối/tầng
+            đã khai báo vẫn hiển thị khi chưa có căn hộ.
           </p>
           {!data.khoi.length ? (
             <section className="card">
-              <h2>Chưa có căn hộ để lập sơ đồ</h2>
-              <Link to="/quan-tri/can-ho">Thêm căn hộ đầu tiên</Link>
+              <h2>Chưa có khối để lập sơ đồ</h2>
+              <Link to="/quan-tri/cau-truc-toa-nha">
+                Khai báo khối đầu tiên
+              </Link>
             </section>
           ) : (
             <>
@@ -126,6 +131,7 @@ export default function BuildingMap() {
                     onClick={() => choose({ khoi: item.khoi, tang: null })}
                   >
                     <strong>Khối {item.khoi}</strong>
+                    {item.ten_khoi && <span>{item.ten_khoi}</span>}
                     <span>
                       {number(item.so_can_ho)} căn · {number(item.trong)} trống
                     </span>
@@ -158,6 +164,7 @@ export default function BuildingMap() {
                           }
                         >
                           <strong>Tầng {item.tang}</strong>
+                          {item.ten_tang && <span>{item.ten_tang}</span>}
                           <span>
                             {number(item.so_can_ho)} căn · {number(item.trong)}{" "}
                             trống
@@ -170,7 +177,14 @@ export default function BuildingMap() {
                     className="card building-map-rooms"
                     aria-label="Căn hộ trên sơ đồ"
                   >
-                    {!floor ? (
+                    {!block.tang.length ? (
+                      <p>
+                        Khối chưa có tầng.{" "}
+                        <Link to="/quan-tri/cau-truc-toa-nha">
+                          Khai báo tầng
+                        </Link>
+                      </p>
+                    ) : !floor ? (
                       <p role="status">
                         Tầng trong liên kết không còn thuộc khối này. Hãy chọn
                         tầng khác.

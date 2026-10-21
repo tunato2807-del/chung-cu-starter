@@ -1,5 +1,7 @@
 # Sơ đồ tòa nhà — code đầy đủ 7 file cho VS Code
 
+> Đã có bản tiếp theo [Khối & tầng độc lập](cap-nhat-khoi-tang-vscode.md), cần migration 017. Nếu đã cập nhật bản đó, giữ các file theo hướng dẫn mới; chép code ở bản 7 file này đè lên sẽ làm mất chức năng mới.
+
 Áp dụng sau bản duyệt/gửi hóa đơn hàng loạt `2e4a153` trên nhánh `codex/auth-qr-incidents`. **Tạo mới 3 file, thay toàn bộ 4 file. Không thêm thư viện, không migration mới.** Các chức năng trước đó được giữ trong code bên dưới; không cần tải ZIP.
 
 Đã đối chiếu đề cương của bạn: [nghiệp vụ đã có và phần còn thiếu](doi-chieu-de-cuong-1250080221.md). Bản này bổ sung một màn hình còn thiếu trong phần cấu trúc tòa nhà, không đồng nghĩa đã hoàn thành toàn bộ tài liệu đồ án hoặc nghiệm thu mọi điện thoại.

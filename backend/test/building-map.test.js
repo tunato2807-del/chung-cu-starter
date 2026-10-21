@@ -239,7 +239,7 @@ test("MySQL: building hierarchy, occupancy, filters and live changes", async (t)
           map.khoi
             .find((item) => item.khoi === a)
             .tang.map((item) => item.tang),
-          [0],
+          [10, 0],
         );
         assert.deepEqual(
           map.khoi

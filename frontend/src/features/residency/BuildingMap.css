@@ -1,6 +1,10 @@
 .building-map {
   min-width: 0;
 }
+.building-map .card.building-structure-list,
+.building-map .card.building-structure-editor {
+  margin-top: 20px;
+}
 .building-map-stats {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));

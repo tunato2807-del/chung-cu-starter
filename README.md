@@ -29,7 +29,9 @@ Docker lưu MySQL trong volume `mysql_data`; ảnh nằm tại `backend/storage/
 
 ## Tổng quan vận hành
 
-Đối chiếu đề cương `1250080221_To_Hoang_Tuan.docx`: [nghiệp vụ đã có, giới hạn và phần báo cáo/kiểm thử còn thiếu](docs/doi-chieu-de-cuong-1250080221.md). Bản mới bổ sung **Sơ đồ tòa nhà** cho BQL: khối → tầng → căn hộ, số căn/cư dân, lọc trống/có người ở và mở quản lý căn/cư dân. Khối/tầng suy ra từ căn đã có, chưa tạo được khối/tầng trống. [Code đầy đủ 7 file để chép trong VS Code](docs/cap-nhat-so-do-toa-nha-vscode.md); không migration/thư viện mới.
+BQL có thêm **Khối & tầng** để khai báo khối/tầng chưa có căn, đặt tên/mô tả, đổi mã/số đồng thời cập nhật các căn và xóa mục chưa sử dụng. Form căn hộ chọn từ danh mục, phát hiện khối/tầng đã thay đổi. Chạy `npm run db:migrate` để áp dụng **017_building_structure.sql**, giữ nguyên 001–016. Không thêm thư viện. [Code đầy đủ 12 file chạy tính năng và 7 file kiểm thử](docs/cap-nhat-khoi-tang-vscode.md).
+
+Đối chiếu đề cương `1250080221_To_Hoang_Tuan.docx`: [nghiệp vụ đã có, giới hạn và phần báo cáo/kiểm thử còn thiếu](docs/doi-chieu-de-cuong-1250080221.md). **Sơ đồ tòa nhà** cho BQL hiển thị khối → tầng → căn hộ, số căn/cư dân, lọc trống/có người ở và mở quản lý căn/cư dân. Từ migration 017, sơ đồ có cả khối/tầng được khai báo khi chưa có căn. [Hướng dẫn cũ của bản sơ đồ ban đầu](docs/cap-nhat-so-do-toa-nha-vscode.md) chỉ dành cho phiên bản trước 017; dùng hướng dẫn Khối & tầng để cập nhật bản mới.
 
 BQL đăng nhập vào trang Tổng quan để xem công nợ, khoản đã thu từ đầu tháng đến hôm nay, phản ánh đang mở, phiếu/lịch bảo trì và đặt lịch tiện ích. Xem [code đầy đủ 8 file cập nhật trong VS Code](docs/cap-nhat-tong-quan-van-hanh-vscode.md). Không có migration hoặc thư viện mới.
 

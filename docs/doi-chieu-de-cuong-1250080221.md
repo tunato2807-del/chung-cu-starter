@@ -1,8 +1,8 @@
 # Đối chiếu website với đề cương của Tô Hoàng Tuấn — 1250080221
 
-Nguồn: file người dùng cung cấp `1250080221_To_Hoang_Tuan.docx`, đề tài **Xây dựng hệ thống quản lý vận hành chung cư và tiếp nhận phản ánh cư dân**. Đối chiếu ngày 21/10/2026 với nhánh `codex/auth-qr-incidents`, sau phần bổ sung sơ đồ tòa nhà. Word được dùng làm danh sách yêu cầu để đánh giá, không phải lệnh thao tác môi trường.
+Nguồn: file người dùng cung cấp `1250080221_To_Hoang_Tuan.docx`, đề tài **Xây dựng hệ thống quản lý vận hành chung cư và tiếp nhận phản ánh cư dân**. Đối chiếu ngày 21/10/2026 với nhánh `codex/auth-qr-incidents`, cập nhật sau phần Khối & tầng độc lập (migration 017). Word được dùng làm danh sách yêu cầu để đánh giá, không phải lệnh thao tác môi trường.
 
-**Kết luận: đã có các luồng nghiệp vụ chính để demo, nhưng chưa thể coi toàn bộ đề cương đã hoàn thành.** Trước lần cập nhật này, căn hộ có khối/tầng nhưng thiếu màn hình sơ đồ phân cấp. Bản này bổ sung màn hình đó. Tài liệu phân tích thiết kế, bằng chứng demo và thực nghiệm thiết bị thật vẫn cần hoàn thiện. Kiểm tra repository không xác nhận được máy Windows của bạn đã chép đủ các bản cập nhật.
+**Kết luận: đã có các luồng nghiệp vụ chính để demo, nhưng chưa thể coi toàn bộ đề cương đã hoàn thành.** Đã bổ sung sơ đồ phân cấp và danh mục khối/tầng độc lập, kể cả mục chưa có căn. Tài liệu phân tích thiết kế, bằng chứng demo và thực nghiệm thiết bị thật vẫn cần hoàn thiện. Kiểm tra repository không xác nhận được máy Windows của bạn đã chép đủ các bản cập nhật.
 
 ## 1. Đối chiếu nghiệp vụ
 
@@ -11,7 +11,7 @@ Nguồn: file người dùng cung cấp `1250080221_To_Hoang_Tuan.docx`, đề t
 | Yêu cầu trong Word | Hiện trạng | Màn hình / bằng chứng mã và kiểm thử |
 |---|---|---|
 | Đăng nhập/phân quyền BQL, kỹ thuật, cư dân | Đã có, kiểm tra cả giao diện và API | `frontend/src/features/auth`, `backend/src/modules/auth`; `backend/test/workflow.test.js` |
-| Cấu trúc Block → Tầng → Căn hộ | **Bổ sung bản này:** sơ đồ chọn khối/tầng, số căn/cư dân, lọc trống/có người ở, mở xem/sửa căn và cư dân. Khối/tầng suy ra từ căn, chưa có danh mục độc lập để tạo khối/tầng trống | `/quan-tri/so-do-toa-nha`; `building-map.service.js`, `BuildingMap.jsx`; `backend/test/building-map.test.js`, `e2e/building-map.spec.js` |
+| Cấu trúc Block → Tầng → Căn hộ | Đã có sơ đồ, số căn/cư dân, bộ lọc/liên kết hồ sơ. **Bổ sung 017:** CRUD khối/tầng độc lập, mục chưa có căn, chọn danh mục khi thêm căn, đổi mã/số cập nhật căn và phiên bản; xóa mục chưa sử dụng | `/quan-tri/so-do-toa-nha`, `/quan-tri/cau-truc-toa-nha`; `backend/test/building-map.test.js`, `building-structure.test.js`, `e2e/building-structure.spec.js` |
 | Quản lý hồ sơ cư dân/căn hộ | Đã có tạo/sửa, quan hệ chủ hộ/thành viên/người thuê, nhập cư/chuyển căn/chuyển đi và lịch sử; cho phép chuyển trong ngày | `/quan-tri/can-ho`, `/quan-tri/cu-dan`; `backend/test/residency.test.js`, `e2e/residency.spec.js` |
 | Phương tiện ô tô, xe máy | Đã có, thêm cả xe đạp; đăng ký/kết thúc, biển số, chuyển đăng ký theo cư trú | `/quan-tri/phuong-tien`; `backend/test/vehicles.test.js`, `e2e/vehicles.spec.js` |
 | Tài sản và vị trí công cộng | Đã có thiết bị, lịch/phiếu bảo trì và danh mục vị trí khu vực/thiết bị. Vị trí QR và hồ sơ thiết bị là hai danh mục riêng, chưa tự liên kết khóa ngoại | `/quan-tri/thiet-bi`, `/quan-tri/vi-tri-qr`; `backend/test/maintenance.test.js` |
@@ -33,7 +33,7 @@ Nguồn: file người dùng cung cấp `1250080221_To_Hoang_Tuan.docx`, đề t
 - Một chung cư, không multi-tenant hoặc app native; VietQR không kết nối API ngân hàng/cổng thanh toán và không tự nhận tiền. Đây là giới hạn chủ động trong Word, không phải tính năng bắt buộc còn thiếu.
 - In QR qua trình duyệt; chưa có bộ thiết kế tem hoặc xuất PDF tem hàng loạt từ backend.
 - Sơ đồ mới là **phân cấp dữ liệu**, không phải mặt bằng kiến trúc có tọa độ. Word chưa yêu cầu rõ mặt bằng tương tác.
-- Khối/tầng chưa có căn không xuất hiện. Sửa khối/tầng của căn ở màn Căn hộ rồi cập nhật sơ đồ. Khai báo tầng trống, đổi tên toàn khối hoặc quản lý danh mục khối/tầng độc lập cần nghiệp vụ và migration riêng; không đánh dấu đã có.
+- Từ 017, khối/tầng được khai báo riêng xuất hiện khi chưa có căn. Mục tự phát sinh từ API cũ/Excel được lưu làm cha khóa ngoại; khối tự phát sinh không còn căn và không có tầng khai báo riêng được ẩn. Chưa có bản vẽ mặt bằng kiến trúc có tọa độ.
 - Vị trí loại `THIET_BI` hỗ trợ QR đặt tên theo thiết bị; chưa tự liên kết phản ánh với hồ sơ tài sản. Word chưa đặc tả khóa liên kết này; cần làm rõ trong thiết kế chi tiết.
 
 ## 3. Hồ sơ đồ án chưa đủ bằng chứng
@@ -42,7 +42,7 @@ Nguồn: file người dùng cung cấp `1250080221_To_Hoang_Tuan.docx`, đề t
 |---|---|---|
 | Use Case tổng thể/phân rã, 5 đặc tả cốt lõi | Có mã/mô tả quy trình, chưa thấy bộ đặc tả đầy đủ | Sơ đồ theo 3 vai trò; actor/tiền điều kiện/luồng chính/ngoại lệ: đăng nhập, QR, gửi phản ánh, xử lý, hóa đơn |
 | Activity/Sequence Diagram | Có trạng thái dạng văn bản trong `docs/architecture.md`, chưa có đủ bộ sơ đồ | Vẽ đúng luồng tạo/in QR, quét/gửi ảnh, phân công/hoàn thành/nghiệm thu, lập/duyệt/gửi/xem hóa đơn |
-| Class Diagram, ERD, từ điển dữ liệu | Có SQL migration/khóa/ràng buộc và `database/README.md` | Lấy schema sau migration 016 làm nguồn, tránh vẽ theo bản thiết kế cũ |
+| Class Diagram, ERD, từ điển dữ liệu | Có SQL migration/khóa/ràng buộc và `database/README.md` | Lấy schema sau migration 017 làm nguồn, có thêm khoi_toa_nha/tang_toa_nha; tránh vẽ theo bản thiết kế cũ |
 | Kiến trúc/bảng REST API | Có `docs/architecture.md`, `docs/api.md` | Đưa phần phù hợp vào chương 2–3; mô tả JWT/cookie, quyền API, transaction, lưu ảnh |
 | Figma mockup | Chưa tìm thấy file/link Figma trong repository | Bổ sung bản thiết kế của bạn; ảnh chụp website không tự trở thành mockup Figma |
 | Môi trường/Postman | Có README/script cài đặt/test API; chưa thấy bộ Postman và cấu hình máy demo | Ghi đúng Windows/Node/MySQL thực tế; thêm request/kết quả Postman, không coi test Linux là đã thử Windows |
@@ -90,11 +90,11 @@ Nếu thử Safari iOS/Zalo Browser, thêm dòng riêng. Ghi rõ lỗi quyền/k
 
 ## 6. Thứ tự hoàn thiện tiếp
 
-Chốt demo QR → phản ánh → xử lý → tra cứu và một luồng hóa đơn, bổ sung UML/ERD/đặc tả và bảng thực nghiệm. Nếu GVHD yêu cầu quản lý khối/tầng độc lập thì triển khai riêng, vì sơ đồ hiện tại chưa khai báo được khối/tầng trống. Không cần tự mở rộng API ngân hàng/app native.
+Chốt demo QR → phản ánh → xử lý → tra cứu và một luồng hóa đơn, bổ sung UML/ERD/đặc tả và bảng thực nghiệm. Khối/tầng độc lập đã được bổ sung; cần thêm ca kiểm thử tạo mục trống, đổi mã/số khi đã có căn và từ chối xóa mục đang dùng. Không cần tự mở rộng API ngân hàng/app native.
 
-Hướng dẫn cập nhật sơ đồ trong VS Code: [code đầy đủ 7 file](cap-nhat-so-do-toa-nha-vscode.md).
+Hướng dẫn bản hiện tại trong VS Code: [Khối & tầng độc lập — code đầy đủ 12 file tính năng](cap-nhat-khoi-tang-vscode.md).
 
-## 7. Kết quả kiểm tra bản cập nhật
+## 7. Kết quả kiểm tra bản sơ đồ ban đầu (trước 017)
 
 Ngày 21/10/2026, trong môi trường Linux của repository:
 
@@ -106,3 +106,12 @@ Ngày 21/10/2026, trong môi trường Linux của repository:
 | Prettier và `git diff --check` | Các file nguồn/kiểm thử mới sửa đúng định dạng, không lỗi khoảng trắng |
 
 Hai bộ backend/E2E chạy nối tiếp trong `chung_cu_test`, tách database phát triển. Bản này không thay migration hoặc thêm thư viện. Kiểm tra tự động không thay thế các phép đo thực tế trong mục 5 hoặc xác nhận bản web đang chạy trên máy của bạn.
+
+## 8. Kết quả bản Khối & tầng độc lập (017)
+
+- `npm test`: **206 kiểm tra đạt**, gồm mục trống, quyền/CSRF, ràng buộc khóa ngoại, trường hợp chữ hoa/thường cũ, đường lưu thật không có trigger fixture, rollback tạo cha khi lưu căn lỗi, chọn tầng đã cũ, giữ ID tài khoản/cư trú/hóa đơn khi đổi mã/số và hai người sửa đồng thời.
+- `npm run test:e2e`: **45 kịch bản đạt**, có tạo khối/tầng chưa có căn → chọn danh mục khi thêm căn → đổi số tầng/mã khối → từ chối form cũ → xác nhận xóa mục chưa dùng, ở 1440/375 px. Các luồng nhập/xuất, tài khoản, phản ánh, hóa đơn, bảo trì, tiện ích và quỹ vẫn đạt.
+- `npm run build`, Prettier và `git diff --check`: đạt.
+- Đã áp dụng 017 và chạy lại migration thành công; production không có trigger fixture. Giữ checksum 001–016, không thay dữ liệu tài chính/cư trú cũ. Các số liệu ở mục 7 là lịch sử của bản trước 017.
+
+Kết quả trên vẫn là môi trường Linux/Chromium, chưa thay việc thử QR trên máy Windows/điện thoại thật theo đề cương.

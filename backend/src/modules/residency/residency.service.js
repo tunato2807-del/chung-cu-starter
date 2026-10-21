@@ -3,6 +3,7 @@ import { pool, rows, transaction } from "../../lib/db.js";
 import { choice, fail, integer, text } from "../../lib/http.js";
 import * as valid from "./residency.validation.js";
 import { lockApartment } from "../billing/billing.guards.js";
+import { apartmentFloor } from "./building-structure.service.js";
 import {
   finishStayVehicles,
   carryStayVehicles,
@@ -86,7 +87,7 @@ export async function listApartments(query, exportFormat = null) {
   check(count.total);
   const data = await rows(
     pool,
-    `SELECT c.*, (SELECT COUNT(*) FROM lich_su_cu_tru l WHERE l.ma_can_ho=c.ma_can_ho AND l.den_ngay IS NULL) AS so_cu_dan FROM can_ho c ${where} ORDER BY khoi,tang,so_can_ho LIMIT ${exportFormat ? limit + 1 : limit} OFFSET ${offset}`,
+    `SELECT c.*, (SELECT k.khoi FROM khoi_toa_nha k WHERE k.khoi=c.khoi) AS khoi_danh_muc, (SELECT COUNT(*) FROM lich_su_cu_tru l WHERE l.ma_can_ho=c.ma_can_ho AND l.den_ngay IS NULL) AS so_cu_dan FROM can_ho c ${where} ORDER BY khoi,tang,so_can_ho LIMIT ${exportFormat ? limit + 1 : limit} OFFSET ${offset}`,
     values,
   );
   check(data.length);
@@ -130,6 +131,7 @@ export async function apartmentDetail(id) {
 export async function saveApartment(id, body, user, connection = null) {
   const values = valid.apartment(body);
   return transaction(async (db) => {
+    values[1] = await apartmentFloor(db, values[1], values[2], body);
     if (id) {
       const current = await one(db, "can_ho", "ma_can_ho", id, true);
       version(current, body.phien_ban);

@@ -162,7 +162,15 @@ for (const width of [1440, 375])
         page.getByRole("cell", { name: `${suffix}-1`, exact: true }),
       ).toHaveCount(0);
       await page.getByRole("button", { name: "Sửa", exact: true }).click();
-      await page.getByLabel("Tầng", { exact: true }).fill("2");
+      const createdFloor = await page.request.post(
+        `/api/cau_truc_toa_nha/khoi/${a}/tang`,
+        { headers: { "X-App-Request": "1" }, data: { tang: 2 } },
+      );
+      expect(createdFloor.ok()).toBe(true);
+      await page
+        .getByRole("button", { name: "Tải lại khối/tầng", exact: true })
+        .click();
+      await page.getByLabel("Tầng", { exact: true }).selectOption("2");
       await page
         .getByRole("button", { name: "Lưu căn hộ", exact: true })
         .click();
@@ -241,7 +249,7 @@ for (const width of [1440, 375])
         .click();
       await expect(
         map.getByRole("heading", {
-          name: "Chưa có căn hộ để lập sơ đồ",
+          name: "Chưa có khối để lập sơ đồ",
           exact: true,
         }),
       ).toBeVisible();

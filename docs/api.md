@@ -40,6 +40,25 @@ Mọi endpoint bên dưới yêu cầu phiên BQL; cư dân và KTV không đư�
 | GET | `/api/can_ho/:id` | Thông tin căn và cư dân đang ở |
 | POST | `/api/can_ho` | `so_can_ho`, `khoi`, `tang`, `dien_tich_m2`, `tinh_phi_dich_vu` (boolean) |
 | PATCH | `/api/can_ho/:id` | Các trường như tạo và `phien_ban` hiện tại |
+
+Từ migration 017, `GET /can_ho/so_do` đọc danh mục khối/tầng độc lập, có cả khối chưa có tầng và tầng chưa có căn. Block thêm `ten_khoi`, `mo_ta`, `phien_ban`; tầng thêm `ten_tang`, `mo_ta`, `phien_ban`. Số căn/cư dân vẫn suy ra từ căn và đợt cư trú đang mở. `GET /can_ho` thêm `khoi_danh_muc` để form chọn đúng khối khi dữ liệu cũ khác chữ hoa/thường theo collation MySQL.
+
+| Method | Đường dẫn dưới `/api/cau_truc_toa_nha` | Dữ liệu / quy tắc; chỉ BQL |
+|---|---|---|
+| GET | `/` | Tổng và danh mục khối/tầng, cùng định dạng `/can_ho/so_do` |
+| POST | `/khoi` | `khoi` 1–10 ký tự, `ten_khoi` tối đa 100, `mo_ta` tối đa 255; khối có thể chưa có tầng |
+| PATCH | `/khoi/:khoi` | Các trường như tạo + `phien_ban`; đổi mã cập nhật mọi tầng/căn bằng FK cascade, tăng phiên bản các căn/tầng bị đổi |
+| DELETE | `/khoi/:khoi` | Body `phien_ban`; chỉ khối không có tầng |
+| POST | `/khoi/:khoi/tang` | `tang` số nguyên 0–200, `ten_tang` tối đa 100, `mo_ta` tối đa 255; khối phải tồn tại |
+| PATCH | `/khoi/:khoi/tang/:tang` | Các trường như tạo + `phien_ban`; đổi số tầng cập nhật căn và tăng phiên bản căn |
+| DELETE | `/khoi/:khoi/tang/:tang` | Body `phien_ban`; chỉ tầng không có căn |
+
+Mã/số đã dùng trả 409, không gộp khối/tầng. Sửa phiên bản cũ trả 409; mục đã đổi khóa có thể trả 404. Không đổi mã khối chỉ bằng hoa/thường/dấu nếu MySQL coi hai mã bằng nhau. POST/PATCH/DELETE vẫn cần cookie và `X-App-Request: 1`.
+
+Form căn hộ mới gửi `chon_cau_truc: true`, `phien_ban_tang` và `khoi`/`tang` đang chọn: server kiểm tra mục còn tồn tại/đúng phiên bản trước khi lưu. Client cũ/nhập Excel không gửi cờ này vẫn được hỗ trợ: tự khai báo khối/tầng trong cùng transaction tạo/sửa căn; lô/ghi căn lỗi rollback cả các mục mới. Các mục tự phát sinh được giữ trong DB để ràng buộc khóa ngoại, nhưng khối tự phát sinh không còn căn và không có tầng khai báo riêng được ẩn khỏi danh mục. Các mục được BQL khai báo/sửa hoặc backfill từ dữ liệu cũ được giữ hiển thị khi trống.
+
+| Method | URL cư dân | Nội dung |
+|---|---|---|
 | GET | `/api/cu_dan?q=&trang_thai=&ma_can_ho=&page=1` | Tìm tên/SĐT; trạng thái rỗng, `DANG_O` hoặc `DA_CHUYEN_DI` |
 | GET | `/api/cu_dan/tai_khoan?q=&page=1` | Tìm tài khoản cư dân đang hoạt động, chưa gắn hồ sơ; chỉ trả mã/tên/SĐT |
 | GET | `/api/cu_dan/:id` | Hồ sơ và `history` đầy đủ, mới trước |
