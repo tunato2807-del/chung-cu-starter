@@ -1,0 +1,1487 @@
+{
+  "schema": "018_equipment_qr.sql",
+  "categories": {
+    "nghiep_vu": [
+      "nguoi_dung",
+      "khoi_toa_nha",
+      "tang_toa_nha",
+      "can_ho",
+      "cu_dan",
+      "lich_su_cu_tru",
+      "phuong_tien",
+      "vi_tri_qr",
+      "phan_anh",
+      "hinh_anh_phan_anh",
+      "loai_phi",
+      "cau_hinh_phi",
+      "chi_so_dich_vu",
+      "hoa_don",
+      "chi_tiet_hoa_don",
+      "thiet_bi",
+      "phieu_bao_tri",
+      "tien_ich",
+      "dat_lich_tien_ich",
+      "thong_bao",
+      "thong_bao_da_doc",
+      "quy_tai_chinh",
+      "phieu_thu_chi",
+      "chung_tu_thu_chi"
+    ],
+    "lich_su": [
+      "lich_su_ban_giao_can_ho",
+      "lich_su_bao_tri",
+      "lich_su_dat_lich",
+      "lich_su_hoa_don",
+      "lich_su_lien_ket_qr",
+      "lich_su_phan_anh",
+      "lich_su_thong_bao",
+      "lich_su_thu_chi"
+    ],
+    "ky_thuat": [
+      "dot_lap_hoa_don",
+      "dot_xu_ly_hoa_don",
+      "dot_nhap_du_lieu",
+      "gioi_han_gui",
+      "yeu_cau_gui",
+      "schema_migrations"
+    ]
+  },
+  "diagrams": [
+    {
+      "id": "00-tong-quan-12-bang",
+      "title": "Tổng quan nghiệp vụ — 12 bảng được chọn",
+      "nodes": [
+        {
+          "table": "nguoi_dung",
+          "fields": [
+            {
+              "name": "ma_nguoi_dung",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ho_va_ten",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "vai_tro",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "cu_dan",
+          "fields": [
+            {
+              "name": "ma_cu_dan",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ho_va_ten",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "so_dien_thoai",
+              "type": "varchar",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "can_ho",
+          "fields": [
+            {
+              "name": "ma_can_ho",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "so_can_ho",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "dien_tich_m2",
+              "type": "decimal",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "lich_su_cu_tru",
+          "fields": [
+            {
+              "name": "ma_lich_su_cu_tru",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "quan_he",
+              "type": "enum",
+              "primary": false
+            },
+            {
+              "name": "tu_ngay",
+              "type": "date",
+              "primary": false
+            },
+            {
+              "name": "den_ngay",
+              "type": "date",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "hoa_don",
+          "fields": [
+            {
+              "name": "ma_hoa_don",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ky_thanh_toan",
+              "type": "char",
+              "primary": false
+            },
+            {
+              "name": "tong_tien",
+              "type": "decimal",
+              "primary": false
+            },
+            {
+              "name": "trang_thai",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "thong_bao",
+          "fields": [
+            {
+              "name": "ma_thong_bao",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "tieu_de",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "pham_vi",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "tien_ich",
+          "fields": [
+            {
+              "name": "ma_tien_ich",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ten_tien_ich",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "suc_chua",
+              "type": "smallint",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "dat_lich_tien_ich",
+          "fields": [
+            {
+              "name": "ma_dat_lich",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "bat_dau",
+              "type": "datetime",
+              "primary": false
+            },
+            {
+              "name": "trang_thai",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "thiet_bi",
+          "fields": [
+            {
+              "name": "ma_thiet_bi",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ma_tai_san",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "ten_thiet_bi",
+              "type": "varchar",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "vi_tri_qr",
+          "fields": [
+            {
+              "name": "ma_vi_tri_qr",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ten_vi_tri",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "loai",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "phan_anh",
+          "fields": [
+            {
+              "name": "ma_phan_anh",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "tieu_de",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "trang_thai",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "phieu_bao_tri",
+          "fields": [
+            {
+              "name": "ma_phieu_bao_tri",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "loai",
+              "type": "enum",
+              "primary": false
+            },
+            {
+              "name": "trang_thai",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "key": "cu_dan:ma_nguoi_dung",
+          "constraint": "cu_dan_ibfk_1",
+          "source": "nguoi_dung",
+          "target": "cu_dan",
+          "label": "tài khoản cá nhân",
+          "parent": "0..1",
+          "child": "0..1"
+        },
+        {
+          "key": "lich_su_cu_tru:ma_cu_dan",
+          "constraint": "lich_su_cu_tru_ibfk_1",
+          "source": "cu_dan",
+          "target": "lich_su_cu_tru",
+          "label": "có đợt ở",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "lich_su_cu_tru:ma_can_ho",
+          "constraint": "lich_su_cu_tru_ibfk_2",
+          "source": "can_ho",
+          "target": "lich_su_cu_tru",
+          "label": "nơi cư trú",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "hoa_don:ma_can_ho",
+          "constraint": "hoa_don_ibfk_1",
+          "source": "can_ho",
+          "target": "hoa_don",
+          "label": "theo căn",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "dat_lich_tien_ich:ma_can_ho",
+          "constraint": "dat_lich_tien_ich_ibfk_2",
+          "source": "can_ho",
+          "target": "dat_lich_tien_ich",
+          "label": "căn đặt",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "dat_lich_tien_ich:ma_tien_ich",
+          "constraint": "dat_lich_tien_ich_ibfk_1",
+          "source": "tien_ich",
+          "target": "dat_lich_tien_ich",
+          "label": "đặt sử dụng",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "thong_bao:ma_can_ho",
+          "constraint": "thong_bao_ibfk_1",
+          "source": "can_ho",
+          "target": "thong_bao",
+          "label": "gửi riêng căn",
+          "parent": "0..1",
+          "child": "0..*"
+        },
+        {
+          "key": "vi_tri_qr:ma_thiet_bi",
+          "constraint": "fk_qr_equipment",
+          "source": "thiet_bi",
+          "target": "vi_tri_qr",
+          "label": "liên kết hiện tại",
+          "parent": "0..1",
+          "child": "0..*"
+        },
+        {
+          "key": "phan_anh:ma_vi_tri_qr",
+          "constraint": "phan_anh_ibfk_1",
+          "source": "vi_tri_qr",
+          "target": "phan_anh",
+          "label": "phát sinh tại",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "phan_anh:ma_thiet_bi",
+          "constraint": "fk_incident_equipment",
+          "source": "thiet_bi",
+          "target": "phan_anh",
+          "label": "thiết bị lúc gửi",
+          "parent": "0..1",
+          "child": "0..*"
+        },
+        {
+          "key": "phan_anh:ma_ky_thuat_vien",
+          "constraint": "phan_anh_ibfk_3",
+          "source": "nguoi_dung",
+          "target": "phan_anh",
+          "label": "được giao",
+          "parent": "0..1",
+          "child": "0..*"
+        },
+        {
+          "key": "phieu_bao_tri:ma_thiet_bi",
+          "constraint": "phieu_bao_tri_ibfk_1",
+          "source": "thiet_bi",
+          "target": "phieu_bao_tri",
+          "label": "bảo trì",
+          "parent": "1",
+          "child": "0..*"
+        }
+      ]
+    },
+    {
+      "id": "01-nha-o-cu-tru-xe",
+      "title": "Nhà ở, cư trú, tài khoản và xe — 7 bảng",
+      "nodes": [
+        {
+          "table": "nguoi_dung",
+          "fields": [
+            {
+              "name": "ma_nguoi_dung",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ho_va_ten",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "vai_tro",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "khoi_toa_nha",
+          "fields": [
+            {
+              "name": "khoi",
+              "type": "varchar",
+              "primary": true
+            },
+            {
+              "name": "ten_khoi",
+              "type": "varchar",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "tang_toa_nha",
+          "fields": [
+            {
+              "name": "khoi",
+              "type": "varchar",
+              "primary": true
+            },
+            {
+              "name": "tang",
+              "type": "smallint",
+              "primary": true
+            },
+            {
+              "name": "ten_tang",
+              "type": "varchar",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "can_ho",
+          "fields": [
+            {
+              "name": "ma_can_ho",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "so_can_ho",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "dien_tich_m2",
+              "type": "decimal",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "cu_dan",
+          "fields": [
+            {
+              "name": "ma_cu_dan",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ho_va_ten",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "so_dien_thoai",
+              "type": "varchar",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "lich_su_cu_tru",
+          "fields": [
+            {
+              "name": "ma_lich_su_cu_tru",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "quan_he",
+              "type": "enum",
+              "primary": false
+            },
+            {
+              "name": "tu_ngay",
+              "type": "date",
+              "primary": false
+            },
+            {
+              "name": "den_ngay",
+              "type": "date",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "phuong_tien",
+          "fields": [
+            {
+              "name": "ma_phuong_tien",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "loai_xe",
+              "type": "enum",
+              "primary": false
+            },
+            {
+              "name": "bien_so",
+              "type": "varchar",
+              "primary": false
+            }
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "key": "cu_dan:ma_nguoi_dung",
+          "constraint": "cu_dan_ibfk_1",
+          "source": "nguoi_dung",
+          "target": "cu_dan",
+          "label": "tài khoản cá nhân",
+          "parent": "0..1",
+          "child": "0..1"
+        },
+        {
+          "key": "lich_su_cu_tru:ma_cu_dan",
+          "constraint": "lich_su_cu_tru_ibfk_1",
+          "source": "cu_dan",
+          "target": "lich_su_cu_tru",
+          "label": "có đợt ở",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "lich_su_cu_tru:ma_can_ho",
+          "constraint": "lich_su_cu_tru_ibfk_2",
+          "source": "can_ho",
+          "target": "lich_su_cu_tru",
+          "label": "nơi cư trú",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "can_ho:khoi,tang",
+          "constraint": "fk_apartment_floor",
+          "source": "tang_toa_nha",
+          "target": "can_ho",
+          "label": "thuộc tầng",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "tang_toa_nha:khoi",
+          "constraint": "fk_floor_block",
+          "source": "khoi_toa_nha",
+          "target": "tang_toa_nha",
+          "label": "thuộc khối",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "nguoi_dung:ma_can_ho_thanh_toan",
+          "constraint": "fk_account_apartment",
+          "source": "can_ho",
+          "target": "nguoi_dung",
+          "label": "tài khoản căn",
+          "parent": "0..1",
+          "child": "0..1"
+        },
+        {
+          "key": "phuong_tien:ma_lich_su_cu_tru",
+          "constraint": "phuong_tien_ibfk_3",
+          "source": "lich_su_cu_tru",
+          "target": "phuong_tien",
+          "label": "đăng ký theo đợt",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "phuong_tien:ma_can_ho",
+          "constraint": "phuong_tien_ibfk_2",
+          "source": "can_ho",
+          "target": "phuong_tien",
+          "label": "căn chịu phí",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "phuong_tien:ma_cu_dan",
+          "constraint": "phuong_tien_ibfk_1",
+          "source": "cu_dan",
+          "target": "phuong_tien",
+          "label": "chủ xe",
+          "parent": "1",
+          "child": "0..*"
+        }
+      ]
+    },
+    {
+      "id": "02-qr-phan-anh",
+      "title": "QR, phản ánh và tiến độ — 6 bảng",
+      "nodes": [
+        {
+          "table": "nguoi_dung",
+          "fields": [
+            {
+              "name": "ma_nguoi_dung",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ho_va_ten",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "vai_tro",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "thiet_bi",
+          "fields": [
+            {
+              "name": "ma_thiet_bi",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ma_tai_san",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "ten_thiet_bi",
+              "type": "varchar",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "vi_tri_qr",
+          "fields": [
+            {
+              "name": "ma_vi_tri_qr",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ten_vi_tri",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "loai",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "phan_anh",
+          "fields": [
+            {
+              "name": "ma_phan_anh",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "tieu_de",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "trang_thai",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "hinh_anh_phan_anh",
+          "fields": [
+            {
+              "name": "ma_hinh_anh_phan_anh",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "loai",
+              "type": "enum",
+              "primary": false
+            },
+            {
+              "name": "luot_xu_ly",
+              "type": "int",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "lich_su_phan_anh",
+          "fields": [
+            {
+              "name": "ma_lich_su_phan_anh",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "loai_su_kien",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "trang_thai_moi",
+              "type": "varchar",
+              "primary": false
+            }
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "key": "vi_tri_qr:ma_thiet_bi",
+          "constraint": "fk_qr_equipment",
+          "source": "thiet_bi",
+          "target": "vi_tri_qr",
+          "label": "liên kết hiện tại",
+          "parent": "0..1",
+          "child": "0..*"
+        },
+        {
+          "key": "phan_anh:ma_vi_tri_qr",
+          "constraint": "phan_anh_ibfk_1",
+          "source": "vi_tri_qr",
+          "target": "phan_anh",
+          "label": "phát sinh tại",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "phan_anh:ma_thiet_bi",
+          "constraint": "fk_incident_equipment",
+          "source": "thiet_bi",
+          "target": "phan_anh",
+          "label": "thiết bị lúc gửi",
+          "parent": "0..1",
+          "child": "0..*"
+        },
+        {
+          "key": "phan_anh:ma_ky_thuat_vien",
+          "constraint": "phan_anh_ibfk_3",
+          "source": "nguoi_dung",
+          "target": "phan_anh",
+          "label": "được giao",
+          "parent": "0..1",
+          "child": "0..*"
+        },
+        {
+          "key": "phan_anh:ma_nguoi_gui",
+          "constraint": "phan_anh_ibfk_2",
+          "source": "nguoi_dung",
+          "target": "phan_anh",
+          "label": "người gửi",
+          "parent": "0..1",
+          "child": "0..*"
+        },
+        {
+          "key": "phan_anh:ma_phan_anh_goc",
+          "constraint": "phan_anh_ibfk_4",
+          "source": "phan_anh",
+          "target": "phan_anh",
+          "label": "gộp vào bản gốc",
+          "parent": "0..1",
+          "child": "0..*"
+        },
+        {
+          "key": "hinh_anh_phan_anh:ma_phan_anh",
+          "constraint": "hinh_anh_phan_anh_ibfk_1",
+          "source": "phan_anh",
+          "target": "hinh_anh_phan_anh",
+          "label": "ảnh từng lượt",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "lich_su_phan_anh:ma_phan_anh",
+          "constraint": "lich_su_phan_anh_ibfk_1",
+          "source": "phan_anh",
+          "target": "lich_su_phan_anh",
+          "label": "lịch sử xử lý",
+          "parent": "1",
+          "child": "0..*"
+        }
+      ]
+    },
+    {
+      "id": "03-phi-chi-so-hoa-don",
+      "title": "Phí, chỉ số và hóa đơn — 7 bảng",
+      "nodes": [
+        {
+          "table": "nguoi_dung",
+          "fields": [
+            {
+              "name": "ma_nguoi_dung",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ho_va_ten",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "vai_tro",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "can_ho",
+          "fields": [
+            {
+              "name": "ma_can_ho",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "so_can_ho",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "dien_tich_m2",
+              "type": "decimal",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "loai_phi",
+          "fields": [
+            {
+              "name": "loai_phi",
+              "type": "varchar",
+              "primary": true
+            },
+            {
+              "name": "ten_phi",
+              "type": "varchar",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "cau_hinh_phi",
+          "fields": [
+            {
+              "name": "ma_cau_hinh_phi",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "cach_tinh",
+              "type": "enum",
+              "primary": false
+            },
+            {
+              "name": "don_gia",
+              "type": "decimal",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "chi_so_dich_vu",
+          "fields": [
+            {
+              "name": "ma_chi_so_dich_vu",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "loai_dich_vu",
+              "type": "enum",
+              "primary": false
+            },
+            {
+              "name": "ky_thanh_toan",
+              "type": "char",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "hoa_don",
+          "fields": [
+            {
+              "name": "ma_hoa_don",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ky_thanh_toan",
+              "type": "char",
+              "primary": false
+            },
+            {
+              "name": "tong_tien",
+              "type": "decimal",
+              "primary": false
+            },
+            {
+              "name": "trang_thai",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "chi_tiet_hoa_don",
+          "fields": [
+            {
+              "name": "ma_chi_tiet_hoa_don",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "dien_giai",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "thanh_tien",
+              "type": "decimal",
+              "primary": false
+            }
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "key": "cau_hinh_phi:loai_phi",
+          "constraint": "cau_hinh_phi_ibfk_1",
+          "source": "loai_phi",
+          "target": "cau_hinh_phi",
+          "label": "giá theo hiệu lực",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "chi_so_dich_vu:ma_can_ho",
+          "constraint": "chi_so_dich_vu_ibfk_1",
+          "source": "can_ho",
+          "target": "chi_so_dich_vu",
+          "label": "điện / nước",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "hoa_don:ma_can_ho",
+          "constraint": "hoa_don_ibfk_1",
+          "source": "can_ho",
+          "target": "hoa_don",
+          "label": "theo căn",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "hoa_don:ma_nguoi_lap",
+          "constraint": "hoa_don_ibfk_3",
+          "source": "nguoi_dung",
+          "target": "hoa_don",
+          "label": "người lập",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "chi_tiet_hoa_don:ma_hoa_don",
+          "constraint": "chi_tiet_hoa_don_ibfk_1",
+          "source": "hoa_don",
+          "target": "chi_tiet_hoa_don",
+          "label": "các khoản thu",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "chi_tiet_hoa_don:ma_cau_hinh_phi",
+          "constraint": "chi_tiet_hoa_don_ibfk_2",
+          "source": "cau_hinh_phi",
+          "target": "chi_tiet_hoa_don",
+          "label": "giá nguồn",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "chi_tiet_hoa_don:ma_chi_so_dich_vu",
+          "constraint": "chi_tiet_hoa_don_ibfk_3",
+          "source": "chi_so_dich_vu",
+          "target": "chi_tiet_hoa_don",
+          "label": "chỉ số nguồn",
+          "parent": "0..1",
+          "child": "0..*"
+        }
+      ]
+    },
+    {
+      "id": "04-thiet-bi-bao-tri",
+      "title": "Thiết bị và bảo trì — 4 bảng",
+      "nodes": [
+        {
+          "table": "nguoi_dung",
+          "fields": [
+            {
+              "name": "ma_nguoi_dung",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ho_va_ten",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "vai_tro",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "thiet_bi",
+          "fields": [
+            {
+              "name": "ma_thiet_bi",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ma_tai_san",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "ten_thiet_bi",
+              "type": "varchar",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "phieu_bao_tri",
+          "fields": [
+            {
+              "name": "ma_phieu_bao_tri",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "loai",
+              "type": "enum",
+              "primary": false
+            },
+            {
+              "name": "trang_thai",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "lich_su_bao_tri",
+          "fields": [
+            {
+              "name": "ma_lich_su",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "su_kien",
+              "type": "varchar",
+              "primary": false
+            }
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "key": "phieu_bao_tri:ma_thiet_bi",
+          "constraint": "phieu_bao_tri_ibfk_1",
+          "source": "thiet_bi",
+          "target": "phieu_bao_tri",
+          "label": "phiếu của thiết bị",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "phieu_bao_tri:ma_ky_thuat_vien",
+          "constraint": "phieu_bao_tri_ibfk_2",
+          "source": "nguoi_dung",
+          "target": "phieu_bao_tri",
+          "label": "người thực hiện",
+          "parent": "0..1",
+          "child": "0..*"
+        },
+        {
+          "key": "lich_su_bao_tri:ma_thiet_bi",
+          "constraint": "lich_su_bao_tri_ibfk_1",
+          "source": "thiet_bi",
+          "target": "lich_su_bao_tri",
+          "label": "lịch sử thiết bị",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "lich_su_bao_tri:ma_phieu_bao_tri",
+          "constraint": "lich_su_bao_tri_ibfk_2",
+          "source": "phieu_bao_tri",
+          "target": "lich_su_bao_tri",
+          "label": "lịch sử phiếu",
+          "parent": "0..1",
+          "child": "0..*"
+        }
+      ]
+    },
+    {
+      "id": "05-tien-ich-thong-bao",
+      "title": "Tiện ích và thông báo — 6 bảng",
+      "nodes": [
+        {
+          "table": "nguoi_dung",
+          "fields": [
+            {
+              "name": "ma_nguoi_dung",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ho_va_ten",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "vai_tro",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "can_ho",
+          "fields": [
+            {
+              "name": "ma_can_ho",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "so_can_ho",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "dien_tich_m2",
+              "type": "decimal",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "tien_ich",
+          "fields": [
+            {
+              "name": "ma_tien_ich",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ten_tien_ich",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "suc_chua",
+              "type": "smallint",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "dat_lich_tien_ich",
+          "fields": [
+            {
+              "name": "ma_dat_lich",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "bat_dau",
+              "type": "datetime",
+              "primary": false
+            },
+            {
+              "name": "trang_thai",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "thong_bao",
+          "fields": [
+            {
+              "name": "ma_thong_bao",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "tieu_de",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "pham_vi",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "thong_bao_da_doc",
+          "fields": [
+            {
+              "name": "ma_thong_bao",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ma_nguoi_dung",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "nguoi_tiep_nhan",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ngay_doc",
+              "type": "datetime",
+              "primary": false
+            }
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "key": "dat_lich_tien_ich:ma_tien_ich",
+          "constraint": "dat_lich_tien_ich_ibfk_1",
+          "source": "tien_ich",
+          "target": "dat_lich_tien_ich",
+          "label": "lượt đặt",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "dat_lich_tien_ich:ma_can_ho",
+          "constraint": "dat_lich_tien_ich_ibfk_2",
+          "source": "can_ho",
+          "target": "dat_lich_tien_ich",
+          "label": "căn sử dụng",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "dat_lich_tien_ich:ma_nguoi_dat",
+          "constraint": "dat_lich_tien_ich_ibfk_3",
+          "source": "nguoi_dung",
+          "target": "dat_lich_tien_ich",
+          "label": "người đặt",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "thong_bao:ma_can_ho",
+          "constraint": "thong_bao_ibfk_1",
+          "source": "can_ho",
+          "target": "thong_bao",
+          "label": "phạm vi căn",
+          "parent": "0..1",
+          "child": "0..*"
+        },
+        {
+          "key": "thong_bao_da_doc:ma_thong_bao",
+          "constraint": "thong_bao_da_doc_ibfk_1",
+          "source": "thong_bao",
+          "target": "thong_bao_da_doc",
+          "label": "biên nhận đọc",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "thong_bao_da_doc:ma_nguoi_dung",
+          "constraint": "thong_bao_da_doc_ibfk_2",
+          "source": "nguoi_dung",
+          "target": "thong_bao_da_doc",
+          "label": "người đọc",
+          "parent": "1",
+          "child": "0..*"
+        }
+      ]
+    },
+    {
+      "id": "06-quy-thu-chi",
+      "title": "Quỹ, thu chi và chứng từ — 4 bảng",
+      "nodes": [
+        {
+          "table": "nguoi_dung",
+          "fields": [
+            {
+              "name": "ma_nguoi_dung",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ho_va_ten",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "vai_tro",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "quy_tai_chinh",
+          "fields": [
+            {
+              "name": "ma_quy",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ten_quy",
+              "type": "varchar",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "phieu_thu_chi",
+          "fields": [
+            {
+              "name": "ma_phieu",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "loai",
+              "type": "enum",
+              "primary": false
+            },
+            {
+              "name": "so_tien",
+              "type": "decimal",
+              "primary": false
+            },
+            {
+              "name": "trang_thai",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "table": "chung_tu_thu_chi",
+          "fields": [
+            {
+              "name": "ma_chung_tu",
+              "type": "int",
+              "primary": true
+            },
+            {
+              "name": "ten_tep",
+              "type": "varchar",
+              "primary": false
+            },
+            {
+              "name": "loai_tep",
+              "type": "enum",
+              "primary": false
+            }
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "key": "phieu_thu_chi:ma_quy",
+          "constraint": "phieu_thu_chi_ibfk_1",
+          "source": "quy_tai_chinh",
+          "target": "phieu_thu_chi",
+          "label": "thuộc quỹ",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "phieu_thu_chi:ma_nguoi_lap",
+          "constraint": "phieu_thu_chi_ibfk_2",
+          "source": "nguoi_dung",
+          "target": "phieu_thu_chi",
+          "label": "người lập",
+          "parent": "1",
+          "child": "0..*"
+        },
+        {
+          "key": "phieu_thu_chi:ma_phieu_goc",
+          "constraint": "phieu_thu_chi_ibfk_4",
+          "source": "phieu_thu_chi",
+          "target": "phieu_thu_chi",
+          "label": "đảo phiếu gốc",
+          "parent": "0..1",
+          "child": "0..1"
+        },
+        {
+          "key": "chung_tu_thu_chi:ma_phieu",
+          "constraint": "chung_tu_thu_chi_ibfk_1",
+          "source": "phieu_thu_chi",
+          "target": "chung_tu_thu_chi",
+          "label": "chứng từ",
+          "parent": "1",
+          "child": "0..*"
+        }
+      ]
+    }
+  ]
+}

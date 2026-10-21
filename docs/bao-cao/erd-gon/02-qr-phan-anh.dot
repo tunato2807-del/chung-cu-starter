@@ -1,0 +1,19 @@
+digraph ERD {
+graph [rankdir=LR, bgcolor="white", pad="0.3", nodesep="0.48", ranksep="0.68", splines=polyline, overlap=false, fontname="DejaVu Sans", fontsize=18, labelloc=t, label="QR, phản ánh và tiến độ — 6 bảng"];
+node [shape=plain, fontname="DejaVu Sans", fontsize=14];
+edge [dir=none, color="#58716c", fontname="DejaVu Sans", fontsize=11, labeldistance=1.7, labelangle=25];
+"nguoi_dung" [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#c0d2cc"><TR><TD BGCOLOR="#145f59" ALIGN="LEFT"><FONT COLOR="white"><B>nguoi_dung</B></FONT></TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">PK · ma_nguoi_dung</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">ho_va_ten</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">vai_tro</TD></TR></TABLE>>];
+"thiet_bi" [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#c0d2cc"><TR><TD BGCOLOR="#145f59" ALIGN="LEFT"><FONT COLOR="white"><B>thiet_bi</B></FONT></TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">PK · ma_thiet_bi</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">ma_tai_san</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">ten_thiet_bi</TD></TR></TABLE>>];
+"vi_tri_qr" [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#c0d2cc"><TR><TD BGCOLOR="#145f59" ALIGN="LEFT"><FONT COLOR="white"><B>vi_tri_qr</B></FONT></TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">PK · ma_vi_tri_qr</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">ten_vi_tri</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">loai</TD></TR></TABLE>>];
+"phan_anh" [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#c0d2cc"><TR><TD BGCOLOR="#145f59" ALIGN="LEFT"><FONT COLOR="white"><B>phan_anh</B></FONT></TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">PK · ma_phan_anh</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">tieu_de</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">trang_thai</TD></TR></TABLE>>];
+"hinh_anh_phan_anh" [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#c0d2cc"><TR><TD BGCOLOR="#145f59" ALIGN="LEFT"><FONT COLOR="white"><B>hinh_anh_phan_anh</B></FONT></TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">PK · ma_hinh_anh_phan_anh</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">loai</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">luot_xu_ly</TD></TR></TABLE>>];
+"lich_su_phan_anh" [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#c0d2cc"><TR><TD BGCOLOR="#8a6625" ALIGN="LEFT"><FONT COLOR="white"><B>lich_su_phan_anh</B></FONT></TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">PK · ma_lich_su_phan_anh</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">loai_su_kien</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">trang_thai_moi</TD></TR></TABLE>>];
+"thiet_bi" -> "vi_tri_qr" [label="liên kết hiện tại",taillabel="0..1",headlabel="0..*"];
+"vi_tri_qr" -> "phan_anh" [label="phát sinh tại",taillabel="1",headlabel="0..*"];
+"thiet_bi" -> "phan_anh" [label="thiết bị lúc gửi",taillabel="0..1",headlabel="0..*"];
+"nguoi_dung" -> "phan_anh" [label="được giao",taillabel="0..1",headlabel="0..*"];
+"nguoi_dung" -> "phan_anh" [label="người gửi",taillabel="0..1",headlabel="0..*"];
+"phan_anh" -> "phan_anh" [label="gộp vào bản gốc",taillabel="0..1",headlabel="0..*"];
+"phan_anh" -> "hinh_anh_phan_anh" [label="ảnh từng lượt",taillabel="1",headlabel="0..*"];
+"phan_anh" -> "lich_su_phan_anh" [label="lịch sử xử lý",taillabel="1",headlabel="0..*"];
+}

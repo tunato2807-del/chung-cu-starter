@@ -1,4 +1,3 @@
-# Phản ánh, phân công, ảnh và lịch sử xử lý
+# Phản ánh QR
 
-Thư mục dành cho pages/, components/ và api.js của nghiệp vụ. Chưa triển khai.
-Chỉ tạo các tệp này khi bắt đầu chức năng; dùng shared/ cho phần dùng chung.
+PublicReports.jsx gồm cổng dịch vụ, quét QR, gửi phản ánh và tra cứu công khai. Reports.jsx gồm tổng quan, danh sách có bộ lọc, chi tiết và thao tác theo vai trò. Quyền và trạng thái luôn được xác minh tại backend.

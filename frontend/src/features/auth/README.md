@@ -1,4 +1,3 @@
-# Đăng nhập, tài khoản, phiên và phân quyền
+# Đăng nhập và tài khoản
 
-Thư mục dành cho pages/, components/ và api.js của nghiệp vụ. Chưa triển khai.
-Chỉ tạo các tệp này khi bắt đầu chức năng; dùng shared/ cho phần dùng chung.
+Auth.jsx cung cấp phiên, bảo vệ route theo vai trò, đăng nhập và đổi mật khẩu. Users.jsx dành cho BQL cấp/khóa tài khoản.

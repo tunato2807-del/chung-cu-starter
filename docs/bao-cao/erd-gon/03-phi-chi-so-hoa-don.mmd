@@ -1,0 +1,44 @@
+erDiagram
+  direction LR
+  nguoi_dung {
+    int ma_nguoi_dung PK
+    varchar ho_va_ten
+    enum vai_tro
+  }
+  can_ho {
+    int ma_can_ho PK
+    varchar so_can_ho
+    decimal dien_tich_m2
+  }
+  loai_phi {
+    varchar loai_phi PK
+    varchar ten_phi
+  }
+  cau_hinh_phi {
+    int ma_cau_hinh_phi PK
+    enum cach_tinh
+    decimal don_gia
+  }
+  chi_so_dich_vu {
+    int ma_chi_so_dich_vu PK
+    enum loai_dich_vu
+    char ky_thanh_toan
+  }
+  hoa_don {
+    int ma_hoa_don PK
+    char ky_thanh_toan
+    decimal tong_tien
+    enum trang_thai
+  }
+  chi_tiet_hoa_don {
+    int ma_chi_tiet_hoa_don PK
+    varchar dien_giai
+    decimal thanh_tien
+  }
+  loai_phi ||--o{ cau_hinh_phi : "giá theo hiệu lực"
+  can_ho ||--o{ chi_so_dich_vu : "điện / nước"
+  can_ho ||--o{ hoa_don : "theo căn"
+  nguoi_dung ||--o{ hoa_don : "người lập"
+  hoa_don ||--o{ chi_tiet_hoa_don : "các khoản thu"
+  cau_hinh_phi ||--o{ chi_tiet_hoa_don : "giá nguồn"
+  chi_so_dich_vu o|--o{ chi_tiet_hoa_don : "chỉ số nguồn"

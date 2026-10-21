@@ -1,0 +1,25 @@
+erDiagram
+  direction LR
+  nguoi_dung {
+    int ma_nguoi_dung PK
+    varchar ho_va_ten
+    enum vai_tro
+  }
+  thiet_bi {
+    int ma_thiet_bi PK
+    varchar ma_tai_san
+    varchar ten_thiet_bi
+  }
+  phieu_bao_tri {
+    int ma_phieu_bao_tri PK
+    enum loai
+    enum trang_thai
+  }
+  lich_su_bao_tri {
+    int ma_lich_su PK
+    varchar su_kien
+  }
+  thiet_bi ||--o{ phieu_bao_tri : "phiếu của thiết bị"
+  nguoi_dung o|--o{ phieu_bao_tri : "người thực hiện"
+  thiet_bi ||--o{ lich_su_bao_tri : "lịch sử thiết bị"
+  phieu_bao_tri o|--o{ lich_su_bao_tri : "lịch sử phiếu"

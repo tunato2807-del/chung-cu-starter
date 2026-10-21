@@ -1,0 +1,40 @@
+erDiagram
+  direction LR
+  nguoi_dung {
+    int ma_nguoi_dung PK
+    varchar ho_va_ten
+    enum vai_tro
+  }
+  thiet_bi {
+    int ma_thiet_bi PK
+    varchar ma_tai_san
+    varchar ten_thiet_bi
+  }
+  vi_tri_qr {
+    int ma_vi_tri_qr PK
+    varchar ten_vi_tri
+    enum loai
+  }
+  phan_anh {
+    int ma_phan_anh PK
+    varchar tieu_de
+    enum trang_thai
+  }
+  hinh_anh_phan_anh {
+    int ma_hinh_anh_phan_anh PK
+    enum loai
+    int luot_xu_ly
+  }
+  lich_su_phan_anh {
+    int ma_lich_su_phan_anh PK
+    varchar loai_su_kien
+    varchar trang_thai_moi
+  }
+  thiet_bi o|--o{ vi_tri_qr : "liên kết hiện tại"
+  vi_tri_qr ||--o{ phan_anh : "phát sinh tại"
+  thiet_bi o|--o{ phan_anh : "thiết bị lúc gửi"
+  nguoi_dung o|--o{ phan_anh : "được giao"
+  nguoi_dung o|--o{ phan_anh : "người gửi"
+  phan_anh o|--o{ phan_anh : "gộp vào bản gốc"
+  phan_anh ||--o{ hinh_anh_phan_anh : "ảnh từng lượt"
+  phan_anh ||--o{ lich_su_phan_anh : "lịch sử xử lý"

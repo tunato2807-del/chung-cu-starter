@@ -1,0 +1,44 @@
+.batch-actions td {
+  vertical-align: top;
+}
+.batch-actions td small {
+  display: block;
+  color: #607b70;
+}
+.batch-actions td:nth-child(2) {
+  min-width: 145px;
+}
+.batch-actions th,
+.batch-actions td {
+  overflow-wrap: anywhere;
+}
+.batch-actions .actions {
+  flex-wrap: wrap;
+}
+.bill-actions-tools {
+  margin-bottom: 14px;
+}
+.bill-actions-payment {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 16px;
+  padding: 16px;
+  border-radius: 10px;
+  background: #f3f7f4;
+  margin-bottom: 16px;
+}
+.bill-actions-summary {
+  border: 1px solid #bdd3c7;
+  padding: 14px;
+  border-radius: 9px;
+  background: #f3f7f4;
+  overflow-wrap: anywhere;
+}
+.batch-actions .batch-result button {
+  margin: 4px 10px 4px 0;
+}
+@media (max-width: 600px) {
+  .bill-actions-payment {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,11 +1,5 @@
-# Vị trí, token QR và thu hồi QR
+# Vị trí và mã QR
 
-Chưa triển khai. Khi phát triển, tạo:
+qr.routes.js quản lý vị trí, thay token và tra tên vị trí công khai. Token UUID v4 được tạo cùng vị trí; thay token làm mất hiệu lực mã cũ. Frontend dựng ảnh QR từ URL cùng origin, cho tải/in và hiển thị cảnh báo cần HTTPS khi dùng điện thoại.
 
-- qr.routes.js: URL và middleware.
-- qr.controller.js: nhận HTTP, trả kết quả.
-- qr.service.js: quy tắc nghiệp vụ và ranh giới transaction.
-- qr.repository.js: truy vấn MySQL có tham số.
-- qr.validation.js: kiểm tra đầu vào.
-
-Kiểm tra quyền trên từng bản ghi tại service. Không tin vai trò hoặc mã căn hộ do frontend gửi.
+Xem docs/api.md và docs/architecture.md tại gốc repository để biết quy tắc và endpoint.
