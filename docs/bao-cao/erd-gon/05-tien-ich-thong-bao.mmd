@@ -1,0 +1,39 @@
+erDiagram
+  direction LR
+  nguoi_dung {
+    int ma_nguoi_dung PK
+    varchar ho_va_ten
+    enum vai_tro
+  }
+  can_ho {
+    int ma_can_ho PK
+    varchar so_can_ho
+    decimal dien_tich_m2
+  }
+  tien_ich {
+    int ma_tien_ich PK
+    varchar ten_tien_ich
+    smallint suc_chua
+  }
+  dat_lich_tien_ich {
+    int ma_dat_lich PK
+    datetime bat_dau
+    enum trang_thai
+  }
+  thong_bao {
+    int ma_thong_bao PK
+    varchar tieu_de
+    enum pham_vi
+  }
+  thong_bao_da_doc {
+    int ma_thong_bao PK
+    int ma_nguoi_dung PK
+    int nguoi_tiep_nhan PK
+    datetime ngay_doc
+  }
+  tien_ich ||--o{ dat_lich_tien_ich : "lượt đặt"
+  can_ho ||--o{ dat_lich_tien_ich : "căn sử dụng"
+  nguoi_dung ||--o{ dat_lich_tien_ich : "người đặt"
+  can_ho o|--o{ thong_bao : "phạm vi căn"
+  thong_bao ||--o{ thong_bao_da_doc : "biên nhận đọc"
+  nguoi_dung ||--o{ thong_bao_da_doc : "người đọc"

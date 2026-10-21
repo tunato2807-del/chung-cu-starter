@@ -232,6 +232,8 @@ Dừng backend cũ rồi đặt `$env:DB_NAME = "chung_cu_nghiem_thu"` trong ter
 
 [Bộ tài liệu báo cáo](docs/bao-cao/README.md) có Use Case/đặc tả, Activity/Sequence, Class Diagram, ERD logic/vật lý, từ điển 38 bảng và ma trận nghiệm thu theo đề cương. [Hướng dẫn VS Code](docs/cap-nhat-nghiem-thu-vscode.md) có đầy đủ code từng file mới, không cần tải ZIP. Chưa có migration hoặc dependency ứng dụng mới trong bản này.
 
+Để vẽ gọn và chèn Word: [ERD tổng quan 12 bảng và 6 sơ đồ phân hệ](docs/bao-cao/erd-gon/README.md), kèm PNG/SVG, PDF A4 ngang và file draw.io chỉnh sửa được. Database giữ nguyên 38 bảng; các bảng lịch sử/kỹ thuật có bảng đối chiếu và phần phụ lục riêng.
+
 ```powershell
 # Bắt lỗi thiếu service, sai đuôi .js.txt, thiếu dependency/file migration:
 node scripts/check-local.js

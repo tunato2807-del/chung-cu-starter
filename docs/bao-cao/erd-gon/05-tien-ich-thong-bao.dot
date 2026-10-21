@@ -1,0 +1,17 @@
+digraph ERD {
+graph [rankdir=LR, bgcolor="white", pad="0.3", nodesep="0.48", ranksep="0.68", splines=polyline, overlap=false, fontname="DejaVu Sans", fontsize=18, labelloc=t, label="Tiện ích và thông báo — 6 bảng"];
+node [shape=plain, fontname="DejaVu Sans", fontsize=14];
+edge [dir=none, color="#58716c", fontname="DejaVu Sans", fontsize=11, labeldistance=1.7, labelangle=25];
+"nguoi_dung" [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#c0d2cc"><TR><TD BGCOLOR="#145f59" ALIGN="LEFT"><FONT COLOR="white"><B>nguoi_dung</B></FONT></TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">PK · ma_nguoi_dung</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">ho_va_ten</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">vai_tro</TD></TR></TABLE>>];
+"can_ho" [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#c0d2cc"><TR><TD BGCOLOR="#145f59" ALIGN="LEFT"><FONT COLOR="white"><B>can_ho</B></FONT></TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">PK · ma_can_ho</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">so_can_ho</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">dien_tich_m2</TD></TR></TABLE>>];
+"tien_ich" [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#c0d2cc"><TR><TD BGCOLOR="#145f59" ALIGN="LEFT"><FONT COLOR="white"><B>tien_ich</B></FONT></TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">PK · ma_tien_ich</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">ten_tien_ich</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">suc_chua</TD></TR></TABLE>>];
+"dat_lich_tien_ich" [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#c0d2cc"><TR><TD BGCOLOR="#145f59" ALIGN="LEFT"><FONT COLOR="white"><B>dat_lich_tien_ich</B></FONT></TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">PK · ma_dat_lich</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">bat_dau</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">trang_thai</TD></TR></TABLE>>];
+"thong_bao" [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#c0d2cc"><TR><TD BGCOLOR="#145f59" ALIGN="LEFT"><FONT COLOR="white"><B>thong_bao</B></FONT></TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">PK · ma_thong_bao</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">tieu_de</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">pham_vi</TD></TR></TABLE>>];
+"thong_bao_da_doc" [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#c0d2cc"><TR><TD BGCOLOR="#145f59" ALIGN="LEFT"><FONT COLOR="white"><B>thong_bao_da_doc</B></FONT></TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">PK · ma_thong_bao</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">PK · ma_nguoi_dung</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">PK · nguoi_tiep_nhan</TD></TR><TR><TD BGCOLOR="#f5f9f7" ALIGN="LEFT">ngay_doc</TD></TR></TABLE>>];
+"tien_ich" -> "dat_lich_tien_ich" [label="lượt đặt",taillabel="1",headlabel="0..*"];
+"can_ho" -> "dat_lich_tien_ich" [label="căn sử dụng",taillabel="1",headlabel="0..*"];
+"nguoi_dung" -> "dat_lich_tien_ich" [label="người đặt",taillabel="1",headlabel="0..*"];
+"can_ho" -> "thong_bao" [label="phạm vi căn",taillabel="0..1",headlabel="0..*"];
+"thong_bao" -> "thong_bao_da_doc" [label="biên nhận đọc",taillabel="1",headlabel="0..*"];
+"nguoi_dung" -> "thong_bao_da_doc" [label="người đọc",taillabel="1",headlabel="0..*"];
+}

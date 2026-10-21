@@ -2,6 +2,8 @@
 
 Đây là mô hình phân tích theo mã nguồn hiện hành. [ERD vật lý](erd-phan-he.md) và [từ điển](tu-dien-du-lieu.md) mới là nguồn tên cột/khóa/ràng buộc đầy đủ. Không suy ra ứng dụng dùng ORM hoặc có các lớp runtime chỉ vì biểu diễn đối tượng nghiệp vụ bằng Class Diagram.
 
+Để đưa vào Word: [bộ ERD rút gọn](erd-gon/README.md) đã xuất 7 hình (tổng quan 12 bảng được chọn + 6 phân hệ), có PNG/SVG/PDF và nguồn draw.io. Đây là lựa chọn hiển thị theo schema 018, database vẫn giữ 38 bảng; [bảng ánh xạ](erd-gon/doi-chieu-38-bang.md) liệt kê đầy đủ các bảng chưa hiện trên hình tổng quan.
+
 ## Phân rã chức năng
 
 ```mermaid

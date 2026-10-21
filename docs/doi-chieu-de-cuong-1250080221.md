@@ -141,3 +141,9 @@ Chép từng file theo [hướng dẫn VS Code](cap-nhat-nghiem-thu-vscode.md). 
 Chạy bộ tạo có 58 kiểm tra API/tệp, đối chiếu tổng hóa đơn và số dư quỹ; từ chối chạy chồng lên DB đã có dữ liệu. Bốn kiểm tra công cụ chặn tên DB thật/test và origin không hợp lệ. Số dòng toàn bộ 38 bảng DB phát triển không đổi sau lần tạo mẫu tại workspace. Ngày/kỳ tính tương đối theo ngày Việt Nam lúc tạo, các mốc lịch sử là giả lập để thử báo cáo/biểu đồ.
 
 Dùng [code từng file cho VS Code](cap-nhat-du-lieu-nghiem-thu-vscode.md) để tạo bộ tại máy bạn và chuyển backend sang DB nghiệm thu. Bộ mẫu không thay thế hình minh chứng hay kết quả camera/ảnh trên điện thoại thật; không chuyển tiền vào tài khoản ngân hàng giả lập.
+
+## 12. ERD rút gọn để vẽ và chèn Word
+
+Theo lựa chọn của người dùng, **giữ database hiện tại 38 bảng**, rút gọn phần trình bày bằng [bộ ERD tổng quan và phân hệ](bao-cao/erd-gon/README.md). Tổng quan chọn 12 bảng; 6 hình chi tiết, mỗi hình 4–7 bảng, bao phủ đủ 24 bảng nghiệp vụ. Tám bảng lịch sử và sáu bảng kỹ thuật có [bảng đối chiếu đầy đủ](bao-cao/erd-gon/doi-chieu-38-bang.md); hai bảng lịch sử được minh họa thêm ở hình phản ánh/bảo trì.
+
+Đã có PNG/SVG để chèn Word, PDF A4 ngang 7 trang và file draw.io 7 trang chỉnh sửa được. Cột và các FK được chọn đều đối chiếu metadata schema 018, giữ các thành phần khóa chính; ẩn các cột/quan hệ hỗ trợ để giảm chồng đường nối. Bản vật lý đầy đủ và từ điển dữ liệu vẫn dùng cho phụ lục. Không có migration, thay đổi code hoặc dữ liệu nghiệp vụ; không diễn đạt rằng database đã giảm còn 12 bảng hoặc đã đo/tối ưu hiệu năng.

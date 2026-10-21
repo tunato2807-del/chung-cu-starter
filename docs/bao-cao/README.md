@@ -4,13 +4,15 @@ Bộ tài liệu bổ sung cho đề cương `1250080221_To_Hoang_Tuan.docx` c�
 
 Các nghiệp vụ chính đã có. Phần làm tiếp lần này là hoàn thiện hồ sơ chương 2 và chuẩn bị nghiệm thu chương 3, thay vì thêm phân hệ không có trong phạm vi đề tài.
 
+**Để vẽ/chèn Word gọn:** dùng [bộ ERD rút gọn](erd-gon/README.md), có tổng quan **12 bảng được chọn**, 6 hình phân hệ 4–7 bảng, PDF A4 ngang, SVG/PNG và file draw.io chỉnh sửa được. [Ánh xạ 38 bảng](erd-gon/doi-chieu-38-bang.md) giữ rõ phạm vi đầy đủ; database hiện tại vẫn 38 bảng. Chọn bản rút gọn cho nội dung chính và bản vật lý đầy đủ cho phụ lục.
+
 | Mục đề cương | Tài liệu dùng cho báo cáo |
 |---|---|
 | 2.1 Phân rã chức năng; 2.5 kiến trúc và luồng dữ liệu | [Kiến trúc, chức năng, lớp và ERD logic](kien-truc-va-mo-hinh.md) |
 | 2.2 Use Case tổng thể, BQL/cư dân, 5 đặc tả | [Use Case và đặc tả](use-case.md) |
 | 2.3 Bốn Activity và bốn Sequence | [Quy trình và trình tự](quy-trinh.md) |
 | 2.4 Class Diagram, ERD logic | [Mô hình phân tích](kien-truc-va-mo-hinh.md) |
-| 2.4 ERD vật lý và từ điển toàn bộ bảng | [ERD theo phân hệ](erd-phan-he.md), [ERD toàn bộ](erd-vat-ly.mmd), [từ điển dữ liệu](tu-dien-du-lieu.md) |
+| 2.4 ERD vật lý và từ điển toàn bộ bảng | [ERD rút gọn để chèn Word](erd-gon/README.md); [ERD vật lý theo phân hệ](erd-phan-he.md), [ERD toàn bộ](erd-vat-ly.mmd), [từ điển dữ liệu](tu-dien-du-lieu.md) cho phần chi tiết/phụ lục |
 | 3.3 Minh chứng demo; 3.4 Test Case và thực nghiệm | [Ma trận nghiệm thu và kế hoạch chụp hình](nghiem-thu.md) |
 | Cập nhật bản Windows không bị thiếu file | [Hướng dẫn VS Code với code từng file](../cap-nhat-nghiem-thu-vscode.md) |
 

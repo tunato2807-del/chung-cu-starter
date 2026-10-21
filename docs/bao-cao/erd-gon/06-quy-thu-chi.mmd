@@ -1,0 +1,26 @@
+erDiagram
+  direction LR
+  nguoi_dung {
+    int ma_nguoi_dung PK
+    varchar ho_va_ten
+    enum vai_tro
+  }
+  quy_tai_chinh {
+    int ma_quy PK
+    varchar ten_quy
+  }
+  phieu_thu_chi {
+    int ma_phieu PK
+    enum loai
+    decimal so_tien
+    enum trang_thai
+  }
+  chung_tu_thu_chi {
+    int ma_chung_tu PK
+    varchar ten_tep
+    enum loai_tep
+  }
+  quy_tai_chinh ||--o{ phieu_thu_chi : "thuộc quỹ"
+  nguoi_dung ||--o{ phieu_thu_chi : "người lập"
+  phieu_thu_chi o|--o| phieu_thu_chi : "đảo phiếu gốc"
+  phieu_thu_chi ||--o{ chung_tu_thu_chi : "chứng từ"

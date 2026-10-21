@@ -1,0 +1,76 @@
+erDiagram
+  direction LR
+  nguoi_dung {
+    int ma_nguoi_dung PK
+    varchar ho_va_ten
+    enum vai_tro
+  }
+  cu_dan {
+    int ma_cu_dan PK
+    varchar ho_va_ten
+    varchar so_dien_thoai
+  }
+  can_ho {
+    int ma_can_ho PK
+    varchar so_can_ho
+    decimal dien_tich_m2
+  }
+  lich_su_cu_tru {
+    int ma_lich_su_cu_tru PK
+    enum quan_he
+    date tu_ngay
+    date den_ngay
+  }
+  hoa_don {
+    int ma_hoa_don PK
+    char ky_thanh_toan
+    decimal tong_tien
+    enum trang_thai
+  }
+  thong_bao {
+    int ma_thong_bao PK
+    varchar tieu_de
+    enum pham_vi
+  }
+  tien_ich {
+    int ma_tien_ich PK
+    varchar ten_tien_ich
+    smallint suc_chua
+  }
+  dat_lich_tien_ich {
+    int ma_dat_lich PK
+    datetime bat_dau
+    enum trang_thai
+  }
+  thiet_bi {
+    int ma_thiet_bi PK
+    varchar ma_tai_san
+    varchar ten_thiet_bi
+  }
+  vi_tri_qr {
+    int ma_vi_tri_qr PK
+    varchar ten_vi_tri
+    enum loai
+  }
+  phan_anh {
+    int ma_phan_anh PK
+    varchar tieu_de
+    enum trang_thai
+  }
+  phieu_bao_tri {
+    int ma_phieu_bao_tri PK
+    enum loai
+    enum trang_thai
+  }
+  nguoi_dung o|--o| cu_dan : "tài khoản cá nhân"
+  cu_dan ||--o{ lich_su_cu_tru : "có đợt ở"
+  can_ho ||--o{ lich_su_cu_tru : "nơi cư trú"
+  can_ho ||--o{ hoa_don : "theo căn"
+  can_ho ||--o{ dat_lich_tien_ich : "căn đặt"
+  tien_ich ||--o{ dat_lich_tien_ich : "đặt sử dụng"
+  can_ho o|--o{ thong_bao : "gửi riêng căn"
+  thiet_bi o|--o{ vi_tri_qr : "liên kết hiện tại"
+  vi_tri_qr ||--o{ phan_anh : "phát sinh tại"
+  thiet_bi o|--o{ phan_anh : "thiết bị lúc gửi"
+  nguoi_dung o|--o{ phan_anh : "được giao"
+  thiet_bi ||--o{ phieu_bao_tri : "bảo trì"

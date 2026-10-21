@@ -1,0 +1,46 @@
+erDiagram
+  direction LR
+  nguoi_dung {
+    int ma_nguoi_dung PK
+    varchar ho_va_ten
+    enum vai_tro
+  }
+  khoi_toa_nha {
+    varchar khoi PK
+    varchar ten_khoi
+  }
+  tang_toa_nha {
+    varchar khoi PK
+    smallint tang PK
+    varchar ten_tang
+  }
+  can_ho {
+    int ma_can_ho PK
+    varchar so_can_ho
+    decimal dien_tich_m2
+  }
+  cu_dan {
+    int ma_cu_dan PK
+    varchar ho_va_ten
+    varchar so_dien_thoai
+  }
+  lich_su_cu_tru {
+    int ma_lich_su_cu_tru PK
+    enum quan_he
+    date tu_ngay
+    date den_ngay
+  }
+  phuong_tien {
+    int ma_phuong_tien PK
+    enum loai_xe
+    varchar bien_so
+  }
+  nguoi_dung o|--o| cu_dan : "tài khoản cá nhân"
+  cu_dan ||--o{ lich_su_cu_tru : "có đợt ở"
+  can_ho ||--o{ lich_su_cu_tru : "nơi cư trú"
+  tang_toa_nha ||--o{ can_ho : "thuộc tầng"
+  khoi_toa_nha ||--o{ tang_toa_nha : "thuộc khối"
+  can_ho o|--o| nguoi_dung : "tài khoản căn"
+  lich_su_cu_tru ||--o{ phuong_tien : "đăng ký theo đợt"
+  can_ho ||--o{ phuong_tien : "căn chịu phí"
+  cu_dan ||--o{ phuong_tien : "chủ xe"
