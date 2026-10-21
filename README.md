@@ -216,6 +216,18 @@ Xuất Excel/PDF toàn bộ danh sách theo bộ lọc ở **Căn hộ, Cư dân
 
 Nhập căn hộ vẫn tạo tài khoản riêng; mật khẩu mới chỉ trả một lần sau khi lưu, nếu mất kết quả cần cấp lại. Nhập chủ hộ không tự thay người phụ trách đang có. Nhập chỉ số không ghi đè kỳ đã có hoặc vượt khóa hóa đơn; xe phải thuộc cư dân đang ở đúng căn. Duyệt hóa đơn, xác nhận đã thu, ghi sổ quỹ, bàn giao chủ hộ và duyệt đặt lịch vẫn thực hiện qua màn nghiệp vụ.
 
+## Dữ liệu mẫu nghiệm thu toàn hệ thống
+
+[Bộ tạo dữ liệu mẫu](samples/nghiem-thu/README.md) có tài khoản từng vai trò/căn, nhà ở/cư dân/xe, 13 kỳ hóa đơn, QR/phản ánh kèm ảnh, bảo trì, tiện ích, thông báo, công nợ và quỹ. Tạo riêng trong `chung_cu_nghiem_thu`, giữ dữ liệu phát triển. Có [code từng file để chép vào VS Code](docs/cap-nhat-du-lieu-nghiem-thu-vscode.md), không cần tải ZIP, migration hoặc thư viện mới.
+
+```powershell
+node --env-file-if-exists=.env scripts/create-acceptance-data.js --docker --origin=https://192.168.1.208:5173
+```
+
+Thay IP theo địa chỉ frontend hiện tại. Sau khi báo hoàn tất, mở `backend/storage/acceptance/chung_cu_nghiem_thu/TAI-KHOAN.md`, `QR.html` và `README.md`. Có 17 file nhập và 24 báo cáo Excel/PDF, 58 kiểm tra API/tệp. Giữ file mật khẩu/mã tra cứu ngoài Git. Tài khoản ngân hàng là giả lập, không chuyển tiền thật.
+
+Dừng backend cũ rồi đặt `$env:DB_NAME = "chung_cu_nghiem_thu"` trong terminal backend và chạy `npm run start -w backend`; dùng cửa sổ ẩn danh đăng nhập bộ mẫu. Chạy lại bộ tạo trên DB đã có dữ liệu sẽ dừng giữ nguyên; không có lệnh reset/xóa. Hướng dẫn đầy đủ có cách tạo bộ mới và quay về DB cũ.
+
 ## Hồ sơ thiết kế và kiểm tra file khi chép tay
 
 [Bộ tài liệu báo cáo](docs/bao-cao/README.md) có Use Case/đặc tả, Activity/Sequence, Class Diagram, ERD logic/vật lý, từ điển 38 bảng và ma trận nghiệm thu theo đề cương. [Hướng dẫn VS Code](docs/cap-nhat-nghiem-thu-vscode.md) có đầy đủ code từng file mới, không cần tải ZIP. Chưa có migration hoặc dependency ứng dụng mới trong bản này.

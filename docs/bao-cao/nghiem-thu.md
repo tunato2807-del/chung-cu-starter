@@ -17,6 +17,8 @@ Backend/E2E chạy lần lượt vì cùng dùng `chung_cu_test`. Không dùng t
 
 ## Ma trận nghiệp vụ và kiểm thử
 
+Có [bộ dữ liệu nghiệm thu liên kết đủ 38 bảng](../../samples/nghiem-thu/README.md): database riêng, tài khoản từng vai trò/căn, 13 kỳ hóa đơn, QR/ảnh, mọi nhóm trạng thái và file Excel/PDF. Tạo trên máy demo theo [hướng dẫn VS Code](../cap-nhat-du-lieu-nghiem-thu-vscode.md), rồi dùng README sinh kèm bộ để chọn đúng ID/mã tra cứu/tài khoản. Bộ tạo có 58 kiểm tra API/tệp và 4 kiểm tra bảo vệ DB; không tự điền đạt vào cột máy thật.
+
 “Đạt tự động” nghĩa ca kiểm thử liên quan đã chạy đạt trong các suite ở trên. Cột máy thật cố ý để chưa nghiệm thu; điền kết quả, thời điểm, người thử và ảnh minh chứng khi thực hiện.
 
 | ID / UC | Ca và dữ liệu/thao tác | Kết quả mong đợi | Nguồn kiểm thử đạt tự động | Máy thật |

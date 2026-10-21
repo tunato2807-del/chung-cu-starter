@@ -133,3 +133,11 @@ Tại thời điểm bản 018 ban đầu còn thiếu bộ UML/ERD/đặc tả;
 - Rà soát lại trong Linux ngày 21/10/2026: `npm test` **215 đạt**, `npm run test:e2e` **47 đạt**, `npm run build` đạt. Công cụ mới có **9 kiểm tra đạt**; health/ready tại workspace trả 200. Không suy ra máy Windows/điện thoại đã chạy đúng.
 
 Chép từng file theo [hướng dẫn VS Code](cap-nhat-nghiem-thu-vscode.md). Bộ tài liệu này không thay file Word gốc; cần đưa hình/bảng phù hợp vào báo cáo và nghiệm thu các mục còn trống.
+
+## 11. Bộ dữ liệu mẫu nghiệm thu
+
+Đã bổ sung [bộ tạo dữ liệu](../samples/nghiem-thu/README.md) cho **database riêng**, bao phủ dữ liệu 38 bảng: 19 căn, 14 cư dân, 15 đăng ký xe, 79 hóa đơn/13 kỳ, 32 phản ánh/44 ảnh, 10 thiết bị/7 phiếu bảo trì, 3 tiện ích/8 lượt đặt, thông báo/nhắc phí/quỹ và lịch sử nhập file. Có 24 tài khoản, 5 QR, 17 tệp thử nhập, 24 báo cáo Excel/PDF; tài khoản/mật khẩu được sinh riêng trên máy demo và giữ trong thư mục Git ignore.
+
+Chạy bộ tạo có 58 kiểm tra API/tệp, đối chiếu tổng hóa đơn và số dư quỹ; từ chối chạy chồng lên DB đã có dữ liệu. Bốn kiểm tra công cụ chặn tên DB thật/test và origin không hợp lệ. Số dòng toàn bộ 38 bảng DB phát triển không đổi sau lần tạo mẫu tại workspace. Ngày/kỳ tính tương đối theo ngày Việt Nam lúc tạo, các mốc lịch sử là giả lập để thử báo cáo/biểu đồ.
+
+Dùng [code từng file cho VS Code](cap-nhat-du-lieu-nghiem-thu-vscode.md) để tạo bộ tại máy bạn và chuyển backend sang DB nghiệm thu. Bộ mẫu không thay thế hình minh chứng hay kết quả camera/ảnh trên điện thoại thật; không chuyển tiền vào tài khoản ngân hàng giả lập.
