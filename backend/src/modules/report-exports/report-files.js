@@ -73,8 +73,12 @@ export async function excel(report) {
     wb = new ExcelJS.Workbook();
   wb.creator = "Quản lý chung cư";
   wb.created = new Date();
-  const meta = wb.addWorksheet("Tổng hợp"),
-    data = wb.addWorksheet("Chi tiết");
+  // Mở danh sách ngay cả trong ứng dụng bỏ qua activeTab của workbook.
+  const data = wb.addWorksheet("Chi tiết", {
+      properties: { tabColor: { argb: "FF14635A" } },
+    }),
+    meta = wb.addWorksheet("Tổng hợp");
+  wb.views = [{ activeTab: 0, firstSheet: 0, visibility: "visible" }];
   meta.columns = [{ width: 38 }, { width: 75 }];
   meta.addRow(["CHUNG CƯ · QUẢN LÝ VẬN HÀNH"]);
   meta.mergeCells("A1:B1");
@@ -82,6 +86,14 @@ export async function excel(report) {
   meta.mergeCells("A2:B2");
   meta.addRow(["Thời điểm dữ liệu (Việt Nam)", time(report.at)]);
   meta.addRow(["Số dòng chi tiết", report.rows.length]);
+  const detailLink = meta.addRow([
+    {
+      text: `Xem danh sách ${report.rows.length.toLocaleString("vi-VN")} dòng tại trang Chi tiết →`,
+      hyperlink: "#'Chi tiết'!A1",
+      tooltip: "Mở danh sách đầy đủ theo bộ lọc đã áp dụng",
+    },
+  ]);
+  meta.mergeCells(detailLink.number, 1, detailLink.number, 2);
   for (const [label, value] of report.filters)
     meta.addRow([label, clean(value)]);
   meta.addRow([]);
@@ -110,6 +122,15 @@ export async function excel(report) {
     row.font = { name: "Calibri", size: 11, color: { argb: "FF183C3B" } };
     row.alignment = { vertical: "top", wrapText: true };
   });
+  detailLink.getCell(1).font = {
+    name: "Calibri",
+    size: 12,
+    bold: true,
+    underline: true,
+    color: { argb: "FF14635A" },
+  };
+  detailLink.height = 30;
+  meta.views = [{ showGridLines: false, tabSelected: false }];
   for (const n of [1, 2, summaryHeader]) {
     const row = meta.getRow(n);
     row.font = {
@@ -159,7 +180,11 @@ export async function excel(report) {
     fgColor: { argb: "FF14635A" },
   };
   data.getRow(1).alignment = { vertical: "middle", wrapText: true };
-  data.views = [{ state: "frozen", ySplit: 1 }];
+  data.views = [
+    { state: "frozen", ySplit: 1, activeCell: "A2", tabSelected: true },
+  ];
+  data.getCell("A1").note =
+    `${clean(report.title)}\nCó ${report.rows.length.toLocaleString("vi-VN")} dòng dữ liệu. Bộ lọc và số liệu tổng hợp nằm ở trang Tổng hợp.`;
   data.autoFilter = {
     from: { row: 1, column: 1 },
     to: { row: Math.max(1, data.rowCount), column: report.columns.length },

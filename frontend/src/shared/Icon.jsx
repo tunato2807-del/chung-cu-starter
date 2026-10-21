@@ -35,6 +35,10 @@ const paths = {
   shield: "m12 2 9 4v6c0 5-9 10-9 10S3 17 3 12V6l9-4Zm-4 10 3 3 5-6",
   refresh:
     "M20 7V3m0 4h-4M4 17v4m0-4h4M4 9a8 8 0 0 1 14-5l2 3M4 17l2 3a8 8 0 0 0 14-5",
+  previous: "m14 6-6 6 6 6",
+  next: "m10 6 6 6-6 6",
+  pause: "M8 5v14M16 5v14",
+  play: "m8 4 12 8-12 8V4Z",
 };
 
 export default function Icon({ name, size = 20, className = "" }) {

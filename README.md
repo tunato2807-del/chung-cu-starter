@@ -4,6 +4,8 @@ React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đ�
 
 Giao diện được thống nhất cho BQL, cư dân và kỹ thuật viên: menu chia nhóm có biểu tượng, menu mở rộng trên điện thoại, bảng/biểu mẫu/thống kê cùng phong cách, cổng cư dân và đăng nhập mới. Xem [ảnh minh họa và code đầy đủ từng file để cập nhật VS Code](docs/cap-nhat-giao-dien-chuyen-nghiep-vscode.md).
 
+Excel danh sách/báo cáo mở trực tiếp tại **Chi tiết**, có liên kết từ Tổng hợp; cổng cư dân và đăng nhập có **ảnh chụp tự chuyển**, nút dừng/chọn ảnh và hỗ trợ giảm chuyển động. Xem [code đầy đủ 7 file, ba ảnh cục bộ và Excel mẫu 19 căn](docs/cap-nhat-excel-chi-tiet-anh-that-vscode.md).
+
 ## Chạy môi trường phát triển
 
 Cần Node.js 24, npm và Docker có Compose. Chạy tại thư mục gốc repository:

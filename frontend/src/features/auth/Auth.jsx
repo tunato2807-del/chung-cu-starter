@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { getJson } from "../../shared/api/client.js";
 import Icon from "../../shared/Icon.jsx";
-import BuildingArt from "../../shared/BuildingArt.jsx";
+import PhotoCarousel from "../../shared/PhotoCarousel.jsx";
 import {
   ErrorBox,
   Field,
@@ -67,7 +67,7 @@ export function Login() {
           Theo dõi hóa đơn, gửi phản ánh và sử dụng dịch vụ chung cư ngay trong
           tài khoản của bạn.
         </p>
-        <BuildingArt />
+        <PhotoCarousel variant="auth" />
         <div className="auth-trust">
           <Icon name="shield" />
           <span>Đúng tài khoản. Đúng không gian của bạn.</span>

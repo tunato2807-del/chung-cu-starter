@@ -155,6 +155,9 @@ for (const width of [1440, 375])
           exact: true,
         })
         .click();
+      // Chờ chuyển loại báo cáo hoàn tất, thay vì thấy nút xuất của báo cáo
+      // cũ còn bật trong khoảng chuyển trang rồi bấm vào yêu cầu bị hủy.
+      await expect(page).toHaveURL(/[?&]bao_cao=THU_PHI(?:&|$)/);
       await expect(
         page.getByRole("button", { name: "Xuất Excel", exact: true }),
       ).toBeEnabled();

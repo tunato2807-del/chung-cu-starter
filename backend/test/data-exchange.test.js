@@ -483,6 +483,13 @@ test("data exchange: bounded real files, preview rollback, atomic imports, domai
           await wb.xlsx.load(r.buffer);
           const sheet = wb.getWorksheet("Chi tiết");
           assert.ok(sheet);
+          assert.equal(wb.worksheets[0].name, "Chi tiết");
+          assert.equal(wb.views[0].activeTab, 0);
+          assert.equal(sheet.views[0].activeCell, "A2");
+          assert.equal(
+            wb.getWorksheet("Tổng hợp").getCell("A5").value.hyperlink,
+            "#'Chi tiết'!A1",
+          );
           assert.doesNotMatch(
             sheet.getRow(1).values.join(" "),
             /mật khẩu|token/i,

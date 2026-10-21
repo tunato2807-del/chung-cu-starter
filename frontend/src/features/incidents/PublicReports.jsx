@@ -4,7 +4,7 @@ import { getJson } from "../../shared/api/client.js";
 import { useReportDraft } from "../../shared/use-report-draft.js";
 import { useAuth } from "../auth/Auth.jsx";
 import Icon from "../../shared/Icon.jsx";
-import BuildingArt from "../../shared/BuildingArt.jsx";
+import PhotoCarousel from "../../shared/PhotoCarousel.jsx";
 import {
   Badge,
   categories,
@@ -47,7 +47,7 @@ export function Portal() {
           </p>
         </div>
         <div className="portal-illustration">
-          <BuildingArt />
+          <PhotoCarousel />
           <div className="portal-art-caption">
             <span className="live-dot" />
             Kết nối cư dân & Ban quản lý

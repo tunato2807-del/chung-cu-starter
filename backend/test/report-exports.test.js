@@ -227,6 +227,15 @@ test("report exports: complete snapshot, real XLSX/PDF, exact money, filters and
           ),
           normal = await financial.debts({ khoi: block, che_do: "CAN_HO" });
         assert.equal(r.data.rowCount - 1, normal.total);
+        assert.equal(r.wb.worksheets[0].name, "Chi tiết");
+        assert.equal(r.wb.views[0].activeTab, 0);
+        assert.equal(r.data.views[0].state, "frozen");
+        assert.equal(r.data.views[0].activeCell, "A2");
+        assert.equal(r.meta.getCell("A5").value.hyperlink, "#'Chi tiết'!A1");
+        assert.match(
+          r.meta.getCell("A5").value.text,
+          /dòng tại trang Chi tiết/,
+        );
         assert.equal(Number(r.r.headers.get("x-export-rows")), normal.total);
         assert.equal(
           summary(r.meta, "Tổng hóa đơn đã gửi"),

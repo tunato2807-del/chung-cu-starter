@@ -65,7 +65,7 @@ export default function ReportExport({
       setNotice(
         template
           ? "Đã tải mẫu. Điền dữ liệu rồi chọn tệp để xem trước."
-          : `Đã tạo tệp ${format === "xlsx" ? "Excel" : "PDF"} gồm ${Number(r.headers.get("X-Export-Rows") || 0).toLocaleString("vi-VN")} dòng. Kiểm tra mục Tệp đã tải xuống của trình duyệt.`,
+          : `Đã tạo tệp ${format === "xlsx" ? "Excel" : "PDF"} gồm ${Number(r.headers.get("X-Export-Rows") || 0).toLocaleString("vi-VN")} dòng. ${format === "xlsx" ? "Excel mở tại trang Chi tiết; bộ lọc và số liệu chung nằm ở trang Tổng hợp. " : ""}Kiểm tra mục Tệp đã tải xuống của trình duyệt.`,
       );
     } catch (e) {
       if (!controller.signal.aborted && currentPath.current === requestPath)
@@ -111,7 +111,7 @@ export default function ReportExport({
         <small>
           {template
             ? `Mẫu Excel tối đa 100 dòng. Mẫu PDF có ${templateRows} trang, mỗi trang một hồ sơ.`
-            : "Xuất toàn bộ kết quả theo bộ lọc đã áp dụng."}
+            : "Xuất toàn bộ kết quả theo bộ lọc. Excel có trang Chi tiết và Tổng hợp; mở trực tiếp danh sách chi tiết."}
         </small>
       </div>
       {notice && (
