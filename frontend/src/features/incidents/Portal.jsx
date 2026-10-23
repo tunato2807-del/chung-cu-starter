@@ -35,13 +35,13 @@ export default function Portal() {
             Cổng dịch vụ cư dân
           </p>
           <h1 id="portal-title">
-            Chung cư của bạn,
+            Sống an tâm.
             <br />
-            <span>trong tầm tay.</span>
+            <span>Kết nối dễ dàng.</span>
           </h1>
           <p className="resident-intro">
-            Gửi phản ánh, theo dõi hóa đơn và đặt lịch tiện ích. Kết nối với Ban
-            quản lý để mọi việc trong căn hộ trở nên thuận tiện hơn.
+            Một nơi để gửi phản ánh, xem hóa đơn và đặt lịch tiện ích. Mọi việc
+            của căn hộ, ngay trong tầm tay.
           </p>
           <div className="resident-hero-actions">
             <a className="button primary" href="#dich-vu" onClick={showCatalog}>
@@ -53,43 +53,29 @@ export default function Portal() {
               Gửi phản ánh
             </Link>
           </div>
-          <div className="resident-hero-note">
-            <Icon name="shield" size={18} />
-            <span>Phản ánh qua QR. Theo dõi bằng mã tra cứu riêng.</span>
-          </div>
         </div>
         <div className="resident-hero-visual">
-          <PhotoCarousel />
-          <Link className="resident-photo-link" to="/tra-cuu">
-            <span className="resident-photo-icon">
-              <Icon name="message" size={22} />
-            </span>
-            <span>
-              <strong>Đã gửi phản ánh?</strong>
-              <small>Xem tiến độ xử lý của bạn</small>
-            </span>
-            <Icon name="arrow" size={18} />
-          </Link>
+          <PhotoCarousel variant="editorial" />
         </div>
       </section>
 
-      <div className="resident-service-strip" aria-label="Các nhóm dịch vụ">
-        <p>
-          Một không gian.
-          <br />
-          <strong>Mọi kết nối cần thiết.</strong>
-        </p>
-        {[
-          ["message", "Phản ánh & hỗ trợ"],
-          ["receipt", "Hóa đơn & thanh toán"],
-          ["calendar", "Tiện ích & thông tin"],
-        ].map(([icon, label]) => (
-          <span key={label}>
-            <Icon name={icon} size={23} />
-            {label}
-          </span>
-        ))}
-      </div>
+      <nav className="resident-service-strip" aria-label="Truy cập nhanh">
+        <a href="#dich-vu" onClick={showCatalog}>
+          <Icon name="search" size={20} />
+          Tìm dịch vụ
+          <Icon name="arrow" size={18} />
+        </a>
+        <Link to="/quet-qr">
+          <Icon name="qr" size={20} />
+          Phản ánh qua QR
+          <Icon name="arrow" size={18} />
+        </Link>
+        <Link to="/tra-cuu">
+          <Icon name="message" size={20} />
+          Theo dõi phản ánh
+          <Icon name="arrow" size={18} />
+        </Link>
+      </nav>
 
       <section
         className="resident-catalog"
@@ -99,8 +85,8 @@ export default function Portal() {
       >
         <div className="resident-section-heading">
           <div>
-            <p className="resident-kicker">Dịch vụ dành cho bạn</p>
-            <h2 id="catalog-title">Bạn cần hỗ trợ điều gì?</h2>
+            <p className="resident-kicker">01 / Dịch vụ cư dân</p>
+            <h2 id="catalog-title">Hôm nay, bạn cần gì?</h2>
             <p>
               Chọn dịch vụ để bắt đầu. Thông tin rõ ràng, thao tác thuận tiện.
             </p>
@@ -160,7 +146,12 @@ export default function Portal() {
         {results.length ? (
           <ul className="resident-services" aria-label="Danh sách dịch vụ">
             {results.map((service) => (
-              <ServiceCard key={service.id} service={service} user={user} />
+              <ServiceCard
+                key={service.id}
+                service={service}
+                user={user}
+                number={services.indexOf(service) + 1}
+              />
             ))}
           </ul>
         ) : (
@@ -193,7 +184,7 @@ export default function Portal() {
   );
 }
 
-function ServiceCard({ service, user }) {
+function ServiceCard({ service, user, number }) {
   const needsLogin = !user && !service.access;
   return (
     <li key={service.id}>
@@ -204,11 +195,11 @@ function ServiceCard({ service, user }) {
         state={needsLogin ? { service: service.id } : undefined}
       >
         <div className="resident-service-top">
+          <span className="resident-service-number" aria-hidden="true">
+            {String(number).padStart(2, "0")}
+          </span>
           <span className="resident-service-icon">
             <Icon name={service.icon} size={24} />
-          </span>
-          <span>
-            {serviceCategories.find(([id]) => id === service.category)?.[1]}
           </span>
         </div>
         <h3>{service.title}</h3>
@@ -229,11 +220,11 @@ function SupportProcess() {
   return (
     <section className="resident-support" aria-labelledby="support-title">
       <div>
-        <p className="resident-kicker">Luôn có kênh để lắng nghe</p>
+        <p className="resident-kicker">02 / Tiếp nhận & xử lý</p>
         <h2 id="support-title">
-          Một phản ánh.
+          Để nơi mình sống
           <br />
-          Một khởi đầu tốt hơn.
+          tốt hơn mỗi ngày.
         </h2>
         <p>
           Mô tả sự cố tại vị trí có mã QR. Ban quản lý tiếp nhận, phân công và

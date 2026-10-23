@@ -1045,7 +1045,12 @@ export function BillDetail() {
             </div>
           )}
           <section className="card bill-lines">
-            <div className="table-wrap">
+            <div
+              className="table-wrap"
+              tabIndex={0}
+              role="region"
+              aria-label="Chi tiết khoản thu, cuộn ngang để xem đủ cột"
+            >
               <table>
                 <thead>
                   <tr>

@@ -210,7 +210,7 @@ export default function Layout({ children }) {
         <div>
           <span className="footer-brand">CHUNG CƯ</span>
           <span className="footer-description">
-            Kết nối cư dân. Vận hành thuận tiện.
+            Nơi mình sống. Điều mình quan tâm.
           </span>
         </div>
         <nav className="footer-links" aria-label="Liên kết cuối trang">

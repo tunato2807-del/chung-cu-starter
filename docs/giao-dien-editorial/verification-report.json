@@ -1,0 +1,706 @@
+{
+  "widths": [
+    320,
+    768,
+    1024,
+    1440
+  ],
+  "axe": [
+    {
+      "label": "portal 320",
+      "violations": []
+    },
+    {
+      "label": "portal 768",
+      "violations": []
+    },
+    {
+      "label": "portal 1024",
+      "violations": []
+    },
+    {
+      "label": "portal 1440",
+      "violations": []
+    },
+    {
+      "label": "/quet-qr 320",
+      "violations": []
+    },
+    {
+      "label": "/tra-cuu 320",
+      "violations": []
+    },
+    {
+      "label": "/quet-qr 768",
+      "violations": []
+    },
+    {
+      "label": "/tra-cuu 768",
+      "violations": []
+    },
+    {
+      "label": "/quet-qr 1024",
+      "violations": []
+    },
+    {
+      "label": "/tra-cuu 1024",
+      "violations": []
+    },
+    {
+      "label": "/quet-qr 1440",
+      "violations": []
+    },
+    {
+      "label": "/tra-cuu 1440",
+      "violations": []
+    },
+    {
+      "label": "login 1440",
+      "violations": []
+    },
+    {
+      "label": "login 320",
+      "violations": []
+    },
+    {
+      "label": "QUAN_TRI_VIEN 320",
+      "violations": []
+    },
+    {
+      "label": "QUAN_TRI_VIEN 768",
+      "violations": []
+    },
+    {
+      "label": "QUAN_TRI_VIEN 1024",
+      "violations": []
+    },
+    {
+      "label": "QUAN_TRI_VIEN 1440",
+      "violations": []
+    },
+    {
+      "label": "apartments 1440",
+      "violations": []
+    },
+    {
+      "label": "apartments 320",
+      "violations": []
+    },
+    {
+      "label": "CU_DAN 320",
+      "violations": []
+    },
+    {
+      "label": "CU_DAN 768",
+      "violations": []
+    },
+    {
+      "label": "CU_DAN 1024",
+      "violations": []
+    },
+    {
+      "label": "CU_DAN 1440",
+      "violations": []
+    },
+    {
+      "label": "payment 320",
+      "violations": []
+    },
+    {
+      "label": "payment 768",
+      "violations": []
+    },
+    {
+      "label": "payment 1024",
+      "violations": []
+    },
+    {
+      "label": "payment 1440",
+      "violations": []
+    },
+    {
+      "label": "KY_THUAT_VIEN 320",
+      "violations": []
+    },
+    {
+      "label": "KY_THUAT_VIEN 768",
+      "violations": []
+    },
+    {
+      "label": "KY_THUAT_VIEN 1024",
+      "violations": []
+    },
+    {
+      "label": "KY_THUAT_VIEN 1440",
+      "violations": []
+    }
+  ],
+  "menuScreens": [
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/phan-anh",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/thong-bao",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/can-ho",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/so-do-toa-nha",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/cau-truc-toa-nha",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/cu-dan",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/tai-khoan-can-ho",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/phuong-tien",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/thiet-bi",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/tien-ich",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/vi-tri-qr",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/don-gia",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/chi-so",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/hoa-don",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/bao-cao-tai-chinh",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/quy",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/nhap-xuat",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/nhan-su",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/tai-khoan",
+      "width": 320
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/phan-anh",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/thong-bao",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/can-ho",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/so-do-toa-nha",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/cau-truc-toa-nha",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/cu-dan",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/tai-khoan-can-ho",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/phuong-tien",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/thiet-bi",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/tien-ich",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/vi-tri-qr",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/don-gia",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/chi-so",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/hoa-don",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/bao-cao-tai-chinh",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/quy",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/nhap-xuat",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/nhan-su",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/tai-khoan",
+      "width": 768
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/phan-anh",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/thong-bao",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/can-ho",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/so-do-toa-nha",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/cau-truc-toa-nha",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/cu-dan",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/tai-khoan-can-ho",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/phuong-tien",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/thiet-bi",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/tien-ich",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/vi-tri-qr",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/don-gia",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/chi-so",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/hoa-don",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/bao-cao-tai-chinh",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/quy",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/nhap-xuat",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/nhan-su",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/tai-khoan",
+      "width": 1024
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/phan-anh",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/thong-bao",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/can-ho",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/so-do-toa-nha",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/cau-truc-toa-nha",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/cu-dan",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/tai-khoan-can-ho",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/phuong-tien",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/thiet-bi",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/tien-ich",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/vi-tri-qr",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/don-gia",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/chi-so",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/hoa-don",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/bao-cao-tai-chinh",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/quy",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/nhap-xuat",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/nhan-su",
+      "width": 1440
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/tai-khoan",
+      "width": 1440
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/phan-anh",
+      "width": 320
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/hoa-don",
+      "width": 320
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/tien-ich",
+      "width": 320
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/thong-bao",
+      "width": 320
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/tai-khoan",
+      "width": 320
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/phan-anh",
+      "width": 768
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/hoa-don",
+      "width": 768
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/tien-ich",
+      "width": 768
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/thong-bao",
+      "width": 768
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/tai-khoan",
+      "width": 768
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/phan-anh",
+      "width": 1024
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/hoa-don",
+      "width": 1024
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/tien-ich",
+      "width": 1024
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/thong-bao",
+      "width": 1024
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/tai-khoan",
+      "width": 1024
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/phan-anh",
+      "width": 1440
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/hoa-don",
+      "width": 1440
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/tien-ich",
+      "width": 1440
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/thong-bao",
+      "width": 1440
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/tai-khoan",
+      "width": 1440
+    },
+    {
+      "role": "KY_THUAT_VIEN",
+      "url": "/ky-thuat/cong-viec",
+      "width": 320
+    },
+    {
+      "role": "KY_THUAT_VIEN",
+      "url": "/ky-thuat/bao-tri",
+      "width": 320
+    },
+    {
+      "role": "KY_THUAT_VIEN",
+      "url": "/tai-khoan",
+      "width": 320
+    },
+    {
+      "role": "KY_THUAT_VIEN",
+      "url": "/ky-thuat/cong-viec",
+      "width": 768
+    },
+    {
+      "role": "KY_THUAT_VIEN",
+      "url": "/ky-thuat/bao-tri",
+      "width": 768
+    },
+    {
+      "role": "KY_THUAT_VIEN",
+      "url": "/tai-khoan",
+      "width": 768
+    },
+    {
+      "role": "KY_THUAT_VIEN",
+      "url": "/ky-thuat/cong-viec",
+      "width": 1024
+    },
+    {
+      "role": "KY_THUAT_VIEN",
+      "url": "/ky-thuat/bao-tri",
+      "width": 1024
+    },
+    {
+      "role": "KY_THUAT_VIEN",
+      "url": "/tai-khoan",
+      "width": 1024
+    },
+    {
+      "role": "KY_THUAT_VIEN",
+      "url": "/ky-thuat/cong-viec",
+      "width": 1440
+    },
+    {
+      "role": "KY_THUAT_VIEN",
+      "url": "/ky-thuat/bao-tri",
+      "width": 1440
+    },
+    {
+      "role": "KY_THUAT_VIEN",
+      "url": "/tai-khoan",
+      "width": 1440
+    }
+  ],
+  "checks": [
+    "service search accents/empty/reset/categories; login redirect; carousel controls",
+    "carousel autoplay, pause and discover-services anchor",
+    "real business navigation for 3 roles; function search keyboard; mobile menu; no route/filter TypeError"
+  ],
+  "scope": "UI fixtures only, no DB reads/writes or real login; unsupported API responses intentionally 503"
+}
