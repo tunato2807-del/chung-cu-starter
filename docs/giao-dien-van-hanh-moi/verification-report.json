@@ -1,0 +1,210 @@
+{
+  "widths": [
+    320,
+    768,
+    1024,
+    1440
+  ],
+  "axe": [
+    {
+      "label": "portal 320",
+      "violations": []
+    },
+    {
+      "label": "portal 768",
+      "violations": []
+    },
+    {
+      "label": "portal 1024",
+      "violations": []
+    },
+    {
+      "label": "portal 1440",
+      "violations": []
+    },
+    {
+      "label": "login 1440",
+      "violations": []
+    },
+    {
+      "label": "login 320",
+      "violations": []
+    },
+    {
+      "label": "QUAN_TRI_VIEN 320",
+      "violations": []
+    },
+    {
+      "label": "QUAN_TRI_VIEN 768",
+      "violations": []
+    },
+    {
+      "label": "QUAN_TRI_VIEN 1024",
+      "violations": []
+    },
+    {
+      "label": "QUAN_TRI_VIEN 1440",
+      "violations": []
+    },
+    {
+      "label": "apartments 1440",
+      "violations": []
+    },
+    {
+      "label": "apartments 320",
+      "violations": []
+    },
+    {
+      "label": "CU_DAN 320",
+      "violations": []
+    },
+    {
+      "label": "CU_DAN 768",
+      "violations": []
+    },
+    {
+      "label": "CU_DAN 1024",
+      "violations": []
+    },
+    {
+      "label": "CU_DAN 1440",
+      "violations": []
+    },
+    {
+      "label": "KY_THUAT_VIEN 320",
+      "violations": []
+    },
+    {
+      "label": "KY_THUAT_VIEN 768",
+      "violations": []
+    },
+    {
+      "label": "KY_THUAT_VIEN 1024",
+      "violations": []
+    },
+    {
+      "label": "KY_THUAT_VIEN 1440",
+      "violations": []
+    }
+  ],
+  "menuScreens": [
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/phan-anh"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/thong-bao"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/can-ho"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/so-do-toa-nha"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/cau-truc-toa-nha"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/cu-dan"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/tai-khoan-can-ho"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/phuong-tien"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/thiet-bi"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/tien-ich"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/vi-tri-qr"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/don-gia"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/chi-so"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/hoa-don"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/bao-cao-tai-chinh"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/quy"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/nhap-xuat"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/quan-tri/nhan-su"
+    },
+    {
+      "role": "QUAN_TRI_VIEN",
+      "url": "/tai-khoan"
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/phan-anh"
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/hoa-don"
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/tien-ich"
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/cu-dan/thong-bao"
+    },
+    {
+      "role": "CU_DAN",
+      "url": "/tai-khoan"
+    },
+    {
+      "role": "KY_THUAT_VIEN",
+      "url": "/ky-thuat/cong-viec"
+    },
+    {
+      "role": "KY_THUAT_VIEN",
+      "url": "/ky-thuat/bao-tri"
+    },
+    {
+      "role": "KY_THUAT_VIEN",
+      "url": "/tai-khoan"
+    }
+  ],
+  "checks": [
+    "service search accents/empty/reset/categories; login redirect; carousel controls",
+    "carousel autoplay, pause and discover-services anchor",
+    "real business navigation for 3 roles; function search keyboard; mobile menu; no route/filter TypeError"
+  ],
+  "scope": "UI fixtures only, no DB reads/writes or real login; unsupported API responses intentionally 503"
+}

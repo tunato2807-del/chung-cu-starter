@@ -21,6 +21,9 @@ export default function Layout({ children }) {
       pathname.startsWith(path),
     );
   const groups = navigation[user?.vai_tro] || [];
+  const activeItem = groups
+    .flatMap((group) => group.items)
+    .find(([path]) => isFunctionActive(pathname, path));
   const initials =
     user?.ho_va_ten
       ?.trim()
@@ -193,12 +196,28 @@ export default function Layout({ children }) {
           </aside>
         )}
         <main id="main-content" tabIndex={-1} key={pathname}>
+          {workspace && (
+            <nav className="workspace-breadcrumb" aria-label="Vị trí hiện tại">
+              <Link to={homeFor(user)}>Không gian của tôi</Link>
+              <span aria-hidden="true">/</span>
+              <span aria-current="page">{activeItem?.[1] || "Chi tiết"}</span>
+            </nav>
+          )}
           {children}
         </main>
       </div>
       <footer>
-        <span className="footer-brand">CHUNG CƯ</span>
-        <span>Cổng tiếp nhận phản ánh & điều phối xử lý</span>
+        <div>
+          <span className="footer-brand">CHUNG CƯ</span>
+          <span className="footer-description">
+            Kết nối cư dân. Vận hành thuận tiện.
+          </span>
+        </div>
+        <nav className="footer-links" aria-label="Liên kết cuối trang">
+          <Link to="/">Dịch vụ cư dân</Link>
+          <Link to="/quet-qr">Gửi phản ánh</Link>
+          <Link to="/tra-cuu">Tra cứu tiến độ</Link>
+        </nav>
       </footer>
     </div>
   );

@@ -43,11 +43,11 @@ import ApartmentAccounts from "../features/residency/ApartmentAccounts.jsx";
 import BuildingMap from "../features/residency/BuildingMap.jsx";
 import BuildingStructure from "../features/residency/BuildingStructure.jsx";
 import {
-  Portal,
   Scanner,
   SubmitReport,
   LookupReport,
 } from "../features/incidents/PublicReports.jsx";
+import Portal from "../features/incidents/Portal.jsx";
 import { ReportDetail, ReportList } from "../features/incidents/Reports.jsx";
 import Locations from "../features/qr/Locations.jsx";
 import Vehicles from "../features/vehicles/Vehicles.jsx";

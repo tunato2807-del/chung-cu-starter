@@ -1,5 +1,7 @@
 # Quản lý chung cư · Phản ánh QR
 
+**Giao diện mới cho bản đầy đủ nghiệp vụ:** [xem ảnh cổng cư dân, đăng nhập, tổng quan và bảng căn hộ](docs/giao-dien-van-hanh-moi/README.md), [code đầy đủ 5 file để copy trong VS Code](docs/cap-nhat-giao-dien-moi-ban-nghiep-vu-vscode.md). Bản này dùng xanh navy/xanh dương, sidebar tối màu, ảnh thật và danh mục dịch vụ mới; giữ router, API và các nghiệp vụ đang có.
+
 React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web, báo cáo công nợ/thu phí, bảo trì thiết bị, đặt lịch tiện ích, thu chi/quỹ và nhập/xuất Excel/PDF** theo ba tài liệu thiết kế.
 
 Giao diện được thống nhất cho BQL, cư dân và kỹ thuật viên: menu chia nhóm có biểu tượng, menu mở rộng trên điện thoại, bảng/biểu mẫu/thống kê cùng phong cách, cổng cư dân và đăng nhập mới. Xem [ảnh minh họa và code đầy đủ từng file để cập nhật VS Code](docs/cap-nhat-giao-dien-chuyen-nghiep-vscode.md).
