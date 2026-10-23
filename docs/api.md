@@ -328,23 +328,23 @@ Sổ tính dau_ky = thu − chi trước từ ngày; tong_thu/tong_chi trong kho
 
 Khóa theo quỹ → phiếu → actor; mọi lập/sửa/đính kèm/duyệt/đảo cùng quỹ được tuần tự hóa. UUID + fingerprint bảo vệ tạo nháp lặp; cùng request 200 với ID cũ, mới 201, khác input cùng UUID 409. Không có bản ghi tiền tự động nào được tạo khi xem sổ hoặc migrate. Chứng từ PDF kiểm tra đầu/đuôi tệp và chỉ phục vụ tải xuống; ảnh được decode JPEG/PNG/WebP tĩnh ≤25 triệu pixel, xoay/thu nhỏ/bỏ metadata/encode JPEG. SHA256 nội dung chuẩn hóa chống upload trùng; retry toàn bộ tệp đã có trả thành công trước kiểm tra phiên bản, không tăng version. Tệp trùng một phần + tệp mới vẫn cần version hiện tại. Binary lưu trong database, không có URL storage công khai. Mọi thay đổi phiếu/chứng từ/audit cùng transaction.
 
-## Xuất báo cáo Excel / PDF
+## Xuất báo cáo Excel
 
 Không có migration mới. Endpoint GET chỉ dành cho BQL, áp dụng cùng quyền và bộ lọc của báo cáo JSON; không ghi/sửa trạng thái tài chính. Trả file đính kèm, không phải JSON khi thành công; lỗi vẫn trả `{error:{code,message,...}}`.
 
 | GET dưới /api | Nội dung / bộ lọc |
 |---|---|
-| /bao_cao/cong_no/xuat?dinh_dang=xlsx hoặc pdf | Cùng q,khoi,ma_can_ho,tu_ky,den_ky,che_do CAN_HO/HOA_DON/THEO_KY,qua_han như /cong_no |
-| /bao_cao/thu_phi/xuat?dinh_dang=xlsx hoặc pdf | Cùng q,khoi,ma_can_ho,tu_ngay,den_ngay,che_do GIAO_DICH/THEO_NGAY như /thu_phi |
-| /quy/:id/so_quy/xuat?dinh_dang=xlsx hoặc pdf | Cùng tu_ngay,den_ngay,che_do GIAO_DICH/THEO_THANG,nguon,loai,q như /so_quy |
+| /bao_cao/cong_no/xuat?dinh_dang=xlsx | Cùng q,khoi,ma_can_ho,tu_ky,den_ky,che_do CAN_HO/HOA_DON/THEO_KY,qua_han như /cong_no |
+| /bao_cao/thu_phi/xuat?dinh_dang=xlsx | Cùng q,khoi,ma_can_ho,tu_ngay,den_ngay,che_do GIAO_DICH/THEO_NGAY như /thu_phi |
+| /quy/:id/so_quy/xuat?dinh_dang=xlsx | Cùng tu_ngay,den_ngay,che_do GIAO_DICH/THEO_THANG,nguon,loai,q như /so_quy |
 
-Dinh_dang mặc định xlsx, chỉ nhận xlsx/pdf. Xuất toàn bộ các dòng khớp bộ lọc, bỏ page; JSON thường vẫn 20/trang. Không lặp gọi từng trang ở nhiều transaction. Cùng mã truy vấn/validation/snapshot được dùng cho cả JSON và xuất, bao gồm tổng/count/chi tiết. Header `X-Export-Rows` là số dòng chi tiết thực tế, `Content-Disposition: attachment` có tên ASCII và ngày, `Cache-Control: no-store`, `X-Content-Type-Options: nosniff`. Không tạo URL lưu trữ công khai.
+Dinh_dang mặc định xlsx, chỉ nhận xlsx; yêu cầu PDF trả 422. Xuất toàn bộ các dòng khớp bộ lọc, bỏ page; JSON thường vẫn 20/trang. Không lặp gọi từng trang ở nhiều transaction. Cùng mã truy vấn/validation/snapshot được dùng cho cả JSON và xuất, bao gồm tổng/count/chi tiết. Header `X-Export-Rows` là số dòng chi tiết thực tế, `Content-Disposition: attachment` có tên ASCII và ngày, `Cache-Control: no-store`, `X-Content-Type-Options: nosniff`. Không tạo URL lưu trữ công khai.
 
-Giới hạn Excel **10.000 dòng**, PDF **1.000 dòng** sau khi áp dụng chế độ xem/lọc. Nếu vượt, trả 422 EXPORT_TOO_LARGE trước SELECT chi tiết; không cắt bớt hoặc trả một tệp thiếu dòng. Thu hẹp khoảng thời gian/khối/căn/quỹ hoặc chọn tổng hợp/chọn Excel khi vượt PDF. Tối đa một lượt tạo tệp mỗi tài khoản và hai lượt toàn tiến trình; bận trả 429 EXPORT_BUSY với Retry-After: 3. Lỗi vẫn giải phóng lượt để thử lại.
+Giới hạn Excel **10.000 dòng** sau khi áp dụng chế độ xem/lọc. Nếu vượt, trả 422 EXPORT_TOO_LARGE trước SELECT chi tiết; không cắt bớt hoặc trả một tệp thiếu dòng. Thu hẹp khoảng thời gian/khối/căn/quỹ hoặc chọn chế độ tổng hợp. Tối đa một lượt tạo tệp mỗi tài khoản và hai lượt toàn tiến trình; bận trả 429 EXPORT_BUSY với Retry-After: 3. Lỗi vẫn giải phóng lượt để thử lại.
 
 Excel .xlsx có hai sheet Tổng hợp và Chi tiết: thời điểm dữ liệu Việt Nam, bộ lọc đã áp dụng, tổng hợp và ghi chú ý nghĩa; dữ liệu đầy đủ, bộ lọc cột và cố định tiêu đề. Số tiền nguyên đồng tới 15 chữ số ghi ô số; giá trị lớn hơn 15 chữ số ghi chuỗi thập phân nguyên gốc để tránh Excel làm tròn, kèm ghi chú. Mã căn, điện thoại, mã tham chiếu và nội dung người dùng luôn là chuỗi, không tạo formula/hyperlink từ nội dung nhập. Không dùng SUM formula để tạo tổng có nguy cơ sai độ chính xác; tổng lấy trực tiếp từ snapshot DB/BigInt.
 
-PDF thật A4 ngang, font Roboto từ gói pdfmake được nhúng, giữ tiếng Việt và nguyên số tiền, có tổng hợp/bộ lọc/thời điểm, bảng lặp header khi sang trang và số trang. Không dùng cửa sổ in, không gọi dịch vụ/font/CDN ngoài khi xuất. Cả hai định dạng giữ quy tắc hiện có: lọc quá hạn chỉ thay chi tiết công nợ; lọc nguồn/loại/từ khóa sổ quỹ chỉ thay chi tiết, không đổi tổng toàn quỹ. Chế độ tháng bỏ bộ lọc chi tiết như trên web; các dòng gốc/đảo vẫn giữ để theo dõi điều chỉnh. Tệp là snapshot tại lúc xuất, có thể mới hơn lần tải màn hình trước đó nếu đã phát sinh giao dịch.
+Excel giữ quy tắc hiện có: lọc quá hạn chỉ thay chi tiết công nợ; lọc nguồn/loại/từ khóa sổ quỹ chỉ thay chi tiết, không đổi tổng toàn quỹ. Chế độ tháng bỏ bộ lọc chi tiết như trên web; các dòng gốc/đảo vẫn giữ để theo dõi điều chỉnh. Tệp là snapshot tại lúc xuất, có thể mới hơn lần tải màn hình trước đó nếu đã phát sinh giao dịch.
 
 
 ## Nhập / xuất dữ liệu theo phân hệ (migration 014)
@@ -355,25 +355,25 @@ Chỉ BQL. Base `/api/trao_doi_du_lieu`. `kind`: `can_ho`, `cu_dan`, `phuong_tie
 |---|---|---|
 | GET | / | Danh mục, đường dẫn màn danh sách và cột/hướng dẫn nhập |
 | GET | /lich_su | 20 lô thành công gần nhất của chính người đang đăng nhập |
-| GET | /:kind/mau?dinh_dang=xlsx hoặc pdf | Excel sheet Nhap trống + hướng dẫn, hoặc PDF AcroForm có ô điền. PDF nhận so_dong=1..10, mặc định 3 |
-| POST | /:kind/xem_truoc | multipart tep: đúng 1 tệp .xlsx/PDF biểu mẫu, tối đa 5 MB. Trả rows [{line,values,error}],total,errors,xac_nhan |
+| GET | /:kind/mau?dinh_dang=xlsx | Excel sheet Nhap trống + Huong dan + Vi du; dữ liệu ví dụ không được nhập tự động |
+| POST | /:kind/xem_truoc | multipart tep: đúng 1 tệp .xlsx, tối đa 5 MB. Trả rows [{line,values,error}],total,errors,xac_nhan |
 | POST | /:kind/nhap | multipart tep,xac_nhan từ bản xem trước không lỗi,khoa_yeu_cau UUID. Trả so_dong,ket_qua gồm ID,tai_khoan_moi nếu có |
-| GET | /:kind/xuat?dinh_dang=xlsx hoặc pdf | Xuất toàn bộ dòng theo bộ lọc, bỏ page. File attachment, không tạo URL công khai |
+| GET | /:kind/xuat?dinh_dang=xlsx | Xuất toàn bộ dòng theo bộ lọc, bỏ page. File attachment, không tạo URL công khai |
 
-Bộ lọc xuất dùng cùng validation/truy vấn danh sách: can_ho(q,tang), cu_dan(q,ma_can_ho,ma_cu_dan,trang_thai), phuong_tien(q,loai_xe,trang_thai,ma_can_ho,ma_cu_dan), chi_so(ma_can_ho,ky_thanh_toan), thiet_bi(q,loai,trang_thai,lich), hoa_don(q,ma_can_ho,ky_thanh_toan,trang_thai), bao_tri(q,ma_thiet_bi,loai,trang_thai,qua_han), dat_lich(q,ma_tien_ich,ngay,trang_thai). Excel tối đa 10.000 dòng, PDF 1.000. Cả COUNT và số dòng đọc thực tế được chặn vượt, không trả file bị cắt.
+Bộ lọc xuất dùng cùng validation/truy vấn danh sách: can_ho(q,tang), cu_dan(q,ma_can_ho,ma_cu_dan,trang_thai), phuong_tien(q,loai_xe,trang_thai,ma_can_ho,ma_cu_dan), chi_so(ma_can_ho,ky_thanh_toan), thiet_bi(q,loai,trang_thai,lich), hoa_don(q,ma_can_ho,ky_thanh_toan,trang_thai), bao_tri(q,ma_thiet_bi,loai,trang_thai,qua_han), dat_lich(q,ma_tien_ich,ngay,trang_thai). Excel tối đa 10.000 dòng. Cả COUNT và số dòng đọc thực tế được chặn vượt, không trả file bị cắt.
 
-Nhập chỉ thêm mới, không nhận ID để cập nhật, tài khoản cá nhân hay trạng thái duyệt. Cột đúng danh mục; Excel Nhap hàng đầu là key, giữ điện thoại/mã dạng text, ngày ISO. Không nhận công thức/ô liên kết, macro hoặc tệp nén phình quá giới hạn. PDF cần marker đúng phần và các text field rN.key của mẫu, trang trống được bỏ qua. Không xử lý ảnh scan, OCR, bảng PDF hoặc PDF đã flatten/print. Parser chạy worker tối đa 15 giây với giới hạn heap; zip kiểm tra kích thước giải nén trước khi đọc.
+Nhập chỉ thêm mới, không nhận ID để cập nhật, tài khoản cá nhân hay trạng thái duyệt. Cột đúng danh mục; Excel Nhap hàng đầu là key, giữ điện thoại/mã dạng text, ngày ISO. Không nhận công thức/ô liên kết, macro hoặc tệp nén phình quá giới hạn. Chỉ đọc sheet Nhap. PDF không được hỗ trợ; mẫu trống trả IMPORT_EMPTY và hơn 100 dòng trả IMPORT_TOO_MANY_ROWS. Parser chạy worker tối đa 15 giây với giới hạn heap; zip kiểm tra kích thước giải nén trước khi đọc.
 
 Xem trước chạy các domain service trên cùng transaction rồi rollback. SAVEPOINT mỗi dòng để trả đầy đủ lỗi nghiệp vụ; deadlock/lỗi hệ thống hủy transaction. Token HMAC ràng buộc user + phiên token + kind + SHA256 tệp, hết hạn 15 phút hoặc khi server khởi động lại. Xác nhận đọc lại đúng tệp và kiểm tra lại domain guard dưới khóa; lỗi trả 409 IMPORT_CHANGED, rollback cả lô và lịch sử. Phiên hết hạn giữa quá trình cũng không commit.
 
 Ledger dot_nhap_du_lieu có UNIQUE(actor,UUID) và UNIQUE(actor,kind,SHA256), lưu kết quả ID/số dòng cùng transaction. Gửi lại trả da_nhap_truoc=true, không trả lại mật khẩu; nếu UUID dùng cho tệp khác trả 409 IMPORT_KEY_CONFLICT. Mật khẩu căn/chủ hộ mới chỉ trong response thành công lần đầu và không được lưu rõ trong ledger, log hay tệp xuất. Nếu response mất cần cấp lại ở màn tài khoản căn. Lịch sử chỉ hiện lô đã commit.
 
-422 cho tệp/cột sai, quá nhiều dòng, PDF không phải biểu mẫu; 413 IMPORT_UPLOAD_LIMIT khi vượt multipart/5 MB; 409 PREVIEW_REQUIRED/PREVIEW_EXPIRED khi sai/hết token; 429 FILE_BUSY khi đang xử lý tệp. Mỗi tài khoản một lượt, toàn tiến trình hai lượt (dùng chung slot xuất báo cáo tài chính), luôn giải phóng khi xử lý xong. API ghi giữ CSRF X-App-Request:1 và kiểm tra quyền/phiên như phần còn lại.
+422 cho tệp/cột sai, quá nhiều dòng, tệp không có sheet Nhap hoặc PDF; 413 IMPORT_UPLOAD_LIMIT khi vượt multipart/5 MB; 409 PREVIEW_REQUIRED/PREVIEW_EXPIRED khi sai/hết token; 429 FILE_BUSY khi đang xử lý tệp. Mỗi tài khoản một lượt, toàn tiến trình hai lượt (dùng chung slot xuất báo cáo tài chính), luôn giải phóng khi xử lý xong. API ghi giữ CSRF X-App-Request:1 và kiểm tra quyền/phiên như phần còn lại.
 
 
 ### Chọn sai phần dữ liệu và mã cư dân trong tệp xe
 
-Parser nhận diện đúng danh mục từ marker PDF hoặc tập header Excel có trong catalog. Nếu tệp thuộc phần khác phần được chọn: 422 `IMPORT_KIND_MISMATCH`, message ghi rõ tên phần đang chọn, tên phần tệp thuộc về và yêu cầu chọn lại. Không tự đổi phần hoặc lưu sang phần khác. Lỗi PDF không phải biểu mẫu/đã làm phẳng vẫn có thông báo riêng; không trộn với lỗi chọn sai phần. Các lỗi do hệ thống xác định có message công khai, lỗi thư viện vẫn được che nội dung nội bộ.
+Parser nhận diện đúng danh mục từ tập header Excel có trong catalog. Nếu tệp thuộc phần khác phần được chọn: 422 `IMPORT_KIND_MISMATCH`, message ghi rõ tên phần đang chọn, tên phần tệp thuộc về và yêu cầu chọn lại. Không tự đổi phần hoặc lưu sang phần khác. Lỗi tệp không có sheet Nhap hoặc PDF/đã làm phẳng vẫn có thông báo riêng; không trộn với lỗi chọn sai phần. Các lỗi do hệ thống xác định có message công khai, lỗi thư viện vẫn được che nội dung nội bộ.
 
 Import phương tiện chặn mã không phải số hoặc placeholder THAY_MA_CU_DAN_1/2 bằng thông báo hướng dẫn lấy mã tại Cư dân. Mã cư dân là ma_cu_dan của hồ sơ, không phải tên đăng nhập CH... của căn hộ. Các API danh sách/chi tiết đã trả mã này; giao diện mới hiển thị mã, nút sao chép và dùng bộ lọc ma_cu_dan hiện có. Không thay schema, quyền hoặc logic bàn giao tài khoản.
 

@@ -11,19 +11,13 @@
     "test": "node --env-file-if-exists=../.env --test --test-concurrency=1 test/*.test.js"
   },
   "dependencies": {
-    "@pdf-lib/fontkit": "1.1.1",
     "bcryptjs": "^3.0.3",
     "exceljs": "4.4.0",
     "express": "^5.1.0",
     "jose": "^6.2.12",
     "multer": "^2.4.0",
     "mysql2": "^3.24.6",
-    "pdf-lib": "1.17.1",
-    "pdfmake": "0.2.23",
     "sharp": "^0.35.5",
     "yauzl": "3.4.0"
-  },
-  "devDependencies": {
-    "pdf-parse": "1.1.1"
   }
 }

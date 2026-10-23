@@ -15,7 +15,7 @@ export default function DataTools({
       />
       {importable && (
         <Link className="button" to={`/quan-tri/nhap-xuat?phan_he=${kind}`}>
-          Nhập Excel / PDF
+          Nhập Excel
         </Link>
       )}
     </div>

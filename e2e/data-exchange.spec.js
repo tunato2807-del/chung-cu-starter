@@ -3,13 +3,12 @@ import { randomBytes } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import bcrypt from "bcryptjs";
 import ExcelJS from "exceljs";
-import { PDFDocument } from "pdf-lib";
 import { pool, rows } from "../backend/src/lib/db.js";
 import { login } from "../backend/src/modules/auth/auth.service.js";
 import { catalog } from "../backend/src/modules/data-exchange/catalog.js";
 
 for (const width of [1440, 375])
-  test(`BQL imports Excel and filled PDF with previews and exports complete filtered lists at ${width}px`, async ({
+  test(`BQL imports Excel with previews and exports complete filtered lists at ${width}px`, async ({
     browser,
   }) => {
     expect(process.env.DB_NAME).toBe("chung_cu_test");
@@ -77,7 +76,7 @@ for (const width of [1440, 375])
       await page.goto("/quan-tri/nhap-xuat?phan_he=thiet_bi");
       await expect(
         page.getByRole("heading", {
-          name: "Nhập / xuất Excel và PDF",
+          name: "Nhập / xuất Excel",
           exact: true,
         }),
       ).toBeVisible();
@@ -99,11 +98,12 @@ for (const width of [1440, 375])
         wb = new ExcelJS.Workbook();
       await wb.xlsx.load(template);
       expect(wb.getWorksheet("Nhap").rowCount).toBe(1);
-      const pdfTemplate = await download("Tải mẫu PDF"),
-        pdf = await PDFDocument.load(pdfTemplate);
-      expect(pdf.getPageCount()).toBe(3);
+      expect(wb.getWorksheet("Vi du").rowCount).toBe(2);
+      await expect(
+        page.getByRole("button", { name: "Tải mẫu PDF", exact: true }),
+      ).toHaveCount(0);
       const picker = page.getByLabel(
-        "Chọn tệp Excel hoặc PDF biểu mẫu (tối đa 5 MB)",
+        "Chọn tệp Excel .xlsx đã điền (tối đa 5 MB)",
       );
       await picker.setInputFiles({
         name: "bad.xlsx",
@@ -163,58 +163,28 @@ for (const width of [1440, 375])
           )
         ).length,
       ).toBe(2);
-      const fields = asset("PDF");
-      for (const [key, value] of Object.entries(fields))
-        pdf.getForm().getTextField(`r1.${key}`).setText(value);
-      await picker.setInputFiles({
-        name: "filled.pdf",
-        mimeType: "application/pdf",
-        buffer: Buffer.from(await pdf.save({ updateFieldAppearances: false })),
-      });
-      await page
-        .getByRole("button", { name: "Xem trước tệp", exact: true })
-        .click();
-      await expect(
-        page.getByRole("heading", { name: "1 dòng · 0 dòng lỗi" }),
-      ).toBeVisible();
-      await page.getByRole("button", { name: "Xác nhận nhập 1 dòng" }).click();
-      await expect(
-        page.getByRole("heading", { name: "Nhập thành công" }),
-      ).toBeVisible();
-      expect(
-        (
-          await rows(
-            pool,
-            "SELECT ma_thiet_bi FROM thiet_bi WHERE ma_nguoi_tao=?",
-            [user],
-          )
-        ).length,
-      ).toBe(3);
-      const plain = await PDFDocument.create();
-      plain.addPage();
       await picker.setInputFiles({
         name: "scan.pdf",
         mimeType: "application/pdf",
-        buffer: Buffer.from(await plain.save()),
+        buffer: Buffer.from("%PDF-1.7"),
       });
-      await page
-        .getByRole("button", { name: "Xem trước tệp", exact: true })
-        .click();
-      await expect(page.getByRole("alert")).toContainText(
-        "PDF cần là biểu mẫu",
-      );
-      await page.getByLabel("Phần dữ liệu").selectOption("can_ho");
+      await expect(page.getByRole("alert")).toContainText("Chỉ nhận tệp Excel");
       await expect(
         page.getByRole("button", { name: "Xem trước tệp", exact: true }),
       ).toBeDisabled();
+      await page.getByLabel("Phần dữ liệu").selectOption("can_ho");
+      await expect(
+        page.getByRole("heading", { name: "Nhập căn hộ", exact: true }),
+      ).toBeVisible();
       await expect(
         page.getByRole("button", { name: /Xác nhận nhập/ }),
       ).toHaveCount(0);
       await picker.setInputFiles({
-        name: "02_cu_dan.pdf",
-        mimeType: "application/pdf",
+        name: "02_cu_dan.xlsx",
+        mimeType:
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         buffer: await readFile(
-          new URL("../samples/nhap-du-lieu/02_cu_dan.pdf", import.meta.url),
+          new URL("../samples/nhap-du-lieu/02_cu_dan.xlsx", import.meta.url),
         ),
       });
       await page
@@ -223,8 +193,6 @@ for (const width of [1440, 375])
       await expect(page.getByRole("alert")).toContainText(
         "Bạn đang chọn “Căn hộ” nhưng tệp thuộc phần “Cư dân”",
       );
-      await expect(page.getByRole("alert")).not.toContainText("scan");
-      await expect(page.getByLabel("Phần dữ liệu")).toHaveValue("can_ho");
       await page.goto(`/quan-tri/can-ho?q=${block}&page=2`);
       await expect(
         page.getByRole("button", { name: "Xuất Excel", exact: true }),
@@ -233,10 +201,11 @@ for (const width of [1440, 375])
         result = new ExcelJS.Workbook();
       await result.xlsx.load(report);
       expect(result.getWorksheet("Chi tiết").rowCount).toBe(26);
-      const exportedPDF = await download("Xuất PDF");
-      expect(exportedPDF.subarray(0, 5).toString()).toBe("%PDF-");
       await expect(
-        page.getByRole("link", { name: "Nhập Excel / PDF", exact: true }),
+        page.getByRole("button", { name: "Xuất PDF", exact: true }),
+      ).toHaveCount(0);
+      await expect(
+        page.getByRole("link", { name: "Nhập Excel", exact: true }),
       ).toHaveAttribute("href", "/quan-tri/nhap-xuat?phan_he=can_ho");
       expect(errors).toEqual([]);
     } finally {

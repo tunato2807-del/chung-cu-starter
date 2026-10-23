@@ -11,6 +11,7 @@
   --accent-deep: #353a30;
   --surface: #fff;
   --charcoal: #171917;
+  --workspace-header-height: 80px;
   --control-line: #848b7b;
   --shadow: none;
   --highlight: #ddea9a;
@@ -274,8 +275,8 @@ h1 {
   padding: 0;
 }
 .is-workspace .sidebar {
-  top: 80px;
-  height: calc(100dvh - 80px);
+  top: var(--workspace-header-height);
+  height: calc(100dvh - var(--workspace-header-height));
   background: white;
   border-right: 1px solid var(--line);
   padding: 24px 16px;
@@ -1502,4 +1503,38 @@ footer {
   background: var(--brand-soft);
   border-color: var(--line);
   border-radius: 4px;
+}
+
+/* Header và sidebar dùng cùng mốc chiều cao; không để menu chừa khoảng trống sau khi header cuộn đi. */
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+.brand-copy strong {
+  font: inherit;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.brand-copy small {
+  display: block;
+  line-height: 1.4;
+}
+@media (min-width: 901px) {
+  .is-workspace .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+  }
+  .is-workspace .sidebar {
+    max-height: calc(100dvh - var(--workspace-header-height));
+  }
+}
+@media (max-width: 900px) {
+  .is-workspace .topbar,
+  .is-workspace .sidebar {
+    position: relative;
+    top: auto;
+  }
 }

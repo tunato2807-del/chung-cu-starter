@@ -1,12 +1,12 @@
 import { choice, fail } from "../../lib/http.js";
 import { pagination } from "../billing/billing.validation.js";
-export const limits = { xlsx: 10000, pdf: 1000 };
+export const limits = { xlsx: 10000 };
 export const format = (query) =>
-  choice(query.dinh_dang || "xlsx", "dinh_dang", ["xlsx", "pdf"]);
+  choice(query.dinh_dang || "xlsx", "dinh_dang", ["xlsx"]);
 export function reportPage(query, exportFormat) {
   const { page, offset } = pagination(exportFormat ? { page: 1 } : query);
   const limit = exportFormat
-    ? limits[choice(exportFormat, "dinh_dang", ["xlsx", "pdf"])]
+    ? limits[choice(exportFormat, "dinh_dang", ["xlsx"])]
     : 20;
   return {
     page,
@@ -17,13 +17,13 @@ export function reportPage(query, exportFormat) {
         fail(
           422,
           "EXPORT_TOO_LARGE",
-          `Báo cáo có ${Number(total).toLocaleString("vi-VN")} dòng, vượt giới hạn ${limit.toLocaleString("vi-VN")} dòng cho ${exportFormat === "pdf" ? "PDF" : "Excel"}. Hãy thu hẹp bộ lọc${exportFormat === "pdf" ? " hoặc chọn Excel" : ""}. Không có dữ liệu nào bị cắt bớt.`,
+          `Báo cáo có ${Number(total).toLocaleString("vi-VN")} dòng, vượt giới hạn ${limit.toLocaleString("vi-VN")} dòng cho Excel. Hãy thu hẹp bộ lọc. Không có dữ liệu nào bị cắt bớt.`,
         );
     },
   };
 }
-// Two file renderers at a time, at most one per account, with bounded output rows.
-// Load font/renderer code only when an export is requested; ordinary reads stay light.
+// Two Excel renderers at a time, at most one per account, with bounded output rows.
+// Load workbook code only when requested; ordinary reads stay light.
 const active = new Set();
 export function reserve(userId) {
   if (active.has(userId) || active.size >= 2)
@@ -200,181 +200,12 @@ export async function excel(report) {
   data.headerFooter.oddFooter = `&LQuản lý chung cư&CTrang &P / &N${report.currency === false ? "" : "&RĐơn vị: đồng"}`;
   return Buffer.from(await wb.xlsx.writeBuffer());
 }
-let printerPromise;
-async function printer() {
-  if (!printerPromise)
-    printerPromise = Promise.all([
-      import("pdfmake"),
-      import("pdfmake/build/vfs_fonts.js"),
-    ])
-      .then(
-        ([{ default: PdfPrinter }, { default: vfs }]) =>
-          new PdfPrinter({
-            Roboto: {
-              normal: Buffer.from(vfs["Roboto-Regular.ttf"], "base64"),
-              bold: Buffer.from(vfs["Roboto-Medium.ttf"], "base64"),
-              italics: Buffer.from(vfs["Roboto-Italic.ttf"], "base64"),
-              bolditalics: Buffer.from(
-                vfs["Roboto-MediumItalic.ttf"],
-                "base64",
-              ),
-            },
-          }),
-      )
-      .catch((error) => {
-        printerPromise = undefined;
-        throw error;
-      });
-  return printerPromise;
-}
-export async function pdf(report) {
-  const render = await printer(),
-    wide = report.columns.length >= 9,
-    pageWidth = 841.89,
-    usable = pageWidth - 64;
-  const weights = report.columns.map((c) => c.pdfWidth || 1),
-    sum = weights.reduce((a, b) => a + b, 0),
-    tableWidths = weights.map(
-      (n) => ((usable - report.columns.length * 9) * n) / sum,
-    );
-  const definition = {
-    pageSize: "A4",
-    pageOrientation: "landscape",
-    pageMargins: [32, 30, 32, 38],
-    info: {
-      title: report.title,
-      author: "Quản lý chung cư",
-      subject: "Báo cáo theo dữ liệu đã ghi nhận",
-    },
-    defaultStyle: { font: "Roboto", fontSize: wide ? 7 : 8, color: "#183c3b" },
-    footer: (current, total) => ({
-      margin: [32, 12, 32, 0],
-      columns: [
-        { text: "CHUNG CƯ · QUẢN LÝ VẬN HÀNH", fontSize: 7, color: "#627c73" },
-        {
-          text: `Trang ${current} / ${total}${report.currency === false ? "" : " · Đơn vị: đồng"}`,
-          alignment: "right",
-          fontSize: 7,
-          color: "#627c73",
-        },
-      ],
-    }),
-    content: [
-      {
-        text: "CHUNG CƯ · QUẢN LÝ VẬN HÀNH",
-        fontSize: 9,
-        color: "#14635a",
-        bold: true,
-        margin: [0, 0, 0, 6],
-      },
-      {
-        text: clean(report.title),
-        fontSize: 18,
-        bold: true,
-        margin: [0, 0, 0, 8],
-      },
-      {
-        text: `Dữ liệu lúc ${time(report.at)} (Việt Nam) · ${report.rows.length.toLocaleString("vi-VN")} dòng chi tiết`,
-        color: "#627c73",
-        margin: [0, 0, 0, 6],
-      },
-      {
-        text: report.filters.map(([k, v]) => `${k}: ${clean(v)}`).join("  ·  "),
-        margin: [0, 0, 0, 10],
-      },
-      {
-        table: {
-          widths: ["*", "*"],
-          body: report.summary.map((s) => [
-            { text: s.label, bold: true },
-            {
-              text: s.type === "money" ? money(s.value) : clean(s.value),
-              alignment: "right",
-              bold: true,
-            },
-          ]),
-        },
-        layout: {
-          hLineWidth: () => 0.4,
-          vLineWidth: () => 0,
-          hLineColor: () => "#dce5df",
-          fillColor: (i) => (i % 2 === 0 ? "#f2f6f4" : null),
-          paddingTop: () => 5,
-          paddingBottom: () => 5,
-        },
-        margin: [0, 0, 0, 10],
-      },
-      ...report.notes.map((note) => ({
-        text: clean(note),
-        color: "#627c73",
-        fontSize: 7,
-        margin: [0, 0, 0, 4],
-      })),
-      {
-        text: "CHI TIẾT BÁO CÁO",
-        bold: true,
-        color: "#14635a",
-        margin: [0, 10, 0, 6],
-      },
-      {
-        table: {
-          headerRows: 1,
-          widths: tableWidths,
-          body: [
-            report.columns.map((c) => ({
-              text: c.title,
-              bold: true,
-              color: "white",
-            })),
-            ...report.rows.map((r) =>
-              report.columns.map((c) => ({
-                text:
-                  c.type === "money" ? money(c.value(r)) : clean(c.value(r)),
-                alignment: ["money", "count"].includes(c.type)
-                  ? "right"
-                  : "left",
-              })),
-            ),
-          ],
-        },
-        layout: {
-          fillColor: (i) =>
-            i === 0 ? "#14635a" : i % 2 === 0 ? "#f2f6f4" : null,
-          hLineWidth: () => 0.4,
-          vLineWidth: () => 0,
-          hLineColor: () => "#dce5df",
-          paddingLeft: () => 4,
-          paddingRight: () => 4,
-          paddingTop: () => 5,
-          paddingBottom: () => 5,
-        },
-      },
-      ...(!report.rows.length
-        ? [
-            {
-              text: "Không có dữ liệu phù hợp với bộ lọc.",
-              margin: [0, 12, 0, 0],
-            },
-          ]
-        : []),
-    ],
-  };
-  const doc = render.createPdfKitDocument(definition);
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    doc.on("data", (x) => chunks.push(x));
-    doc.on("end", () => resolve(Buffer.concat(chunks)));
-    doc.on("error", reject);
-    doc.end();
-  });
-}
-export async function send(res, report, exportFormat) {
-  const body = await (exportFormat === "xlsx" ? excel(report) : pdf(report));
+export async function send(res, report, exportFormat = "xlsx") {
+  format({ dinh_dang: exportFormat });
+  const body = await excel(report);
   res.set(
     "Content-Type",
-    exportFormat === "xlsx"
-      ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      : "application/pdf",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   );
   res.set(
     "Content-Disposition",

@@ -21,7 +21,7 @@ Số liệu dưới đây là bộ mới tạo thành công ngày 21/10/2026 tro
 | Tiện ích | 3 tiện ích; 8 lượt đặt chờ/duyệt/từ chối/hủy từ ngày mai; một tiện ích tạm ngừng |
 | Thông báo | 6 thông báo gồm toàn bộ/khối/căn, nháp/thu hồi, nhắc phí; biên nhận đã đọc và mục chưa đọc |
 | Quỹ | 3 quỹ, 6 phiếu, 4 chứng từ; nháp/ghi sổ/hủy/đảo; quỹ bảo trì mẫu còn **18.500.000 đồng** |
-| Nhập/xuất | 6 đợt nhập thực tế qua service (5 Excel + 1 PDF biểu mẫu); 17 file thử nhập; 24 file báo cáo Excel/PDF đã xuất |
+| Nhập/xuất | 5 đợt nhập Excel thực tế qua service; các file thử nhập và báo cáo Excel |
 | Tổng quan | Hóa đơn phân bố 13 tháng và phản ánh ở nhiều mốc ngày, có dữ liệu cho ngày/tuần/tháng/quý/năm |
 
 Những con số có thể tăng sau khi bạn thử thêm dữ liệu. Số dư quỹ là số dư của phần mềm theo dữ liệu giả lập, không đại diện tiền thật. Tài khoản nhận tiền trong hóa đơn cố ý là tài khoản giả; chỉ thử hiển thị/đọc QR, không thực hiện chuyển khoản thật.
@@ -54,13 +54,13 @@ backend/storage/acceptance/chung_cu_nghiem_thu/
 ├── QR.html             Trang xem/in 5 QR
 ├── qr-*.png            Ảnh QR
 ├── anh/                Ảnh hiện trường/nghiệm thu giả lập
-├── nhap/               Excel và PDF còn trường điền
+├── nhap/               Excel đã điền theo từng phân hệ
 └── xuat/               Báo cáo từ dữ liệu mẫu
 ```
 
 Thư mục này đã nằm trong quy tắc Git ignore của `backend/storage/`; không đưa file tài khoản/mã tra cứu lên GitHub. File mẫu sinh ở workspace không dùng cho database máy bạn vì ID/token/password là riêng từng bộ; hãy chạy bộ tạo trên máy bạn.
 
-File `da-nhap-*` đã được nhập để có lịch sử. File `thu-*` chưa nhập: chọn đúng phân hệ và thử theo thứ tự **căn hộ → cư dân → phương tiện → chỉ số → thiết bị**. Bộ Excel dùng căn `NT-THU-X`, PDF dùng `NT-THU-P`; chọn được cả hai. Mã cư dân của xe đã điền theo bộ hiện tại, không còn placeholder. File `loi-dien-tich.xlsx` cố ý sai để thử xem trước/chặn nhập. Không Print to PDF/làm phẳng file biểu mẫu trước khi nhập.
+File `da-nhap-*` đã được nhập để có lịch sử. File `thu-*` chưa nhập: chọn đúng phân hệ và thử theo thứ tự **căn hộ → cư dân → phương tiện → chỉ số → thiết bị**. Bộ Excel dùng căn `NT-THU-X`. Mã cư dân của xe đã điền theo bộ hiện tại, không còn placeholder. File `loi-dien-tich.xlsx` cố ý sai để thử xem trước/chặn nhập. Chỉ nhập Excel .xlsx.
 
 ## Mở web bằng database mẫu
 

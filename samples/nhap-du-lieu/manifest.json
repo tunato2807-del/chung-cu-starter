@@ -1,8 +1,8 @@
 {
-  "ngay_tao": "2026-10-20",
-  "tag": "T261020",
+  "ngay_tao": "2026-10-23",
+  "tag": "T261023",
   "ngay_cu_tru": "2026-10-01",
-  "ngay_chot": "2026-10-19",
+  "ngay_chot": "2026-10-22",
   "files": [
     {
       "file": "01_can_ho.xlsx",
@@ -45,46 +45,6 @@
       "needs_resident_ids": false
     },
     {
-      "file": "01_can_ho.pdf",
-      "kind": "can_ho",
-      "format": "pdf",
-      "rows": 3,
-      "negative": false,
-      "needs_resident_ids": false
-    },
-    {
-      "file": "02_cu_dan.pdf",
-      "kind": "cu_dan",
-      "format": "pdf",
-      "rows": 4,
-      "negative": false,
-      "needs_resident_ids": false
-    },
-    {
-      "file": "03_phuong_tien.pdf",
-      "kind": "phuong_tien",
-      "format": "pdf",
-      "rows": 3,
-      "negative": false,
-      "needs_resident_ids": true
-    },
-    {
-      "file": "04_chi_so.pdf",
-      "kind": "chi_so",
-      "format": "pdf",
-      "rows": 6,
-      "negative": false,
-      "needs_resident_ids": false
-    },
-    {
-      "file": "05_thiet_bi.pdf",
-      "kind": "thiet_bi",
-      "format": "pdf",
-      "rows": 3,
-      "negative": false,
-      "needs_resident_ids": false
-    },
-    {
       "file": "90_loi_dien_tich_can_ho.xlsx",
       "kind": "can_ho",
       "format": "xlsx",
@@ -93,9 +53,9 @@
       "needs_resident_ids": false
     },
     {
-      "file": "91_loi_loai_thiet_bi.pdf",
+      "file": "91_loi_loai_thiet_bi.xlsx",
       "kind": "thiet_bi",
-      "format": "pdf",
+      "format": "xlsx",
       "rows": 2,
       "negative": true,
       "needs_resident_ids": false

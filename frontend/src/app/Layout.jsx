@@ -24,6 +24,8 @@ export default function Layout({ children }) {
   const activeItem = groups
     .flatMap((group) => group.items)
     .find(([path]) => isFunctionActive(pathname, path));
+  const roleLabel = roleNames[user?.vai_tro];
+  const showRole = user?.ho_va_ten?.trim() !== roleLabel;
   const initials =
     user?.ho_va_ten
       ?.trim()
@@ -63,8 +65,9 @@ export default function Layout({ children }) {
           <span className="brand-icon">
             <Icon name="building" size={26} />
           </span>
-          <span>
-            CHUNG CƯ<small>QUẢN LÝ VẬN HÀNH</small>
+          <span className="brand-copy">
+            <strong>CHUNG CƯ</strong>
+            <small>QUẢN LÝ VẬN HÀNH</small>
           </span>
         </Link>
         {workspace ? (
@@ -97,14 +100,14 @@ export default function Layout({ children }) {
                 </span>
                 <span className="profile-name">
                   {user.ho_va_ten}
-                  <small>{roleNames[user.vai_tro]}</small>
+                  {showRole && <small>{roleLabel}</small>}
                 </span>
                 <Icon name="chevron" size={16} />
               </summary>
               <div className="profile-dropdown">
                 <p>
                   {user.ho_va_ten}
-                  <small>{roleNames[user.vai_tro]}</small>
+                  {showRole && <small>{roleLabel}</small>}
                 </p>
                 <Link to={homeFor(user)}>
                   <Icon name="dashboard" />

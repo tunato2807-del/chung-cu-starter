@@ -56,7 +56,14 @@ async function excel(buffer, fields, kind) {
   const { default: ExcelJS } = await import("exceljs"),
     wb = new ExcelJS.Workbook();
   await wb.xlsx.load(buffer);
-  const sheet = wb.getWorksheet("Nhap") || wb.worksheets[0];
+  const sheet = wb.getWorksheet("Nhap");
+  if (!sheet)
+    invalid(
+      wb.getWorksheet("Chi tiết")
+        ? "Đây là tệp xuất báo cáo, không phải mẫu nhập. Tải mẫu Excel, điền sheet Nhap rồi xem trước lại."
+        : "Không tìm thấy sheet Nhap. Tải mẫu Excel và điền dữ liệu từ dòng 2 trong sheet Nhap.",
+      "IMPORT_SHEET_REQUIRED",
+    );
   if (
     !sheet ||
     wb.worksheets.length > 3 ||
@@ -99,48 +106,21 @@ async function excel(buffer, fields, kind) {
   }
   return records;
 }
-async function pdf(buffer, kind, fields) {
-  const { PDFDocument, PDFTextField } = await import("pdf-lib");
-  const doc = await PDFDocument.load(buffer);
-  if (doc.getPageCount() > 10) invalid("PDF biểu mẫu tối đa 10 trang.");
-  const form = doc.getForm();
-  const marker = form.getTextField("cc_import").getText(),
-    actual = /^CC-IMPORT\/1:([a-z_]+)$/.exec(marker || "")?.[1];
-  if (
-    actual !== kind &&
-    Object.hasOwn(catalog, actual) &&
-    catalog[actual].importable
-  )
-    wrongKind(actual, kind);
-  if (marker !== `CC-IMPORT/1:${kind}`)
-    invalid("PDF không đúng mẫu của phần đang nhập.");
-  const allowed = new Set(fields.map((f) => f.key)),
-    records = new Map();
-  if (form.getFields().length > 120)
-    invalid("PDF có quá nhiều trường dữ liệu.");
-  for (const field of form.getFields()) {
-    if (field.getName() === "cc_import") continue;
-    const match = /^r([1-9]|10)\.([a-z_0-9]+)$/.exec(field.getName());
-    if (!match || !allowed.has(match[2]) || !(field instanceof PDFTextField))
-      invalid("PDF chứa trường khác mẫu. Tải lại mẫu PDF biểu mẫu.");
-    const n = Number(match[1]);
-    if (!records.has(n)) records.set(n, { line: n, values: {} });
-    records.get(n).values[match[2]] = scalar(field.getText());
-  }
-  return [...records.values()]
-    .filter((r) => Object.values(r.values).some((v) => v !== ""))
-    .sort((a, b) => a.line - b.line);
-}
 try {
   const { kind, extension, bytes } = workerData,
     buffer = Buffer.from(bytes),
     fields = catalog[kind].fields;
-  const records = await (extension === "xlsx"
-    ? excel(buffer, fields, kind)
-    : pdf(buffer, kind, fields));
-  if (!records.length || records.length > 100)
+  if (extension !== "xlsx") invalid("Chỉ nhận tệp Excel .xlsx.");
+  const records = await excel(buffer, fields, kind);
+  if (!records.length)
     invalid(
-      "Tệp cần có từ 1 đến 100 dòng không trống (PDF tối đa 10 trang). Không có dòng nào được cắt bớt.",
+      "Chưa có dữ liệu trong sheet Nhap. Mẫu tải về là mẫu trống; điền từ dòng 2 rồi chọn lại tệp đã lưu. Sheet Huong dan và Vi du không được nhập.",
+      "IMPORT_EMPTY",
+    );
+  if (records.length > 100)
+    invalid(
+      "Tệp có hơn 100 dòng dữ liệu. Chia thành nhiều tệp, tối đa 100 dòng mỗi tệp. Không có dòng nào được cắt bớt.",
+      "IMPORT_TOO_MANY_ROWS",
     );
   parentPort.postMessage({ records });
 } catch (error) {
@@ -148,11 +128,9 @@ try {
     code: error.publicMessage ? error.code : "INVALID_FILE",
     error: error.publicMessage
       ? error.message
-      : workerData.extension === "pdf"
-        ? "PDF cần là biểu mẫu tải từ hệ thống, được điền và Lưu (Save). PDF scan, bản in hoặc PDF đã làm phẳng không còn ô điền để nhập."
-        : error.message.startsWith("Tệp") ||
-            /Dùng sheet|Tên cột|Tệp cần|Excel quá/.test(error.message)
-          ? error.message
-          : "Không đọc được tệp. Dùng tệp mẫu Excel hoặc PDF biểu mẫu, không đặt mật khẩu bảo vệ tệp.",
+      : error.message.startsWith("Tệp") ||
+          /Dùng sheet|Tên cột|Excel quá/.test(error.message)
+        ? error.message
+        : "Không đọc được tệp. Dùng mẫu Excel .xlsx không có mật khẩu bảo vệ.",
   });
 }

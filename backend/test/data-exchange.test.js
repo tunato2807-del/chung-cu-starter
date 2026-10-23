@@ -1,11 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
-import { readFile } from "node:fs/promises";
 import bcrypt from "bcryptjs";
 import ExcelJS from "exceljs";
-import { PDFDocument } from "pdf-lib";
-import parsePdf from "pdf-parse/lib/pdf-parse.js";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
 import { login } from "../src/modules/auth/auth.service.js";
@@ -136,7 +133,7 @@ test("data exchange: bounded real files, preview rollback, atomic imports, domai
       );
     });
     await t.test(
-      "templates have blank Excel input and editable PDF fields with Vietnamese labels",
+      "templates have blank Nhap and a separate example sheet; PDF requests are rejected",
       async () => {
         for (const kind of Object.keys(catalog).filter(
           (k) => catalog[k].importable,
@@ -147,15 +144,8 @@ test("data exchange: bounded real files, preview rollback, atomic imports, domai
           await wb.xlsx.load(r.buffer);
           assert.equal(wb.getWorksheet("Nhap").rowCount, 1);
           assert.equal(wb.getWorksheet("Nhap").getColumn(1).numFmt, "@");
-          const p = await req(`/${kind}/mau?dinh_dang=pdf&so_dong=1`);
-          assert.equal(p.status, 200, p.buffer.toString());
-          const pdf = await PDFDocument.load(p.buffer);
-          assert.equal(pdf.getPageCount(), 1);
-          assert.equal(
-            pdf.getForm().getFields().length,
-            catalog[kind].fields.length + 1,
-          );
-          assert.match((await parsePdf(p.buffer)).text, /MẪU NHẬP/);
+          assert.equal(wb.getWorksheet("Vi du").rowCount, 2);
+          assert.equal((await req(`/${kind}/mau?dinh_dang=pdf`)).status, 422);
         }
       },
     );
@@ -356,68 +346,37 @@ test("data exchange: bounded real files, preview rollback, atomic imports, domai
       },
     );
     await t.test(
-      "resident PDF reports the wrong category and commits all four residents in the correct category",
+      "resident Excel imports four Unicode profiles in the correct module",
       async () => {
-        const source = await readFile(
-          new URL("../../samples/nhap-du-lieu/02_cu_dan.pdf", import.meta.url),
-        );
-        const wrong = await preview("can_ho", source, "02_cu_dan.pdf");
-        assert.equal(wrong.status, 422);
-        assert.equal(wrong.json.error.code, "IMPORT_KIND_MISMATCH");
-        assert.match(wrong.json.error.message, /Căn hộ.*Cư dân/);
-        const doc = await PDFDocument.load(source);
-        for (let n = 1; n <= 3; n++) {
+        const data = [];
+        for (let n = 1; n <= 3; n++)
           await rows(
             pool,
             "INSERT INTO can_ho (so_can_ho,khoi,tang,dien_tich_m2) VALUES (?,?,1,60)",
             [`${suffix}-P${n}`, block],
           );
-        }
-        for (let n = 1; n <= 4; n++) {
-          doc
-            .getForm()
-            .getTextField(`r${n}.so_can_ho`)
-            .setText(`${suffix}-P${n <= 2 ? 1 : n - 1}`);
-          doc.getForm().getTextField(`r${n}.so_dien_thoai`).setText(phone());
-          doc.getForm().getTextField(`r${n}.ngay`).setText(day);
-        }
-        const file = Buffer.from(
-          await doc.save({ updateFieldAppearances: false }),
-        );
-        const result = await importGood("cu_dan", file, "02_cu_dan.pdf");
+        for (let n = 1; n <= 4; n++)
+          data.push({
+            ho_va_ten: `Nguyễn Thị Ánh ${n}`,
+            so_dien_thoai: phone(),
+            so_can_ho: `${suffix}-P${n <= 2 ? 1 : n - 1}`,
+            quan_he: "THANH_VIEN",
+            ngay: day,
+          });
+        const file = await xlsx("cu_dan", data);
+        const wrong = await preview("can_ho", file);
+        assert.equal(wrong.status, 422);
+        assert.equal(wrong.json.error.code, "IMPORT_KIND_MISMATCH");
+        const result = await importGood("cu_dan", file);
         assert.equal(result.so_dong, 4);
-        for (const row of result.ket_qua) {
+        for (const r of result.ket_qua) {
           const [person] = await rows(
             pool,
             "SELECT ho_va_ten FROM cu_dan WHERE ma_cu_dan=?",
-            [row.ma_cu_dan],
+            [r.ma_cu_dan],
           );
-          assert.match(person.ho_va_ten, /TEST P/);
+          assert.match(person.ho_va_ten, /Nguyễn Thị Ánh/);
         }
-      },
-    );
-    await t.test(
-      "filled PDF imports Unicode fields, blank pages are ignored and duplicates fail",
-      async () => {
-        const r = await req("/thiet_bi/mau?dinh_dang=pdf&so_dong=3"),
-          doc = await PDFDocument.load(r.buffer);
-        const values = asset(`I-${suffix}-PDF`);
-        for (const [key, value] of Object.entries(values))
-          doc.getForm().getTextField(`r1.${key}`).setText(value);
-        const file = Buffer.from(
-          await doc.save({ updateFieldAppearances: false }),
-        );
-        const result = await importGood("thiet_bi", file, "data.pdf");
-        assert.equal(result.so_dong, 1);
-        const [equipment] = await rows(
-          pool,
-          "SELECT ten_thiet_bi FROM thiet_bi WHERE ma_thiet_bi=?",
-          [result.ket_qua[0].ma_thiet_bi],
-        );
-        assert.equal(equipment.ten_thiet_bi, values.ten_thiet_bi);
-        const p = await preview("thiet_bi", file, "data.pdf");
-        assert.equal(p.json.data.errors, 1);
-        assert.equal((await preview("can_ho", file, "data.pdf")).status, 422);
       },
     );
     await t.test(
@@ -446,17 +405,14 @@ test("data exchange: bounded real files, preview rollback, atomic imports, domai
           Array.from({ length: 101 }, (_, i) => apt(`many-${i}`)),
         );
         assert.equal((await preview("can_ho", many)).status, 422);
-        const pdf = await PDFDocument.create();
-        pdf.addPage();
         assert.equal(
-          (await preview("can_ho", Buffer.from(await pdf.save()), "flat.pdf"))
-            .status,
+          (await preview("can_ho", Buffer.from("%PDF-1.7"), "file.pdf")).status,
           422,
         );
       },
     );
     await t.test(
-      "eight module exports produce real Excel/PDF, preserve leading zeroes and ignore page",
+      "eight module exports produce real Excel, preserve leading zeroes and ignore page",
       async () => {
         for (let i = 0; i < 23; i++) {
           const r = await rows(
@@ -502,9 +458,7 @@ test("data exchange: bounded real files, preview rollback, atomic imports, domai
             assert.match(sheet.getCell("C2").value, /^0\d{9}$/);
             assert.equal(sheet.getCell("C2").type, ExcelJS.ValueType.String);
           }
-          const pdf = await req(`/${kind}/xuat?${filters[kind]}&dinh_dang=pdf`);
-          assert.equal(pdf.status, 200, pdf.buffer.toString());
-          assert.ok((await parsePdf(pdf.buffer)).text.includes("Danh sách"));
+          assert.equal((await req(`/${kind}/xuat?dinh_dang=pdf`)).status, 422);
         }
       },
     );

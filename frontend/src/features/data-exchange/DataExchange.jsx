@@ -7,7 +7,6 @@ import { newRequestKey as requestKey } from "../../shared/request-key.js";
 
 function ImportPanel({ config, onDone }) {
   const [file, setFile] = useState(null),
-    [templateRows, setTemplateRows] = useState(3),
     [preview, setPreview] = useState(null),
     [result, setResult] = useState(null),
     [pending, setPending] = useState(""),
@@ -66,39 +65,25 @@ function ImportPanel({ config, onDone }) {
         <li>Chọn tệp, xem trước</li>
         <li>Kiểm tra rồi xác nhận</li>
       </ol>
-      <Field label="Số hồ sơ trong mẫu PDF">
-        <select
-          value={templateRows}
-          disabled={!!pending}
-          onChange={(e) => setTemplateRows(Number(e.target.value))}
-        >
-          {[1, 3, 5, 10].map((n) => (
-            <option key={n} value={n}>
-              {n} hồ sơ / {n} trang
-            </option>
-          ))}
-        </select>
-      </Field>
       <ReportExport
-        path={`/trao_doi_du_lieu/${config.key}/mau?so_dong=${templateRows}`}
+        path={`/trao_doi_du_lieu/${config.key}/mau`}
         template
-        templateRows={templateRows}
         disabled={!!pending}
       />
       <details className="import-help">
-        <summary>Hướng dẫn Excel và PDF biểu mẫu</summary>
+        <summary>Hướng dẫn điền mẫu Excel</summary>
         <p>
           Excel: điền sheet <strong>Nhap</strong> từ dòng 2, giữ nguyên tên cột.
           Số điện thoại và mã căn cần là văn bản để giữ số 0 đầu. Ngày dùng
-          YYYY-MM-DD, số thập phân dùng dấu chấm.
+          YYYY-MM-DD, số thập phân dùng dấu chấm. Mẫu tải về chưa có dữ liệu;
+          sheet Vi du chỉ minh họa và không được nhập tự động.
         </p>
-        <p>
-          PDF: tải mẫu, mở bằng Chrome hoặc Adobe Acrobat, điền các ô rồi chọn{" "}
-          <strong>Lưu / Save</strong>. Không dùng In / Print to PDF vì ô điền sẽ
-          bị mất. Trang trống được bỏ qua. PDF scan và PDF báo cáo không dùng để
-          nhập dữ liệu.
-        </p>
-        <div className="table-wrap">
+        <div
+          className="table-wrap"
+          tabIndex={0}
+          role="region"
+          aria-label="Hướng dẫn cột trong mẫu Excel"
+        >
           <table>
             <thead>
               <tr>
@@ -136,10 +121,10 @@ function ImportPanel({ config, onDone }) {
           các ô THAY_MA_CU_DAN_1/2; không dùng tên tài khoản CH...
         </p>
       )}
-      <Field label="Chọn tệp Excel hoặc PDF biểu mẫu (tối đa 5 MB)">
+      <Field label="Chọn tệp Excel .xlsx đã điền (tối đa 5 MB)">
         <input
           type="file"
-          accept=".xlsx,.pdf"
+          accept=".xlsx"
           disabled={!!pending}
           onChange={(e) => {
             const selected = e.target.files?.[0] || null;
@@ -147,9 +132,13 @@ function ImportPanel({ config, onDone }) {
             setPreview(null);
             setResult(null);
             setError(
-              selected?.size > 5 * 1024 * 1024
-                ? new Error("Tệp tối đa 5 MB.")
-                : null,
+              selected && !/\.xlsx$/i.test(selected.name)
+                ? new Error(
+                    "Chỉ nhận tệp Excel .xlsx. Hãy chọn tệp đã điền trong sheet Nhap.",
+                  )
+                : selected?.size > 5 * 1024 * 1024
+                  ? new Error("Tệp tối đa 5 MB.")
+                  : null,
             );
             key.current = null;
           }}
@@ -158,7 +147,12 @@ function ImportPanel({ config, onDone }) {
       <div className="actions">
         <button
           type="button"
-          disabled={!file || file.size > 5 * 1024 * 1024 || !!pending}
+          disabled={
+            !file ||
+            !/\.xlsx$/i.test(file.name) ||
+            file.size > 5 * 1024 * 1024 ||
+            !!pending
+          }
           onClick={() => run(false)}
         >
           {pending === "preview" ? "Đang kiểm tra…" : "Xem trước tệp"}
@@ -176,11 +170,16 @@ function ImportPanel({ config, onDone }) {
             Khi xác nhận, hệ thống kiểm tra lại và chỉ lưu nếu toàn bộ lô hợp
             lệ.
           </p>
-          <div className="table-wrap">
+          <div
+            className="table-wrap"
+            tabIndex={0}
+            role="region"
+            aria-label="Bản xem trước dữ liệu Excel"
+          >
             <table>
               <thead>
                 <tr>
-                  <th>Dòng / trang</th>
+                  <th>Dòng Excel</th>
                   {config.fields.map((f) => (
                     <th key={f.key}>{f.label}</th>
                   ))}
@@ -234,7 +233,12 @@ function ImportPanel({ config, onDone }) {
                 Sao chép và bàn giao riêng cho người phụ trách. Không đưa mật
                 khẩu vào tệp danh sách.
               </p>
-              <div className="table-wrap">
+              <div
+                className="table-wrap"
+                tabIndex={0}
+                role="region"
+                aria-label="Tài khoản căn hộ vừa tạo"
+              >
                 <table>
                   <thead>
                     <tr>
@@ -286,7 +290,7 @@ export default function DataExchange() {
   return (
     <>
       <p className="eyebrow">DỮ LIỆU & BÁO CÁO</p>
-      <h1>Nhập / xuất Excel và PDF</h1>
+      <h1>Nhập / xuất Excel</h1>
       <p>
         Nhập hồ sơ theo mẫu và xuất danh sách để đối chiếu. Chỉ ban quản lý được
         sử dụng chức năng này.
@@ -318,8 +322,8 @@ export default function DataExchange() {
           <section className="card">
             <h2>Xuất {config.title.toLowerCase()}</h2>
             <p>
-              Xuất toàn bộ kết quả, tối đa 10.000 dòng Excel hoặc 1.000 dòng
-              PDF. Có thể xuất theo bộ lọc ngay tại{" "}
+              Xuất toàn bộ kết quả theo bộ lọc, tối đa 10.000 dòng Excel. Có thể
+              xuất theo bộ lọc ngay tại{" "}
               <Link to={config.path}>màn danh sách</Link>.
             </p>
             <form
@@ -384,7 +388,12 @@ export default function DataExchange() {
       )}
       <section className="card">
         <h2>20 lần nhập gần nhất của bạn</h2>
-        <div className="table-wrap">
+        <div
+          className="table-wrap"
+          tabIndex={0}
+          role="region"
+          aria-label="Lịch sử nhập Excel"
+        >
           <table>
             <thead>
               <tr>
@@ -418,9 +427,9 @@ export default function DataExchange() {
         <h2>Báo cáo tài chính</h2>
         <div className="actions">
           <Link to="/quan-tri/bao-cao-tai-chinh">
-            Công nợ & thu phí · Excel / PDF
+            Công nợ & thu phí · Excel
           </Link>
-          <Link to="/quan-tri/quy">Sổ quỹ · Excel / PDF</Link>
+          <Link to="/quan-tri/quy">Sổ quỹ · Excel</Link>
         </div>
       </section>
     </>

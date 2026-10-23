@@ -55,12 +55,10 @@ dataExchangeRouter.get("/:kind/mau", async (req, res) =>
     if (!catalog[req.params.kind].importable)
       fail(422, "IMPORT_UNSUPPORTED", "Phần này chỉ hỗ trợ xuất danh sách.");
     const f = format(req.query),
-      buffer = await template(req.params.kind, f, req.query);
+      buffer = await template(req.params.kind, f);
     res.set(
       "Content-Type",
-      f === "xlsx"
-        ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        : "application/pdf",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     );
     res.set(
       "Content-Disposition",
@@ -97,7 +95,7 @@ for (const [action, commit] of [
               reject(
                 Object.assign(
                   new Error(
-                    "Chọn đúng một tệp Excel/PDF tối đa 5 MB và các trường xác nhận của biểu mẫu.",
+                    "Chọn đúng một tệp Excel .xlsx tối đa 5 MB và các trường xác nhận của biểu mẫu.",
                   ),
                   { status: 413, code: "IMPORT_UPLOAD_LIMIT" },
                 ),

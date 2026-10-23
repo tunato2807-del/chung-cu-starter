@@ -1,22 +1,26 @@
 import { Worker } from "node:worker_threads";
 import { extname } from "node:path";
-import { fail, integer } from "../../lib/http.js";
+import { fail } from "../../lib/http.js";
 import { catalog } from "./catalog.js";
 
 export async function parseFile(file, kind) {
-  if (!file) fail(422, "FILE_REQUIRED", "Chọn tệp Excel hoặc PDF biểu mẫu.");
+  if (!file)
+    fail(422, "FILE_REQUIRED", "Chọn tệp Excel .xlsx đã điền dữ liệu.");
   const extension = extname(file.originalname).slice(1).toLowerCase();
+  if (!Object.hasOwn(catalog, kind) || !catalog[kind].importable)
+    fail(422, "IMPORT_UNSUPPORTED", "Phần dữ liệu này không hỗ trợ nhập tệp.");
   if (
-    !["xlsx", "pdf"].includes(extension) ||
-    (extension === "pdf"
-      ? file.buffer.subarray(0, 5).toString() !== "%PDF-"
-      : file.buffer.subarray(0, 2).toString() !== "PK")
+    extension !== "xlsx" ||
+    !Buffer.isBuffer(file.buffer) ||
+    file.buffer.subarray(0, 2).toString() !== "PK"
   )
     fail(
       422,
       "INVALID_FILE",
-      "Chỉ nhận .xlsx hoặc PDF biểu mẫu đúng định dạng. Không nhận .xls, macro hay ảnh scan.",
+      "Chỉ nhận tệp Excel .xlsx. PDF, .xls, macro và ảnh không được hỗ trợ.",
     );
+  if (file.buffer.length > 5 * 1024 * 1024)
+    fail(413, "IMPORT_UPLOAD_LIMIT", "Tệp Excel tối đa 5 MB.");
   return new Promise((resolve, reject) => {
     const worker = new Worker(
       new URL("./import-parser.worker.js", import.meta.url),
@@ -75,113 +79,63 @@ export async function parseFile(file, kind) {
     });
   });
 }
-export async function template(kind, format, query) {
-  const config = catalog[kind];
-  if (format === "xlsx") {
-    const { default: ExcelJS } = await import("exceljs"),
-      wb = new ExcelJS.Workbook(),
-      sheet = wb.addWorksheet("Nhap");
-    sheet.columns = config.fields.map((f) => ({
-      header: f.key,
-      key: f.key,
-      width: 25,
-      style: { numFmt: "@" },
-    }));
-    sheet.views = [{ state: "frozen", ySplit: 1 }];
-    sheet.getRow(1).font = { bold: true, color: { argb: "FFFFFFFF" } };
-    sheet.getRow(1).fill = {
-      type: "pattern",
-      pattern: "solid",
-      fgColor: { argb: "FF14635A" },
-    };
-    const guide = wb.addWorksheet("Huong dan");
-    guide.columns = [
-      { width: 28 },
-      { width: 28 },
-      { width: 28 },
-      { width: 85 },
-    ];
-    guide.addRow([`Mẫu nhập ${config.title}`]);
-    guide.addRow([config.note]);
-    guide.addRow([
-      "Điền sheet Nhap từ dòng 2. Không đổi tên cột. Các dòng ví dụ dưới đây không được nhập tự động.",
-    ]);
-    guide.addRow(["Tên cột", "Ý nghĩa", "Ví dụ", "Hướng dẫn"]);
-    config.fields.forEach((f) =>
-      guide.addRow([f.key, f.label, f.example, f.hint]),
-    );
-    guide.eachRow((r) => {
-      r.alignment = { wrapText: true, vertical: "top" };
-      r.height = 36;
-    });
-    return Buffer.from(await wb.xlsx.writeBuffer());
-  }
-  const count = integer(query.so_dong || 3, "so_dong");
-  if (count < 1 || count > 10)
-    fail(
-      422,
-      "INVALID_COUNT",
-      "Mẫu PDF từ 1 đến 10 trang, mỗi trang một hồ sơ.",
-    );
-  const [{ PDFDocument, rgb }, { default: fontkit }, { default: vfs }] =
-    await Promise.all([
-      import("pdf-lib"),
-      import("@pdf-lib/fontkit"),
-      import("pdfmake/build/vfs_fonts.js"),
-    ]);
-  const doc = await PDFDocument.create();
-  doc.registerFontkit(fontkit);
-  const font = await doc.embedFont(
-      Buffer.from(vfs["Roboto-Regular.ttf"], "base64"),
-    ),
-    form = doc.getForm();
-  const meta = form.createTextField("cc_import");
-  meta.setText(`CC-IMPORT/1:${kind}`);
-  meta.enableReadOnly();
-  for (let n = 1; n <= count; n++) {
-    const page = doc.addPage([595.28, 841.89]);
-    const draw = (s, x, y, size = 10) =>
-      page.drawText(s, { x, y, font, size, color: rgb(0.08, 0.3, 0.28) });
-    draw(`MẪU NHẬP · ${config.title.toUpperCase()} · Hồ sơ ${n}`, 32, 805, 15);
-    draw(
-      "Điền các ô, chọn Lưu/Save. Không dùng In/Print to PDF (sẽ mất ô điền).",
-      32,
-      783,
-      9,
-    );
-    draw(
-      "Ngày: YYYY-MM-DD · Số thập phân dùng dấu chấm · Có/không: 1/0.",
-      32,
-      767,
-      9,
-    );
-    const step = Math.min(72, 650 / config.fields.length);
-    config.fields.forEach((f, i) => {
-      const y = 735 - i * step;
-      draw(`${i + 1}. ${f.label} (${f.key})`, 32, y, 10);
-      const input = form.createTextField(`r${n}.${f.key}`);
-      input.setMaxLength(1000);
-      input.addToPage(page, {
-        x: 32,
-        y: y - 29,
-        width: 530,
-        height: 23,
-        font,
-        fontSize: 10,
-        borderWidth: 0.5,
-        borderColor: rgb(0.5, 0.65, 0.62),
-      });
-      const hint =
-        f.hint || (f.example ? `Ví dụ: ${f.example}` : "Có thể để trống.");
-      draw(hint, 32, y - 42, hint.length > 90 ? 7 : 8);
-    });
-    draw(
-      "Trang trống được bỏ qua. Kiểm tra bản xem trước trên web trước khi lưu.",
-      32,
-      30,
-      9,
-    );
-  }
-  form.updateFieldAppearances(font);
-  return Buffer.from(await doc.save());
+export async function template(kind, format = "xlsx") {
+  const config = Object.hasOwn(catalog, kind) && catalog[kind];
+  if (!config?.importable)
+    fail(422, "IMPORT_UNSUPPORTED", "Phần dữ liệu này không hỗ trợ nhập tệp.");
+  if (format !== "xlsx")
+    fail(422, "INVALID_FORMAT", "Chỉ hỗ trợ mẫu Excel .xlsx.");
+  const { default: ExcelJS } = await import("exceljs");
+  const wb = new ExcelJS.Workbook();
+  wb.creator = "Quản lý chung cư";
+  const sheet = wb.addWorksheet("Nhap");
+  sheet.columns = config.fields.map((f) => ({
+    header: f.key,
+    key: f.key,
+    width: 25,
+    style: { numFmt: "@" },
+  }));
+  sheet.views = [
+    { state: "frozen", ySplit: 1, activeCell: "A2", tabSelected: true },
+  ];
+  wb.views = [{ activeTab: 0, firstSheet: 0 }];
+  sheet.getRow(1).height = 30;
+  sheet.getRow(1).font = { bold: true, color: { argb: "FFFFFFFF" } };
+  sheet.getRow(1).fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: "FF171917" },
+  };
+  config.fields.forEach((f, index) => {
+    sheet.getRow(1).getCell(index + 1).note =
+      `${f.label}\n${f.hint || ""}\nVí dụ: ${f.example || "có thể để trống"}`;
+  });
+  const guide = wb.addWorksheet("Huong dan");
+  guide.columns = [{ width: 28 }, { width: 28 }, { width: 28 }, { width: 85 }];
+  guide.addRow([`Mẫu nhập ${config.title}`]);
+  guide.addRow([config.note]);
+  guide.addRow([
+    "MẪU TRỐNG: điền sheet Nhap từ dòng 2 trước khi tải lên. Giữ nguyên tên cột. Tối đa 100 dòng mỗi tệp.",
+  ]);
+  guide.addRow([
+    "Sheet Vi du chỉ minh họa cách điền, không được nhập tự động. Không dùng tệp xuất Chi tiết để nhập lại.",
+  ]);
+  guide.addRow(["Tên cột", "Ý nghĩa", "Ví dụ", "Hướng dẫn"]);
+  config.fields.forEach((f) =>
+    guide.addRow([f.key, f.label, f.example, f.hint]),
+  );
+  guide.eachRow((r) => {
+    r.alignment = { wrapText: true, vertical: "top" };
+    r.height = 42;
+  });
+  const example = wb.addWorksheet("Vi du");
+  example.columns = config.fields.map((f) => ({
+    header: f.key,
+    key: f.key,
+    width: 25,
+    style: { numFmt: "@" },
+  }));
+  example.addRow(config.fields.map((f) => f.example));
+  example.getRow(1).font = { bold: true };
+  return Buffer.from(await wb.xlsx.writeBuffer());
 }

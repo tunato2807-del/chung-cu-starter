@@ -7,9 +7,6 @@ import bcrypt from "bcryptjs";
 import sharp from "sharp";
 import QRCode from "qrcode";
 import ExcelJS from "exceljs";
-import { PDFDocument } from "pdf-lib";
-import fontkit from "@pdf-lib/fontkit";
-import vfs from "pdfmake/build/vfs_fonts.js";
 import { acceptanceOptions } from "../../scripts/create-acceptance-data.js";
 import { pool, rows } from "../src/lib/db.js";
 import * as structure from "../src/modules/residency/building-structure.service.js";
@@ -929,20 +926,7 @@ async function createImport(kind, format, record, file) {
     );
     buffer = Buffer.from(await wb.xlsx.writeBuffer());
   } else {
-    const doc = await PDFDocument.load(
-      await template(kind, "pdf", { so_dong: 1 }),
-    );
-    doc.registerFontkit(fontkit);
-    const font = await doc.embedFont(
-      Buffer.from(vfs["Roboto-Regular.ttf"], "base64"),
-    );
-    for (const field of catalog[kind].fields)
-      doc
-        .getForm()
-        .getTextField(`r1.${field.key}`)
-        .setText(String(record[field.key] ?? ""));
-    doc.getForm().updateFieldAppearances(font);
-    buffer = Buffer.from(await doc.save());
+    throw new Error("Chỉ tạo tệp Excel .xlsx.");
   }
   await writeFile(path.join(out, "nhap", file), buffer);
   manifest.files.push({ file: `nhap/${file}`, kind, format });
@@ -1013,31 +997,14 @@ async function seedImportsAndAccounts() {
       true,
     );
   }
-  const importedPdf = await createImport(
-    "thiet_bi",
-    "pdf",
-    { ...records.thiet_bi, ma_tai_san: "NT-PDF-IMPORTED" },
-    "da-nhap-thiet-bi.pdf",
-  );
-  const pdfPreview = await importFile("thiet_bi", importedPdf, {}, admin);
-  if (pdfPreview.errors)
-    throw new Error("Không xem trước được PDF thiết bị mẫu.");
-  await importFile(
-    "thiet_bi",
-    importedPdf,
-    { xac_nhan: pdfPreview.xac_nhan, khoa_yeu_cau: randomUUID() },
-    admin,
-    true,
-  );
-  // Independent pending cases: Excel and PDF sets can both be imported later.
-  for (const format of ["xlsx", "pdf"])
+  // Các tệp Excel chưa nhập, dành cho thao tác nghiệm thu thủ công.
+  for (const format of ["xlsx"])
     for (const [kind, record] of Object.entries(records)) {
-      const tag = format === "xlsx" ? "X" : "P",
+      const tag = "X",
         next = { ...record };
       if (["can_ho", "cu_dan", "chi_so"].includes(kind))
         next.so_can_ho = `NT-THU-${tag}`;
-      if (kind === "cu_dan")
-        next.so_dien_thoai = format === "xlsx" ? "0909030002" : "0909030003";
+      if (kind === "cu_dan") next.so_dien_thoai = "0909030002";
       if (kind === "thiet_bi") next.ma_tai_san = `NT-THU-${tag}-TB`;
       await createImport(kind, format, next, `thu-${kind}.${format}`);
     }
@@ -1080,8 +1047,8 @@ async function seedImportsAndAccounts() {
   }
   scenario(
     "Nhập/xuất",
-    "6 file da-nhap-* (5 Excel + 1 PDF) đã tạo lịch sử nhập. File thu-* để thử thêm: căn → cư dân → xe → chỉ số → thiết bị; Excel/PDF dùng hai bộ mã khác nhau. File loi-dien-tich dùng thử preview lỗi.",
-    "Preview chưa lưu; lỗi không nhập. Mã cư dân xe đã điền thật; xe đăng ký ngày hôm nay để không sửa kỳ khóa. PDF có ô điền, không phải PDF scan.",
+    "5 file Excel da-nhap-* đã tạo lịch sử nhập. File thu-* để thử thêm: căn → cư dân → xe → chỉ số → thiết bị. File loi-dien-tich dùng thử preview lỗi.",
+    "Preview chưa lưu; lỗi không nhập. Mã cư dân xe đã điền thật; xe đăng ký ngày hôm nay để không sửa kỳ khóa. Chỉ nhận Excel .xlsx.",
   );
   scenario(
     "Tài khoản căn và bàn giao",
@@ -1162,20 +1129,16 @@ async function verifyAndExport() {
       "hoa_don",
       "dat_lich",
     ])
-      for (const format of ["xlsx", "pdf"]) {
+      for (const format of ["xlsx"]) {
         const url = `/trao_doi_du_lieu/${kind}/xuat?dinh_dang=${format}`;
         const response = await check(`Xuất ${kind} ${format}`, req(url));
         const buffer = Buffer.from(await response.arrayBuffer());
-        if (
-          format === "pdf"
-            ? buffer.subarray(0, 5).toString() !== "%PDF-"
-            : buffer.subarray(0, 2).toString() !== "PK"
-        )
+        if (buffer.subarray(0, 2).toString() !== "PK")
           throw new Error(`Tệp xuất ${kind}.${format} sai định dạng.`);
         await writeFile(path.join(out, "xuat", `${kind}.${format}`), buffer);
       }
     for (const kind of ["cong_no", "thu_phi"])
-      for (const format of ["xlsx", "pdf"]) {
+      for (const format of ["xlsx"]) {
         const response = await check(
           `Báo cáo ${kind} ${format}`,
           req(`/bao_cao/${kind}/xuat?dinh_dang=${format}`),
@@ -1190,7 +1153,7 @@ async function verifyAndExport() {
       "SELECT ma_quy FROM quy_tai_chinh WHERE dang_hoat_dong=1 ORDER BY ma_quy",
     );
     for (const fund of funds)
-      for (const format of ["xlsx", "pdf"]) {
+      for (const format of ["xlsx"]) {
         const response = await check(
           `Sổ quỹ ${fund.ma_quy} ${format}`,
           req(`/quy/${fund.ma_quy}/so_quy/xuat?dinh_dang=${format}`),
