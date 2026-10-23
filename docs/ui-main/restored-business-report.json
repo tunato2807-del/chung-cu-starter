@@ -1,0 +1,12 @@
+{
+  "source": "2f00acd26bb4e659121de0ab64d887f523a992aa",
+  "checks": [
+    "restored portal renders 6 services",
+    "search hoa don",
+    "business router navigates to login",
+    "QR and lookup routes render",
+    "320/768/1024/1440 without overflow"
+  ],
+  "pageErrors": [],
+  "scope": "signed-out frontend only; auth state simulated as 401; no database writes"
+}

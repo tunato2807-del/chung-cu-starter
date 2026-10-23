@@ -1,5 +1,7 @@
 # Giao diện bộ khung main
 
+**Đang dùng bản có đăng nhập/QR/hóa đơn?** Đây là giao diện bộ khung main, không dùng để ghi đè bản nghiệp vụ. Nếu đã gặp trang trắng với lỗi `App.jsx ... filter`, dùng [bộ hai file khôi phục đúng bản](khoi-phuc-ban-nghiep-vu-vscode.md).
+
 Thực hiện trên `codex/main-ui-refresh`, xuất phát từ `origin/main` tại `59bd4ae`.
 
 Menu có biểu tượng và mô tả phân hệ, tìm kiếm tên có/không dấu, bố cục desktop và menu mở/đóng trên điện thoại. Giữ bốn nhóm và đủ 19 mục điều hướng gốc. Phản ánh và thông báo hiển thị phạm vi dự kiến theo từng nhóm. API health thật có loading, timeout 5 giây, lỗi và nút kiểm tra lại; trạng thái MySQL hiện đúng là chưa cấu hình.

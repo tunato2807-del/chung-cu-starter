@@ -1,5 +1,7 @@
 # Cập nhật giao diện main trong VS Code
 
+**Nếu dự án của bạn đã có đăng nhập, QR, hóa đơn:** không thay các file bên dưới vào bản đó. Nếu đã bị trang trắng với lỗi App.jsx đọc `filter`, mở [hướng dẫn khôi phục bản nghiệp vụ](khoi-phuc-ban-nghiep-vu-vscode.md).
+
 Bản này áp dụng cho bộ khung trên `main` tại commit `59bd4ae`, được sửa trong nhánh `codex/main-ui-refresh`. Nhánh `codex/auth-qr-incidents` có nhiều nghiệp vụ hơn và cấu trúc App khác. Không chép đè bộ file này vào bản nghiệp vụ đó: cần tích hợp theo component và router của bản ấy.
 
 Không cần tải lại ZIP. Với đúng bộ khung main, tạo hoặc mở lần lượt tám đường dẫn bên dưới, thay toàn bộ nội dung bằng code tương ứng rồi lưu UTF-8. Các file mới phải giữ đúng tên và phần mở rộng. Không cần sửa backend, API, package.json hoặc cấu hình database.
@@ -45,7 +47,11 @@ export default function App() {
   const searchRef = useRef(null);
   const searching = Boolean(query.trim());
   const isOverview = page === 'Tổng quan' || page === 'Trang chủ';
-  const results = navigation[role].filter(item => normalizeSearch(item).includes(normalizeSearch(query)));
+  const screens = navigation[role];
+  const compatibleNavigation = Array.isArray(screens) && screens.length > 0 &&
+    screens.every(item => typeof item === 'string');
+  const results = compatibleNavigation ?
+    screens.filter(item => normalizeSearch(item).includes(normalizeSearch(query))) : [];
 
   useEffect(() => {
     document.title = `${searching ? 'Tìm màn hình' : page} · ${role} · Chung cư`;
@@ -70,6 +76,18 @@ export default function App() {
   function clearSearch() {
     setQuery('');
     searchRef.current?.focus();
+  }
+
+  if (!compatibleNavigation) {
+    return <main className="version-mismatch" aria-labelledby="version-mismatch-title">
+      <section className="panel module-preview" role="alert">
+        <h1 id="version-mismatch-title">Không khớp phiên bản giao diện</h1>
+        <p>App.jsx của bộ khung main đang được dùng cùng menu của bản đầy đủ nghiệp vụ.</p>
+        <p>Hãy khôi phục App.jsx và stylesheet đúng bản để tiếp tục dùng đăng nhập, QR và hóa đơn.</p>
+        <p><a href="https://github.com/tunato2807-del/chung-cu-starter/blob/codex/main-ui-refresh/docs/ui-main/khoi-phuc-ban-nghiep-vu-vscode.md">
+          Mở hướng dẫn khôi phục bản nghiệp vụ</a></p>
+      </section>
+    </main>;
   }
 
   return <div className="shell" onKeyDown={event => {

@@ -1,0 +1,6 @@
+{
+  "mode": "reproduced-original-failure",
+  "errors": [
+    "Cannot read properties of undefined (reading 'filter')"
+  ]
+}
