@@ -1,0 +1,17 @@
+{
+  "widths": [
+    320,
+    768,
+    1024,
+    1440
+  ],
+  "pages": 19,
+  "axeScans": 26,
+  "consoleErrors": [],
+  "checks": [
+    "keyboard navigation and skip link",
+    "search accents/case, empty/reset, group reset, same-page focus regression",
+    "mobile select/close/Escape/focus, text 200%",
+    "real health, HTTP failure/retry, malformed response, 5s timeout/retry, loading/reduced motion"
+  ]
+}
