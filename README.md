@@ -38,3 +38,7 @@ npm run build
 ```
 
 Xem docs/architecture.md và database/README.md trước khi triển khai nghiệp vụ. Vite proxy chỉ dùng cho dev; khi triển khai cần cấu hình phục vụ frontend và /api trên cùng origin.
+
+## Sửa giao diện với Codex
+
+Chọn repository `tunato2807-del/chung-cu-starter` trong Codex Web. Dự án có [AGENTS.md](AGENTS.md), 10 skill trong `.agents/skills/` và [prompt mẫu](docs/CODEX_UI.md) để chỉnh UI trên React/JavaScript/Vite hiện có. Không cần thêm link GitHub vào biến môi trường; MCP/plugin dùng cấu hình công cụ hoặc kết nối tài khoản riêng.
