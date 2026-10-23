@@ -402,8 +402,11 @@ h1 {
   padding: 0;
   margin-bottom: 24px;
 }
-.overview-metric,
-.overview-metric:first-child {
+.overview-metrics > .overview-metric {
+  display: grid;
+  grid-template-rows: minmax(40px, auto) 1fr auto;
+  align-items: start;
+  gap: 16px;
   border: 1px solid var(--line);
   border-radius: 4px;
   padding: 24px;
@@ -411,32 +414,54 @@ h1 {
   box-shadow: var(--shadow);
   border-top: 3px solid var(--ink);
 }
-.overview-metric:nth-child(n + 3) {
-  border-top: 3px solid var(--ink);
-}
 .overview-metric:hover {
   background: #fafbf6;
   border-color: #a1b16c;
 }
-.overview-metric .metric-label {
+.overview-metric > .metric-label {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 36px;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.overview-metric .metric-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .overview-metric .metric-icon {
+  display: grid;
+  place-items: center;
   width: 36px;
   height: 36px;
   border-radius: 4px;
   background: var(--brand-soft);
   color: var(--olive);
 }
+.overview-metric .metric-icon .icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
 .overview-metric > strong {
+  min-width: 0;
+  margin: 0;
   color: var(--ink);
-  font-size: clamp(26px, 2.6vw, 38px);
+  font-size: clamp(24px, 2.2vw, 34px);
+  line-height: 1.25;
   letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 .overview-metric > small {
+  min-height: 3em;
+  margin-top: 0;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
+  line-height: 1.5;
 }
 .overview-alert > strong {
   color: #a33627;
@@ -811,7 +836,7 @@ footer {
     grid-template-columns: 1fr;
     gap: 12px;
   }
-  .overview-metric {
+  .overview-metrics > .overview-metric {
     padding: 20px;
   }
   .overview-grid {

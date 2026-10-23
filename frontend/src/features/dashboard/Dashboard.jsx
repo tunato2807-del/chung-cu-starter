@@ -55,8 +55,8 @@ function Metric({ title, value, hint, to, money = false, alert = false }) {
       to={to}
     >
       <span className="metric-label">
-        {title}
-        <span className="metric-icon">
+        <span className="metric-title">{title}</span>
+        <span className="metric-icon" aria-hidden="true">
           <Icon
             name={
               money ? "wallet" : to.includes("bao-tri") ? "tool" : "message"

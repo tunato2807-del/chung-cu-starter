@@ -1,0 +1,187 @@
+[
+  {
+    "width": 320,
+    "cards": [
+      {
+        "x": 16,
+        "y": 596.953125,
+        "width": 288,
+        "height": 182
+      },
+      {
+        "x": 16,
+        "y": 790.953125,
+        "width": 288,
+        "height": 182
+      },
+      {
+        "x": 16,
+        "y": 984.953125,
+        "width": 288,
+        "height": 182
+      },
+      {
+        "x": 16,
+        "y": 1178.953125,
+        "width": 288,
+        "height": 182
+      }
+    ],
+    "iconCenters": "aligned",
+    "valuesAndHints": "aligned",
+    "longAmounts": "unclipped",
+    "keyboardLink": "passed",
+    "refreshEmptyErrorRetry": "passed",
+    "chartToggle": "passed",
+    "axeViolations": 0,
+    "overviewRequests": 6
+  },
+  {
+    "width": 768,
+    "cards": [
+      {
+        "x": 24,
+        "y": 537.25,
+        "width": 352,
+        "height": 190
+      },
+      {
+        "x": 392,
+        "y": 537.25,
+        "width": 352,
+        "height": 190
+      },
+      {
+        "x": 24,
+        "y": 743.25,
+        "width": 352,
+        "height": 190
+      },
+      {
+        "x": 392,
+        "y": 743.25,
+        "width": 352,
+        "height": 190
+      }
+    ],
+    "iconCenters": "aligned",
+    "valuesAndHints": "aligned",
+    "longAmounts": "unclipped",
+    "keyboardLink": "passed",
+    "refreshEmptyErrorRetry": "passed",
+    "chartToggle": "passed",
+    "axeViolations": 0,
+    "overviewRequests": 6
+  },
+  {
+    "width": 1024,
+    "cards": [
+      {
+        "x": 248,
+        "y": 340.125,
+        "width": 368,
+        "height": 190
+      },
+      {
+        "x": 632,
+        "y": 340.125,
+        "width": 368,
+        "height": 190
+      },
+      {
+        "x": 248,
+        "y": 546.125,
+        "width": 368,
+        "height": 190
+      },
+      {
+        "x": 632,
+        "y": 546.125,
+        "width": 368,
+        "height": 190
+      }
+    ],
+    "iconCenters": "aligned",
+    "valuesAndHints": "aligned",
+    "longAmounts": "unclipped",
+    "keyboardLink": "passed",
+    "refreshEmptyErrorRetry": "passed",
+    "chartToggle": "passed",
+    "axeViolations": 0,
+    "overviewRequests": 5
+  },
+  {
+    "width": 1440,
+    "cards": [
+      {
+        "x": 280,
+        "y": 358.859375,
+        "width": 270,
+        "height": 199.609375
+      },
+      {
+        "x": 566,
+        "y": 358.859375,
+        "width": 270,
+        "height": 199.609375
+      },
+      {
+        "x": 852,
+        "y": 358.859375,
+        "width": 270,
+        "height": 199.609375
+      },
+      {
+        "x": 1138,
+        "y": 358.859375,
+        "width": 270,
+        "height": 199.609375
+      }
+    ],
+    "iconCenters": "aligned",
+    "valuesAndHints": "aligned",
+    "longAmounts": "unclipped",
+    "keyboardLink": "passed",
+    "refreshEmptyErrorRetry": "passed",
+    "chartToggle": "passed",
+    "axeViolations": 0,
+    "overviewRequests": 5
+  },
+  {
+    "width": 2048,
+    "cards": [
+      {
+        "x": 280,
+        "y": 358.859375,
+        "width": 422,
+        "height": 202.5
+      },
+      {
+        "x": 718,
+        "y": 358.859375,
+        "width": 422,
+        "height": 202.5
+      },
+      {
+        "x": 1156,
+        "y": 358.859375,
+        "width": 422,
+        "height": 202.5
+      },
+      {
+        "x": 1594,
+        "y": 358.859375,
+        "width": 422,
+        "height": 202.5
+      }
+    ],
+    "iconCenters": "aligned",
+    "valuesAndHints": "aligned",
+    "longAmounts": "unclipped",
+    "keyboardLink": "passed",
+    "refreshEmptyErrorRetry": "passed",
+    "chartToggle": "passed",
+    "axeViolations": 0,
+    "overviewRequests": 6
+  }
+]
