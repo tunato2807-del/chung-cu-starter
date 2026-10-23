@@ -39,12 +39,14 @@ export default function ReportExport({
         const message =
           data.error?.message ||
           (r.status >= 500
-            ? "Máy chủ chưa trả được tệp Excel. Kiểm tra backend đang chạy và lỗi trong terminal backend rồi thử lại."
-            : `Không tải được tệp Excel (${r.status}).`);
+            ? "Máy chủ chưa trả được tệp báo cáo. Kiểm tra backend đang chạy và lỗi trong terminal backend rồi thử lại."
+            : `Không tải được báo cáo (${r.status}).`);
         throw new Error(message);
       }
       const mime =
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        format === "pdf"
+          ? "application/pdf"
+          : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
       if (!r.headers.get("Content-Type")?.startsWith(mime))
         throw new Error("Máy chủ trả tệp không đúng định dạng. Hãy thử lại.");
       const blob = await r.blob();
@@ -65,7 +67,7 @@ export default function ReportExport({
       setNotice(
         template
           ? "Đã tải mẫu trống. Điền sheet Nhap từ dòng 2, lưu tệp rồi chọn lại để xem trước. Sheet Vi du chỉ minh họa."
-          : `Đã tạo tệp Excel gồm ${Number(r.headers.get("X-Export-Rows") || 0).toLocaleString("vi-VN")} dòng. Excel mở tại trang Chi tiết; bộ lọc và số liệu chung nằm ở trang Tổng hợp. Kiểm tra mục Tệp đã tải xuống của trình duyệt.`,
+          : `Đã tạo tệp ${format === "pdf" ? "PDF" : "Excel"} gồm ${Number(r.headers.get("X-Export-Rows") || 0).toLocaleString("vi-VN")} dòng. ${format === "xlsx" ? "Excel mở tại trang Chi tiết; bộ lọc và số liệu chung nằm ở trang Tổng hợp. " : ""}Kiểm tra mục Tệp đã tải xuống của trình duyệt.`,
       );
     } catch (e) {
       if (!controller.signal.aborted && currentPath.current === requestPath)
@@ -86,7 +88,7 @@ export default function ReportExport({
   return (
     <section
       className="report-export"
-      aria-label={template ? "Tải mẫu Excel" : "Xuất báo cáo Excel"}
+      aria-label={template ? "Tải mẫu Excel" : "Xuất báo cáo"}
     >
       <div className="actions">
         <button
@@ -100,10 +102,19 @@ export default function ReportExport({
               ? "Tải mẫu Excel"
               : "Xuất Excel"}
         </button>
+        {!template && (
+          <button
+            type="button"
+            disabled={disabled || !!pending}
+            onClick={() => download("pdf")}
+          >
+            {pending === "pdf" ? "Đang tạo PDF…" : "Xuất PDF"}
+          </button>
+        )}
         <small>
           {template
             ? "Mẫu trống .xlsx: điền sheet Nhap từ dòng 2, tối đa 100 dòng. Ví dụ nằm riêng ở sheet Vi du."
-            : "Xuất toàn bộ kết quả theo bộ lọc. Excel có trang Chi tiết và Tổng hợp; mở trực tiếp danh sách chi tiết."}
+            : "Xuất toàn bộ kết quả theo bộ lọc: tối đa 10.000 dòng Excel hoặc 1.000 dòng PDF. Excel có trang Chi tiết và Tổng hợp."}
         </small>
       </div>
       {notice && (

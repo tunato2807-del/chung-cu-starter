@@ -162,6 +162,7 @@ export async function exportData(kind, query, user, format, res) {
       title,
       type: ["count", "money"].includes(type) ? type : "text",
       width: /tên|việc|thiết bị|Ghi chú/i.test(title) ? 32 : 21,
+      pdfWidth: /tên|việc|thiết bị|Ghi chú/i.test(title) ? 1.7 : 1,
       value: (row) =>
         type === "date"
           ? date(row[key])

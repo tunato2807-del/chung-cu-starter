@@ -328,19 +328,19 @@ Sổ tính dau_ky = thu − chi trước từ ngày; tong_thu/tong_chi trong kho
 
 Khóa theo quỹ → phiếu → actor; mọi lập/sửa/đính kèm/duyệt/đảo cùng quỹ được tuần tự hóa. UUID + fingerprint bảo vệ tạo nháp lặp; cùng request 200 với ID cũ, mới 201, khác input cùng UUID 409. Không có bản ghi tiền tự động nào được tạo khi xem sổ hoặc migrate. Chứng từ PDF kiểm tra đầu/đuôi tệp và chỉ phục vụ tải xuống; ảnh được decode JPEG/PNG/WebP tĩnh ≤25 triệu pixel, xoay/thu nhỏ/bỏ metadata/encode JPEG. SHA256 nội dung chuẩn hóa chống upload trùng; retry toàn bộ tệp đã có trả thành công trước kiểm tra phiên bản, không tăng version. Tệp trùng một phần + tệp mới vẫn cần version hiện tại. Binary lưu trong database, không có URL storage công khai. Mọi thay đổi phiếu/chứng từ/audit cùng transaction.
 
-## Xuất báo cáo Excel
+## Xuất báo cáo Excel / PDF
 
 Không có migration mới. Endpoint GET chỉ dành cho BQL, áp dụng cùng quyền và bộ lọc của báo cáo JSON; không ghi/sửa trạng thái tài chính. Trả file đính kèm, không phải JSON khi thành công; lỗi vẫn trả `{error:{code,message,...}}`.
 
 | GET dưới /api | Nội dung / bộ lọc |
 |---|---|
-| /bao_cao/cong_no/xuat?dinh_dang=xlsx | Cùng q,khoi,ma_can_ho,tu_ky,den_ky,che_do CAN_HO/HOA_DON/THEO_KY,qua_han như /cong_no |
-| /bao_cao/thu_phi/xuat?dinh_dang=xlsx | Cùng q,khoi,ma_can_ho,tu_ngay,den_ngay,che_do GIAO_DICH/THEO_NGAY như /thu_phi |
-| /quy/:id/so_quy/xuat?dinh_dang=xlsx | Cùng tu_ngay,den_ngay,che_do GIAO_DICH/THEO_THANG,nguon,loai,q như /so_quy |
+| /bao_cao/cong_no/xuat?dinh_dang=xlsx hoặc pdf | Cùng q,khoi,ma_can_ho,tu_ky,den_ky,che_do CAN_HO/HOA_DON/THEO_KY,qua_han như /cong_no |
+| /bao_cao/thu_phi/xuat?dinh_dang=xlsx hoặc pdf | Cùng q,khoi,ma_can_ho,tu_ngay,den_ngay,che_do GIAO_DICH/THEO_NGAY như /thu_phi |
+| /quy/:id/so_quy/xuat?dinh_dang=xlsx hoặc pdf | Cùng tu_ngay,den_ngay,che_do GIAO_DICH/THEO_THANG,nguon,loai,q như /so_quy |
 
-Dinh_dang mặc định xlsx, chỉ nhận xlsx; yêu cầu PDF trả 422. Xuất toàn bộ các dòng khớp bộ lọc, bỏ page; JSON thường vẫn 20/trang. Không lặp gọi từng trang ở nhiều transaction. Cùng mã truy vấn/validation/snapshot được dùng cho cả JSON và xuất, bao gồm tổng/count/chi tiết. Header `X-Export-Rows` là số dòng chi tiết thực tế, `Content-Disposition: attachment` có tên ASCII và ngày, `Cache-Control: no-store`, `X-Content-Type-Options: nosniff`. Không tạo URL lưu trữ công khai.
+Dinh_dang mặc định xlsx, nhận xlsx hoặc pdf cho báo cáo xuất. Mẫu nhập /mau chỉ nhận xlsx. Xuất toàn bộ các dòng khớp bộ lọc, bỏ page; JSON thường vẫn 20/trang. Không lặp gọi từng trang ở nhiều transaction. Cùng mã truy vấn/validation/snapshot được dùng cho cả JSON và xuất, bao gồm tổng/count/chi tiết. Header `X-Export-Rows` là số dòng chi tiết thực tế, `Content-Disposition: attachment` có tên ASCII và ngày, `Cache-Control: no-store`, `X-Content-Type-Options: nosniff`. Không tạo URL lưu trữ công khai.
 
-Giới hạn Excel **10.000 dòng** sau khi áp dụng chế độ xem/lọc. Nếu vượt, trả 422 EXPORT_TOO_LARGE trước SELECT chi tiết; không cắt bớt hoặc trả một tệp thiếu dòng. Thu hẹp khoảng thời gian/khối/căn/quỹ hoặc chọn chế độ tổng hợp. Tối đa một lượt tạo tệp mỗi tài khoản và hai lượt toàn tiến trình; bận trả 429 EXPORT_BUSY với Retry-After: 3. Lỗi vẫn giải phóng lượt để thử lại.
+Giới hạn Excel **10.000 dòng**, PDF **1.000 dòng** sau khi áp dụng chế độ xem/lọc. Nếu vượt, trả 422 EXPORT_TOO_LARGE trước SELECT chi tiết; không cắt bớt hoặc trả một tệp thiếu dòng. Thu hẹp khoảng thời gian/khối/căn/quỹ hoặc chọn chế độ tổng hợp. Tối đa một lượt tạo tệp mỗi tài khoản và hai lượt toàn tiến trình; bận trả 429 EXPORT_BUSY với Retry-After: 3. Lỗi vẫn giải phóng lượt để thử lại.
 
 Excel .xlsx có hai sheet Tổng hợp và Chi tiết: thời điểm dữ liệu Việt Nam, bộ lọc đã áp dụng, tổng hợp và ghi chú ý nghĩa; dữ liệu đầy đủ, bộ lọc cột và cố định tiêu đề. Số tiền nguyên đồng tới 15 chữ số ghi ô số; giá trị lớn hơn 15 chữ số ghi chuỗi thập phân nguyên gốc để tránh Excel làm tròn, kèm ghi chú. Mã căn, điện thoại, mã tham chiếu và nội dung người dùng luôn là chuỗi, không tạo formula/hyperlink từ nội dung nhập. Không dùng SUM formula để tạo tổng có nguy cơ sai độ chính xác; tổng lấy trực tiếp từ snapshot DB/BigInt.
 
@@ -358,9 +358,9 @@ Chỉ BQL. Base `/api/trao_doi_du_lieu`. `kind`: `can_ho`, `cu_dan`, `phuong_tie
 | GET | /:kind/mau?dinh_dang=xlsx | Excel sheet Nhap trống + Huong dan + Vi du; dữ liệu ví dụ không được nhập tự động |
 | POST | /:kind/xem_truoc | multipart tep: đúng 1 tệp .xlsx, tối đa 5 MB. Trả rows [{line,values,error}],total,errors,xac_nhan |
 | POST | /:kind/nhap | multipart tep,xac_nhan từ bản xem trước không lỗi,khoa_yeu_cau UUID. Trả so_dong,ket_qua gồm ID,tai_khoan_moi nếu có |
-| GET | /:kind/xuat?dinh_dang=xlsx | Xuất toàn bộ dòng theo bộ lọc, bỏ page. File attachment, không tạo URL công khai |
+| GET | /:kind/xuat?dinh_dang=xlsx hoặc pdf | Xuất toàn bộ dòng theo bộ lọc, bỏ page. File attachment, không tạo URL công khai |
 
-Bộ lọc xuất dùng cùng validation/truy vấn danh sách: can_ho(q,tang), cu_dan(q,ma_can_ho,ma_cu_dan,trang_thai), phuong_tien(q,loai_xe,trang_thai,ma_can_ho,ma_cu_dan), chi_so(ma_can_ho,ky_thanh_toan), thiet_bi(q,loai,trang_thai,lich), hoa_don(q,ma_can_ho,ky_thanh_toan,trang_thai), bao_tri(q,ma_thiet_bi,loai,trang_thai,qua_han), dat_lich(q,ma_tien_ich,ngay,trang_thai). Excel tối đa 10.000 dòng. Cả COUNT và số dòng đọc thực tế được chặn vượt, không trả file bị cắt.
+Bộ lọc xuất dùng cùng validation/truy vấn danh sách: can_ho(q,tang), cu_dan(q,ma_can_ho,ma_cu_dan,trang_thai), phuong_tien(q,loai_xe,trang_thai,ma_can_ho,ma_cu_dan), chi_so(ma_can_ho,ky_thanh_toan), thiet_bi(q,loai,trang_thai,lich), hoa_don(q,ma_can_ho,ky_thanh_toan,trang_thai), bao_tri(q,ma_thiet_bi,loai,trang_thai,qua_han), dat_lich(q,ma_tien_ich,ngay,trang_thai). Excel tối đa 10.000 dòng, PDF 1.000 dòng. Cả COUNT và số dòng đọc thực tế được chặn vượt, không trả file bị cắt.
 
 Nhập chỉ thêm mới, không nhận ID để cập nhật, tài khoản cá nhân hay trạng thái duyệt. Cột đúng danh mục; Excel Nhap hàng đầu là key, giữ điện thoại/mã dạng text, ngày ISO. Không nhận công thức/ô liên kết, macro hoặc tệp nén phình quá giới hạn. Chỉ đọc sheet Nhap. PDF không được hỗ trợ; mẫu trống trả IMPORT_EMPTY và hơn 100 dòng trả IMPORT_TOO_MANY_ROWS. Parser chạy worker tối đa 15 giây với giới hạn heap; zip kiểm tra kích thước giải nén trước khi đọc.
 

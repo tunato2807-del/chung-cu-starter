@@ -76,7 +76,7 @@ for (const width of [1440, 375])
       await page.goto("/quan-tri/nhap-xuat?phan_he=thiet_bi");
       await expect(
         page.getByRole("heading", {
-          name: "Nhập / xuất Excel",
+          name: "Nhập Excel · Xuất Excel/PDF",
           exact: true,
         }),
       ).toBeVisible();
@@ -201,9 +201,8 @@ for (const width of [1440, 375])
         result = new ExcelJS.Workbook();
       await result.xlsx.load(report);
       expect(result.getWorksheet("Chi tiết").rowCount).toBe(26);
-      await expect(
-        page.getByRole("button", { name: "Xuất PDF", exact: true }),
-      ).toHaveCount(0);
+      const exportedPDF = await download("Xuất PDF");
+      expect(exportedPDF.subarray(0, 5).toString()).toBe("%PDF-");
       await expect(
         page.getByRole("link", { name: "Nhập Excel", exact: true }),
       ).toHaveAttribute("href", "/quan-tri/nhap-xuat?phan_he=can_ho");

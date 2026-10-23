@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { randomBytes, randomUUID } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
+import parsePdf from "pdf-parse/lib/pdf-parse.js";
 import bcrypt from "bcryptjs";
 import ExcelJS from "exceljs";
 import { pool, rows } from "../backend/src/lib/db.js";
@@ -8,7 +9,7 @@ import { login } from "../backend/src/modules/auth/auth.service.js";
 import { today } from "../backend/src/modules/billing/billing.validation.js";
 
 for (const width of [1440, 375])
-  test(`download filtered Excel for debts, receipts and treasury across pages at ${width}px`, async ({
+  test(`download filtered Excel/PDF for debts, receipts and treasury across pages at ${width}px`, async ({
     browser,
   }) => {
     expect(process.env.DB_NAME).toBe("chung_cu_test");
@@ -46,6 +47,14 @@ for (const width of [1440, 375])
         wb = new ExcelJS.Workbook();
       await wb.xlsx.load(r.buffer);
       return { ...r, wb, data: wb.getWorksheet("Chi tiết") };
+    }
+    async function pdf() {
+      const r = await download("Xuất PDF");
+      expect(r.buffer.subarray(0, 5).toString()).toBe("%PDF-");
+      return {
+        ...r,
+        text: (await parsePdf(r.buffer)).text,
+      };
     }
     try {
       const u = await rows(
@@ -136,6 +145,10 @@ for (const width of [1440, 375])
       await expect(
         page.getByRole("status").filter({ hasText: "25 dòng" }),
       ).toBeVisible();
+      const debtPdf = await pdf();
+      expect(debtPdf.text).toContain("Báo cáo công nợ");
+      expect(debtPdf.text).toContain("25 dòng chi tiết");
+      expect(debtPdf.text).toContain(block);
       await page
         .getByRole("button", {
           name: "Thu phí theo ngày xác nhận",
@@ -151,16 +164,24 @@ for (const width of [1440, 375])
       const receipt = await xlsx();
       expect(receipt.data.rowCount).toBe(26);
       expect(receipt.data.getCell("F2").value).toMatch(/^000-/);
+      const paidPdf = await pdf();
+      expect(paidPdf.text).toContain("Báo cáo thu phí");
+      expect(paidPdf.text).toContain("Nguyễn Thị Ánh");
       await page.goto(`/quan-tri/quy/${fund}?page=2`);
       await expect(
         page.getByText("Trang 2 · 25 bản ghi", { exact: true }),
       ).toBeVisible();
       const ledger = await xlsx();
       expect(ledger.data.rowCount).toBe(26);
+      const cashPdf = await pdf();
+      expect(cashPdf.text).toContain("Quỹ xuất");
+      expect(cashPdf.text).toContain("25.000");
       await page.screenshot({
         path: `/tmp/chung-cu-export-controls-${width}.png`,
         fullPage: true,
       });
+      if (width === 1440)
+        await writeFile("/tmp/chung-cu-export-browser.pdf", cashPdf.buffer);
       await page.getByLabel("Cách xem sổ quỹ").selectOption("THEO_THANG");
       await page
         .getByRole("button", { name: "Lọc sổ quỹ", exact: true })
@@ -176,17 +197,14 @@ for (const width of [1440, 375])
           json: {
             error: {
               code: "EXPORT_TOO_LARGE",
-              message: "Báo cáo vượt giới hạn Excel. Hãy thu hẹp bộ lọc.",
+              message:
+                "Báo cáo vượt giới hạn PDF. Hãy thu hẹp bộ lọc hoặc chọn Excel.",
             },
           },
         }),
       );
-      await page
-        .getByRole("button", { name: "Xuất Excel", exact: true })
-        .click();
-      await expect(page.getByRole("alert")).toContainText(
-        "vượt giới hạn Excel",
-      );
+      await page.getByRole("button", { name: "Xuất PDF", exact: true }).click();
+      await expect(page.getByRole("alert")).toContainText("vượt giới hạn PDF");
       await expect(
         page.getByRole("heading", { name: `Quỹ xuất ${suffix}`, exact: true }),
       ).toBeVisible();

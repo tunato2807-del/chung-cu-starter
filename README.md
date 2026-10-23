@@ -1,13 +1,12 @@
 # Quản lý chung cư · Phản ánh QR
 
-> **Bản sửa Excel và menu khi cuộn:** [code đầy đủ từng file](docs/cap-nhat-excel-va-menu-vscode.md) · [Excel đã điền để test](samples/nhap-du-lieu/README.md). Chỉ còn nhập/xuất Excel; header BQL và sidebar giữ cùng vị trí khi cuộn trên desktop.
-
+> **Bản mới nhất — Xuất PDF và cài Vite:** [hướng dẫn + code đủ 6 file](docs/cap-nhat-xuat-pdf-va-vite-vscode.md). Nhập bằng Excel; xuất danh sách/báo cáo bằng Excel hoặc PDF. [Bản sửa Excel và menu](docs/cap-nhat-excel-va-menu-vscode.md) · [Excel đã điền để test](samples/nhap-du-lieu/README.md).
 
 > **Giao diện mới nhất (editorial):** ảnh toàn chiều ngang, chữ mạnh, nút đen và menu quản trị sáng. Xem [ảnh các màn hình](docs/giao-dien-editorial/README.md) và [code đầy đủ 6 file để copy vào VS Code](docs/cap-nhat-giao-dien-editorial-vscode.md). Nhánh `codex/editorial-business-ui` dành cho bản đầy đủ nghiệp vụ.
 
 **Bản giao diện trước (navy, lưu tham khảo):** [xem ảnh cổng cư dân, đăng nhập, tổng quan và bảng căn hộ](docs/giao-dien-van-hanh-moi/README.md), [code đầy đủ 5 file để copy trong VS Code](docs/cap-nhat-giao-dien-moi-ban-nghiep-vu-vscode.md). Bản này dùng xanh navy/xanh dương, sidebar tối màu, ảnh thật và danh mục dịch vụ mới; giữ router, API và các nghiệp vụ đang có.
 
-React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web, báo cáo công nợ/thu phí, bảo trì thiết bị, đặt lịch tiện ích, thu chi/quỹ và nhập/xuất Excel** theo ba tài liệu thiết kế.
+React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web, báo cáo công nợ/thu phí, bảo trì thiết bị, đặt lịch tiện ích, thu chi/quỹ và nhập Excel, xuất Excel/PDF** theo ba tài liệu thiết kế.
 
 Giao diện được thống nhất cho BQL, cư dân và kỹ thuật viên: menu chia nhóm có biểu tượng, menu mở rộng trên điện thoại, bảng/biểu mẫu/thống kê cùng phong cách, cổng cư dân và đăng nhập mới. Xem [ảnh minh họa và code đầy đủ từng file để cập nhật VS Code](docs/cap-nhat-giao-dien-chuyen-nghiep-vscode.md).
 

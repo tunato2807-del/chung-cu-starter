@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
 import bcrypt from "bcryptjs";
 import ExcelJS from "exceljs";
+import parsePdf from "pdf-parse/lib/pdf-parse.js";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
 import { login } from "../src/modules/auth/auth.service.js";
@@ -458,7 +459,11 @@ test("data exchange: bounded real files, preview rollback, atomic imports, domai
             assert.match(sheet.getCell("C2").value, /^0\d{9}$/);
             assert.equal(sheet.getCell("C2").type, ExcelJS.ValueType.String);
           }
-          assert.equal((await req(`/${kind}/xuat?dinh_dang=pdf`)).status, 422);
+          const pdf = await req(`/${kind}/xuat?${filters[kind]}&dinh_dang=pdf`);
+          assert.equal(pdf.status, 200, pdf.buffer.toString());
+          assert.match(pdf.headers.get("content-type"), /application\/pdf/);
+          assert.equal(pdf.buffer.subarray(0, 5).toString(), "%PDF-");
+          assert.ok((await parsePdf(pdf.buffer)).text.includes("Danh sách"));
         }
       },
     );

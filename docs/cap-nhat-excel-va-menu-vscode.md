@@ -1,5 +1,7 @@
 # Sửa nhập/xuất Excel, bỏ PDF và chỉnh header/menu BQL
 
+> **Cập nhật sau bản này:** chức năng Xuất PDF đã được thêm lại. Áp dụng tiếp [bản Xuất PDF + sửa Vite](cap-nhat-xuat-pdf-va-vite-vscode.md) sau khi cập nhật các file ở đây; hướng dẫn mới thay cho bước gỡ thư viện PDF trước đó.
+
 Nhánh **codex/editorial-business-ui**. Cập nhật trên bản đầy đủ nghiệp vụ đang hiển thị trong ảnh của bạn; không dùng App/navigation của nhánh main.
 
 ## Những gì đã sửa

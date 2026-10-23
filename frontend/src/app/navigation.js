@@ -45,7 +45,7 @@ export const navigation = {
     {
       title: "Quản trị",
       items: [
-        ["/quan-tri/nhap-xuat", "Nhập / xuất Excel", "file"],
+        ["/quan-tri/nhap-xuat", "Nhập / xuất dữ liệu", "file"],
         ["/quan-tri/nhan-su", "Nhân sự & tài khoản", "users"],
       ],
     },

@@ -290,7 +290,7 @@ export default function DataExchange() {
   return (
     <>
       <p className="eyebrow">DỮ LIỆU & BÁO CÁO</p>
-      <h1>Nhập / xuất Excel</h1>
+      <h1>Nhập Excel · Xuất Excel/PDF</h1>
       <p>
         Nhập hồ sơ theo mẫu và xuất danh sách để đối chiếu. Chỉ ban quản lý được
         sử dụng chức năng này.
@@ -322,8 +322,8 @@ export default function DataExchange() {
           <section className="card">
             <h2>Xuất {config.title.toLowerCase()}</h2>
             <p>
-              Xuất toàn bộ kết quả theo bộ lọc, tối đa 10.000 dòng Excel. Có thể
-              xuất theo bộ lọc ngay tại{" "}
+              Xuất toàn bộ kết quả theo bộ lọc, tối đa 10.000 dòng Excel hoặc
+              1.000 dòng PDF. Có thể xuất theo bộ lọc ngay tại{" "}
               <Link to={config.path}>màn danh sách</Link>.
             </p>
             <form
@@ -427,9 +427,9 @@ export default function DataExchange() {
         <h2>Báo cáo tài chính</h2>
         <div className="actions">
           <Link to="/quan-tri/bao-cao-tai-chinh">
-            Công nợ & thu phí · Excel
+            Công nợ & thu phí · Excel / PDF
           </Link>
-          <Link to="/quan-tri/quy">Sổ quỹ · Excel</Link>
+          <Link to="/quan-tri/quy">Sổ quỹ · Excel / PDF</Link>
         </div>
       </section>
     </>

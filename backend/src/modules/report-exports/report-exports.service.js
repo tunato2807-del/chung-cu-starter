@@ -2,10 +2,11 @@ import * as financial from "../financial-reports/financial-reports.service.js";
 import { ledger } from "../treasury/treasury.service.js";
 import { today } from "../billing/billing.validation.js";
 import { date, format, reserve, send, time } from "./report-files.js";
-const col = (key, title, type = "text", width = 20) => ({
+const col = (key, title, type = "text", width = 20, pdfWidth = 1) => ({
   title,
   type,
   width,
+  pdfWidth,
   value: typeof key === "function" ? key : (r) => r[key],
 });
 const metric = (label, value, type = "money") => ({ label, value, type });

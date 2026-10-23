@@ -1,6 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
+import parsePdf from "pdf-parse/lib/pdf-parse.js";
+import { writeFile, mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import bcrypt from "bcryptjs";
 import ExcelJS from "exceljs";
 import { app } from "../src/app.js";
@@ -14,7 +18,7 @@ import {
   reportPage,
 } from "../src/modules/report-exports/report-files.js";
 
-test("report exports: complete snapshot, real XLSX, exact money, filters and permissions", async (t) => {
+test("report exports: complete snapshot, real XLSX/PDF, exact money, filters and permissions", async (t) => {
   assert.equal(process.env.DB_NAME, "chung_cu_test");
   const suffix = randomBytes(4).toString("hex"),
     block = `X${suffix}`,
@@ -24,6 +28,7 @@ test("report exports: complete snapshot, real XLSX, exact money, filters and per
     apartments = [],
     bills = [],
     funds = [],
+    dir = await mkdtemp(path.join(tmpdir(), "condo-exports-")),
     day = today(),
     yesterday = new Date(new Date(`${day}T00:00:00Z`).getTime() - 86400000)
       .toISOString()
@@ -85,6 +90,19 @@ test("report exports: complete snapshot, real XLSX, exact money, filters and per
       if (r.getCell(1).value === label) value = r.getCell(2).value;
     });
     return value;
+  }
+  async function textPDF(uri, name) {
+    const r = await req(uri);
+    assert.equal(r.status, 200, r.buffer.toString());
+    assert.match(r.headers.get("content-type"), /application\/pdf/);
+    assert.equal(r.buffer.subarray(0, 5).toString(), "%PDF-");
+    const file = path.join(dir, name + ".pdf");
+    await writeFile(file, r.buffer);
+    return {
+      r,
+      file,
+      text: (await parsePdf(r.buffer)).text,
+    };
   }
   async function newFund(name) {
     const r = await rows(
@@ -313,18 +331,52 @@ test("report exports: complete snapshot, real XLSX, exact money, filters and per
       },
     );
     await t.test(
-      "PDF report downloads are rejected on all report endpoints",
+      "real PDF embeds Vietnamese, exact text and repeated headers across pages",
       async () => {
-        for (const uri of [
-          `/quy/${fund}/so_quy/xuat?dinh_dang=pdf`,
-          `/bao_cao/cong_no/xuat?dinh_dang=pdf`,
-          `/bao_cao/thu_phi/xuat?dinh_dang=pdf`,
-        ])
-          assert.equal((await req(uri)).status, 422);
+        // More than one page, without truncating the long narrative or a later row.
+        for (let i = 50; i < 90; i++)
+          await voucher(
+            fund,
+            "1000",
+            `Dòng ${String(i).padStart(3, "0")} · Nguyễn Thị Ánh · ${"Nội dung cần giữ đủ. ".repeat(10)}`,
+          );
+        const r = await textPDF(
+          `/quy/${fund}/so_quy/xuat?dinh_dang=pdf&page=5`,
+          "ledger",
+        );
+        assert.match(r.text, /Quỹ cộng đồng/);
+        assert.match(r.text, /Nguyễn Thị Ánh/);
+        assert.match(r.text, /Dòng 089/);
+        assert.match(r.text, /90 dòng chi tiết/);
+        assert.ok(r.text.split("Ngày hạch toán").length > 2);
+        assert.match(r.text, /Trang 2/);
+        assert.equal(Number(r.r.headers.get("x-export-rows")), 90);
+        for (const [uri, name, needle] of [
+          [
+            `/bao_cao/cong_no/xuat?khoi=${block}&dinh_dang=pdf`,
+            "debts",
+            "Báo cáo công nợ",
+          ],
+          [
+            `/bao_cao/thu_phi/xuat?khoi=${block}&tu_ngay=${day}&den_ngay=${day}&dinh_dang=pdf`,
+            "collections",
+            "Báo cáo thu phí",
+          ],
+        ]) {
+          const p = await textPDF(uri, name);
+          assert.ok(p.text.includes(needle));
+          assert.ok(p.text.includes(block));
+        }
+        await writeFile(
+          "/tmp/chung-cu-export-ledger.pdf",
+          await (
+            await req(`/quy/${fund}/so_quy/xuat?dinh_dang=pdf`)
+          ).buffer,
+        );
       },
     );
     await t.test(
-      "amounts above Excel precision remain exact text",
+      "amounts above Excel precision remain exact text and PDF never rounds them",
       async () => {
         const huge = "99999999999999",
           sum = (BigInt(huge) * 93n).toString(),
@@ -334,6 +386,11 @@ test("report exports: complete snapshot, real XLSX, exact money, filters and per
         assert.equal(summary(x.meta, "Cuối kỳ"), sum);
         assert.equal(typeof summary(x.meta, "Cuối kỳ"), "string");
         assert.equal(x.data.getCell("G2").value, Number(huge));
+        const p = await textPDF(
+          `/quy/${id}/so_quy/xuat?dinh_dang=pdf&che_do=THEO_THANG`,
+          "huge",
+        );
+        assert.ok(p.text.includes(BigInt(sum).toLocaleString("vi-VN")));
       },
     );
     await t.test(
@@ -344,6 +401,12 @@ test("report exports: complete snapshot, real XLSX, exact money, filters and per
         );
         assert.equal(x.data.rowCount, 1);
         assert.equal(summary(x.meta, "Còn phải thu"), 0);
+        const p = await textPDF(
+          `/quy/${fund}/so_quy/xuat?dinh_dang=pdf&q=NO_MATCH_${suffix}`,
+          "empty",
+        );
+        assert.match(p.text, /Không có dữ liệu phù hợp/);
+        assert.match(p.text, /NO_MATCH_/);
       },
     );
     await t.test(
@@ -364,7 +427,7 @@ test("report exports: complete snapshot, real XLSX, exact money, filters and per
             params,
           );
         }
-        for (const type of ["xlsx"]) {
+        for (const type of ["pdf", "xlsx"]) {
           const r = await req(
             `/quy/${largeFund}/so_quy/xuat?dinh_dang=${type}`,
           );
@@ -379,9 +442,9 @@ test("report exports: complete snapshot, real XLSX, exact money, filters and per
           `/quy/${largeFund}/so_quy/xuat?dinh_dang=xlsx&q=NOT_FOUND`,
         );
         assert.equal(x.data.rowCount, 1);
-        assert.doesNotThrow(() => reportPage({}, "xlsx").check(10000));
+        assert.doesNotThrow(() => reportPage({}, "pdf").check(1000));
         assert.throws(
-          () => reportPage({}, "xlsx").check(10001),
+          () => reportPage({}, "pdf").check(1001),
           (e) => e.code === "EXPORT_TOO_LARGE",
         );
       },
@@ -468,5 +531,6 @@ test("report exports: complete snapshot, real XLSX, exact money, filters and per
     for (const id of users)
       await rows(pool, "DELETE FROM nguoi_dung WHERE ma_nguoi_dung=?", [id]);
     await pool.end();
+    await rm(dir, { recursive: true, force: true });
   }
 });
