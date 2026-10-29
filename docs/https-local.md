@@ -6,13 +6,7 @@ Các bước dưới dành cho Windows và Android cùng Wi-Fi. Dùng IP Wi-Fi h
 
 ## 1. Lấy bản code có cấu hình HTTPS
 
-Nếu đã clone repository bằng Git:
-
-```powershell
-git pull --ff-only origin codex/auth-qr-incidents
-```
-
-Nếu đã tải ZIP, tải lại ZIP của nhánh `codex/auth-qr-incidents` và thay các file mã nguồn đã cập nhật; giữ `.env`, `backend/.demo-credentials` và dữ liệu local. Có thể chép riêng `frontend/vite.https.config.js` và các thay đổi scripts trong hai file package.json. Không thay file `.env` bằng file của máy khác.
+Bản nghiệp vụ hiện tại nằm trên nhánh `codex/editorial-business-ui`, đã có cấu hình HTTPS và lệnh `npm run dev:frontend:https`. Xem [hướng dẫn chạy đồ án trên Windows/VS Code](huong-dan-chay-do-an-windows.md) để chạy MySQL và backend trước. Nếu bạn đã chép bản này vào dự án thì tiếp tục mục 2, không cần tải lại ZIP hoặc đổi nhánh để bật HTTPS.
 
 ## 2. Tạo chứng chỉ phát triển bằng mkcert
 
@@ -22,7 +16,16 @@ Cài mkcert từ package Winget `FiloSottile.mkcert` (hoặc release chính th�
 winget install --id FiloSottile.mkcert --exact
 ```
 
-Mở lại terminal để nhận PATH mới. Tại thư mục gốc dự án:
+Nếu `winget` không có trên máy, tải bản Windows phù hợp từ [releases chính thức của mkcert](https://github.com/FiloSottile/mkcert/releases), lưu thành `.certs/mkcert.exe` ở gốc dự án. Nếu đã có `.certs/mkcert.exe` từ lần thiết lập trước thì dùng tiếp file đó. Các lệnh cho bản đặt trong dự án:
+
+```powershell
+& ".\.certs\mkcert.exe" -install
+& ".\.certs\mkcert.exe" -cert-file .certs/dev-cert.pem -key-file .certs/dev-key.pem localhost 127.0.0.1 192.168.1.208
+$mkcertCaDirectory = & ".\.certs\mkcert.exe" -CAROOT
+Copy-Item (Join-Path $mkcertCaDirectory 'rootCA.pem') .certs/rootCA.crt
+```
+
+Nếu cài qua Winget, mở lại terminal để nhận PATH mới. Tại thư mục gốc dự án, dùng nhóm lệnh sau thay cho nhóm dùng file `.exe` ở trên:
 
 ```powershell
 mkcert -install

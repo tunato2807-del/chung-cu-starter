@@ -16,7 +16,9 @@ Excel danh sách/báo cáo mở trực tiếp tại **Chi tiết**, có liên k�
 
 ## Chạy môi trường phát triển
 
-Cần Node.js 24, npm và Docker có Compose. Chạy tại thư mục gốc repository:
+Cách chạy đầy đủ trên Windows/VS Code, dùng MySQL cài riêng cổng 3306, dữ liệu nghiệm thu và HTTPS trên điện thoại: **[Hướng dẫn chạy đồ án](docs/huong-dan-chay-do-an-windows.md)**. Máy đã cài xong bắt đầu từ mục 1–4; không cần tạo lại dữ liệu mỗi lần mở đồ án.
+
+Nếu thiết lập lần đầu bằng **MySQL Docker của dự án**, cần Node.js 24, npm và Docker có Compose. Chạy tại thư mục gốc repository:
 
 ```bash
 npm ci
