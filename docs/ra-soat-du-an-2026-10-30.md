@@ -1,5 +1,7 @@
 # Rà soát dự án ngày 30/10/2026
 
+> Bổ sung sau lượt review này: [rà soát sâu và 4 phát hiện còn mở](ra-soat-sau-2026-10-30.md), gồm quy tắc riêng tư phản ánh sau bàn giao vừa được người dùng xác nhận. Kết quả test dưới đây không bao phủ các kịch bản mới đó.
+
 Nhánh kiểm tra: `codex/editorial-business-ui`, bản nghiệp vụ đầy đủ. Database kiểm thử: `chung_cu_test`. Không tạo lại database phát triển/nghiệm thu hoặc thay mật khẩu/tokens của người dùng để chữa lỗi.
 
 ## Phương pháp và phạm vi

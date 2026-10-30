@@ -1,5 +1,7 @@
 # Quản lý chung cư · Phản ánh QR
 
+> **Rà soát sâu toàn dự án (30/10/2026):** [4 phát hiện còn mở và bằng chứng tái hiện](docs/ra-soat-sau-2026-10-30.md). Ưu tiên tách quyền phản ánh của chủ cũ khi bàn giao tài khoản căn; quyền hóa đơn vẫn theo căn.
+
 > **Bản sửa đăng nhập, QR và địa chỉ (30/10/2026):** [code đủ 9 file và cách cập nhật VS Code](docs/sua-dang-nhap-qr-va-dia-chi-vscode.md) · [báo cáo rà soát theo agent-skills](docs/ra-soat-du-an-2026-10-30.md). Dùng `npm run start:backend:acceptance` để chọn đúng bộ tài khoản `.md`; dùng `npm run diagnose` để đối chiếu cấu hình.
 
 > **Căn chỉnh ô tổng quan và lỗi EBUSY:** [hướng dẫn + code đủ 2 file](docs/cap-nhat-can-chinh-tong-quan-vscode.md), có ảnh máy tính/điện thoại và cách cài dependency khi Windows khóa thư mục.
