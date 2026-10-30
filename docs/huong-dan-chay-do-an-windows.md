@@ -1,5 +1,7 @@
 # Hướng dẫn chạy đồ án trên Windows và VS Code
 
+> **Bản sửa 30/10/2026:** [copy đủ file và migrate lên schema 019](cap-nhat-4-loi-sau-ra-soat-vscode.md) trước khi chạy backend. Chọn đúng database thường/nghiệm thu; không tạo lại dữ liệu hoặc mật khẩu.
+
 **Đề tài:** Xây dựng hệ thống quản lý vận hành chung cư và tiếp nhận phản ánh cư dân.
 
 Hướng dẫn cập nhật ngày **30/10/2026**, dành cho bản nghiệp vụ trên nhánh `codex/editorial-business-ui`. Các lệnh dưới đây chạy trong **PowerShell**, tại thư mục gốc chứa `package.json`, `backend/` và `frontend/`:

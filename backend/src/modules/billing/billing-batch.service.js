@@ -8,7 +8,10 @@ import { pool, rows } from "../../lib/db.js";
 import { fail, integer } from "../../lib/http.js";
 import { period, monthDay, options } from "./billing.validation.js";
 import { requestKey } from "../maintenance/maintenance.validation.js";
-import { lockApartment } from "./billing.guards.js";
+import {
+  assertBillingActor as actor,
+  lockApartment,
+} from "./billing.guards.js";
 import { generate, prepareDraft } from "./billing.service.js";
 
 const signingKey = randomBytes(32);
@@ -34,19 +37,7 @@ function input(body) {
     ...options(body),
   };
 }
-export async function actor(db, user) {
-  const found = await rows(
-    db,
-    "SELECT ma_nguoi_dung FROM nguoi_dung WHERE ma_nguoi_dung=? AND vai_tro='QUAN_TRI_VIEN' AND dang_hoat_dong=1 AND phien_ban_token=? FOR SHARE",
-    [user.ma_nguoi_dung, user.phien_ban_token],
-  );
-  if (!found.length)
-    fail(
-      401,
-      "SESSION_EXPIRED",
-      "Phiên đã hết hạn. Đăng nhập lại trước khi xử lý hóa đơn.",
-    );
-}
+export { assertBillingActor as actor } from "./billing.guards.js";
 export function tokenFor(bodyHash, quoteHash, user) {
   const payload = Buffer.from(
     JSON.stringify({

@@ -1,6 +1,8 @@
 # Quản lý chung cư · Phản ánh QR
 
-> **Rà soát sâu toàn dự án (30/10/2026):** [4 phát hiện còn mở và bằng chứng tái hiện](docs/ra-soat-sau-2026-10-30.md). Ưu tiên tách quyền phản ánh của chủ cũ khi bàn giao tài khoản căn; quyền hóa đơn vẫn theo căn.
+> **Đã sửa 4 lỗi sau rà soát (30/10/2026):** [code đầy đủ 15 file + cách cập nhật VS Code](docs/cap-nhat-4-loi-sau-ra-soat-vscode.md) · [kết quả kiểm chứng](docs/sua-4-loi-sau-ra-soat-2026-10-30.md). Cần migration **019** vào đúng database; chủ mới chỉ kế thừa hóa đơn, không nhận phản ánh/ảnh chủ trước.
+
+> **Rà soát sâu toàn dự án (30/10/2026):** [4 phát hiện ở phiên bản cũ và bằng chứng tái hiện](docs/ra-soat-sau-2026-10-30.md). Bốn lỗi của bản review này đã được xử lý trong bản sửa ở trên; báo cáo giữ nguyên chứng cứ theo SHA cũ.
 
 > **Bản sửa đăng nhập, QR và địa chỉ (30/10/2026):** [code đủ 9 file và cách cập nhật VS Code](docs/sua-dang-nhap-qr-va-dia-chi-vscode.md) · [báo cáo rà soát theo agent-skills](docs/ra-soat-du-an-2026-10-30.md). Dùng `npm run start:backend:acceptance` để chọn đúng bộ tài khoản `.md`; dùng `npm run diagnose` để đối chiếu cấu hình.
 

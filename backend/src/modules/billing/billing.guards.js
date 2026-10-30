@@ -1,5 +1,18 @@
 import { rows } from "../../lib/db.js";
 import { fail } from "../../lib/http.js";
+export async function assertBillingActor(db, user) {
+  const found = await rows(
+    db,
+    "SELECT ma_nguoi_dung FROM nguoi_dung WHERE ma_nguoi_dung=? AND vai_tro='QUAN_TRI_VIEN' AND dang_hoat_dong=1 AND phien_ban_token=? FOR SHARE",
+    [user.ma_nguoi_dung, user.phien_ban_token],
+  );
+  if (!found.length)
+    fail(
+      401,
+      "SESSION_EXPIRED",
+      "Phiên đã hết hạn. Đăng nhập lại trước khi xử lý hóa đơn.",
+    );
+}
 export async function lockApartment(db, id) {
   const [a] = await rows(
     db,

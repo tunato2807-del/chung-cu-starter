@@ -117,8 +117,10 @@ export function electricityLines(rate, used, source, meterId) {
   const vat = v.scaled(config.thue_gtgt, 2, 3);
   if (vat > 0n) {
     const tax = (base * vat + 5000n) / 10000n;
-    if (tax > 99999999999999n)
-      fail(422, "AMOUNT_TOO_LARGE", "Thuế điện vượt giới hạn.");
+    // The tax is stored as a one-unit charge in don_gia DECIMAL(12,2).
+    // Reject before writing SQL, including a rounded value above that limit.
+    if (tax * 100n > 999999999999n)
+      fail(422, "AMOUNT_TOO_LARGE", "Thuế điện vượt giới hạn đơn giá hóa đơn.");
     // One tax charge, whose unit price is the tax amount (not the energy rate).
     add(
       "1.000",

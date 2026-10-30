@@ -5,7 +5,12 @@ export function canRead(user, r) {
     user.vai_tro === "QUAN_TRI_VIEN" ||
     (user.vai_tro === "KY_THUAT_VIEN" &&
       user.ma_nguoi_dung === r.ma_ky_thuat_vien) ||
-    (user.vai_tro === "CU_DAN" && user.ma_nguoi_dung === r.ma_nguoi_gui)
+    (user.vai_tro === "CU_DAN" &&
+      (r.ma_cu_dan_nguoi_gui != null
+        ? user.ma_cu_dan != null && user.ma_cu_dan === r.ma_cu_dan_nguoi_gui
+        : !r.gui_tu_tai_khoan_can_ho &&
+          user.ma_can_ho_thanh_toan == null &&
+          user.ma_nguoi_dung === r.ma_nguoi_gui))
   );
 }
 export async function lockedReport(db, id, user, version) {
@@ -101,8 +106,14 @@ export async function list(user, query) {
     params.push(user.ma_nguoi_dung);
   }
   if (user.vai_tro === "CU_DAN") {
-    clauses.push("p.ma_nguoi_gui=?");
-    params.push(user.ma_nguoi_dung);
+    clauses.push(
+      "((p.ma_cu_dan_nguoi_gui IS NOT NULL AND p.ma_cu_dan_nguoi_gui=?) OR (p.ma_cu_dan_nguoi_gui IS NULL AND p.gui_tu_tai_khoan_can_ho=0 AND p.ma_nguoi_gui=? AND ?=1))",
+    );
+    params.push(
+      user.ma_cu_dan ?? null,
+      user.ma_nguoi_dung,
+      user.ma_can_ho_thanh_toan == null ? 1 : 0,
+    );
   }
   for (const key of ["trang_thai", "loai_su_co"])
     if (typeof query[key] === "string" && query[key]) {

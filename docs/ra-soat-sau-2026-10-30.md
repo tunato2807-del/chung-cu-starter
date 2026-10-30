@@ -2,7 +2,7 @@
 
 **Phiên bản được rà soát:** `f16c6b0`, nhánh `codex/editorial-business-ui`.
 
-**Kết quả:** 4 phát hiện mới còn mở, gồm 1 lỗi quyền riêng tư ưu tiên cao và 3 lỗi mức vừa. Đây là báo cáo review; các file nghiệp vụ ở phiên bản được rà soát chưa được sửa trong lượt này.
+**Kết quả tại SHA review:** 4 phát hiện, gồm 1 lỗi quyền riêng tư ưu tiên cao và 3 lỗi mức vừa. **Cập nhật sau review:** đã sửa cả bốn; xem [bản sửa và kiểm chứng](sua-4-loi-sau-ra-soat-2026-10-30.md), [code từng file để copy](cap-nhat-4-loi-sau-ra-soat-vscode.md). Phần bên dưới giữ chứng cứ/hành vi của SHA cũ để đối chiếu.
 
 ## Phạm vi và cách kiểm tra
 
@@ -82,7 +82,9 @@ Chưa thấy bằng chứng mới đủ mạnh để kết luận có lỗi tín
 
 ## Bằng chứng có thể chạy lại
 
-Chạy từ gốc repository:
+Các script dưới đây cố ý kiểm tra hành vi lỗi ở SHA cũ `f16c6b0`. Chỉ chạy từ checkout riêng của SHA đó; chạy trên bản đã sửa sẽ không còn thỏa assertion lỗi. Bộ hồi quy nghiệm thu hiện tại nằm trong `backend/test/review-regressions.test.js`, `backend/test/incident-privacy.test.js`, `scripts/api-client.test.js` và `e2e/connection-recovery.spec.js`.
+
+Tại gốc checkout cũ:
 
 ```bash
 node docs/ra-soat-sau-2026-10-30/proofs/apartment-report-privacy.mjs
@@ -94,7 +96,7 @@ Ba script dùng hàm thật với dữ liệu trong memory hoặc connection gi�
 
 Chứng cứ frontend nằm ở [frontend-expiry.mjs](ra-soat-sau-2026-10-30/proofs/frontend-expiry.mjs). Chạy trong môi trường có Chromium/Playwright và quyền bind loopback; `UI_QA_CHROMIUM` chọn đường dẫn Chromium, mặc định `/tmp/chromium` của workspace Linux. Script chỉ dựng Vite và API stubs.
 
-**Giới hạn kiểm chứng:** automatic approval review đã từ chối lệnh kiểm thử MySQL bổ sung vì lệnh nạp `.env`/dùng credentials bị coi là truy cập tệp đã yêu cầu giữ kín. Không chuyển sang cách khác để đi vòng kiểm soát này. Các phát hiện trong lượt review dựa trên code, hàm thật, mock và Chromium/API stubs; chưa có kiểm chứng MySQL thật bổ sung.
+**Giới hạn kiểm chứng của lượt review cũ (đã được bổ sung bằng DB thử riêng trong lượt sửa):** automatic approval review đã từ chối lệnh kiểm thử MySQL bổ sung vì lệnh nạp `.env`/dùng credentials bị coi là truy cập tệp đã yêu cầu giữ kín. Không chuyển sang cách khác để đi vòng kiểm soát này. Các phát hiện trong lượt review dựa trên code, hàm thật, mock và Chromium/API stubs; chưa có kiểm chứng MySQL thật bổ sung.
 
 ## Thứ tự xử lý đề xuất
 

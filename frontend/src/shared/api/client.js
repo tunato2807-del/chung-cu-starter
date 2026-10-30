@@ -1,4 +1,46 @@
+import { expireAuthSession, getAuthSession } from "../auth-session.js";
+
+// JSON requests and file downloads must observe the same session generation.
+export async function fetchWithSession(input, options = {}) {
+  const requestSession = getAuthSession();
+  const response = await fetch(input, options);
+  const pathname = new URL(
+    typeof input === "string" ? input : input.url || String(input),
+    "http://app.invalid",
+  ).pathname;
+  if (
+    response.status === 401 &&
+    pathname.replace(/\/+$/, "") !== "/api/xac_thuc/dang_nhap"
+  ) {
+    expireAuthSession(requestSession);
+    if (!requestSession.user) {
+      // On first load there is no user yet. Only an explicit expired-cookie
+      // response distinguishes that session from an ordinary anonymous visit.
+      const data = await response
+        .clone()
+        .json()
+        .catch(() => null);
+      if (data?.error?.code === "SESSION_EXPIRED")
+        expireAuthSession(requestSession, true);
+    }
+  }
+  return response;
+}
+
 export async function getJson(path, options = {}) {
+  const requestSession = getAuthSession();
+  const pathname = path.split(/[?#]/, 1)[0];
+  if (
+    requestSession.expired &&
+    /^\/cong_khai\/phan_anh\/?$/.test(pathname) &&
+    !["GET", "HEAD"].includes((options.method || "GET").toUpperCase())
+  )
+    throw Object.assign(
+      new Error(
+        "Phiên đã hết hạn. Vui lòng đăng nhập lại trước khi gửi. Nội dung và ảnh trong biểu mẫu vẫn được giữ lại.",
+      ),
+      { status: 401, code: "SESSION_EXPIRED" },
+    );
   const headers = { "X-App-Request": "1", ...options.headers };
   let body = options.body;
   if (body && !(body instanceof FormData)) {
@@ -7,7 +49,7 @@ export async function getJson(path, options = {}) {
   }
   let response;
   try {
-    response = await fetch(`/api${path}`, {
+    response = await fetchWithSession(`/api${path}`, {
       ...options,
       headers,
       body,

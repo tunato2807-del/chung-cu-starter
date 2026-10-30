@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ErrorBox } from "./ui.jsx";
+import { fetchWithSession } from "./api/client.js";
 export default function ReportExport({
   path,
   disabled = false,
@@ -29,7 +30,7 @@ export default function ReportExport({
     try {
       const url = new URL("/api" + path, window.location.origin);
       url.searchParams.set("dinh_dang", format);
-      const r = await fetch(url, {
+      const r = await fetchWithSession(url, {
         credentials: "same-origin",
         headers: { "X-App-Request": "1" },
         signal: controller.signal,

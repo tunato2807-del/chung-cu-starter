@@ -1,6 +1,17 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getJson } from "../../shared/api/client.js";
+import {
+  getAuthSession,
+  setAuthSession,
+  subscribeAuthSession,
+} from "../../shared/auth-session.js";
 import Icon from "../../shared/Icon.jsx";
 import PhotoCarousel from "../../shared/PhotoCarousel.jsx";
 import { serviceDestination } from "../incidents/portal-services.js";
@@ -14,20 +25,40 @@ import {
 const Context = createContext(null);
 export const useAuth = () => useContext(Context);
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null),
-    [loading, setLoading] = useState(true);
+  const session = useSyncExternalStore(subscribeAuthSession, getAuthSession);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    getJson("/xac_thuc/toi")
-      .then((r) => setUser(r.data))
+    const initialSession = getAuthSession();
+    const controller = new AbortController();
+    getJson("/xac_thuc/toi", { signal: controller.signal })
+      .then((r) => {
+        if (
+          !controller.signal.aborted &&
+          initialSession.epoch === getAuthSession().epoch
+        )
+          setAuthSession(r.data);
+      })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+    return () => controller.abort();
   }, []);
   const logout = async () => {
+    const requestSession = getAuthSession();
     await getJson("/xac_thuc/dang_xuat", { method: "POST" });
-    setUser(null);
+    if (requestSession.epoch === getAuthSession().epoch) setAuthSession(null);
   };
   return (
-    <Context.Provider value={{ user, setUser, loading, logout }}>
+    <Context.Provider
+      value={{
+        user: session.user,
+        setUser: setAuthSession,
+        sessionExpired: session.expired,
+        loading,
+        logout,
+      }}
+    >
       {children}
     </Context.Provider>
   );
@@ -46,7 +77,7 @@ export function Protected({ roles, children }) {
   return children;
 }
 export function Login() {
-  const { user, setUser } = useAuth(),
+  const { user, setUser, sessionExpired } = useAuth(),
     navigate = useNavigate(),
     location = useLocation();
   const [error, setError] = useState(),
@@ -85,6 +116,11 @@ export function Login() {
         <p className="eyebrow">Chào mừng bạn trở lại</p>
         <h1>Đăng nhập</h1>
         <p className="muted">Sử dụng tài khoản do Ban quản lý cấp.</p>
+        {sessionExpired && (
+          <p className="note" role="status">
+            Phiên đã hết hạn. Vui lòng đăng nhập lại để tiếp tục.
+          </p>
+        )}
         <form
           onSubmit={async (e) => {
             e.preventDefault();

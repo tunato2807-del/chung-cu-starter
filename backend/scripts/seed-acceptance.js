@@ -89,7 +89,7 @@ async function freshDatabase() {
   );
   if (tables.length !== 38)
     throw new Error(
-      "Cần đúng schema 018 với 38 bảng. Kiểm tra migration trước khi tạo dữ liệu.",
+      "Cần schema hiện tại với 38 bảng. Kiểm tra migration trước khi tạo dữ liệu.",
     );
   for (const { name } of tables) {
     if (["schema_migrations", "loai_phi", "quy_tai_chinh"].includes(name))

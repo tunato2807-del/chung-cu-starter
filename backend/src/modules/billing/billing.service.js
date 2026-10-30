@@ -2,7 +2,7 @@ import { reportPage } from "../report-exports/report-files.js";
 import { createHash, randomBytes } from "node:crypto";
 import { pool, rows, transaction } from "../../lib/db.js";
 import { choice, fail, integer, text } from "../../lib/http.js";
-import { lockApartment } from "./billing.guards.js";
+import { lockApartment, assertBillingActor } from "./billing.guards.js";
 import { vietQR } from "./billing.qr.js";
 import * as v from "./billing.validation.js";
 import { electricityConfig, electricityLines } from "./billing.electricity.js";
@@ -440,10 +440,11 @@ async function makeDraft(db, apartment, body, user, previous = null) {
 }
 export async function generate(body, user, connection = null) {
   const id = integer(body.ma_can_ho, "ma_can_ho");
-  return transaction(
-    async (db) => makeDraft(db, await lockApartment(db, id), body, user),
-    connection,
-  );
+  return transaction(async (db) => {
+    const apartment = await lockApartment(db, id);
+    await assertBillingActor(db, user);
+    return makeDraft(db, apartment, body, user);
+  }, connection);
 }
 async function lockedBill(db, id) {
   const [row] = await rows(
@@ -530,6 +531,7 @@ export async function prepareBillAction(db, bill, apartment, operation, body) {
 export async function action(id, action, body, user, connection = null) {
   return transaction(async (db) => {
     const { bill, apartment } = await lockedBill(db, id);
+    await assertBillingActor(db, user);
     if (
       action === "xac_nhan_thanh_toan" &&
       bill.trang_thai === "DA_THANH_TOAN"

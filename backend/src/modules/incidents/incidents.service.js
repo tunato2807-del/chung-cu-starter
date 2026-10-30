@@ -3,6 +3,7 @@ import { pool, rows, transaction } from "../../lib/db.js";
 import { fail, text, phone, choice, integer } from "../../lib/http.js";
 import { saveImages, cleanupImages } from "../../lib/images.js";
 import { lockedReport, addImages, history } from "./incidents.repository.js";
+import { lockSender } from "./incident-sender.js";
 export const categories = [
   "DIEN",
   "NUOC",
@@ -25,6 +26,7 @@ export async function submit(body, files, user, ip) {
     apartment: text(body.can_ho_khai_bao || "", "can_ho_khai_bao", 0, 40),
     category: choice(body.loai_su_co, "loai_su_co", categories),
     user: user?.ma_nguoi_dung || null,
+    resident: user?.ma_cu_dan ?? null,
   };
   if (!uuid.test(b.token) || !uuid.test(b.key))
     fail(422, "VALIDATION", "Token QR hoặc khóa yêu cầu không hợp lệ.");
@@ -53,6 +55,7 @@ export async function submit(body, files, user, ip) {
           "IDEMPOTENCY_CONFLICT",
           "Khóa gửi đã được dùng cho nội dung khác. Hãy mở biểu mẫu mới.",
         );
+      const sender = await lockSender(db, user);
       if (request.ma_phan_anh)
         return {
           ...(
@@ -133,7 +136,7 @@ export async function submit(body, files, user, ip) {
       const lookup = randomBytes(32).toString("hex");
       const r = await rows(
         db,
-        `INSERT INTO phan_anh (ma_tra_cuu,khoa_yeu_cau,ma_vi_tri_qr,ma_nguoi_gui,ten_nguoi_gui,so_dien_thoai_nguoi_gui,can_ho_khai_bao,tieu_de,noi_dung,loai_su_co,ma_thiet_bi,ma_tai_san_luc_gui,ten_thiet_bi_luc_gui,vi_tri_thiet_bi_luc_gui) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+        `INSERT INTO phan_anh (ma_tra_cuu,khoa_yeu_cau,ma_vi_tri_qr,ma_nguoi_gui,ten_nguoi_gui,so_dien_thoai_nguoi_gui,can_ho_khai_bao,tieu_de,noi_dung,loai_su_co,ma_thiet_bi,ma_tai_san_luc_gui,ten_thiet_bi_luc_gui,vi_tri_thiet_bi_luc_gui,ma_cu_dan_nguoi_gui,gui_tu_tai_khoan_can_ho) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
         [
           lookup,
           b.key,
@@ -149,6 +152,8 @@ export async function submit(body, files, user, ip) {
           equipment?.ma_tai_san ?? null,
           equipment?.ten_thiet_bi ?? null,
           equipment?.vi_tri ?? null,
+          sender.resident,
+          sender.apartmentAccount,
         ],
       );
       await addImages(db, r.insertId, names, "PHAN_ANH", 1, user);
