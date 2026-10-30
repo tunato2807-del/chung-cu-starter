@@ -19,7 +19,26 @@ export async function getJson(path, options = {}) {
       "Không kết nối được máy chủ. Thông tin trong biểu mẫu vẫn được giữ lại.",
     );
   }
-  const result = await response.json();
+  let result;
+  try {
+    result = await response.json();
+  } catch (error) {
+    if (error.name === "AbortError") throw error;
+    throw Object.assign(
+      new Error(
+        `Máy chủ chưa trả được phản hồi hợp lệ (HTTP ${response.status}). Vui lòng thử lại sau.`,
+      ),
+      { status: response.status, code: "API_RESPONSE_INVALID" },
+    );
+  }
+  if (!result || typeof result !== "object" || Array.isArray(result))
+    throw Object.assign(
+      new Error("Phản hồi từ máy chủ không hợp lệ. Vui lòng tải lại trang."),
+      {
+        status: response.status,
+        code: "API_RESPONSE_INVALID",
+      },
+    );
   if (!response.ok) {
     const error = new Error(
       result.error?.message || `Yêu cầu thất bại (${response.status})`,

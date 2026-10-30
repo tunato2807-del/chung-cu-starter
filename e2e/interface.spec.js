@@ -36,7 +36,9 @@ for (const width of [1440, 768, 320]) {
       ).insertId;
       await page.goto("/");
       await expect(
-        page.getByRole("heading", { name: /Bạn cần hỗ trợ/ }),
+        page.getByRole("heading", {
+          name: /Sống an tâm\.\s*Kết nối dễ dàng\./,
+        }),
       ).toBeVisible();
       await fit();
       await page.keyboard.press("Tab");
@@ -108,11 +110,11 @@ for (const width of [1440, 768, 320]) {
         await toggle.click();
       }
       await nav
-        .getByRole("link", { name: "Nhập / xuất Excel, PDF", exact: true })
+        .getByRole("link", { name: "Nhập / xuất dữ liệu", exact: true })
         .click();
       await expect(page).toHaveURL(/\/quan-tri\/nhap-xuat$/);
       await expect(
-        nav.getByRole("link", { name: "Nhập / xuất Excel, PDF", exact: true }),
+        nav.getByRole("link", { name: "Nhập / xuất dữ liệu", exact: true }),
       ).toHaveAttribute("aria-current", "page");
       if (width <= 900)
         await expect(

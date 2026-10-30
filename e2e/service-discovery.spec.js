@@ -17,7 +17,7 @@ for (const width of [1440, 375]) {
     try {
       await page.goto("/");
       const catalog = page.getByRole("region", {
-        name: "Chọn dịch vụ bạn cần",
+        name: "Hôm nay, bạn cần gì?",
       });
       const list = catalog.getByRole("list", { name: "Danh sách dịch vụ" });
       await expect(list.getByRole("link")).toHaveCount(6);
@@ -199,7 +199,7 @@ for (const [role, width, title, path, query, label] of [
           page.getByRole("button", { name: "Hóa đơn", exact: true }),
         ).toHaveCount(0);
         await page
-          .getByRole("button", { name: "Bảo trì", exact: true })
+          .getByRole("button", { name: "Tiện ích & thông tin", exact: true })
           .click();
         await expect(catalog.getByRole("link")).toHaveCount(1);
         await expect(

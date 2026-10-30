@@ -2,7 +2,7 @@
 
 **Đề tài:** Xây dựng hệ thống quản lý vận hành chung cư và tiếp nhận phản ánh cư dân.
 
-Hướng dẫn cập nhật ngày **29/10/2026**, dành cho bản nghiệp vụ trên nhánh `codex/editorial-business-ui`. Các lệnh dưới đây chạy trong **PowerShell**, tại thư mục gốc chứa `package.json`, `backend/` và `frontend/`:
+Hướng dẫn cập nhật ngày **30/10/2026**, dành cho bản nghiệp vụ trên nhánh `codex/editorial-business-ui`. Các lệnh dưới đây chạy trong **PowerShell**, tại thư mục gốc chứa `package.json`, `backend/` và `frontend/`:
 
 ```powershell
 Set-Location "D:\DO_AN\chung-cu-starter-codex-auth-qr-incidents"
@@ -31,8 +31,7 @@ Frontend chuyển tiếp `/api` đến backend ở cổng 3000. Trình duyệt m
 Trong **terminal 1**:
 
 ```powershell
-$env:DB_NAME = "chung_cu_nghiem_thu"
-npm run start -w backend
+npm run start:backend:acceptance
 ```
 
 Khi xuất hiện dòng sau, giữ terminal này chạy:
@@ -41,9 +40,9 @@ Khi xuất hiện dòng sau, giữ terminal này chạy:
 API: http://127.0.0.1:3000/api/health
 ```
 
-Biến `DB_NAME` ở trên chỉ áp dụng trong terminal này và các tiến trình con. Nó ưu tiên hơn giá trị trong `.env`; không sửa nội dung file `.env`.
+Lệnh này luôn chọn `chung_cu_nghiem_thu`, kể cả khi mở terminal mới. Backend in rõ dòng `Database: "chung_cu_nghiem_thu"` và đường dẫn `TAI-KHOAN.md` tương ứng. Bộ khác có thể chọn bằng `npm run start:backend:acceptance -- chung_cu_nghiem_thu_b2`.
 
-Lệnh `start` phù hợp lúc trình diễn đồ án. Khi đang sửa code backend và muốn tự khởi động lại sau mỗi lần lưu, dùng **`npm run dev:backend` thay cho lệnh `start`** trong cùng terminal.
+Lệnh `start` phù hợp lúc trình diễn đồ án. Khi đang sửa code backend và muốn tự khởi động lại sau mỗi lần lưu, dùng **`npm run dev:backend:acceptance` thay cho lệnh `start:backend:acceptance`** trong cùng terminal.
 
 ### Muốn dùng dữ liệu làm việc ban đầu thay vì bộ nghiệm thu
 
@@ -208,6 +207,9 @@ Nếu dùng MySQL Docker của dự án, thêm tùy chọn `--docker`; bộ tạ
 Bộ tạo từ chối chạy chồng trên database đã có dữ liệu. Muốn một bộ khác để thử lại từ đầu, dùng tên mới như `--database=chung_cu_nghiem_thu_b2` và chọn đúng tên đó khi chạy backend. Với MySQL cài riêng, tạo/cấp quyền cho database tên mới trước. [Hướng dẫn dữ liệu nghiệm thu](../samples/nghiem-thu/README.md) có chi tiết các kịch bản.
 
 ## 6. Lỗi thường gặp
+
+Nếu không xác định được đang dùng đúng database/tài khoản/QR, chạy `npm run diagnose` tại terminal mới và đối chiếu dòng Database ở terminal backend. Xem [bản sửa đăng nhập, QR và địa chỉ](sua-dang-nhap-qr-va-dia-chi-vscode.md) để cập nhật đủ code và đọc kết quả chẩn đoán.
+
 
 | Hiện tượng | Cách xử lý |
 | --- | --- |

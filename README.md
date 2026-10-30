@@ -1,6 +1,8 @@
 # Quản lý chung cư · Phản ánh QR
 
-> **Bản mới nhất — Căn chỉnh ô tổng quan và lỗi EBUSY:** [hướng dẫn + code đủ 2 file](docs/cap-nhat-can-chinh-tong-quan-vscode.md), có ảnh máy tính/điện thoại và cách cài dependency khi Windows khóa thư mục.
+> **Bản sửa đăng nhập, QR và địa chỉ (30/10/2026):** [code đủ 9 file và cách cập nhật VS Code](docs/sua-dang-nhap-qr-va-dia-chi-vscode.md) · [báo cáo rà soát theo agent-skills](docs/ra-soat-du-an-2026-10-30.md). Dùng `npm run start:backend:acceptance` để chọn đúng bộ tài khoản `.md`; dùng `npm run diagnose` để đối chiếu cấu hình.
+
+> **Căn chỉnh ô tổng quan và lỗi EBUSY:** [hướng dẫn + code đủ 2 file](docs/cap-nhat-can-chinh-tong-quan-vscode.md), có ảnh máy tính/điện thoại và cách cài dependency khi Windows khóa thư mục.
 
 > **Xuất PDF và cài Vite:** [hướng dẫn + code đủ 6 file](docs/cap-nhat-xuat-pdf-va-vite-vscode.md). Nhập bằng Excel; xuất danh sách/báo cáo bằng Excel hoặc PDF. [Bản sửa Excel và menu](docs/cap-nhat-excel-va-menu-vscode.md) · [Excel đã điền để test](samples/nhap-du-lieu/README.md).
 

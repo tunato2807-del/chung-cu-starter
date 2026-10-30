@@ -95,10 +95,26 @@ export function Login() {
                 method: "POST",
                 body: Object.fromEntries(new FormData(e.currentTarget)),
               });
-              setUser(result.data);
+              let session;
+              try {
+                session = await getJson("/xac_thuc/toi");
+              } catch (sessionError) {
+                if (sessionError.status !== 401) throw sessionError;
+                throw new Error(
+                  "Trình duyệt chưa lưu được phiên đăng nhập. Hãy mở đúng địa chỉ web, kiểm tra quyền cookie và dùng HTTPS, rồi thử lại.",
+                );
+              }
+              if (
+                !session.data?.ma_nguoi_dung ||
+                session.data.ma_nguoi_dung !== result.data?.ma_nguoi_dung
+              )
+                throw new Error(
+                  "Không duy trì được phiên đăng nhập. Vui lòng đăng nhập lại tại cùng địa chỉ web.",
+                );
+              setUser(session.data);
               navigate(
-                serviceDestination(result.data, location.state?.service) ||
-                  homeFor(result.data),
+                serviceDestination(session.data, location.state?.service) ||
+                  homeFor(session.data),
               );
             } catch (err) {
               setError(err);

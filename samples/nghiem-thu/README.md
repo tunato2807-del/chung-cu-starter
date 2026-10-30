@@ -67,8 +67,7 @@ File `da-nhap-*` đã được nhập để có lịch sử. File `thu-*` chưa 
 Dừng backend cũ bằng Ctrl+C trong terminal của nó. Trong terminal đó:
 
 ```powershell
-$env:DB_NAME = "chung_cu_nghiem_thu"
-npm run start -w backend
+npm run start:backend:acceptance
 ```
 
 Giữ terminal này chạy. Terminal khác:

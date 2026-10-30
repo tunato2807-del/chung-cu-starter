@@ -171,6 +171,7 @@ test("guest → management → technician → acceptance → private public look
       admin.getByText("Không có thao tác cập nhật ở trạng thái này."),
     ).toBeVisible();
     await guest
+      .getByRole("main")
       .getByRole("link", { name: "Tra cứu tiến độ", exact: true })
       .click();
     await guest.getByLabel("Số điện thoại").fill(phones[2]);

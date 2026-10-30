@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { getJson } from "../../shared/api/client.js";
 import { useReportDraft } from "../../shared/use-report-draft.js";
 import { useAuth } from "../auth/Auth.jsx";
+import { reportPathFromQr } from "../qr/qr-link.js";
 import Icon from "../../shared/Icon.jsx";
 import PhotoCarousel from "../../shared/PhotoCarousel.jsx";
 import {
@@ -256,13 +257,7 @@ export function Scanner() {
   const scanner = useRef(),
     mounted = useRef(true);
   function open(value) {
-    const url = new URL(value, window.location.origin);
-    if (
-      url.origin !== window.location.origin ||
-      !/^\/r\/[0-9a-f-]{36}$/i.test(url.pathname)
-    )
-      throw new Error("Mã QR không thuộc hệ thống này.");
-    navigate(url.pathname);
+    navigate(reportPathFromQr(value, window.location.origin));
   }
   useEffect(() => {
     mounted.current = true;
@@ -315,6 +310,9 @@ export function Scanner() {
     <section className="card narrow">
       <h1>Quét mã QR</h1>
       <p>Đưa camera hướng về mã QR của vị trí cần phản ánh.</p>
+      <p className="muted">
+        Mã đã in bằng địa chỉ mạng cũ sẽ được kiểm tra tại hệ thống đang mở.
+      </p>
       <div id="qr-reader" />
       {!running && (
         <button className="primary" onClick={start}>
