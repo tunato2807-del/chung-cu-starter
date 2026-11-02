@@ -1,5 +1,7 @@
 # Hướng dẫn chạy đồ án trên Windows và VS Code
 
+> **Muốn lấy toàn bộ mã nguồn qua GitHub bằng lệnh?** Xem [tải và cập nhật bằng Git trong Terminal VS Code](tai-va-cap-nhat-du-an-bang-git-vscode.md), có cách chuyển cấu hình/ảnh từ thư mục cũ sang thư mục clone.
+
 > **Bản sửa 30/10/2026:** [copy đủ file và migrate lên schema 019](cap-nhat-4-loi-sau-ra-soat-vscode.md) trước khi chạy backend. Chọn đúng database thường/nghiệm thu; không tạo lại dữ liệu hoặc mật khẩu.
 
 **Đề tài:** Xây dựng hệ thống quản lý vận hành chung cư và tiếp nhận phản ánh cư dân.

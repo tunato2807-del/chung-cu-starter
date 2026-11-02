@@ -32,7 +32,7 @@ node --env-file-if-exists=.env --input-type=module -e "process.env.DB_NAME='chun
 npm run start:backend:acceptance
 ```
 
-Nếu bộ nghiệm thu mang hậu tố khác, thay đúng tên đó trong lệnh migration và khởi động bằng `npm run start:backend:acceptance -- --database=chung_cu_nghiem_thu_<hau_to>`.
+Nếu bộ nghiệm thu mang hậu tố khác, thay đúng tên đó trong lệnh migration và khởi động bằng `npm run start:backend:acceptance -- chung_cu_nghiem_thu_<hau_to>`.
 
 Migration cần in `Schema current: 019_incident_sender_privacy.sql`. Nếu bạn dùng cả database thường lẫn nghiệm thu, chạy migration cho **cả hai** trước khi chuyển qua lại. Không sửa checksum hay xóa dòng `schema_migrations`. Nếu migration lỗi giữa chừng, dừng và kiểm tra thông báo; không tự đánh dấu migration đã chạy.
 

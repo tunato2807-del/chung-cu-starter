@@ -1,5 +1,7 @@
 # Quản lý chung cư · Phản ánh QR
 
+> **Tải/cập nhật bằng Terminal VS Code:** [lệnh git clone, giữ cấu hình bản cũ và cập nhật bằng git pull](docs/tai-va-cap-nhat-du-an-bang-git-vscode.md). Dùng nhánh `codex/editorial-business-ui` cho bản đầy đủ.
+
 > **Đã sửa 4 lỗi sau rà soát (30/10/2026):** [code đầy đủ 15 file + cách cập nhật VS Code](docs/cap-nhat-4-loi-sau-ra-soat-vscode.md) · [kết quả kiểm chứng](docs/sua-4-loi-sau-ra-soat-2026-10-30.md). Cần migration **019** vào đúng database; chủ mới chỉ kế thừa hóa đơn, không nhận phản ánh/ảnh chủ trước.
 
 > **Rà soát sâu toàn dự án (30/10/2026):** [4 phát hiện ở phiên bản cũ và bằng chứng tái hiện](docs/ra-soat-sau-2026-10-30.md). Bốn lỗi của bản review này đã được xử lý trong bản sửa ở trên; báo cáo giữ nguyên chứng cứ theo SHA cũ.
