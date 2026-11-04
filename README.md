@@ -1,5 +1,7 @@
 # Quản lý chung cư · Phản ánh QR
 
+> **Rà soát theo Spec Kit (04/11/2026):** [7 mục còn mở, bằng chứng và ưu tiên khắc phục](docs/ra-soat-spec-kit-2026-11-04.md) · [đặc tả, kế hoạch, task và ma trận nghiệm thu](specs/001-project-readiness/spec.md). Lượt này chưa sửa các lỗi mới; đã chạy lại 222 backend, 39 helper, 19 UI liên quan và build.
+
 > **Tải/cập nhật bằng Terminal VS Code:** [lệnh git clone, giữ cấu hình bản cũ và cập nhật bằng git pull](docs/tai-va-cap-nhat-du-an-bang-git-vscode.md). Dùng nhánh `codex/editorial-business-ui` cho bản đầy đủ.
 
 > **Đã sửa 4 lỗi sau rà soát (30/10/2026):** [code đầy đủ 15 file + cách cập nhật VS Code](docs/cap-nhat-4-loi-sau-ra-soat-vscode.md) · [kết quả kiểm chứng](docs/sua-4-loi-sau-ra-soat-2026-10-30.md). Cần migration **019** vào đúng database; chủ mới chỉ kế thừa hóa đơn, không nhận phản ánh/ảnh chủ trước.

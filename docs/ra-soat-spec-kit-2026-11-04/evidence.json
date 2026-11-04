@@ -1,0 +1,132 @@
+{
+  "review_date": "2026-11-04",
+  "reviewed_ref": "d226254",
+  "branch": "codex/editorial-business-ui",
+  "spec_kit_sha": "38c40ae25a4f1c025e1a2dd6a450095d17acab47",
+  "mode": "manual brownfield requirements/code/test review; Specify CLI not installed or invoked",
+  "word_source": {
+    "filename": "1250080221_To_Hoang_Tuan.docx",
+    "sha256": "fb12e7a78fb2180a21759ea0324402c208da5fe45167db1c401223fe35329419"
+  },
+  "fresh_checks": [
+    {
+      "name": "backend/test/*.test.js",
+      "total": 222,
+      "passed": 222,
+      "failed": 0,
+      "environment": "Linux + disposable MySQL8.4, schema019, no real .env/database",
+      "seconds": 93.68
+    },
+    {
+      "name": "scripts/*.test.js",
+      "total": 39,
+      "passed": 39,
+      "failed": 0,
+      "environment": "Linux, synthetic fixtures + loopback"
+    },
+    {
+      "name": "four related Playwright suites",
+      "total": 19,
+      "passed": 19,
+      "failed": 0,
+      "environment": "Chromium + Vite + API stubs; no real camera/DB",
+      "seconds": 20.7
+    },
+    {
+      "name": "npm run build",
+      "result": "pass",
+      "modules": 162,
+      "warnings": ["React Router use-client ignored", "bundle chunk >500kB"]
+    },
+    {
+      "name": "check-local.js",
+      "errors": 0,
+      "scope": "static files/dependencies; env presence only"
+    },
+    {
+      "name": "information_schema metadata only",
+      "migration": "019_incident_sender_privacy.sql",
+      "tables": 38,
+      "columns": 397,
+      "foreign_keys": 88
+    }
+  ],
+  "findings": [
+    {
+      "id": "SK-01",
+      "severity": "HIGH",
+      "evidence": "Chromium actual draft hook, API stubs, same tab reloaded after resident identity12->13 on same account7",
+      "status": "open"
+    },
+    {
+      "id": "SK-02",
+      "severity": "HIGH",
+      "evidence": "real service + in-memory barrier, then real MySQL row-lock barrier on isolated DB: disabled tech commits DANG_XU_LY and one history row",
+      "status": "open"
+    },
+    {
+      "id": "SK-03",
+      "severity": "HIGH",
+      "evidence": "real Vite+Express limiter, two distinct loopback client IPs both arrive backend127.0.0.1; statuses200/429 at limit1",
+      "status": "open, previously noted operational risk"
+    },
+    {
+      "id": "SK-04",
+      "severity": "HIGH",
+      "evidence": "README and UML/schema018 statements contradict code/schema019; metadata397columns88FK vs document395/87",
+      "status": "open"
+    },
+    {
+      "id": "SK-05",
+      "severity": "MEDIUM",
+      "evidence": "missing-config child startup fails JWT_SECRET with init:local advice; pool fallback3307 inspected without connecting; prior Windows log matches",
+      "status": "open onboarding gap; not an auth bypass"
+    },
+    {
+      "id": "SK-06",
+      "severity": "MEDIUM",
+      "evidence": "source-only: spawnSync npm shellfalse, no result.error handling, Docker-only test setup",
+      "status": "requires Windows validation, not claimed reproduced on Windows"
+    },
+    {
+      "id": "SK-07",
+      "severity": "MEDIUM",
+      "evidence": "Word requests physical multi-browser camera tests and report artifacts; repo has blank matrices/no sufficient current machine evidence",
+      "status": "missing evidence, not proof user has never performed tests"
+    }
+  ],
+  "limits": [
+    "No tests run on user Windows or physical phone",
+    "No actual bank transfer/camera benchmark/performance target/restore drill certified",
+    "Existing 19 browser suites have one unstubbed unread-count endpoint logging proxy ECONNREFUSED to absent3000; assertions passed; no backend was started",
+    "Runtime app, dependency manifests/lock and applied migrations unchanged in this review",
+    "Proof scripts assert buggy baseline behavior, not fixed acceptance behavior",
+    "Metadata and fresh backend tests use new disposable MySQL, not original application DB"
+  ],
+  "dependency_audit": {
+    "date": "2026-11-04",
+    "counts": {
+      "info": 0,
+      "low": 0,
+      "moderate": 9,
+      "high": 0,
+      "critical": 0,
+      "total": 9
+    },
+    "affected_packages": [
+      "archiver",
+      "archiver-utils",
+      "exceljs",
+      "glob",
+      "minimatch",
+      "readdir-glob",
+      "rimraf",
+      "uuid",
+      "zip-stream"
+    ],
+    "advisories": ["GHSA-g3hv-75wg-m249", "GHSA-w5hq-g745-h8pq"],
+    "reachability": "Report/template xlsx.writeBuffer uses JSZip; no caller-controlled glob pattern found to archiver glob/directory. ExcelJS CF uses uuidv4 without buffer. No API exploit established.",
+    "changes_applied": false,
+    "review_by": "2026-11-06"
+  }
+}
