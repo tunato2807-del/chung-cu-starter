@@ -6,6 +6,8 @@ Các bước dưới chạy trong PowerShell ở thư mục chứa package.json.
 
 ## 1. Lấy đúng nhánh và giữ bản cũ
 
+Dừng các server của dự án bằng Ctrl+C trước khi đổi nhánh/cài dependency, để chế độ watch không khởi động code mới với cấu hình nguồn cũ.
+
 ```powershell
 Set-Location "D:\DO_AN\chung-cu-starter-github"
 git status --short
@@ -119,7 +121,7 @@ Terminal frontend:
 npm.cmd run dev:frontend:https
 ```
 
-Nếu chưa có HTTPS/chứng chỉ, dùng `npm.cmd run dev:frontend` và mở http://localhost:5173 trên máy tính. Camera điện thoại cần HTTPS và chứng chỉ được tin cậy; dùng [hướng dẫn HTTPS](https-local.md). Việc đổi schema không thay IP Wi-Fi, URL frontend hoặc QR đã in; nếu DHCP đổi IP thì cần URL/chứng chỉ truy cập được như trước.
+Nếu chưa có HTTPS/chứng chỉ, dùng `npm.cmd run dev:frontend` và mở http://localhost:5173 trên máy tính. HTTP localhost chỉ dùng `COOKIE_SECURE=false`; giữ `COOKIE_SECURE=true` khi chạy HTTPS. Camera điện thoại cần HTTPS và chứng chỉ được tin cậy; dùng [hướng dẫn HTTPS](https-local.md). Việc đổi schema không thay IP Wi-Fi, URL frontend hoặc QR đã in; nếu DHCP đổi IP thì cần URL/chứng chỉ truy cập được như trước.
 
 Terminal kiểm tra:
 
