@@ -1,7 +1,10 @@
+import {
+  createFailureTrigger,
+  dropFailureTrigger,
+} from "../../scripts/test-db-fixtures.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
-import { execFileSync } from "node:child_process";
 import bcrypt from "bcryptjs";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
@@ -123,26 +126,17 @@ test("batch approve/publish: source checks, atomic transitions, common payment a
       )
     )[0].n;
   }
-  const ddl = (sql) =>
-    execFileSync(
-      "docker",
-      [
-        "compose",
-        "exec",
-        "-T",
-        "db",
-        "sh",
-        "-c",
-        'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root chung_cu_test',
-      ],
-      { input: sql },
-    );
   async function failAudit(operation, body, token) {
     const before = await records(),
       count = await audits(),
       batchCount = await batches();
-    ddl(
-      `DELIMITER $$\nCREATE TRIGGER fail_actions_${suffix} BEFORE INSERT ON lich_su_hoa_don FOR EACH ROW BEGIN IF NEW.su_kien='${operation}' AND NEW.ma_hoa_don=${bills[1]} THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='action batch test failure'; END IF; END$$\nDELIMITER ;\n`,
+    await createFailureTrigger(
+      `fail_actions_${suffix}`,
+      "lich_su_hoa_don",
+      "action batch test failure",
+      {
+        condition: `NEW.su_kien='${operation}' AND NEW.ma_hoa_don=${bills[1]}`,
+      },
     );
     try {
       const r = await req("xac_nhan", {
@@ -155,7 +149,7 @@ test("batch approve/publish: source checks, atomic transitions, common payment a
       assert.equal(await audits(), count);
       assert.equal(await batches(), batchCount);
     } finally {
-      ddl(`DROP TRIGGER IF EXISTS fail_actions_${suffix}`);
+      await dropFailureTrigger(`fail_actions_${suffix}`, "lich_su_hoa_don");
     }
   }
   try {
@@ -483,7 +477,7 @@ test("batch approve/publish: source checks, atomic transitions, common payment a
   } finally {
     server.closeAllConnections();
     await new Promise((r) => server.close(r));
-    ddl(`DROP TRIGGER IF EXISTS fail_actions_${suffix}`);
+    await dropFailureTrigger(`fail_actions_${suffix}`, "lich_su_hoa_don");
     if (stay)
       await rows(pool, "DELETE FROM lich_su_cu_tru WHERE ma_lich_su_cu_tru=?", [
         stay,
@@ -493,7 +487,7 @@ test("batch approve/publish: source checks, atomic transitions, common payment a
     for (const id of users) {
       await rows(
         pool,
-        "DELETE d FROM chi_tiet_hoa_don d JOIN hoa_don h ON h.ma_hoa_don=d.ma_hoa_don WHERE h.ma_nguoi_lap=?",
+        "DELETE FROM chi_tiet_hoa_don d USING hoa_don h WHERE h.ma_hoa_don=d.ma_hoa_don AND h.ma_nguoi_lap=?",
         [id],
       );
       await rows(pool, "DELETE FROM lich_su_hoa_don WHERE ma_nguoi_ghi=?", [

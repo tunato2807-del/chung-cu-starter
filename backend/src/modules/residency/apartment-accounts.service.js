@@ -186,7 +186,7 @@ export async function listApartmentAccounts(query) {
   if (query.q) {
     const q = `%${text(query.q, "q", 1, 100)}%`;
     conditions.push(
-      "(a.so_can_ho LIKE ? OR a.khoi LIKE ? OR u.ten_dang_nhap LIKE ? OR c.ho_va_ten LIKE ? OR c.so_dien_thoai LIKE ?)",
+      '(unaccent((a.so_can_ho)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((a.khoi)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((u.ten_dang_nhap)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((c.ho_va_ten)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((c.so_dien_thoai)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
     );
     values.push(q, q, q, q, q);
   }

@@ -1,10 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
-import { execFileSync } from "node:child_process";
 import bcrypt from "bcryptjs";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
+import {
+  installParentFixtures,
+  removeParentFixtures,
+} from "../../scripts/test-db-fixtures.js";
 
 test("building catalog: empty parents, production provisioning, safe rename/delete and stale forms", async (t) => {
   assert.equal(process.env.DB_NAME, "chung_cu_test");
@@ -22,20 +25,6 @@ test("building catalog: empty parents, production provisioning, safe rename/dele
     apartments = [],
     residents = [];
   let invoice;
-  const ddl = (sql) =>
-    execFileSync(
-      "docker",
-      [
-        "compose",
-        "exec",
-        "-T",
-        "db",
-        "sh",
-        "-c",
-        'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root chung_cu_test',
-      ],
-      { input: sql },
-    );
   async function request(path, cookie, method = "GET", body, csrf = true) {
     const response = await fetch(base + path, {
       method,
@@ -189,7 +178,7 @@ test("building catalog: empty parents, production provisioning, safe rename/dele
         );
         await assert.rejects(
           rows(pool, "DELETE FROM khoi_toa_nha WHERE khoi=?", [a]),
-          (error) => error.code === "ER_ROW_IS_REFERENCED_2",
+          (error) => error.code === "23503",
         );
       },
     );
@@ -212,9 +201,7 @@ test("building catalog: empty parents, production provisioning, safe rename/dele
     await t.test(
       "legacy API provisions parents atomically WITHOUT test fixture triggers",
       async () => {
-        ddl(
-          "DROP TRIGGER IF EXISTS test_apartment_parent; DROP TRIGGER IF EXISTS test_floor_parent;",
-        );
+        await removeParentFixtures();
         try {
           const created = await request("/can_ho", admin, "POST", {
             so_can_ho: `${suffix}-legacy`,
@@ -257,11 +244,10 @@ test("building catalog: empty parents, production provisioning, safe rename/dele
               "INSERT INTO can_ho (so_can_ho,khoi,tang,dien_tich_m2) VALUES (?,?,1,60)",
               [`${suffix}-bad`, rollback],
             ),
-            (error) => error.code === "ER_NO_REFERENCED_ROW_2",
+            (error) => error.code === "23503",
           );
         } finally {
-          ddl(`CREATE TRIGGER test_floor_parent BEFORE INSERT ON tang_toa_nha FOR EACH ROW INSERT INTO khoi_toa_nha (khoi,giu_khi_trong) VALUES (NEW.khoi,0) ON DUPLICATE KEY UPDATE khoi=khoi_toa_nha.khoi;
-CREATE TRIGGER test_apartment_parent BEFORE INSERT ON can_ho FOR EACH ROW INSERT INTO tang_toa_nha (khoi,tang,giu_khi_trong) VALUES (NEW.khoi,NEW.tang,0) ON DUPLICATE KEY UPDATE tang=tang_toa_nha.tang;`);
+          await installParentFixtures();
         }
       },
     );
@@ -335,7 +321,7 @@ CREATE TRIGGER test_apartment_parent BEFORE INSERT ON can_ho FOR EACH ROW INSERT
         );
         await assert.rejects(
           rows(pool, "DELETE FROM tang_toa_nha WHERE khoi=? AND tang=0", [a]),
-          (error) => error.code === "ER_ROW_IS_REFERENCED_2",
+          (error) => error.code === "23503",
         );
       },
     );

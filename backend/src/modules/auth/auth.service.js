@@ -113,7 +113,7 @@ export async function login(body) {
         if (!valid && available)
           await rows(
             db,
-            "UPDATE nguoi_dung SET so_lan_dang_nhap_sai=so_lan_dang_nhap_sai+1, khoa_den_luc=IF(so_lan_dang_nhap_sai>=5,DATE_ADD(UTC_TIMESTAMP(),INTERVAL 15 MINUTE),NULL) WHERE ma_nguoi_dung=?",
+            "UPDATE nguoi_dung SET so_lan_dang_nhap_sai=so_lan_dang_nhap_sai+1, khoa_den_luc=(CASE WHEN so_lan_dang_nhap_sai+1>=5 THEN (((clock_timestamp() AT TIME ZONE 'UTC'))::timestamp + (15) * INTERVAL '1 minute') ELSE NULL END) WHERE ma_nguoi_dung=?",
             [u.ma_nguoi_dung],
           );
       return null;

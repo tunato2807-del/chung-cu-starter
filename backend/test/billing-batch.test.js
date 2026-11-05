@@ -1,7 +1,10 @@
+import {
+  createFailureTrigger,
+  dropFailureTrigger,
+} from "../../scripts/test-db-fixtures.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
-import { execFileSync } from "node:child_process";
 import bcrypt from "bcryptjs";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
@@ -75,20 +78,6 @@ test("batch bills: preview, source fingerprints, atomic drafts and durable idemp
       )
     )[0];
   }
-  const ddl = (sql) =>
-    execFileSync(
-      "docker",
-      [
-        "compose",
-        "exec",
-        "-T",
-        "db",
-        "sh",
-        "-c",
-        'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root chung_cu_test',
-      ],
-      { input: sql },
-    );
   try {
     admin = await account("QUAN_TRI_VIEN");
     other = await account("QUAN_TRI_VIEN");
@@ -261,8 +250,13 @@ test("batch bills: preview, source fingerprints, atomic drafts and durable idemp
       async () => {
         const p = await preview(),
           before = await counts();
-        ddl(
-          `DELIMITER $$\nCREATE TRIGGER fail_batch_${suffix} BEFORE INSERT ON lich_su_hoa_don FOR EACH ROW BEGIN IF EXISTS (SELECT 1 FROM hoa_don WHERE ma_hoa_don=NEW.ma_hoa_don AND ma_can_ho=${apartments[1]}) THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='batch test failure'; END IF; END$$\nDELIMITER ;\n`,
+        await createFailureTrigger(
+          `fail_batch_${suffix}`,
+          "lich_su_hoa_don",
+          "batch test failure",
+          {
+            condition: `EXISTS (SELECT 1 FROM hoa_don WHERE ma_hoa_don=NEW.ma_hoa_don AND ma_can_ho=${apartments[1]})`,
+          },
         );
         try {
           assert.equal(
@@ -277,7 +271,7 @@ test("batch bills: preview, source fingerprints, atomic drafts and durable idemp
           );
           assert.deepEqual(await counts(), before);
         } finally {
-          ddl(`DROP TRIGGER IF EXISTS fail_batch_${suffix}`);
+          await dropFailureTrigger(`fail_batch_${suffix}`, "lich_su_hoa_don");
         }
       },
     );
@@ -371,11 +365,11 @@ test("batch bills: preview, source fingerprints, atomic drafts and durable idemp
   } finally {
     server.closeAllConnections();
     await new Promise((r) => server.close(r));
-    ddl(`DROP TRIGGER IF EXISTS fail_batch_${suffix}`);
+    await dropFailureTrigger(`fail_batch_${suffix}`, "lich_su_hoa_don");
     for (const id of users) {
       await rows(
         pool,
-        "DELETE d FROM chi_tiet_hoa_don d JOIN hoa_don h ON h.ma_hoa_don=d.ma_hoa_don WHERE h.ma_nguoi_lap=?",
+        "DELETE FROM chi_tiet_hoa_don d USING hoa_don h WHERE h.ma_hoa_don=d.ma_hoa_don AND h.ma_nguoi_lap=?",
         [id],
       );
       await rows(pool, "DELETE FROM lich_su_hoa_don WHERE ma_nguoi_ghi=?", [

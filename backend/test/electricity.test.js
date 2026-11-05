@@ -107,7 +107,7 @@ test("reject malformed tiers, negative prices, incomplete ranges and invalid VAT
   });
 });
 
-test("MySQL electricity: legacy flat drafts, tier snapshots, effective dates, resident details and source protection", async () => {
+test("PostgreSQL electricity: legacy flat drafts, tier snapshots, effective dates, resident details and source protection", async () => {
   assert.equal(process.env.DB_NAME, "chung_cu_test");
   const server = app.listen(0, "127.0.0.1");
   await new Promise((r) => server.once("listening", r));

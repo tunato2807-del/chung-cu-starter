@@ -37,3 +37,7 @@ Nguồn: chương 3 của Word và các mẫu nghiệm thu hiện có.
 Chỉ sửa trong phạm vi công việc hiện tại, lưu file/commit và chỉ dẫn cập nhật qua Git ở nhánh nghiệp vụ. Spec/plan/task là tài liệu giúp người thực hiện đối chiếu, không tự cho phép merge main, triển khai production, gửi thông báo cho người khác hoặc thay nguyên tắc nghiệp vụ. Các ngưỡng hiệu năng, thời hạn lưu dữ liệu, RPO/RTO chưa có nguồn thì ghi cần xác nhận, không bịa số để đánh dấu đạt.
 
 **Quản lý thay đổi:** khi người dùng đổi nghiệp vụ, cập nhật nguyên tắc liên quan và dẫn nguồn quyết định, sau đó đối chiếu spec/plan/tasks/test. Mức ưu tiên lỗi trong báo cáo là đánh giá rủi ro hiện tại, không tự gắn CRITICAL chỉ vì một tiêu chuẩn mới được viết trong lượt rà soát.
+
+## Sửa đổi theo yêu cầu mới: PostgreSQL
+
+Người dùng đã yêu cầu chuyển toàn bộ dự án từ MySQL sang PostgreSQL. Từ feature002, ràng buộc Data Layer MySQL ở mục I được thay bằng PostgreSQL; các nguyên tắc bảo toàn chức năng/API, dữ liệu nguồn, quyền riêng tư và bằng chứng vẫn giữ. Xem `specs/002-postgresql-migration/spec.md`. Không suy ra rằng đã chuyển dữ liệu trên máy Windows khi chỉ mới kiểm thử workspace.

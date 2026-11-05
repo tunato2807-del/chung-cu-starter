@@ -1,7 +1,10 @@
+import {
+  createFailureTrigger,
+  dropFailureTrigger,
+} from "../../scripts/test-db-fixtures.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
-import { execFileSync } from "node:child_process";
 import bcrypt from "bcryptjs";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
@@ -19,20 +22,6 @@ test("equipment QR: versioned links, immutable incident snapshots and private eq
     locations = [],
     reports = [],
     requestKeys = [];
-  const ddl = (sql) =>
-    execFileSync(
-      "docker",
-      [
-        "compose",
-        "exec",
-        "-T",
-        "db",
-        "sh",
-        "-c",
-        'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root chung_cu_test',
-      ],
-      { input: sql },
-    );
   async function request(path, cookie, method = "GET", body, csrf = true) {
     const response = await fetch(base + path, {
       method,
@@ -363,13 +352,15 @@ test("equipment QR: versioned links, immutable incident snapshots and private eq
       "failed link audit rolls back target and version atomically",
       async () => {
         const auditLoc = await createLocation({ ma_thiet_bi: devices[0] });
-        ddl(
-          "CREATE TRIGGER test_qr_link_audit BEFORE INSERT ON lich_su_lien_ket_qr FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='test audit rollback';",
+        await createFailureTrigger(
+          "test_qr_link_audit",
+          "lich_su_lien_ket_qr",
+          "test audit rollback",
         );
         try {
           assert.equal((await link(auditLoc, devices[1], 0)).status, 500);
         } finally {
-          ddl("DROP TRIGGER IF EXISTS test_qr_link_audit;");
+          await dropFailureTrigger("test_qr_link_audit", "lich_su_lien_ket_qr");
         }
         const after = (
           await request(`/vi_tri_qr/${auditLoc.ma_vi_tri_qr}`, admin)
@@ -433,7 +424,7 @@ test("equipment QR: versioned links, immutable incident snapshots and private eq
       },
     );
   } finally {
-    ddl("DROP TRIGGER IF EXISTS test_qr_link_audit;");
+    await dropFailureTrigger("test_qr_link_audit", "lich_su_lien_ket_qr");
     server.closeAllConnections();
     await new Promise((resolve) => server.close(resolve));
     for (const id of reports) {

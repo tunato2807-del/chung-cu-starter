@@ -1,5 +1,7 @@
 # Tải và cập nhật toàn bộ dự án bằng Terminal VS Code
 
+> **Lịch sử bản MySQL:** Với mã nguồn từ 05/11/2026, dùng [hướng dẫn PostgreSQL](chuyen-postgresql-vscode.md). Giữ tài khoản/dữ liệu cũ bằng công cụ chuyển; không dùng lại lệnh MySQL của bài này để khởi động backend mới.
+
 Cập nhật **02/11/2026**, dành cho Windows PowerShell và repository `tunato2807-del/chung-cu-starter`.
 
 **Nhánh đầy đủ:** `codex/editorial-business-ui`. Nhánh `main` hiện là bản khung cũ. `git clone` lấy toàn bộ mã nguồn đã lưu trên nhánh, gồm backend, frontend, migration, tài liệu và các mẫu có trong Git. `npm ci` cài thư viện theo lockfile. Những lần sau dùng `git pull`, không cần tải ZIP hay copy từng file.

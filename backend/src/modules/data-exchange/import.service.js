@@ -160,9 +160,8 @@ async function actor(db, user) {
     );
 }
 function rowError(error) {
-  if (["ER_LOCK_DEADLOCK", "ER_LOCK_WAIT_TIMEOUT"].includes(error.code))
-    throw error;
-  if (error.code === "ER_DUP_ENTRY")
+  if (["40P01", "55P03", "40001", "57014"].includes(error.code)) throw error;
+  if (error.code === "23505")
     return "Dữ liệu trùng với hệ thống hoặc dòng trước trong tệp.";
   if (error.status && error.status < 500)
     return [

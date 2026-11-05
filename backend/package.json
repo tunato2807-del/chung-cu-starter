@@ -16,12 +16,13 @@
     "express": "^5.1.0",
     "jose": "^6.2.12",
     "multer": "^2.4.0",
-    "mysql2": "^3.24.6",
     "pdfmake": "0.2.23",
+    "pg": "^8.23.1",
     "sharp": "^0.35.5",
     "yauzl": "3.4.0"
   },
   "devDependencies": {
-    "pdf-parse": "1.1.1"
+    "pdf-parse": "1.1.1",
+    "mysql2": "^3.24.6"
   }
 }

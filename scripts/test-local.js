@@ -1,53 +1,71 @@
 import { spawnSync } from "node:child_process";
-const run = (cmd, args, env = process.env) => {
-  const result = spawnSync(cmd, args, { stdio: "inherit", env });
-  if (result.status !== 0) process.exit(result.status || 1);
-};
-// Test data lives in a separate database; never clear the development database.
-run("docker", [
-  "compose",
-  "exec",
-  "-T",
-  "db",
-  "sh",
-  "-c",
-  "MYSQL_PWD=\"$MYSQL_ROOT_PASSWORD\" mysql -u root -e \"CREATE DATABASE IF NOT EXISTS chung_cu_test CHARACTER SET utf8mb4; GRANT ALL ON chung_cu_test.* TO 'chung_cu'@'%';\"",
-]);
-const env = { ...process.env, DB_NAME: "chung_cu_test" };
-run("npm", ["run", "db:migrate", "-w", "backend"], env);
-// Older integration fixtures insert apartments directly. Provision their
-// parents only in the isolated test DB; production has no such triggers and
-// must provision/validate the hierarchy in saveApartment's transaction.
-const fixtureResult = spawnSync(
-  "docker",
-  [
-    "compose",
-    "exec",
-    "-T",
-    "db",
-    "sh",
-    "-c",
-    'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root chung_cu_test',
-  ],
-  {
-    stdio: ["pipe", "inherit", "inherit"],
-    input: `DROP TRIGGER IF EXISTS test_floor_parent;
-CREATE TRIGGER test_floor_parent BEFORE INSERT ON tang_toa_nha FOR EACH ROW
-INSERT INTO khoi_toa_nha (khoi,giu_khi_trong) VALUES (NEW.khoi,0) ON DUPLICATE KEY UPDATE khoi=khoi_toa_nha.khoi;
-DROP TRIGGER IF EXISTS test_apartment_parent;
-CREATE TRIGGER test_apartment_parent BEFORE INSERT ON can_ho FOR EACH ROW
-INSERT INTO tang_toa_nha (khoi,tang,giu_khi_trong) VALUES (NEW.khoi,NEW.tang,0) ON DUPLICATE KEY UPDATE tang=tang_toa_nha.tang;`,
-  },
-);
-if (fixtureResult.status !== 0) process.exit(fixtureResult.status || 1);
-if (process.argv.includes("e2e"))
-  run(
-    "node",
-    [
-      "--env-file-if-exists=.env",
-      "node_modules/@playwright/test/cli.js",
-      "test",
-    ],
+import { readdir } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import pg from "pg";
+
+const root = fileURLToPath(new URL("../", import.meta.url));
+const testDatabase = "chung_cu_test";
+process.env.DB_NAME = testDatabase;
+const env = { ...process.env, DB_NAME: testDatabase };
+
+function runNode(args) {
+  // Calling Node directly supports native Windows Node and Linux without
+  // depending on npm.cmd being executable through spawnSync(shell:false).
+  const result = spawnSync(process.execPath, args, {
+    cwd: root,
+    stdio: "inherit",
     env,
-  );
-else run("npm", ["test", "-w", "backend"], env);
+  });
+  if (result.error) throw result.error;
+  if (result.status !== 0)
+    throw Object.assign(new Error("Test subprocess failed."), {
+      exitCode: result.status || 1,
+    });
+}
+
+async function ensureTestDatabase() {
+  const { databaseConfig } = await import("../backend/src/lib/db.js");
+  const admin = new pg.Client(databaseConfig({ database: "postgres" }));
+  try {
+    await admin.connect();
+    const existing = await admin.query(
+      "SELECT datname FROM pg_database WHERE datname=$1",
+      [testDatabase],
+    );
+    // Never reset a database. Only the fixed isolated test name is provisioned.
+    if (!existing.rows.length)
+      await admin.query('CREATE DATABASE "chung_cu_test"');
+  } finally {
+    await admin.end();
+  }
+}
+
+try {
+  await ensureTestDatabase();
+  runNode(["backend/scripts/migrate.js"]);
+  const { installParentFixtures } = await import("./test-db-fixtures.js");
+  const { pool } = await import("../backend/src/lib/db.js");
+  try {
+    await installParentFixtures();
+  } finally {
+    await pool.end();
+  }
+
+  const args = process.argv.slice(2);
+  if (args[0] === "e2e")
+    runNode(["node_modules/@playwright/test/cli.js", "test", ...args.slice(1)]);
+  else {
+    const names = (await readdir(new URL("../backend/test/", import.meta.url)))
+      .filter((name) => name.endsWith(".test.js"))
+      .sort();
+    runNode([
+      "--test",
+      "--test-concurrency=1",
+      ...args,
+      ...names.map((name) => `backend/test/${name}`),
+    ]);
+  }
+} catch (error) {
+  if (!error.exitCode) console.error(error.message);
+  process.exitCode = error.exitCode || 1;
+}

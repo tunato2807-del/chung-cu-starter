@@ -1,7 +1,10 @@
+import {
+  createFailureTrigger,
+  dropFailureTrigger,
+} from "../../scripts/test-db-fixtures.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
-import { execFileSync } from "node:child_process";
 import bcrypt from "bcryptjs";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
@@ -116,20 +119,6 @@ test("equipment and maintenance: assignment privacy, periodic lifecycle, races a
       cookie,
     );
   }
-  const rootSQL = (sql) =>
-    execFileSync(
-      "docker",
-      [
-        "compose",
-        "exec",
-        "-T",
-        "db",
-        "sh",
-        "-c",
-        'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root chung_cu_test',
-      ],
-      { input: sql, stdio: ["pipe", "pipe", "pipe"] },
-    );
   try {
     admin = await account("QUAN_TRI_VIEN");
     tech1 = await account("KY_THUAT_VIEN");
@@ -216,7 +205,7 @@ test("equipment and maintenance: assignment privacy, periodic lifecycle, races a
             "INSERT INTO thiet_bi (ma_tai_san,ten_thiet_bi,loai,vi_tri,ma_nguoi_tao,chu_ky_ngay,ngay_bao_tri_tiep_theo) VALUES (?,?,'PCCC','A',?,NULL,?)",
             [`BAD-${suffix}`, suffix, admin.id, d],
           ),
-          (e) => e.code === "ER_CHECK_CONSTRAINT_VIOLATED",
+          (e) => e.code === "23514",
         );
       },
     );
@@ -671,8 +660,10 @@ test("equipment and maintenance: assignment privacy, periodic lifecycle, races a
           tech2.cookie,
         );
         const before = (await getEquipment(main)).body.data;
-        rootSQL(
-          "CREATE TRIGGER test_maintenance_audit_failure BEFORE INSERT ON lich_su_bao_tri FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='test maintenance audit failure';",
+        await createFailureTrigger(
+          "test_maintenance_audit_failure",
+          "lich_su_bao_tri",
+          "test maintenance audit failure",
         );
         try {
           assert.equal(
@@ -739,7 +730,10 @@ test("equipment and maintenance: assignment privacy, periodic lifecycle, races a
             before.ngay_bao_tri_tiep_theo,
           );
         } finally {
-          rootSQL("DROP TRIGGER IF EXISTS test_maintenance_audit_failure;");
+          await dropFailureTrigger(
+            "test_maintenance_audit_failure",
+            "lich_su_bao_tri",
+          );
         }
       },
     );

@@ -1,7 +1,8 @@
 import { pool, rows } from "../../lib/db.js";
 
-const count = (condition) => `CAST(COALESCE(SUM(${condition}),0) AS UNSIGNED)`;
-const money = (expression) => `CAST(COALESCE(SUM(${expression}),0) AS CHAR)`;
+const count = (condition) =>
+  `CAST(COALESCE(sum(CASE WHEN ${condition} THEN 1 ELSE 0 END),0) AS BIGINT)`;
+const money = (expression) => `CAST(COALESCE(sum(${expression}),0) AS TEXT)`;
 const incidentOpen = "('MOI','DA_PHAN_CONG','DANG_XU_LY','DA_XU_LY')";
 const jobOpen = "('MOI','DA_PHAN_CONG','DANG_THUC_HIEN','CHO_NGHIEM_THU')";
 
@@ -10,13 +11,12 @@ const jobOpen = "('MOI','DA_PHAN_CONG','DANG_THUC_HIEN','CHO_NGHIEM_THU')";
 export async function overview() {
   const db = await pool.getConnection();
   try {
-    await db.query("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ");
-    await db.query("START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY");
+    await db.query("BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY");
     const [clock] = await rows(
       db,
-      `SELECT UTC_TIMESTAMP(6) AS tai_luc,
-      DATE_FORMAT(DATE_ADD(UTC_TIMESTAMP(),INTERVAL 7 HOUR),'%Y-%m-%d') AS ngay_hien_tai,
-      DATE_FORMAT(DATE_ADD(UTC_TIMESTAMP(),INTERVAL 7 HOUR),'%Y-%m-%d %H:%i:%s') AS gio_hien_tai`,
+      `SELECT (clock_timestamp() AT TIME ZONE 'UTC') AS tai_luc,
+      to_char((((clock_timestamp() AT TIME ZONE 'UTC'))::timestamp + (7) * INTERVAL '1 hour'), 'YYYY-MM-DD') AS ngay_hien_tai,
+      to_char((((clock_timestamp() AT TIME ZONE 'UTC'))::timestamp + (7) * INTERVAL '1 hour'), 'YYYY-MM-DD HH24:MI:SS') AS gio_hien_tai`,
     );
     const day = clock.ngay_hien_tai,
       monthStart = `${day.slice(0, 7)}-01`,
@@ -62,7 +62,7 @@ export async function overview() {
       `SELECT p.ma_phan_anh,p.tieu_de,p.trang_thai,p.do_uu_tien,p.ngay_tao,v.ten_vi_tri,u.ho_va_ten AS ky_thuat_vien
       FROM phan_anh p JOIN vi_tri_qr v ON v.ma_vi_tri_qr=p.ma_vi_tri_qr LEFT JOIN nguoi_dung u ON u.ma_nguoi_dung=p.ma_ky_thuat_vien
       WHERE p.trang_thai IN ${incidentOpen}
-      ORDER BY FIELD(p.do_uu_tien,'KHAN_CAP','CAO','TRUNG_BINH','THAP'),p.ngay_tao,p.ma_phan_anh LIMIT 5`,
+      ORDER BY (CASE p.do_uu_tien WHEN 'KHAN_CAP' THEN 0 WHEN 'CAO' THEN 1 WHEN 'TRUNG_BINH' THEN 2 WHEN 'THAP' THEN 3 ELSE 4 END),p.ngay_tao,p.ma_phan_anh LIMIT 5`,
     );
     const [maintenance] = await rows(
       db,
@@ -76,7 +76,7 @@ export async function overview() {
       db,
       `SELECT
       ${count("ngay_bao_tri_tiep_theo<?")} AS thiet_bi_qua_han,
-      ${count("ngay_bao_tri_tiep_theo>=? AND ngay_bao_tri_tiep_theo<=DATE_ADD(?,INTERVAL nhac_truoc_ngay DAY)")} AS thiet_bi_sap_den_han
+      ${count("ngay_bao_tri_tiep_theo>=? AND ngay_bao_tri_tiep_theo<=((?)::date + (nhac_truoc_ngay) * INTERVAL '1 day')")} AS thiet_bi_sap_den_han
       FROM thiet_bi WHERE trang_thai<>'NGUNG_SU_DUNG'`,
       [day, day, day],
     );

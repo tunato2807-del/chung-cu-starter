@@ -13,7 +13,7 @@ async function fixture(t) {
     "backend/scripts",
     "frontend/src",
     "scripts",
-    "database/migrations",
+    "database/postgresql",
   ])
     await mkdir(path.join(root, directory), { recursive: true });
   for (const file of [

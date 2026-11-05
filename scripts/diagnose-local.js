@@ -3,7 +3,7 @@ import { access, readFile } from "node:fs/promises";
 import { networkInterfaces } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import mysql from "mysql2/promise";
+import { createDatabasePool, databaseConfig } from "../backend/src/lib/db.js";
 import { checkApi } from "./check-local.js";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
@@ -56,20 +56,19 @@ export function credentialFile(database) {
 
 // Counts and account status only. Never read password hashes or credentials.
 export async function databaseSummary(db, database, token) {
-  const prefix = mysql.escapeId(database);
   const [[admin]] = await db.query(
     `SELECT COUNT(*) AS total,
-      COALESCE(SUM(dang_hoat_dong=1 AND (khoa_den_luc IS NULL OR khoa_den_luc<=UTC_TIMESTAMP())),0) AS available,
-      COALESCE(SUM(dang_hoat_dong=1 AND khoa_den_luc>UTC_TIMESTAMP()),0) AS temporarily_locked
-      FROM ${prefix}.nguoi_dung WHERE vai_tro='QUAN_TRI_VIEN'`,
+      COALESCE(SUM(CASE WHEN dang_hoat_dong=1 AND (khoa_den_luc IS NULL OR khoa_den_luc<=(clock_timestamp() AT TIME ZONE 'UTC')) THEN 1 ELSE 0 END),0) AS available,
+      COALESCE(SUM(CASE WHEN dang_hoat_dong=1 AND khoa_den_luc>(clock_timestamp() AT TIME ZONE 'UTC') THEN 1 ELSE 0 END),0) AS temporarily_locked
+      FROM public.nguoi_dung WHERE vai_tro='QUAN_TRI_VIEN'`,
   );
   const [[qr]] = await db.query(
-    `SELECT COUNT(*) AS total,COALESCE(SUM(dang_hoat_dong=1),0) AS active FROM ${prefix}.vi_tri_qr`,
+    `SELECT COUNT(*) AS total,COALESCE(SUM(CASE WHEN dang_hoat_dong=1 THEN 1 ELSE 0 END),0) AS active FROM public.vi_tri_qr`,
   );
   let match;
   if (token) {
     const [[row]] = await db.execute(
-      `SELECT COUNT(*) AS found,COALESCE(SUM(dang_hoat_dong=1),0) AS active FROM ${prefix}.vi_tri_qr WHERE token_qr=?`,
+      `SELECT COUNT(*) AS found,COALESCE(SUM(CASE WHEN dang_hoat_dong=1 THEN 1 ELSE 0 END),0) AS active FROM public.vi_tri_qr WHERE token_qr=?`,
       [token],
     );
     match = { found: Number(row.found), active: Number(row.active) };
@@ -96,27 +95,28 @@ async function main() {
 
   let db;
   try {
-    db = await mysql.createConnection({
-      host: process.env.DB_HOST || "127.0.0.1",
-      port: Number(process.env.DB_PORT || 3307),
-      user: process.env.DB_USER || "chung_cu",
-      password: process.env.DB_PASSWORD,
-      connectTimeout: 5000,
-    });
+    db = createDatabasePool(databaseConfig({ database: "postgres" }));
     const names = [...new Set([selected, "chung_cu", "chung_cu_nghiem_thu"])];
     const [available] = await db.execute(
-      `SELECT SCHEMA_NAME AS name FROM information_schema.SCHEMATA WHERE SCHEMA_NAME IN (${names.map(() => "?").join(",")})`,
+      `SELECT datname AS name FROM pg_catalog.pg_database WHERE datname IN (${names.map(() => "?").join(",")})`,
       names,
     );
     if (!available.some(({ name }) => name === selected)) {
       console.log(
-        "[ERROR] Database đang chọn chưa có hoặc tài khoản MySQL không có quyền đọc.",
+        "[ERROR] Database đang chọn chưa có hoặc tài khoản PostgreSQL không có quyền đọc.",
       );
       process.exitCode = 1;
     }
     for (const { name } of available) {
+      const selectedPool = createDatabasePool(
+        databaseConfig({ database: name }),
+      );
       try {
-        const summary = await databaseSummary(db, name, options.token);
+        const summary = await databaseSummary(
+          selectedPool,
+          name,
+          options.token,
+        );
         console.log(
           `[DB ${JSON.stringify(name)}] BQL: ${summary.admin.total} tài khoản, ${summary.admin.available} có thể đăng nhập, ${summary.admin.temporarily_locked} đang khóa tạm. QR: ${summary.qr.active}/${summary.qr.total} hoạt động.`,
         );
@@ -138,11 +138,13 @@ async function main() {
         console.log(
           `[DB ${JSON.stringify(name)}] Chưa đọc được schema (${error.code || "DATABASE_ERROR"}); kiểm tra migration/quyền đọc.`,
         );
+      } finally {
+        await selectedPool.end();
       }
     }
   } catch (error) {
     console.log(
-      `[ERROR] Chưa kết nối được MySQL (${error.code || "DATABASE_ERROR"}). Kiểm tra dịch vụ, cổng và cấu hình kết nối.`,
+      `[ERROR] Chưa kết nối được PostgreSQL (${error.code || "DATABASE_ERROR"}). Kiểm tra dịch vụ, cổng và cấu hình kết nối.`,
     );
     process.exitCode = 1;
   } finally {

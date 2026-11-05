@@ -127,7 +127,9 @@ export async function list(user, query) {
       params.push(query[key]);
     }
   if (typeof query.q === "string" && query.q) {
-    clauses.push("(p.tieu_de LIKE ? OR v.ten_vi_tri LIKE ?)");
+    clauses.push(
+      '(unaccent((p.tieu_de)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((v.ten_vi_tri)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
+    );
     params.push(`%${query.q.slice(0, 100)}%`, `%${query.q.slice(0, 100)}%`);
   }
   const where = clauses.length ? " WHERE " + clauses.join(" AND ") : "";

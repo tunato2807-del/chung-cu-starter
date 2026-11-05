@@ -273,6 +273,10 @@ test("building map discards slow responses and blocks residents", async ({
 }) => {
   let role = "QUAN_TRI_VIEN",
     listRequests = 0;
+  // This test mocks a signed-in resident, including the resident badge API.
+  await page.route("**/api/cua_toi/thong_bao/chua_doc", (route) =>
+    route.fulfill({ json: { data: { so_chua_doc: 0 } } }),
+  );
   await page.route("**/api/xac_thuc/toi", (route) =>
     route.fulfill({
       json: { data: { ma_nguoi_dung: 98765, ho_va_ten: "BQL", vai_tro: role } },

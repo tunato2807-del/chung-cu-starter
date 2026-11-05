@@ -1,3 +1,7 @@
+import {
+  createFailureTrigger,
+  dropFailureTrigger,
+} from "../../scripts/test-db-fixtures.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
@@ -7,24 +11,8 @@ import sharp from "sharp";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
 import { imageDir, cleanupImages } from "../src/lib/images.js";
-import { execFileSync } from "node:child_process";
-function testDdl(sql) {
-  execFileSync(
-    "docker",
-    [
-      "compose",
-      "exec",
-      "-T",
-      "db",
-      "sh",
-      "-c",
-      'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root chung_cu_test',
-    ],
-    { input: sql },
-  );
-}
 
-test("MySQL integration: authentication, QR and incident lifecycle", async (t) => {
+test("PostgreSQL integration: authentication, QR and incident lifecycle", async (t) => {
   assert.equal(
     process.env.DB_NAME,
     "chung_cu_test",
@@ -191,7 +179,7 @@ test("MySQL integration: authentication, QR and incident lifecycle", async (t) =
       assert.equal((await login(locked)).status, 401);
       await rows(
         pool,
-        "UPDATE nguoi_dung SET khoa_den_luc=DATE_SUB(UTC_TIMESTAMP(),INTERVAL 1 MINUTE) WHERE ma_nguoi_dung=?",
+        "UPDATE nguoi_dung SET khoa_den_luc=(CURRENT_TIMESTAMP AT TIME ZONE 'UTC') - INTERVAL '1 minute' WHERE ma_nguoi_dung=?",
         [locked.id],
       );
       assert.equal((await login(locked)).status, 200);
@@ -613,8 +601,10 @@ test("MySQL integration: authentication, QR and incident lifecycle", async (t) =
         });
         d = await detail(fresh.id, k2);
         const before = await readdir(imageDir);
-        testDdl(
-          `CREATE TRIGGER test_fail_history BEFORE INSERT ON lich_su_phan_anh FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='test failure';`,
+        await createFailureTrigger(
+          "test_fail_history",
+          "lich_su_phan_anh",
+          "test failure",
         );
         try {
           const f = new FormData();
@@ -633,7 +623,7 @@ test("MySQL integration: authentication, QR and incident lifecycle", async (t) =
           assert.equal(after.lich_su.length, d.lich_su.length);
           assert.deepEqual((await readdir(imageDir)).sort(), before.sort());
         } finally {
-          testDdl("DROP TRIGGER test_fail_history;");
+          await dropFailureTrigger("test_fail_history", "lich_su_phan_anh");
         }
       },
     );

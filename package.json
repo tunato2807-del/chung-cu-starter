@@ -19,11 +19,14 @@
     "db:up": "docker compose up -d --wait",
     "db:migrate": "npm run db:migrate -w backend",
     "db:seed": "npm run db:seed -w backend",
-    "test": "node scripts/test-local.js",
-    "test:e2e": "node scripts/test-local.js e2e",
+    "test": "node --env-file-if-exists=.env scripts/test-local.js",
+    "test:e2e": "node --env-file-if-exists=.env scripts/test-local.js e2e",
     "format": "prettier --write \"backend/**/*.js\" \"frontend/src/**/*.{js,jsx,css}\" \"scripts/*.js\" \"e2e/*.js\" playwright.config.js",
     "dev:frontend:https": "npm run dev:https -w frontend",
-    "test:https": "node scripts/test-https.js"
+    "test:https": "node scripts/test-https.js",
+    "db:acceptance": "node --env-file-if-exists=.env scripts/create-acceptance-data.js",
+    "db:configure:postgresql": "node scripts/configure-postgresql.js",
+    "db:import:mysql": "node --env-file-if-exists=.env.postgresql scripts/migrate-mysql-postgresql.js"
   },
   "type": "module",
   "devDependencies": {

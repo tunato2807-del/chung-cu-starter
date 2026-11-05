@@ -1,3 +1,4 @@
+import { deleteVehicleFixtures } from "../scripts/test-db-fixtures.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -168,11 +169,9 @@ for (const width of [1440, 375])
       const bike = records.find(
         (v) => v.loai_xe === "XE_DAP" && !v.ngay_ket_thuc,
       );
-      const bikeRow = page
-        .getByRole("row")
-        .filter({
-          has: page.getByRole("cell", { name: bike.ma_dang_ky, exact: true }),
-        });
+      const bikeRow = page.getByRole("row").filter({
+        has: page.getByRole("cell", { name: bike.ma_dang_ky, exact: true }),
+      });
       await bikeRow
         .getByRole("button", { name: "Chi tiết", exact: true })
         .click();
@@ -243,11 +242,7 @@ for (const width of [1440, 375])
       expect(errors).toEqual([]);
     } finally {
       if (ownerId) {
-        await rows(
-          pool,
-          "DELETE FROM phuong_tien WHERE ma_cu_dan=? ORDER BY ma_phuong_tien DESC",
-          [ownerId],
-        );
+        await deleteVehicleFixtures(ownerId);
         await rows(pool, "DELETE FROM lich_su_cu_tru WHERE ma_cu_dan=?", [
           ownerId,
         ]);

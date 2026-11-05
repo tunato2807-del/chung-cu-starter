@@ -622,7 +622,7 @@ export async function action(id, action, body, user, connection = null) {
         );
       await rows(
         db,
-        "UPDATE hoa_don SET trang_thai='DA_THANH_TOAN',so_tien_da_thu=?,ma_tham_chieu=?,ma_nguoi_xac_nhan=?,ngay_thanh_toan=UTC_TIMESTAMP() WHERE ma_hoa_don=?",
+        "UPDATE hoa_don SET trang_thai='DA_THANH_TOAN',so_tien_da_thu=?,ma_tham_chieu=?,ma_nguoi_xac_nhan=?,ngay_thanh_toan=(clock_timestamp() AT TIME ZONE 'UTC') WHERE ma_hoa_don=?",
         [amount.toString(), reference, user.ma_nguoi_dung, id],
       );
     } else fail(404, "NOT_FOUND", "Không có thao tác hóa đơn này.");
@@ -691,7 +691,9 @@ export async function list(query, user, exportFormat = null) {
   }
   if (query.q) {
     const q = text(query.q, "q", 1, 100);
-    where.push("(h.so_hoa_don LIKE ? OR a.so_can_ho LIKE ?)");
+    where.push(
+      '(unaccent((h.so_hoa_don)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((a.so_can_ho)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
+    );
     values.push(`%${q}%`, `%${q}%`);
   }
   const condition = where.length ? `WHERE ${where.join(" AND ")}` : "";

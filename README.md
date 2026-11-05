@@ -1,5 +1,7 @@
 # Quản lý chung cư · Phản ánh QR
 
+> **PostgreSQL (05/11/2026):** [Hướng dẫn chuyển MySQL → PostgreSQL trên Windows, giữ dữ liệu/tài khoản/QR](docs/chuyen-postgresql-vscode.md) · [bằng chứng kiểm thử](docs/kiem-chung-postgresql.md). Bản hiện tại dùng PostgreSQL 17+; các bài hướng dẫn code MySQL cũ phía dưới được giữ để tham khảo lịch sử, không chép lại vào bản mới.
+
 > **Rà soát theo Spec Kit (04/11/2026):** [7 mục còn mở, bằng chứng và ưu tiên khắc phục](docs/ra-soat-spec-kit-2026-11-04.md) · [đặc tả, kế hoạch, task và ma trận nghiệm thu](specs/001-project-readiness/spec.md). Lượt này chưa sửa các lỗi mới; đã chạy lại 222 backend, 39 helper, 19 UI liên quan và build.
 
 > **Tải/cập nhật bằng Terminal VS Code:** [lệnh git clone, giữ cấu hình bản cũ và cập nhật bằng git pull](docs/tai-va-cap-nhat-du-an-bang-git-vscode.md). Dùng nhánh `codex/editorial-business-ui` cho bản đầy đủ.
@@ -18,7 +20,7 @@
 
 **Bản giao diện trước (navy, lưu tham khảo):** [xem ảnh cổng cư dân, đăng nhập, tổng quan và bảng căn hộ](docs/giao-dien-van-hanh-moi/README.md), [code đầy đủ 5 file để copy trong VS Code](docs/cap-nhat-giao-dien-moi-ban-nghiep-vu-vscode.md). Bản này dùng xanh navy/xanh dương, sidebar tối màu, ảnh thật và danh mục dịch vụ mới; giữ router, API và các nghiệp vụ đang có.
 
-React 19 + Vite 7, Express 5 và MySQL 8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web, báo cáo công nợ/thu phí, bảo trì thiết bị, đặt lịch tiện ích, thu chi/quỹ và nhập Excel, xuất Excel/PDF** theo ba tài liệu thiết kế.
+React 19 + Vite 7, Express 5 và PostgreSQL 17+. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web, báo cáo công nợ/thu phí, bảo trì thiết bị, đặt lịch tiện ích, thu chi/quỹ và nhập Excel, xuất Excel/PDF** theo ba tài liệu thiết kế.
 
 Giao diện được thống nhất cho BQL, cư dân và kỹ thuật viên: menu chia nhóm có biểu tượng, menu mở rộng trên điện thoại, bảng/biểu mẫu/thống kê cùng phong cách, cổng cư dân và đăng nhập mới. Xem [ảnh minh họa và code đầy đủ từng file để cập nhật VS Code](docs/cap-nhat-giao-dien-chuyen-nghiep-vscode.md).
 
@@ -26,9 +28,9 @@ Excel danh sách/báo cáo mở trực tiếp tại **Chi tiết**, có liên k�
 
 ## Chạy môi trường phát triển
 
-Cách chạy đầy đủ trên Windows/VS Code, dùng MySQL cài riêng cổng 3306, dữ liệu nghiệm thu và HTTPS trên điện thoại: **[Hướng dẫn chạy đồ án](docs/huong-dan-chay-do-an-windows.md)**. Máy đã cài xong bắt đầu từ mục 1–4; không cần tạo lại dữ liệu mỗi lần mở đồ án.
+Máy đã có dữ liệu MySQL: thực hiện **[hướng dẫn chuyển PostgreSQL](docs/chuyen-postgresql-vscode.md)** trước. Công cụ đọc nguồn, kiểm chứng và không ghi đè database đích đã có dữ liệu.
 
-Nếu thiết lập lần đầu bằng **MySQL Docker của dự án**, cần Node.js 24, npm và Docker có Compose. Chạy tại thư mục gốc repository:
+Nếu thiết lập lần đầu bằng **PostgreSQL Docker của dự án**, cần Node.js 24, npm và Docker có Compose. Chạy tại thư mục gốc repository:
 
 ```bash
 npm ci
@@ -45,11 +47,11 @@ Terminal thứ hai, cũng tại thư mục gốc:
 npm run dev:frontend
 ```
 
-`init:local` tạo `.env` với mật khẩu MySQL và khóa ký phiên ngẫu nhiên, không ghi đè file đã tồn tại. MySQL chạy ở cổng 3307, API ở 3000, Vite ở 5173. Nếu đổi cổng API, đặt `API_TARGET` khi chạy Vite. Trên máy cloud có thư mục home chỉ đọc, dùng `npm ci --cache /workspace/.npm-cache`.
+`init:local` tạo `.env` với mật khẩu PostgreSQL và khóa ký phiên ngẫu nhiên, không ghi đè file đã tồn tại. PostgreSQL chạy ở cổng 5432, API ở 3000, Vite ở 5173. Nếu đổi cổng API, đặt `API_TARGET` khi chạy Vite. Trên máy cloud có thư mục home chỉ đọc, dùng `npm ci --cache /workspace/.npm-cache`.
 
 `db:seed` chỉ dành cho phát triển: tạo BQL, KTV, cư dân và ba vị trí QR. SĐT tương ứng là `0900000001`, `0900000002`, `0900000003`. **Mật khẩu ngẫu nhiên nằm trong file local `backend/.demo-credentials`**; mở file bằng trình soạn thảo. File này và `.env` được Git bỏ qua. Chạy seed lại không thay mật khẩu hoặc xóa dữ liệu hiện có. Không dùng các tài khoản demo cho triển khai thật.
 
-Docker lưu MySQL trong volume `mysql_data`; ảnh nằm tại `backend/storage/images`. `docker compose stop` dừng database và giữ dữ liệu. Cần sao lưu cả database và thư mục ảnh; không xóa volume để sửa lỗi kết nối.
+Docker dùng project riêng `chung-cu-postgresql`, lưu PostgreSQL trong volume `postgres_data`; volume MySQL cũ được giữ nguyên; ảnh nằm tại `backend/storage/images`. `docker compose stop` dừng database và giữ dữ liệu. Cần sao lưu cả database và thư mục ảnh; không xóa volume để sửa lỗi kết nối.
 
 ## Tổng quan vận hành
 
@@ -91,7 +93,7 @@ Sau khi cập nhật mã nguồn, chạy `npm run db:migrate` trước khi khở
 
 Ngày cư trú là ngày lịch tại Việt Nam, không nhận ngày tương lai. Khoảng cư trú là `[từ ngày, đến ngày)`; ngày kết thúc có thể bằng ngày bắt đầu để ghi nhận chuyển căn hoặc chuyển đi ngay trong ngày. Có thể chuyển nhiều lần trong ngày; các đợt cũ vẫn được giữ và đánh dấu “Chuyển trong ngày”, thứ tự theo mã lịch sử. Ngày chuyển thuộc đợt mới, đợt cũ cùng ngày không đại diện thêm một ngày cư trú. Hệ thống chưa phân chia theo giờ. Mỗi cư dân có tối đa một đợt đang mở; hồ sơ cũ không được ghi đè khi hai người sửa đồng thời. Trạng thái căn hộ trống/có người ở được suy ra từ các đợt đang mở. Cờ tính phí dịch vụ độc lập với trạng thái trống và được dùng khi lập hóa đơn.
 
-Danh bạ căn hộ, cư dân và lịch sử chỉ dành cho BQL ở cả giao diện và API. Chuyển đi giữ tài khoản cá nhân; riêng người phụ trách thanh toán chuyển đi thì tài khoản căn hộ bị tạm khóa và kết thúc phiên cũ. BQL có thể nhập thêm mới theo mẫu Excel/PDF tại Nhập / xuất dữ liệu. Phiên bản này chưa có màn cư dân tự xem hồ sơ hoặc chỉnh sửa hồi tố các đợt đã kết thúc. Xem [API](docs/api.md).
+Danh bạ căn hộ, cư dân và lịch sử chỉ dành cho BQL ở cả giao diện và API. Chuyển đi giữ tài khoản cá nhân; riêng người phụ trách thanh toán chuyển đi thì tài khoản căn hộ bị tạm khóa và kết thúc phiên cũ. BQL có thể nhập thêm mới theo mẫu Excel tại Nhập / xuất dữ liệu. Phiên bản này chưa có màn cư dân tự xem hồ sơ hoặc chỉnh sửa hồi tố các đợt đã kết thúc. Xem [API](docs/api.md).
 
 ## Tài khoản thanh toán căn hộ
 
@@ -281,10 +283,10 @@ npm test
 npm run test:e2e
 ```
 
-- `npm test`: tạo/migrate database riêng `chung_cu_test`, chạy kiểm thử HTTP với MySQL thật. Gồm xác thực, khóa phiên, quyền bản ghi/ảnh, QR thu hồi, gửi lặp đồng thời, chuyển trạng thái, nghiệm thu mới, gộp trùng, giới hạn gửi, hóa đơn/cư trú/tài khoản căn, phạm vi thông báo, receipt sau bàn giao, nhắc phí đồng thời, bảo trì thiết bị, đặt lịch tiện ích đồng thời, thu chi/quỹ, chứng từ, file Excel/PDF và rollback khi lịch sử lỗi.
-- `npm run test:e2e`: chạy API/Vite riêng ở 3101/5174, mở Chromium và đi hết luồng qua giao diện ở 1440 px và 375 px. Browser Linux được đóng gói trong dependency `@sparticuz/chromium`, không cần tải thêm từ CDN. Kiểm thử không thay dữ liệu database phát triển. Hai lệnh test nên chạy lần lượt.
+- `npm test`: tạo/migrate database riêng `chung_cu_test`, chạy kiểm thử HTTP với PostgreSQL thật. Gồm xác thực, khóa phiên, quyền bản ghi/ảnh, QR thu hồi, gửi lặp đồng thời, chuyển trạng thái, nghiệm thu mới, gộp trùng, giới hạn gửi, hóa đơn/cư trú/tài khoản căn, phạm vi thông báo, receipt sau bàn giao, nhắc phí đồng thời, bảo trì thiết bị, đặt lịch tiện ích đồng thời, thu chi/quỹ, chứng từ, file Excel/PDF và rollback khi lịch sử lỗi.
+- `npm run test:e2e`: chạy API/Vite riêng ở 3101/5174, mở Chromium và đi hết luồng qua giao diện ở 1440 px và 375 px. Browser Linux được đóng gói trong dependency `@sparticuz/chromium`; Windows cài một lần bằng `npx playwright install chromium`. Kiểm thử không thay dữ liệu database phát triển. Hai lệnh test nên chạy lần lượt.
 - `/api/health` kiểm tra tiến trình; `/api/ready` kiểm tra database và migration. Không coi một cổng mở là đã sẵn sàng.
 
 Chưa đo tải lớn, thử camera trên thiết bị thật hoặc kiểm thử sao lưu/phục hồi. Trước triển khai thật: phục vụ frontend và `/api` cùng origin qua HTTPS, đặt `COOKIE_SECURE=true`, dùng khóa/mật khẩu riêng, cấu hình backup và giới hạn request tại reverse proxy. Backend hiện bind loopback; Vite là máy chủ phát triển.
 
-Xem [kiến trúc và quy tắc](docs/architecture.md), [API](docs/api.md), [database](database/README.md). Những quy tắc hóa đơn/cư trú đang là đề xuất trong tài liệu được để lại cho giai đoạn tiếp theo, chưa được coi là nghiệp vụ đã chốt.
+Xem [kiến trúc và quy tắc](docs/architecture.md), [API](docs/api.md), [database](database/README.md). Các giới hạn nghiệp vụ và phát hiện còn mở được ghi riêng trong đặc tả/báo cáo rà soát.

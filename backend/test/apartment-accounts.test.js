@@ -1,7 +1,10 @@
+import {
+  createFailureTrigger,
+  dropFailureTrigger,
+} from "../../scripts/test-db-fixtures.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
-import { execFileSync } from "node:child_process";
 import bcrypt from "bcryptjs";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
@@ -64,20 +67,6 @@ test("apartment accounts: automatic creation, owner handover, isolated invoices,
     if (r.status === 201) profiles.push(r.body.data.ma_cu_dan);
     return r;
   }
-  const ddl = (sql) =>
-    execFileSync(
-      "docker",
-      [
-        "compose",
-        "exec",
-        "-T",
-        "db",
-        "sh",
-        "-c",
-        'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root chung_cu_test',
-      ],
-      { input: sql },
-    );
   try {
     const phone =
       "09" + String(randomBytes(4).readUInt32BE() % 100000000).padStart(8, "0");
@@ -428,8 +417,10 @@ test("apartment accounts: automatic creation, owner handover, isolated invoices,
     await t.test(
       "failed handover audit rolls back the new resident, owner binding, password and token changes",
       async () => {
-        ddl(
-          "CREATE TRIGGER test_account_audit_fail BEFORE INSERT ON lich_su_ban_giao_can_ho FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='test rollback';",
+        await createFailureTrigger(
+          "test_account_audit_fail",
+          "lich_su_ban_giao_can_ho",
+          "test rollback",
         );
         try {
           assert.equal(
@@ -469,7 +460,10 @@ test("apartment accounts: automatic creation, owner handover, isolated invoices,
           );
           assert.equal(notSaved.n, 0);
         } finally {
-          ddl("DROP TRIGGER IF EXISTS test_account_audit_fail;");
+          await dropFailureTrigger(
+            "test_account_audit_fail",
+            "lich_su_ban_giao_can_ho",
+          );
         }
         const [count] = await rows(
           pool,

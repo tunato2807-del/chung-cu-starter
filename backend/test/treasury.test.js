@@ -1,7 +1,10 @@
+import {
+  createFailureTrigger,
+  dropFailureTrigger,
+} from "../../scripts/test-db-fixtures.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
-import { execFileSync } from "node:child_process";
 import bcrypt from "bcryptjs";
 import sharp from "sharp";
 import { app } from "../src/app.js";
@@ -113,20 +116,6 @@ test("treasury: exact ledger, proof isolation, concurrent spending, reversal and
     assert.equal((await act(p)).status, 200);
     return p;
   }
-  const rootSQL = (sql) =>
-    execFileSync(
-      "docker",
-      [
-        "compose",
-        "exec",
-        "-T",
-        "db",
-        "sh",
-        "-c",
-        'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root chung_cu_test',
-      ],
-      { input: sql, stdio: ["pipe", "pipe", "pipe"] },
-    );
   try {
     admin = await account("QUAN_TRI_VIEN");
     resident = await account("CU_DAN");
@@ -650,8 +639,10 @@ test("treasury: exact ledger, proof isolation, concurrent spending, reversal and
           id = await create({ ma_quy: f }),
           key = randomUUID(),
           before = (await detail(original)).body.data.phien_ban;
-        rootSQL(
-          "CREATE TRIGGER test_treasury_audit_failure BEFORE INSERT ON lich_su_thu_chi FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='test audit failure';",
+        await createFailureTrigger(
+          "test_treasury_audit_failure",
+          "lich_su_thu_chi",
+          "test audit failure",
         );
         try {
           assert.equal(
@@ -683,7 +674,10 @@ test("treasury: exact ledger, proof isolation, concurrent spending, reversal and
           assert.equal((await detail(original)).body.data.phien_ban, before);
           assert.equal((await detail(original)).body.data.ma_phieu_dao, null);
         } finally {
-          rootSQL("DROP TRIGGER IF EXISTS test_treasury_audit_failure;");
+          await dropFailureTrigger(
+            "test_treasury_audit_failure",
+            "lich_su_thu_chi",
+          );
         }
       },
     );

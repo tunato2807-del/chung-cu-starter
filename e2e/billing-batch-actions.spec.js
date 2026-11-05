@@ -88,7 +88,7 @@ for (const width of [1440, 375])
                 tinh_dien: false,
                 tinh_xe: false,
               },
-              { ma_nguoi_dung: users[0] },
+              { ma_nguoi_dung: users[0], phien_ban_token: 0 },
             )
           ).ma_hoa_don,
         );
@@ -150,7 +150,7 @@ for (const width of [1440, 375])
         bills[0],
         "tinh_lai",
         { phien_ban: 0 },
-        { ma_nguoi_dung: users[0] },
+        { ma_nguoi_dung: users[0], phien_ban_token: 0 },
       );
       await panel
         .getByRole("button", { name: "Tải lại và chọn lại", exact: true })
@@ -279,7 +279,7 @@ for (const width of [1440, 375])
       for (const id of users) {
         await rows(
           pool,
-          "DELETE d FROM chi_tiet_hoa_don d JOIN hoa_don h ON h.ma_hoa_don=d.ma_hoa_don WHERE h.ma_nguoi_lap=?",
+          "DELETE FROM chi_tiet_hoa_don d USING hoa_don h WHERE h.ma_hoa_don=d.ma_hoa_don AND h.ma_nguoi_lap=?",
           [id],
         );
         await rows(pool, "DELETE FROM lich_su_hoa_don WHERE ma_nguoi_ghi=?", [

@@ -1,7 +1,10 @@
+import {
+  createFailureTrigger,
+  dropFailureTrigger,
+} from "../../scripts/test-db-fixtures.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
-import { execFileSync } from "node:child_process";
 import bcrypt from "bcryptjs";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
@@ -99,20 +102,6 @@ test("announcements, current audiences, scoped receipts and bill reminders", asy
   }
   const self = (cookie, tail = "") =>
     req(`/cua_toi/thong_bao${tail}`, "GET", null, cookie);
-  const rootSQL = (sql) =>
-    execFileSync(
-      "docker",
-      [
-        "compose",
-        "exec",
-        "-T",
-        "db",
-        "sh",
-        "-c",
-        'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root chung_cu_test',
-      ],
-      { input: sql, stdio: ["pipe", "pipe", "pipe"] },
-    );
   try {
     admin = (await user("QUAN_TRI_VIEN")).cookie;
     technician = (await user("KY_THUAT_VIEN")).cookie;
@@ -532,8 +521,10 @@ test("announcements, current audiences, scoped receipts and bill reminders", asy
       "failed audit rolls back draft publication and reminder creation",
       async () => {
         const id = await draft();
-        rootSQL(
-          "CREATE TRIGGER test_notification_audit_failure BEFORE INSERT ON lich_su_thong_bao FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='test audit failure';",
+        await createFailureTrigger(
+          "test_notification_audit_failure",
+          "lich_su_thong_bao",
+          "test audit failure",
         );
         try {
           const r = await req(
@@ -578,7 +569,10 @@ test("announcements, current audiences, scoped receipts and bill reminders", asy
             0,
           );
         } finally {
-          rootSQL("DROP TRIGGER IF EXISTS test_notification_audit_failure;");
+          await dropFailureTrigger(
+            "test_notification_audit_failure",
+            "lich_su_thong_bao",
+          );
         }
       },
     );

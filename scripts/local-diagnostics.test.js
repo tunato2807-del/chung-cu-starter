@@ -68,7 +68,8 @@ test("database diagnostics only SELECT aggregate status and bind QR tokens", asy
     assert.match(sql, /^SELECT\s/);
     assert.doesNotMatch(sql, /mat_khau|password|ho_va_ten|so_dien_thoai/i);
     assert.doesNotMatch(sql, /test-token/);
-    assert.match(sql, /`db``with``quotes`\./);
+    assert.match(sql, /FROM public\./);
+    assert.doesNotMatch(sql, /db.with.quotes/);
   }
   assert.deepEqual(calls.at(-1).parameters, [token]);
 });

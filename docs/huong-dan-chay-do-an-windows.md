@@ -1,5 +1,7 @@
 # Hướng dẫn chạy đồ án trên Windows và VS Code
 
+> **Lịch sử bản MySQL:** Với mã nguồn từ 05/11/2026, dùng [hướng dẫn PostgreSQL](chuyen-postgresql-vscode.md). Giữ tài khoản/dữ liệu cũ bằng công cụ chuyển; không dùng lại lệnh MySQL của bài này để khởi động backend mới.
+
 > **Muốn lấy toàn bộ mã nguồn qua GitHub bằng lệnh?** Xem [tải và cập nhật bằng Git trong Terminal VS Code](tai-va-cap-nhat-du-an-bang-git-vscode.md), có cách chuyển cấu hình/ảnh từ thư mục cũ sang thư mục clone.
 
 > **Bản sửa 30/10/2026:** [copy đủ file và migrate lên schema 019](cap-nhat-4-loi-sau-ra-soat-vscode.md) trước khi chạy backend. Chọn đúng database thường/nghiệm thu; không tạo lại dữ liệu hoặc mật khẩu.

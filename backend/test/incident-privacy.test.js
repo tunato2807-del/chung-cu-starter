@@ -10,7 +10,7 @@ import { action } from "../src/modules/billing/billing.service.js";
 import { findUser } from "../src/modules/auth/auth.repository.js";
 import { today } from "../src/modules/billing/billing.validation.js";
 
-test("MySQL: household handover inherits bills, never the previous person's reports or photos", async (t) => {
+test("PostgreSQL: household handover inherits bills, never the previous person's reports or photos", async (t) => {
   assert.equal(process.env.DB_NAME, "chung_cu_test");
   const server = app.listen(0, "127.0.0.1");
   await new Promise((r) => server.once("listening", r));
@@ -209,7 +209,7 @@ test("MySQL: household handover inherits bills, never the previous person's repo
     bill = (
       await rows(
         pool,
-        "INSERT INTO hoa_don (so_hoa_don,ma_can_ho,ky_thanh_toan,ngay_chot_phi,lan_lap,tinh_nuoc,tinh_dien,tinh_xe,loi_du_lieu,dau_van_tay,ma_nguoi_lap,trang_thai,tong_tien) VALUES (?,?, '2026-09','2026-09-30',1,0,0,0,JSON_ARRAY(),?,?,'DA_GUI',100000)",
+        "INSERT INTO hoa_don (so_hoa_don,ma_can_ho,ky_thanh_toan,ngay_chot_phi,lan_lap,tinh_nuoc,tinh_dien,tinh_xe,loi_du_lieu,dau_van_tay,ma_nguoi_lap,trang_thai,tong_tien) VALUES (?,?, '2026-09','2026-09-30',1,0,0,0,'[]'::jsonb,?,?,'DA_GUI',100000)",
         [`PR-${suffix}`, apartment, "a".repeat(64), adminId],
       )
     ).insertId;

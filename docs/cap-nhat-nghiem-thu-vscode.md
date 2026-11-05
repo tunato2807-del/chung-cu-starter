@@ -1,5 +1,7 @@
 # Cập nhật hồ sơ thiết kế và kiểm tra file trong VS Code
 
+> **Lịch sử bản MySQL:** Code hiện tại dùng PostgreSQL; theo [hướng dẫn chuyển/chạy bộ mẫu](chuyen-postgresql-vscode.md) và cập nhật cả nhánh qua Git, không chép code MySQL trong bài này vào bản mới.
+
 Bản này bổ sung hồ sơ theo đề cương và hai công cụ hỗ trợ máy cục bộ. **Không đổi luồng giao diện, không có migration hoặc dependency ứng dụng mới.** Giữ bản ứng dụng 018 đã cập nhật trước đó; không sửa SQL cũ.
 
 ## 1. Tạo file kiểm tra trước khi chạy

@@ -121,7 +121,7 @@ test("report exports: complete snapshot, real XLSX/PDF, exact money, filters and
   ) {
     const r = await rows(
       pool,
-      "INSERT INTO phieu_thu_chi (ma_quy,loai,nhom,ngay_hach_toan,so_tien,doi_tac,dien_giai,trang_thai,ma_nguoi_lap,ma_nguoi_duyet,ngay_duyet,khoa_yeu_cau,van_tay) VALUES (?,'THU','THU_KHAC',?,?,?,?,'DA_GHI_SO',?,?,UTC_TIMESTAMP(6),?,?)",
+      "INSERT INTO phieu_thu_chi (ma_quy,loai,nhom,ngay_hach_toan,so_tien,doi_tac,dien_giai,trang_thai,ma_nguoi_lap,ma_nguoi_duyet,ngay_duyet,khoa_yeu_cau,van_tay) VALUES (?,'THU','THU_KHAC',?,?,?,?,'DA_GHI_SO',?,?,(CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),?,?)",
       [
         id,
         date,
@@ -419,7 +419,7 @@ test("report exports: complete snapshot, real XLSX/PDF, exact money, filters and
             params = [];
           const groups = Array.from({ length: size }, () => {
             params.push(...common, randomUUID(), "c".repeat(64));
-            return "(?,'THU','THU_KHAC',?,1,'Ban quản lý','Nội dung kiểm tra giới hạn','DA_GHI_SO',?,?,UTC_TIMESTAMP(6),?,?)";
+            return "(?,'THU','THU_KHAC',?,1,'Ban quản lý','Nội dung kiểm tra giới hạn','DA_GHI_SO',?,?,(CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),?,?)";
           });
           await rows(
             pool,

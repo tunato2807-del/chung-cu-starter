@@ -102,9 +102,11 @@ export async function statistics(query = {}) {
   const range = statisticsRange(query);
   const db = await pool.getConnection();
   try {
-    await db.query("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ");
-    await db.query("START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY");
-    const [clock] = await rows(db, "SELECT UTC_TIMESTAMP(6) AS tai_luc");
+    await db.query("BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY");
+    const [clock] = await rows(
+      db,
+      "SELECT (clock_timestamp() AT TIME ZONE 'UTC') AS tai_luc",
+    );
     const points = range.diem.map((p) => ({
       ...p,
       ...Object.fromEntries(
@@ -113,15 +115,17 @@ export async function statistics(query = {}) {
     }));
     const format =
       range.don_vi === "GIO"
-        ? "%Y-%m-%d %H:00:00"
+        ? "YYYY-MM-DD HH24:00:00"
         : range.don_vi === "THANG"
-          ? "%Y-%m"
-          : "%Y-%m-%d";
+          ? "YYYY-MM"
+          : "YYYY-MM-DD";
     const aggregate = async (table, column, values, condition, utc = true) => {
-      const businessTime = utc ? `DATE_ADD(${column},INTERVAL 7 HOUR)` : column;
+      const businessTime = utc
+        ? `((${column})::timestamp + (7) * INTERVAL '1 hour')`
+        : column;
       const result = await rows(
         db,
-        `SELECT DATE_FORMAT(${businessTime},'${format}') AS moc,${values} FROM ${table}
+        `SELECT to_char(${businessTime}, '${format}') AS moc,${values} FROM ${table}
         WHERE ${column}>=? AND ${column}<? ${condition ? `AND ${condition}` : ""} GROUP BY moc`,
         utc
           ? [localUtc(range.tu_ngay), localUtc(range.den_truoc_ngay)]
@@ -134,15 +138,15 @@ export async function statistics(query = {}) {
     await aggregate(
       "hoa_don",
       "ngay_thanh_toan",
-      "CAST(SUM(so_tien_da_thu) AS CHAR) AS da_thu",
+      "CAST(sum(so_tien_da_thu) AS TEXT) AS da_thu",
       "trang_thai='DA_THANH_TOAN'",
     );
     // A DATE has no hour: daily debt/maintenance totals are never assigned a fake hour.
-    const dateFormat = range.don_vi === "THANG" ? "%Y-%m" : "%Y-%m-%d";
+    const dateFormat = range.don_vi === "THANG" ? "YYYY-MM" : "YYYY-MM-DD";
     const daily = async (table, column, values, condition) => {
       const result = await rows(
         db,
-        `SELECT DATE_FORMAT(${column},'${dateFormat}') AS moc,${values} FROM ${table}
+        `SELECT to_char(${column}, '${dateFormat}') AS moc,${values} FROM ${table}
         WHERE ${column}>=? AND ${column}<? ${condition ? `AND ${condition}` : ""} GROUP BY moc`,
         [range.tu_ngay, range.den_truoc_ngay],
       );
@@ -156,7 +160,7 @@ export async function statistics(query = {}) {
     const debtDay = await daily(
       "hoa_don",
       "han_thanh_toan",
-      "CAST(SUM(tong_tien) AS CHAR) AS con_no",
+      "CAST(sum(tong_tien) AS TEXT) AS con_no",
       "trang_thai='DA_GUI'",
     );
     await aggregate("phan_anh", "ngay_tao", "COUNT(*) AS tiep_nhan");
@@ -181,7 +185,7 @@ export async function statistics(query = {}) {
     await aggregate(
       "dat_lich_tien_ich",
       "bat_dau",
-      "CAST(SUM(trang_thai='CHO_DUYET') AS UNSIGNED) AS cho_duyet,CAST(SUM(trang_thai='DA_DUYET') AS UNSIGNED) AS da_duyet,CAST(SUM(trang_thai='DA_HUY') AS UNSIGNED) AS da_huy,CAST(SUM(trang_thai='TU_CHOI') AS UNSIGNED) AS tu_choi",
+      "CAST(sum(CASE WHEN trang_thai='CHO_DUYET' THEN 1 ELSE 0 END) AS BIGINT) AS cho_duyet,CAST(sum(CASE WHEN trang_thai='DA_DUYET' THEN 1 ELSE 0 END) AS BIGINT) AS da_duyet,CAST(sum(CASE WHEN trang_thai='DA_HUY' THEN 1 ELSE 0 END) AS BIGINT) AS da_huy,CAST(sum(CASE WHEN trang_thai='TU_CHOI' THEN 1 ELSE 0 END) AS BIGINT) AS tu_choi",
       "",
       false,
     );

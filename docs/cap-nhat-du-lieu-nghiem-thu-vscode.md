@@ -1,5 +1,7 @@
 # Dữ liệu mẫu nghiệm thu — code đầy đủ cho VS Code
 
+> **Lịch sử bản MySQL:** Code hiện tại dùng PostgreSQL; theo [hướng dẫn chuyển/chạy bộ mẫu](chuyen-postgresql-vscode.md) và cập nhật cả nhánh qua Git, không chép code MySQL trong bài này vào bản mới.
+
 Bản này tạo bộ dữ liệu liên kết đủ 38 bảng trong **database riêng `chung_cu_nghiem_thu`**, giữ database đang dùng và `.env`. Không tải ZIP, không nhập SQL chèn rời từng bảng. Cần ứng dụng đã có đủ bản 018 và các dependency hiện có; không thêm thư viện hoặc sửa migration cũ.
 
 ## 1. Tạo đúng hai file chạy tính năng

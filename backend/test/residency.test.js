@@ -1,12 +1,15 @@
+import {
+  createFailureTrigger,
+  dropFailureTrigger,
+} from "../../scripts/test-db-fixtures.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
-import { execFileSync } from "node:child_process";
 import bcrypt from "bcryptjs";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
 
-test("MySQL: apartments, accounts, residency dates, concurrent transfer and rollback", async (t) => {
+test("PostgreSQL: apartments, accounts, residency dates, concurrent transfer and rollback", async (t) => {
   assert.equal(process.env.DB_NAME, "chung_cu_test");
   const server = app.listen(0, "127.0.0.1");
   await new Promise((resolve) => server.once("listening", resolve));
@@ -17,20 +20,6 @@ test("MySQL: apartments, accounts, residency dates, concurrent transfer and roll
     apartments = [],
     residents = [];
   const hash = await bcrypt.hash(password, 10);
-  const ddl = (sql) =>
-    execFileSync(
-      "docker",
-      [
-        "compose",
-        "exec",
-        "-T",
-        "db",
-        "sh",
-        "-c",
-        'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root chung_cu_test',
-      ],
-      { input: sql },
-    );
   async function request(path, method = "GET", body, cookie) {
     const response = await fetch(base + path, {
       method,
@@ -380,8 +369,10 @@ test("MySQL: apartments, accounts, residency dates, concurrent transfer and roll
           "SELECT * FROM lich_su_cu_tru WHERE ma_cu_dan=? AND den_ngay IS NULL",
           [id],
         );
-        ddl(
-          `CREATE TRIGGER test_residency_fail BEFORE INSERT ON lich_su_cu_tru FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='test rollback';`,
+        await createFailureTrigger(
+          "test_residency_fail",
+          "lich_su_cu_tru",
+          "test rollback",
         );
         try {
           const result = await request(
@@ -397,7 +388,7 @@ test("MySQL: apartments, accounts, residency dates, concurrent transfer and roll
           );
           assert.equal(result.status, 500);
         } finally {
-          ddl("DROP TRIGGER IF EXISTS test_residency_fail;");
+          await dropFailureTrigger("test_residency_fail", "lich_su_cu_tru");
         }
         const [after] = await rows(
           pool,
@@ -589,7 +580,7 @@ test("MySQL: apartments, accounts, residency dates, concurrent transfer and roll
             "UPDATE lich_su_cu_tru SET den_ngay=? WHERE ma_lich_su_cu_tru=?",
             [previousDay, detail.history[1].ma_lich_su_cu_tru],
           ),
-          (error) => error.code === "ER_CHECK_CONSTRAINT_VIOLATED",
+          (error) => error.code === "23514",
         );
         assert.equal(
           (
@@ -621,21 +612,19 @@ test("MySQL: apartments, accounts, residency dates, concurrent transfer and roll
         );
         revision++;
         const race = await Promise.all(
-          apartments
-            .slice(0, 2)
-            .map((room) =>
-              request(
-                `/cu_dan/${id}/chuyen_can`,
-                "POST",
-                {
-                  ma_can_ho: room,
-                  quan_he: "NGUOI_THUE",
-                  ngay: day,
-                  phien_ban: revision,
-                },
-                admin.cookie,
-              ),
+          apartments.slice(0, 2).map((room) =>
+            request(
+              `/cu_dan/${id}/chuyen_can`,
+              "POST",
+              {
+                ma_can_ho: room,
+                quan_he: "NGUOI_THUE",
+                ngay: day,
+                phien_ban: revision,
+              },
+              admin.cookie,
             ),
+          ),
         );
         assert.deepEqual(race.map((r) => r.status).sort(), [200, 409]);
         detail = (await request(`/cu_dan/${id}`, "GET", null, admin.cookie))

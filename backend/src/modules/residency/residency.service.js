@@ -56,7 +56,9 @@ async function checkAccount(db, id, previous) {
 export async function listApartments(query, exportFormat = null) {
   const { q } = search({ ...query, page: 1 });
   const { page, offset, limit, check } = reportPage(query, exportFormat);
-  const conditions = ["(so_can_ho LIKE ? OR khoi LIKE ?)"];
+  const conditions = [
+    '(unaccent((so_can_ho)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((khoi)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
+  ];
   const values = [q, q];
   if (query.khoi !== undefined && query.khoi !== "") {
     conditions.push("khoi=?");
@@ -96,7 +98,7 @@ export async function listApartments(query, exportFormat = null) {
 export async function availableAccounts(query) {
   const { q, page, offset } = search(query);
   const where = `WHERE u.vai_tro='CU_DAN' AND u.dang_hoat_dong=1 AND u.ma_can_ho_thanh_toan IS NULL
-    AND (u.ho_va_ten LIKE ? OR u.so_dien_thoai LIKE ?)
+    AND (unaccent((u.ho_va_ten)::text COLLATE \"C\") ILIKE unaccent(?::text COLLATE \"C\") OR unaccent((u.so_dien_thoai)::text COLLATE \"C\") ILIKE unaccent(?::text COLLATE \"C\"))
     AND NOT EXISTS (SELECT 1 FROM cu_dan c WHERE c.ma_nguoi_dung=u.ma_nguoi_dung)`;
   const [count] = await rows(
     pool,
@@ -162,7 +164,9 @@ const residentJoin = `FROM cu_dan c LEFT JOIN lich_su_cu_tru l ON l.ma_cu_dan=c.
 export async function listResidents(query, exportFormat = null) {
   const { q } = search({ ...query, page: 1 });
   const { page, offset, limit, check } = reportPage(query, exportFormat);
-  const conditions = ["(c.ho_va_ten LIKE ? OR c.so_dien_thoai LIKE ?)"];
+  const conditions = [
+    '(unaccent((c.ho_va_ten)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((c.so_dien_thoai)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
+  ];
   const values = [q, q];
   if (query.ma_can_ho) {
     conditions.push("l.ma_can_ho=?");

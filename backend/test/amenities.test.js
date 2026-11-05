@@ -1,7 +1,10 @@
+import {
+  createFailureTrigger,
+  dropFailureTrigger,
+} from "../../scripts/test-db-fixtures.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes, randomUUID } from "node:crypto";
-import { execFileSync } from "node:child_process";
 import bcrypt from "bcryptjs";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
@@ -136,20 +139,6 @@ test("amenity reservations: isolation, same-time races, custody and policy consi
       ...extra,
     });
   }
-  const rootSQL = (sql) =>
-    execFileSync(
-      "docker",
-      [
-        "compose",
-        "exec",
-        "-T",
-        "db",
-        "sh",
-        "-c",
-        'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root chung_cu_test',
-      ],
-      { input: sql, stdio: ["pipe", "pipe", "pipe"] },
-    );
   try {
     admin = await account("QUAN_TRI_VIEN");
     owner = await account("CU_DAN");
@@ -557,8 +546,10 @@ test("amenity reservations: isolation, same-time races, custody and policy consi
           }),
           id = r.body.data.ma_dat_lich,
           key = randomUUID();
-        rootSQL(
-          "CREATE TRIGGER test_amenity_audit_failure BEFORE INSERT ON lich_su_dat_lich FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='test audit failure';",
+        await createFailureTrigger(
+          "test_amenity_audit_failure",
+          "lich_su_dat_lich",
+          "test audit failure",
         );
         try {
           assert.equal(
@@ -587,7 +578,10 @@ test("amenity reservations: isolation, same-time races, custody and policy consi
           assert.equal(b.phien_ban, 0);
           assert.equal(b.history.length, 1);
         } finally {
-          rootSQL("DROP TRIGGER IF EXISTS test_amenity_audit_failure;");
+          await dropFailureTrigger(
+            "test_amenity_audit_failure",
+            "lich_su_dat_lich",
+          );
         }
       },
     );

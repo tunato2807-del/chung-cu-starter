@@ -11,45 +11,45 @@ Ký hiệu: `||` đúng một; `o|` không hoặc một; `o{` không hoặc nhi�
 ```mermaid
 erDiagram
   can_ho {
-    int ma_can_ho PK "int unsigned; NOT NULL"
-    varchar khoi FK "varchar(10); NOT NULL"
-    smallint tang FK "smallint unsigned; NOT NULL"
+    int8 ma_can_ho PK "bigint; NOT NULL"
+    varchar khoi FK "character varying(10); NOT NULL"
+    int4 tang FK "integer; NOT NULL"
   }
   cu_dan {
-    int ma_cu_dan PK "int unsigned; NOT NULL"
-    int ma_nguoi_dung FK "int unsigned; NULL"
+    int8 ma_cu_dan PK "bigint; NOT NULL"
+    int8 ma_nguoi_dung FK "bigint; NULL"
   }
   khoi_toa_nha {
-    varchar khoi PK "varchar(10); NOT NULL"
+    varchar khoi PK "character varying(10); NOT NULL"
   }
   lich_su_ban_giao_can_ho {
-    int ma_ban_giao PK "int unsigned; NOT NULL"
-    int ma_can_ho FK "int unsigned; NOT NULL"
-    int ma_nguoi_thuc_hien FK "int unsigned; NOT NULL"
+    int8 ma_ban_giao PK "bigint; NOT NULL"
+    int8 ma_can_ho FK "bigint; NOT NULL"
+    int8 ma_nguoi_thuc_hien FK "bigint; NOT NULL"
   }
   lich_su_cu_tru {
-    int ma_lich_su_cu_tru PK "int unsigned; NOT NULL"
-    int ma_cu_dan FK "int unsigned; NOT NULL"
-    int ma_can_ho FK "int unsigned; NOT NULL"
-    int ma_nguoi_ghi_nhan FK "int unsigned; NOT NULL"
+    int8 ma_lich_su_cu_tru PK "bigint; NOT NULL"
+    int8 ma_cu_dan FK "bigint; NOT NULL"
+    int8 ma_can_ho FK "bigint; NOT NULL"
+    int8 ma_nguoi_ghi_nhan FK "bigint; NOT NULL"
   }
   nguoi_dung {
-    int ma_nguoi_dung PK "int unsigned; NOT NULL"
-    int ma_can_ho_thanh_toan FK "int unsigned; NULL"
-    int ma_cu_dan_phu_trach FK "int unsigned; NULL"
+    int8 ma_nguoi_dung PK "bigint; NOT NULL"
+    int8 ma_can_ho_thanh_toan FK "bigint; NULL"
+    int8 ma_cu_dan_phu_trach FK "bigint; NULL"
   }
   phuong_tien {
-    int ma_phuong_tien PK "int unsigned; NOT NULL"
-    int ma_cu_dan FK "int unsigned; NOT NULL"
-    int ma_can_ho FK "int unsigned; NOT NULL"
-    int ma_lich_su_cu_tru FK "int unsigned; NOT NULL"
-    int ma_dang_ky_truoc FK "int unsigned; NULL"
-    int ma_nguoi_tao FK "int unsigned; NOT NULL"
-    int ma_nguoi_ket_thuc FK "int unsigned; NULL"
+    int8 ma_phuong_tien PK "bigint; NOT NULL"
+    int8 ma_cu_dan FK "bigint; NOT NULL"
+    int8 ma_can_ho FK "bigint; NOT NULL"
+    int8 ma_lich_su_cu_tru FK "bigint; NOT NULL"
+    int8 ma_dang_ky_truoc FK "bigint; NULL"
+    int8 ma_nguoi_tao FK "bigint; NOT NULL"
+    int8 ma_nguoi_ket_thuc FK "bigint; NULL"
   }
   tang_toa_nha {
-    varchar khoi PK,FK "varchar(10); NOT NULL"
-    smallint tang PK "smallint unsigned; NOT NULL"
+    varchar khoi PK,FK "character varying(10); NOT NULL"
+    int4 tang PK "integer; NOT NULL"
   }
   tang_toa_nha ||--o{ can_ho : "khoi + tang"
   nguoi_dung o|--o| cu_dan : "ma_nguoi_dung"
@@ -73,46 +73,51 @@ erDiagram
 
 ```mermaid
 erDiagram
+  cu_dan {
+    int8 ma_cu_dan PK "bigint; NOT NULL"
+    int8 ma_nguoi_dung FK "bigint; NULL"
+  }
   hinh_anh_phan_anh {
-    int ma_hinh_anh_phan_anh PK "int unsigned; NOT NULL"
-    int ma_phan_anh FK "int unsigned; NOT NULL"
-    int ma_nguoi_tai_len FK "int unsigned; NULL"
+    int8 ma_hinh_anh_phan_anh PK "bigint; NOT NULL"
+    int8 ma_phan_anh FK "bigint; NOT NULL"
+    int8 ma_nguoi_tai_len FK "bigint; NULL"
   }
   lich_su_lien_ket_qr {
-    int ma_lich_su PK "int unsigned; NOT NULL"
-    int ma_vi_tri_qr FK "int unsigned; NOT NULL"
-    int ma_thiet_bi_cu FK "int unsigned; NULL"
-    int ma_thiet_bi_moi FK "int unsigned; NULL"
-    int ma_nguoi_thuc_hien FK "int unsigned; NOT NULL"
+    int8 ma_lich_su PK "bigint; NOT NULL"
+    int8 ma_vi_tri_qr FK "bigint; NOT NULL"
+    int8 ma_thiet_bi_cu FK "bigint; NULL"
+    int8 ma_thiet_bi_moi FK "bigint; NULL"
+    int8 ma_nguoi_thuc_hien FK "bigint; NOT NULL"
   }
   lich_su_phan_anh {
-    int ma_lich_su_phan_anh PK "int unsigned; NOT NULL"
-    int ma_phan_anh FK "int unsigned; NOT NULL"
-    int ma_nguoi_thay_doi FK "int unsigned; NULL"
-    int ma_ky_thuat_vien_cu FK "int unsigned; NULL"
-    int ma_ky_thuat_vien_moi FK "int unsigned; NULL"
+    int8 ma_lich_su_phan_anh PK "bigint; NOT NULL"
+    int8 ma_phan_anh FK "bigint; NOT NULL"
+    int8 ma_nguoi_thay_doi FK "bigint; NULL"
+    int8 ma_ky_thuat_vien_cu FK "bigint; NULL"
+    int8 ma_ky_thuat_vien_moi FK "bigint; NULL"
   }
   nguoi_dung {
-    int ma_nguoi_dung PK "int unsigned; NOT NULL"
-    int ma_can_ho_thanh_toan FK "int unsigned; NULL"
-    int ma_cu_dan_phu_trach FK "int unsigned; NULL"
+    int8 ma_nguoi_dung PK "bigint; NOT NULL"
+    int8 ma_can_ho_thanh_toan FK "bigint; NULL"
+    int8 ma_cu_dan_phu_trach FK "bigint; NULL"
   }
   phan_anh {
-    int ma_phan_anh PK "int unsigned; NOT NULL"
-    int ma_vi_tri_qr FK "int unsigned; NOT NULL"
-    int ma_nguoi_gui FK "int unsigned; NULL"
-    int ma_ky_thuat_vien FK "int unsigned; NULL"
-    int ma_phan_anh_goc FK "int unsigned; NULL"
-    int ma_thiet_bi FK "int unsigned; NULL"
+    int8 ma_phan_anh PK "bigint; NOT NULL"
+    int8 ma_vi_tri_qr FK "bigint; NOT NULL"
+    int8 ma_nguoi_gui FK "bigint; NULL"
+    int8 ma_ky_thuat_vien FK "bigint; NULL"
+    int8 ma_phan_anh_goc FK "bigint; NULL"
+    int8 ma_thiet_bi FK "bigint; NULL"
+    int8 ma_cu_dan_nguoi_gui FK "bigint; NULL"
   }
   thiet_bi {
-    int ma_thiet_bi PK "int unsigned; NOT NULL"
-    int ma_nguoi_tao FK "int unsigned; NOT NULL"
+    int8 ma_thiet_bi PK "bigint; NOT NULL"
+    int8 ma_nguoi_tao FK "bigint; NOT NULL"
   }
   vi_tri_qr {
-    int ma_vi_tri_qr PK "int unsigned; NOT NULL"
-    int ma_nguoi_tao FK "int unsigned; NOT NULL"
-    int ma_thiet_bi FK "int unsigned; NULL"
+    int8 ma_vi_tri_qr PK "bigint; NOT NULL"
+    int8 ma_nguoi_tao FK "bigint; NOT NULL"
+    int8 ma_thiet_bi FK "bigint; NULL"
   }
   phan_anh ||--o{ hinh_anh_phan_anh : "ma_phan_anh"
   nguoi_dung o|--o{ hinh_anh_phan_anh : "ma_nguoi_tai_len"
@@ -125,6 +130,7 @@ erDiagram
   nguoi_dung o|--o{ lich_su_phan_anh : "ma_ky_thuat_vien_cu"
   nguoi_dung o|--o{ lich_su_phan_anh : "ma_ky_thuat_vien_moi"
   thiet_bi o|--o{ phan_anh : "ma_thiet_bi"
+  cu_dan o|--o{ phan_anh : "ma_cu_dan_nguoi_gui"
   vi_tri_qr ||--o{ phan_anh : "ma_vi_tri_qr"
   nguoi_dung o|--o{ phan_anh : "ma_nguoi_gui"
   nguoi_dung o|--o{ phan_anh : "ma_ky_thuat_vien"
@@ -138,76 +144,76 @@ erDiagram
 ```mermaid
 erDiagram
   can_ho {
-    int ma_can_ho PK "int unsigned; NOT NULL"
-    varchar khoi FK "varchar(10); NOT NULL"
-    smallint tang FK "smallint unsigned; NOT NULL"
+    int8 ma_can_ho PK "bigint; NOT NULL"
+    varchar khoi FK "character varying(10); NOT NULL"
+    int4 tang FK "integer; NOT NULL"
   }
   cau_hinh_phi {
-    int ma_cau_hinh_phi PK "int unsigned; NOT NULL"
-    varchar loai_phi FK "varchar(30); NOT NULL"
-    int ma_nguoi_tao FK "int unsigned; NOT NULL"
+    int8 ma_cau_hinh_phi PK "bigint; NOT NULL"
+    varchar loai_phi FK "character varying(30); NOT NULL"
+    int8 ma_nguoi_tao FK "bigint; NOT NULL"
   }
   chi_so_dich_vu {
-    int ma_chi_so_dich_vu PK "int unsigned; NOT NULL"
-    int ma_can_ho FK "int unsigned; NOT NULL"
-    int ma_nguoi_ghi FK "int unsigned; NOT NULL"
+    int8 ma_chi_so_dich_vu PK "bigint; NOT NULL"
+    int8 ma_can_ho FK "bigint; NOT NULL"
+    int8 ma_nguoi_ghi FK "bigint; NOT NULL"
   }
   chi_tiet_hoa_don {
-    int ma_chi_tiet_hoa_don PK "int unsigned; NOT NULL"
-    int ma_hoa_don FK "int unsigned; NOT NULL"
-    int ma_cau_hinh_phi FK "int unsigned; NOT NULL"
-    int ma_chi_so_dich_vu FK "int unsigned; NULL"
+    int8 ma_chi_tiet_hoa_don PK "bigint; NOT NULL"
+    int8 ma_hoa_don FK "bigint; NOT NULL"
+    int8 ma_cau_hinh_phi FK "bigint; NOT NULL"
+    int8 ma_chi_so_dich_vu FK "bigint; NULL"
   }
   chung_tu_thu_chi {
-    int ma_chung_tu PK "int unsigned; NOT NULL"
-    int ma_phieu FK "int unsigned; NOT NULL"
-    int ma_nguoi_tai FK "int unsigned; NOT NULL"
+    int8 ma_chung_tu PK "bigint; NOT NULL"
+    int8 ma_phieu FK "bigint; NOT NULL"
+    int8 ma_nguoi_tai FK "bigint; NOT NULL"
   }
   dot_lap_hoa_don {
-    int ma_dot_lap PK "int unsigned; NOT NULL"
-    int ma_nguoi_lap FK "int unsigned; NOT NULL"
+    int8 ma_dot_lap PK "bigint; NOT NULL"
+    int8 ma_nguoi_lap FK "bigint; NOT NULL"
   }
   dot_xu_ly_hoa_don {
-    int ma_dot_xu_ly PK "int unsigned; NOT NULL"
-    int ma_nguoi_thuc_hien FK "int unsigned; NOT NULL"
+    int8 ma_dot_xu_ly PK "bigint; NOT NULL"
+    int8 ma_nguoi_thuc_hien FK "bigint; NOT NULL"
   }
   hoa_don {
-    int ma_hoa_don PK "int unsigned; NOT NULL"
-    int ma_can_ho FK "int unsigned; NOT NULL"
-    int ma_hoa_don_thay_the_cho FK "int unsigned; NULL"
-    int ma_nguoi_lap FK "int unsigned; NOT NULL"
-    int ma_nguoi_duyet FK "int unsigned; NULL"
-    int ma_nguoi_gui FK "int unsigned; NULL"
-    int ma_nguoi_huy FK "int unsigned; NULL"
-    int ma_nguoi_xac_nhan FK "int unsigned; NULL"
+    int8 ma_hoa_don PK "bigint; NOT NULL"
+    int8 ma_can_ho FK "bigint; NOT NULL"
+    int8 ma_hoa_don_thay_the_cho FK "bigint; NULL"
+    int8 ma_nguoi_lap FK "bigint; NOT NULL"
+    int8 ma_nguoi_duyet FK "bigint; NULL"
+    int8 ma_nguoi_gui FK "bigint; NULL"
+    int8 ma_nguoi_huy FK "bigint; NULL"
+    int8 ma_nguoi_xac_nhan FK "bigint; NULL"
   }
   lich_su_hoa_don {
-    int ma_lich_su_hoa_don PK "int unsigned; NOT NULL"
-    int ma_hoa_don FK "int unsigned; NOT NULL"
-    int ma_nguoi_ghi FK "int unsigned; NOT NULL"
+    int8 ma_lich_su_hoa_don PK "bigint; NOT NULL"
+    int8 ma_hoa_don FK "bigint; NOT NULL"
+    int8 ma_nguoi_ghi FK "bigint; NOT NULL"
   }
   lich_su_thu_chi {
-    int ma_lich_su PK "int unsigned; NOT NULL"
-    int ma_phieu FK "int unsigned; NOT NULL"
-    int ma_nguoi_thuc_hien FK "int unsigned; NOT NULL"
+    int8 ma_lich_su PK "bigint; NOT NULL"
+    int8 ma_phieu FK "bigint; NOT NULL"
+    int8 ma_nguoi_thuc_hien FK "bigint; NOT NULL"
   }
   loai_phi {
-    varchar loai_phi PK "varchar(30); NOT NULL"
+    varchar loai_phi PK "character varying(30); NOT NULL"
   }
   nguoi_dung {
-    int ma_nguoi_dung PK "int unsigned; NOT NULL"
-    int ma_can_ho_thanh_toan FK "int unsigned; NULL"
-    int ma_cu_dan_phu_trach FK "int unsigned; NULL"
+    int8 ma_nguoi_dung PK "bigint; NOT NULL"
+    int8 ma_can_ho_thanh_toan FK "bigint; NULL"
+    int8 ma_cu_dan_phu_trach FK "bigint; NULL"
   }
   phieu_thu_chi {
-    int ma_phieu PK "int unsigned; NOT NULL"
-    int ma_quy FK "int unsigned; NOT NULL"
-    int ma_nguoi_lap FK "int unsigned; NOT NULL"
-    int ma_nguoi_duyet FK "int unsigned; NULL"
-    int ma_phieu_goc FK "int unsigned; NULL"
+    int8 ma_phieu PK "bigint; NOT NULL"
+    int8 ma_quy FK "bigint; NOT NULL"
+    int8 ma_nguoi_lap FK "bigint; NOT NULL"
+    int8 ma_nguoi_duyet FK "bigint; NULL"
+    int8 ma_phieu_goc FK "bigint; NULL"
   }
   quy_tai_chinh {
-    int ma_quy PK "int unsigned; NOT NULL"
+    int8 ma_quy PK "bigint; NOT NULL"
   }
   loai_phi ||--o{ cau_hinh_phi : "loai_phi"
   nguoi_dung ||--o{ cau_hinh_phi : "ma_nguoi_tao"
@@ -242,87 +248,87 @@ erDiagram
 ```mermaid
 erDiagram
   can_ho {
-    int ma_can_ho PK "int unsigned; NOT NULL"
-    varchar khoi FK "varchar(10); NOT NULL"
-    smallint tang FK "smallint unsigned; NOT NULL"
+    int8 ma_can_ho PK "bigint; NOT NULL"
+    varchar khoi FK "character varying(10); NOT NULL"
+    int4 tang FK "integer; NOT NULL"
   }
   cu_dan {
-    int ma_cu_dan PK "int unsigned; NOT NULL"
-    int ma_nguoi_dung FK "int unsigned; NULL"
+    int8 ma_cu_dan PK "bigint; NOT NULL"
+    int8 ma_nguoi_dung FK "bigint; NULL"
   }
   dat_lich_tien_ich {
-    int ma_dat_lich PK "int unsigned; NOT NULL"
-    int ma_tien_ich FK "int unsigned; NOT NULL"
-    int ma_can_ho FK "int unsigned; NOT NULL"
-    int ma_nguoi_dat FK "int unsigned; NOT NULL"
-    int ma_cu_dan FK "int unsigned; NOT NULL"
-    int ma_lich_su_cu_tru FK "int unsigned; NOT NULL"
+    int8 ma_dat_lich PK "bigint; NOT NULL"
+    int8 ma_tien_ich FK "bigint; NOT NULL"
+    int8 ma_can_ho FK "bigint; NOT NULL"
+    int8 ma_nguoi_dat FK "bigint; NOT NULL"
+    int8 ma_cu_dan FK "bigint; NOT NULL"
+    int8 ma_lich_su_cu_tru FK "bigint; NOT NULL"
   }
   hoa_don {
-    int ma_hoa_don PK "int unsigned; NOT NULL"
-    int ma_can_ho FK "int unsigned; NOT NULL"
-    int ma_hoa_don_thay_the_cho FK "int unsigned; NULL"
-    int ma_nguoi_lap FK "int unsigned; NOT NULL"
-    int ma_nguoi_duyet FK "int unsigned; NULL"
-    int ma_nguoi_gui FK "int unsigned; NULL"
-    int ma_nguoi_huy FK "int unsigned; NULL"
-    int ma_nguoi_xac_nhan FK "int unsigned; NULL"
+    int8 ma_hoa_don PK "bigint; NOT NULL"
+    int8 ma_can_ho FK "bigint; NOT NULL"
+    int8 ma_hoa_don_thay_the_cho FK "bigint; NULL"
+    int8 ma_nguoi_lap FK "bigint; NOT NULL"
+    int8 ma_nguoi_duyet FK "bigint; NULL"
+    int8 ma_nguoi_gui FK "bigint; NULL"
+    int8 ma_nguoi_huy FK "bigint; NULL"
+    int8 ma_nguoi_xac_nhan FK "bigint; NULL"
   }
   lich_su_bao_tri {
-    int ma_lich_su PK "int unsigned; NOT NULL"
-    int ma_thiet_bi FK "int unsigned; NOT NULL"
-    int ma_phieu_bao_tri FK "int unsigned; NULL"
-    int ma_nguoi_thuc_hien FK "int unsigned; NOT NULL"
+    int8 ma_lich_su PK "bigint; NOT NULL"
+    int8 ma_thiet_bi FK "bigint; NOT NULL"
+    int8 ma_phieu_bao_tri FK "bigint; NULL"
+    int8 ma_nguoi_thuc_hien FK "bigint; NOT NULL"
   }
   lich_su_cu_tru {
-    int ma_lich_su_cu_tru PK "int unsigned; NOT NULL"
-    int ma_cu_dan FK "int unsigned; NOT NULL"
-    int ma_can_ho FK "int unsigned; NOT NULL"
-    int ma_nguoi_ghi_nhan FK "int unsigned; NOT NULL"
+    int8 ma_lich_su_cu_tru PK "bigint; NOT NULL"
+    int8 ma_cu_dan FK "bigint; NOT NULL"
+    int8 ma_can_ho FK "bigint; NOT NULL"
+    int8 ma_nguoi_ghi_nhan FK "bigint; NOT NULL"
   }
   lich_su_dat_lich {
-    int ma_lich_su PK "int unsigned; NOT NULL"
-    int ma_dat_lich FK "int unsigned; NOT NULL"
-    int ma_nguoi_thuc_hien FK "int unsigned; NOT NULL"
+    int8 ma_lich_su PK "bigint; NOT NULL"
+    int8 ma_dat_lich FK "bigint; NOT NULL"
+    int8 ma_nguoi_thuc_hien FK "bigint; NOT NULL"
   }
   lich_su_thong_bao {
-    int ma_lich_su PK "int unsigned; NOT NULL"
-    int ma_thong_bao FK "int unsigned; NOT NULL"
-    int ma_nguoi_thuc_hien FK "int unsigned; NOT NULL"
+    int8 ma_lich_su PK "bigint; NOT NULL"
+    int8 ma_thong_bao FK "bigint; NOT NULL"
+    int8 ma_nguoi_thuc_hien FK "bigint; NOT NULL"
   }
   nguoi_dung {
-    int ma_nguoi_dung PK "int unsigned; NOT NULL"
-    int ma_can_ho_thanh_toan FK "int unsigned; NULL"
-    int ma_cu_dan_phu_trach FK "int unsigned; NULL"
+    int8 ma_nguoi_dung PK "bigint; NOT NULL"
+    int8 ma_can_ho_thanh_toan FK "bigint; NULL"
+    int8 ma_cu_dan_phu_trach FK "bigint; NULL"
   }
   phieu_bao_tri {
-    int ma_phieu_bao_tri PK "int unsigned; NOT NULL"
-    int ma_thiet_bi FK "int unsigned; NOT NULL"
-    int ma_ky_thuat_vien FK "int unsigned; NULL"
-    int ma_nguoi_lap FK "int unsigned; NOT NULL"
-    int ma_nguoi_nghiem_thu FK "int unsigned; NULL"
-    int ma_nguoi_huy FK "int unsigned; NULL"
+    int8 ma_phieu_bao_tri PK "bigint; NOT NULL"
+    int8 ma_thiet_bi FK "bigint; NOT NULL"
+    int8 ma_ky_thuat_vien FK "bigint; NULL"
+    int8 ma_nguoi_lap FK "bigint; NOT NULL"
+    int8 ma_nguoi_nghiem_thu FK "bigint; NULL"
+    int8 ma_nguoi_huy FK "bigint; NULL"
   }
   thiet_bi {
-    int ma_thiet_bi PK "int unsigned; NOT NULL"
-    int ma_nguoi_tao FK "int unsigned; NOT NULL"
+    int8 ma_thiet_bi PK "bigint; NOT NULL"
+    int8 ma_nguoi_tao FK "bigint; NOT NULL"
   }
   thong_bao {
-    int ma_thong_bao PK "int unsigned; NOT NULL"
-    int ma_can_ho FK "int unsigned; NULL"
-    int ma_hoa_don FK "int unsigned; NULL"
-    int ma_nguoi_tao FK "int unsigned; NOT NULL"
-    int ma_nguoi_gui FK "int unsigned; NULL"
-    int ma_nguoi_thu_hoi FK "int unsigned; NULL"
+    int8 ma_thong_bao PK "bigint; NOT NULL"
+    int8 ma_can_ho FK "bigint; NULL"
+    int8 ma_hoa_don FK "bigint; NULL"
+    int8 ma_nguoi_tao FK "bigint; NOT NULL"
+    int8 ma_nguoi_gui FK "bigint; NULL"
+    int8 ma_nguoi_thu_hoi FK "bigint; NULL"
   }
   thong_bao_da_doc {
-    int ma_thong_bao PK,FK "int unsigned; NOT NULL"
-    int ma_nguoi_dung PK,FK "int unsigned; NOT NULL"
-    int nguoi_tiep_nhan PK "int unsigned; NOT NULL"
+    int8 ma_thong_bao PK,FK "bigint; NOT NULL"
+    int8 ma_nguoi_dung PK,FK "bigint; NOT NULL"
+    int8 nguoi_tiep_nhan PK "bigint; NOT NULL"
   }
   tien_ich {
-    int ma_tien_ich PK "int unsigned; NOT NULL"
-    int ma_nguoi_tao FK "int unsigned; NOT NULL"
+    int8 ma_tien_ich PK "bigint; NOT NULL"
+    int8 ma_nguoi_tao FK "bigint; NOT NULL"
   }
   tien_ich ||--o{ dat_lich_tien_ich : "ma_tien_ich"
   can_ho ||--o{ dat_lich_tien_ich : "ma_can_ho"

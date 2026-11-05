@@ -1,14 +1,18 @@
+import {
+  createFailureTrigger,
+  deleteVehicleFixtures,
+  dropFailureTrigger,
+} from "../../scripts/test-db-fixtures.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
-import { execFileSync } from "node:child_process";
 import bcrypt from "bcryptjs";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
 import { lineTotal, today } from "../src/modules/billing/billing.validation.js";
 import { crc16 } from "../src/modules/billing/billing.qr.js";
 
-test("MySQL billing: exact totals, snapshots, source locks, resident access, payment and replacement", async (t) => {
+test("PostgreSQL billing: exact totals, snapshots, source locks, resident access, payment and replacement", async (t) => {
   assert.equal(process.env.DB_NAME, "chung_cu_test");
   const server = app.listen(0, "127.0.0.1");
   await new Promise((r) => server.once("listening", r));
@@ -81,20 +85,6 @@ test("MySQL billing: exact totals, snapshots, source locks, resident access, pay
       admin.cookie,
     );
   }
-  const ddl = (sql) =>
-    execFileSync(
-      "docker",
-      [
-        "compose",
-        "exec",
-        "-T",
-        "db",
-        "sh",
-        "-c",
-        'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root chung_cu_test',
-      ],
-      { input: sql },
-    );
   const bank = {
     han_thanh_toan: today(),
     ma_ngan_hang: "970436",
@@ -711,8 +701,10 @@ test("MySQL billing: exact totals, snapshots, source locks, resident access, pay
           "SELECT COUNT(*) AS n FROM hoa_don WHERE ma_can_ho=?",
           [apartments[2]],
         );
-        ddl(
-          "CREATE TRIGGER test_billing_fail BEFORE INSERT ON lich_su_hoa_don FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='test billing rollback';",
+        await createFailureTrigger(
+          "test_billing_fail",
+          "lich_su_hoa_don",
+          "test billing rollback",
         );
         try {
           assert.equal(
@@ -732,7 +724,7 @@ test("MySQL billing: exact totals, snapshots, source locks, resident access, pay
             500,
           );
         } finally {
-          ddl("DROP TRIGGER IF EXISTS test_billing_fail;");
+          await dropFailureTrigger("test_billing_fail", "lich_su_hoa_don");
         }
         const [after] = await rows(
           pool,
@@ -763,11 +755,7 @@ test("MySQL billing: exact totals, snapshots, source locks, resident access, pay
       await rows(pool, "DELETE FROM chi_so_dich_vu WHERE ma_can_ho=?", [apt]);
     }
     for (const profile of profiles) {
-      await rows(
-        pool,
-        "DELETE FROM phuong_tien WHERE ma_cu_dan=? ORDER BY ma_phuong_tien DESC",
-        [profile],
-      );
+      await deleteVehicleFixtures(profile);
       await rows(pool, "DELETE FROM lich_su_cu_tru WHERE ma_cu_dan=?", [
         profile,
       ]);

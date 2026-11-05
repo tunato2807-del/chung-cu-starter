@@ -55,7 +55,7 @@ export async function list(query) {
     values = [];
   if (query.q) {
     clauses.push(
-      "(v.ten_vi_tri LIKE ? OR e.ma_tai_san LIKE ? OR e.ten_thiet_bi LIKE ?)",
+      '(unaccent((v.ten_vi_tri)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((e.ma_tai_san)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((e.ten_thiet_bi)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
     );
     const q = `%${text(query.q, "q", 1, 100)}%`;
     values.push(q, q, q);

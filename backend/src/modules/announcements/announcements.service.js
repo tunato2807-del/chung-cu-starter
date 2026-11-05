@@ -69,7 +69,7 @@ export async function change(id, action, body, actor) {
       const reason = text(body.ly_do, "ly_do", 3, 255);
       await rows(
         db,
-        "UPDATE thong_bao SET trang_thai='THU_HOI',ma_nguoi_thu_hoi=?,ngay_thu_hoi=UTC_TIMESTAMP(6),ly_do_thu_hoi=?,phien_ban=phien_ban+1 WHERE ma_thong_bao=?",
+        "UPDATE thong_bao SET trang_thai='THU_HOI',ma_nguoi_thu_hoi=?,ngay_thu_hoi=(clock_timestamp() AT TIME ZONE 'UTC'),ly_do_thu_hoi=?,phien_ban=phien_ban+1 WHERE ma_thong_bao=?",
         [actor.ma_nguoi_dung, reason, id],
       );
       await audit(db, id, actor, "THU_HOI", reason);
@@ -90,7 +90,7 @@ export async function change(id, action, body, actor) {
       } else {
         await rows(
           db,
-          "UPDATE thong_bao SET trang_thai='DA_GUI',ma_nguoi_gui=?,ngay_gui=UTC_TIMESTAMP(6),phien_ban=phien_ban+1 WHERE ma_thong_bao=?",
+          "UPDATE thong_bao SET trang_thai='DA_GUI',ma_nguoi_gui=?,ngay_gui=(clock_timestamp() AT TIME ZONE 'UTC'),phien_ban=phien_ban+1 WHERE ma_thong_bao=?",
           [actor.ma_nguoi_dung, id],
         );
         await audit(db, id, actor, "PHAT_HANH");
@@ -110,7 +110,7 @@ const inboxFrom = `FROM thong_bao n
  LEFT JOIN nguoi_dung payer ON payer.ma_can_ho_thanh_toan=a.ma_can_ho
  LEFT JOIN hoa_don h ON h.ma_hoa_don=n.ma_hoa_don
  LEFT JOIN thong_bao_da_doc r ON r.ma_thong_bao=n.ma_thong_bao AND r.ma_nguoi_dung=u.ma_nguoi_dung
- AND r.nguoi_tiep_nhan=IF(u.ma_can_ho_thanh_toan IS NULL,0,COALESCE(u.ma_cu_dan_phu_trach,0))`;
+ AND r.nguoi_tiep_nhan=(CASE WHEN u.ma_can_ho_thanh_toan IS NULL THEN 0 ELSE COALESCE(u.ma_cu_dan_phu_trach,0) END)`;
 const visible = `n.trang_thai='DA_GUI'
  AND (n.pham_vi='TOAN_BO' OR (n.pham_vi='KHOI' AND n.khoi=a.khoi) OR (n.pham_vi='CAN_HO' AND n.ma_can_ho=a.ma_can_ho))
  AND (n.loai='THONG_BAO' OR ((payer.ma_nguoi_dung=u.ma_nguoi_dung OR (payer.ma_cu_dan_phu_trach=c.ma_cu_dan AND l.tu_ngay<=h.ngay_chot_phi)) AND h.trang_thai IN ('DA_GUI','DA_THANH_TOAN')))`;
@@ -123,7 +123,9 @@ export async function list(query, actor, personal = false) {
     args = personal ? [actor.ma_nguoi_dung, actor.phien_ban_token] : [],
     clauses = [personal ? visible : "1=1"];
   if (query.q) {
-    clauses.push("n.tieu_de LIKE ?");
+    clauses.push(
+      'unaccent((n.tieu_de)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C")',
+    );
     args.push(`%${text(query.q, "q", 1, 100)}%`);
   }
   if (query.loai) {
@@ -186,13 +188,13 @@ export async function markRead(id, actor) {
       fail(401, "SESSION_EXPIRED", "Phiên đã hết hạn. Vui lòng đăng nhập lại.");
     const [n] = await rows(
       db,
-      `SELECT IF(u.ma_can_ho_thanh_toan IS NULL,0,COALESCE(u.ma_cu_dan_phu_trach,0)) AS recipient ${inboxFrom} WHERE n.ma_thong_bao=? AND ${visible}`,
+      `SELECT (CASE WHEN u.ma_can_ho_thanh_toan IS NULL THEN 0 ELSE COALESCE(u.ma_cu_dan_phu_trach,0) END) AS recipient ${inboxFrom} WHERE n.ma_thong_bao=? AND ${visible}`,
       [actor.ma_nguoi_dung, actor.phien_ban_token, id],
     );
     if (!n) missing();
     await rows(
       db,
-      "INSERT IGNORE INTO thong_bao_da_doc (ma_thong_bao,ma_nguoi_dung,nguoi_tiep_nhan) VALUES (?,?,?)",
+      "INSERT INTO thong_bao_da_doc (ma_thong_bao,ma_nguoi_dung,nguoi_tiep_nhan) VALUES (?,?,?) ON CONFLICT DO NOTHING",
       [id, actor.ma_nguoi_dung, n.recipient],
     );
     return { ma_thong_bao: id, da_doc: true };
@@ -231,7 +233,7 @@ export async function remindBill(id, body, actor) {
     const bodyText = `Căn ${apartment.so_can_ho} · Kỳ ${b.ky_thanh_toan}\nSố tiền cần thanh toán: ${BigInt(b.tong_tien).toLocaleString("vi-VN")} đồng.\nHạn thanh toán: ${b.han_thanh_toan}.\nVui lòng mở hóa đơn để kiểm tra thông tin và mã QR chuyển khoản. Nếu đã chuyển tiền, hãy liên hệ ban quản lý để đối soát.`;
     const result = await rows(
       db,
-      "INSERT INTO thong_bao (loai,tieu_de,noi_dung,pham_vi,ma_can_ho,muc_do,trang_thai,ma_hoa_don,ngay_nhac,ma_nguoi_tao,ma_nguoi_gui,ngay_gui) VALUES ('NHAC_PHI',?,?,'CAN_HO',?,'QUAN_TRONG','DA_GUI',?,?,?,?,UTC_TIMESTAMP(6))",
+      "INSERT INTO thong_bao (loai,tieu_de,noi_dung,pham_vi,ma_can_ho,muc_do,trang_thai,ma_hoa_don,ngay_nhac,ma_nguoi_tao,ma_nguoi_gui,ngay_gui) VALUES ('NHAC_PHI',?,?,'CAN_HO',?,'QUAN_TRONG','DA_GUI',?,?,?,?,(clock_timestamp() AT TIME ZONE 'UTC'))",
       [
         title,
         bodyText,

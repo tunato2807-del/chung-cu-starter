@@ -53,28 +53,19 @@ function run(command, args, env, input) {
 }
 async function launch() {
   const options = acceptanceOptions(process.argv.slice(2));
-  if (options.docker) {
-    // Provision only the explicitly allowed local acceptance database.
-    const env = { ...process.env, DB_NAME: options.database };
-    if (!["127.0.0.1", "localhost"].includes(env.DB_HOST || "127.0.0.1"))
-      throw new Error("--docker chỉ dùng MySQL Docker cục bộ của dự án.");
-    const user = env.DB_USER || "chung_cu";
-    if (!/^[a-zA-Z0-9_]{1,32}$/.test(user))
-      throw new Error("DB_USER không hợp lệ cho --docker.");
-    run(
-      "docker",
-      [
-        "compose",
-        "exec",
-        "-T",
-        "db",
-        "sh",
-        "-c",
-        'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root',
-      ],
-      env,
-      `CREATE DATABASE IF NOT EXISTS \`${options.database}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;\nGRANT ALL ON \`${options.database}\`.* TO '${user}'@'%';\n`,
-    );
+  // Both native PostgreSQL and Compose use the same TCP connection. The old
+  // --docker flag remains accepted for existing acceptance instructions.
+  if (
+    options.docker &&
+    !["127.0.0.1", "localhost"].includes(process.env.DB_HOST || "127.0.0.1")
+  )
+    throw new Error("--docker chỉ dùng PostgreSQL Docker cục bộ của dự án.");
+  const { databaseConfig, pool } = await import("../backend/src/lib/db.js");
+  const { ensureDatabase } = await import("./postgresql-admin.js");
+  try {
+    await ensureDatabase(databaseConfig(), options.database);
+  } finally {
+    await pool.end();
   }
   const env = {
     ...process.env,
@@ -84,22 +75,18 @@ async function launch() {
   console.log(
     `Database nghiệm thu: ${options.database}; giữ nguyên .env và dữ liệu chung_cu.`,
   );
-  run(
-    process.execPath,
-    ["--env-file-if-exists=.env", "backend/scripts/migrate.js"],
-    env,
-  );
-  run(
-    process.execPath,
-    ["--env-file-if-exists=.env", "backend/scripts/seed-acceptance.js"],
-    env,
-  );
+  run(process.execPath, ["backend/scripts/migrate.js"], env);
+  run(process.execPath, ["backend/scripts/seed-acceptance.js"], env);
 }
 if (
   process.argv[1] &&
   path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 )
   launch().catch((error) => {
-    console.error(error.message);
+    console.error(
+      error.code
+        ? `Không tạo được bộ mẫu PostgreSQL (${error.code}). Kiểm tra dịch vụ, quyền CREATEDB và cấu hình.`
+        : error.message,
+    );
     process.exitCode = 1;
   });

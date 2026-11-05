@@ -1,12 +1,16 @@
+import {
+  createFailureTrigger,
+  deleteVehicleFixtures,
+  dropFailureTrigger,
+} from "../../scripts/test-db-fixtures.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
-import { execFileSync } from "node:child_process";
 import bcrypt from "bcryptjs";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
 
-test("MySQL: vehicle registration, plates, residency transfers and rollback", async (t) => {
+test("PostgreSQL: vehicle registration, plates, residency transfers and rollback", async (t) => {
   assert.equal(process.env.DB_NAME, "chung_cu_test");
   const server = app.listen(0, "127.0.0.1");
   await new Promise((resolve) => server.once("listening", resolve));
@@ -50,20 +54,6 @@ test("MySQL: vehicle registration, plates, residency transfers and rollback", as
     assert.equal(login.status, 200);
     return login.cookie;
   }
-  const ddl = (sql) =>
-    execFileSync(
-      "docker",
-      [
-        "compose",
-        "exec",
-        "-T",
-        "db",
-        "sh",
-        "-c",
-        'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -u root chung_cu_test',
-      ],
-      { input: sql },
-    );
   let admin;
   async function resident(start = "2020-01-01") {
     const result = await request(
@@ -479,8 +469,10 @@ test("MySQL: vehicle registration, plates, residency transfers and rollback", as
         const person = await resident("2020-01-01");
         const id = await create(registration(person));
         const before = await get(id);
-        ddl(
-          "CREATE TRIGGER test_vehicle_carry_fail BEFORE INSERT ON phuong_tien FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='test vehicle rollback';",
+        await createFailureTrigger(
+          "test_vehicle_carry_fail",
+          "phuong_tien",
+          "test vehicle rollback",
         );
         try {
           assert.equal(
@@ -501,7 +493,7 @@ test("MySQL: vehicle registration, plates, residency transfers and rollback", as
             500,
           );
         } finally {
-          ddl("DROP TRIGGER IF EXISTS test_vehicle_carry_fail;");
+          await dropFailureTrigger("test_vehicle_carry_fail", "phuong_tien");
         }
         assert.deepEqual(await get(id), before);
         const detail = await request(
@@ -575,11 +567,7 @@ test("MySQL: vehicle registration, plates, residency transfers and rollback", as
     server.closeAllConnections();
     await new Promise((resolve) => server.close(resolve));
     for (const id of residents) {
-      await rows(
-        pool,
-        "DELETE FROM phuong_tien WHERE ma_cu_dan=? ORDER BY ma_phuong_tien DESC",
-        [id],
-      );
+      await deleteVehicleFixtures(id);
       await rows(pool, "DELETE FROM lich_su_cu_tru WHERE ma_cu_dan=?", [id]);
       await rows(pool, "DELETE FROM cu_dan WHERE ma_cu_dan=?", [id]);
     }

@@ -18,8 +18,7 @@ async function actor(db, user) {
 async function snapshot(work) {
   const db = await pool.getConnection();
   try {
-    await db.query("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ");
-    await db.query("START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY");
+    await db.query("BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY");
     const r = await work(db);
     await db.commit();
     return r;
@@ -50,13 +49,12 @@ const code = (p) =>
 function source(id) {
   // Older installations can use a different utf8mb4 collation. Normalize text
   // in both sources instead of altering the existing financial tables.
-  const u = (expression) =>
-    `CONVERT(${expression} USING utf8mb4) COLLATE utf8mb4_unicode_ci`;
+  const u = (expression) => `CAST(${expression} AS TEXT)`;
   const voucherCode =
-    "CONCAT(IF(p.loai='THU','PT','PC'),LPAD(CAST(p.ma_phieu AS CHAR),GREATEST(6,CHAR_LENGTH(CAST(p.ma_phieu AS CHAR))),'0'))";
+    "CONCAT((CASE WHEN p.loai='THU' THEN 'PT' ELSE 'PC' END),LPAD(CAST(p.ma_phieu AS TEXT),GREATEST(6,CHAR_LENGTH(CAST(p.ma_phieu AS TEXT))),'0'))";
   return `(SELECT ${u("'PHIEU'")} AS nguon,p.ma_phieu AS ma_ban_ghi,p.ngay_hach_toan AS ngay,${u("p.loai")} AS loai,p.so_tien,${u("p.nhom")} AS nhom,${u("p.doi_tac")} AS doi_tac,${u("p.dien_giai")} AS dien_giai,p.ma_phieu_goc,${u(voucherCode)} AS so_chung_tu
     FROM phieu_thu_chi p WHERE p.ma_quy=${id} AND p.trang_thai='DA_GHI_SO'
-    UNION ALL SELECT ${u("'HOA_DON'")},h.ma_hoa_don,DATE(CONVERT_TZ(h.ngay_thanh_toan,'+00:00','+07:00')),${u("'THU'")},h.so_tien_da_thu,${u("'THU_HOA_DON'")},${u("CONCAT('Căn ',a.so_can_ho)")},${u("CONCAT('Thu hóa đơn ',h.so_hoa_don,' · kỳ ',h.ky_thanh_toan)")},NULL,${u("h.so_hoa_don")}
+    UNION ALL SELECT ${u("'HOA_DON'")},h.ma_hoa_don,DATE((h.ngay_thanh_toan + INTERVAL '7 hours')),${u("'THU'")},h.so_tien_da_thu,${u("'THU_HOA_DON'")},${u("CONCAT('Căn ',a.so_can_ho)")},${u("CONCAT('Thu hóa đơn ',h.so_hoa_don,' · kỳ ',h.ky_thanh_toan)")},NULL,${u("h.so_hoa_don")}
     FROM hoa_don h JOIN can_ho a ON a.ma_can_ho=h.ma_can_ho JOIN quy_tai_chinh q ON q.ma_quy=${id} AND q.nhan_thu_hoa_don=1
     WHERE h.trang_thai='DA_THANH_TOAN' AND h.ngay_thanh_toan IS NOT NULL) s`;
 }
@@ -64,7 +62,7 @@ function source(id) {
 async function balance(db, id) {
   const [r] = await rows(
     db,
-    `SELECT CAST(COALESCE(SUM(IF(loai='THU',so_tien,-so_tien)),0) AS CHAR) AS so_du FROM ${source(id)} WHERE ngay<=?`,
+    `SELECT CAST(COALESCE(sum((CASE WHEN loai='THU' THEN so_tien ELSE -so_tien END)),0) AS TEXT) AS so_du FROM ${source(id)} WHERE ngay<=?`,
     [v.today()],
   );
   return r.so_du;
@@ -72,7 +70,9 @@ async function balance(db, id) {
 export async function funds(query) {
   const { page, offset } = v.pagination(query),
     args = [],
-    where = query.q ? "WHERE ten_quy LIKE ?" : "";
+    where = query.q
+      ? 'WHERE unaccent((ten_quy)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C")'
+      : "";
   if (query.q) args.push(`%${text(query.q, "q", 1, 100)}%`);
   const [n] = await rows(
       pool,
@@ -256,7 +256,7 @@ export async function act(id, action, body, user) {
         );
       const r = await rows(
         db,
-        "INSERT INTO phieu_thu_chi (ma_quy,loai,nhom,ngay_hach_toan,so_tien,doi_tac,dien_giai,trang_thai,ma_nguoi_lap,ma_nguoi_duyet,ngay_duyet,ma_phieu_goc) VALUES (?,?,'DIEU_CHINH',?,?,?,?,'DA_GHI_SO',?,?,UTC_TIMESTAMP(6),?)",
+        "INSERT INTO phieu_thu_chi (ma_quy,loai,nhom,ngay_hach_toan,so_tien,doi_tac,dien_giai,trang_thai,ma_nguoi_lap,ma_nguoi_duyet,ngay_duyet,ma_phieu_goc) VALUES (?,?,'DIEU_CHINH',?,?,?,?,'DA_GHI_SO',?,?,(clock_timestamp() AT TIME ZONE 'UTC'),?)",
         [
           p.ma_quy,
           type,
@@ -317,7 +317,7 @@ export async function act(id, action, body, user) {
       }
       await rows(
         db,
-        "UPDATE phieu_thu_chi SET trang_thai='DA_GHI_SO',ma_nguoi_duyet=?,ngay_duyet=UTC_TIMESTAMP(6),phien_ban=phien_ban+1 WHERE ma_phieu=?",
+        "UPDATE phieu_thu_chi SET trang_thai='DA_GHI_SO',ma_nguoi_duyet=?,ngay_duyet=(clock_timestamp() AT TIME ZONE 'UTC'),phien_ban=phien_ban+1 WHERE ma_phieu=?",
         [user.ma_nguoi_dung, id],
       );
       await audit(
@@ -353,7 +353,9 @@ export async function list(query) {
     );
   }
   if (query.q) {
-    where.push("(p.doi_tac LIKE ? OR p.dien_giai LIKE ?)");
+    where.push(
+      '(unaccent((p.doi_tac)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((p.dien_giai)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
+    );
     const q = `%${text(query.q, "q", 1, 100)}%`;
     args.push(q, q);
   }
@@ -472,10 +474,13 @@ export async function ledger(id, query, exportFormat) {
     ]);
   return snapshot(async (db) => {
     const fund = await getFund(db, id),
-      [stamp] = await rows(db, "SELECT UTC_TIMESTAMP(6) AS tai_luc");
+      [stamp] = await rows(
+        db,
+        "SELECT (clock_timestamp() AT TIME ZONE 'UTC') AS tai_luc",
+      );
     const [s] = await rows(
       db,
-      `SELECT CAST(COALESCE(SUM(IF(ngay<?,IF(loai='THU',so_tien,-so_tien),0)),0) AS CHAR) AS dau_ky,CAST(COALESCE(SUM(IF(ngay>=? AND loai='THU',so_tien,0)),0) AS CHAR) AS tong_thu,CAST(COALESCE(SUM(IF(ngay>=? AND loai='CHI',so_tien,0)),0) AS CHAR) AS tong_chi FROM ${source(id)} WHERE ngay<=?`,
+      `SELECT CAST(COALESCE(sum((CASE WHEN ngay<? THEN (CASE WHEN loai='THU' THEN so_tien ELSE -so_tien END) ELSE 0 END)),0) AS TEXT) AS dau_ky,CAST(COALESCE(sum((CASE WHEN ngay>=? AND loai='THU' THEN so_tien ELSE 0 END)),0) AS TEXT) AS tong_thu,CAST(COALESCE(sum((CASE WHEN ngay>=? AND loai='CHI' THEN so_tien ELSE 0 END)),0) AS TEXT) AS tong_chi FROM ${source(id)} WHERE ngay<=?`,
       [range.tu_ngay, range.tu_ngay, range.tu_ngay, range.den_ngay],
     );
     s.cuoi_ky = (
@@ -496,7 +501,7 @@ export async function ledger(id, query, exportFormat) {
       }
       if (query.q) {
         where.push(
-          "(so_chung_tu LIKE ? OR doi_tac LIKE ? OR dien_giai LIKE ?)",
+          '(unaccent((so_chung_tu)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((doi_tac)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((dien_giai)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
         );
         const q = `%${text(query.q, "q", 1, 100)}%`;
         args.push(q, q, q);
@@ -505,7 +510,7 @@ export async function ledger(id, query, exportFormat) {
     const clause = where.join(" AND "),
       grouped = mode === "THEO_THANG",
       dataFrom = grouped
-        ? `FROM (SELECT DATE_FORMAT(ngay,'%Y-%m') AS ky,CAST(SUM(IF(loai='THU',so_tien,0)) AS CHAR) AS tong_thu,CAST(SUM(IF(loai='CHI',so_tien,0)) AS CHAR) AS tong_chi ${"FROM " + source(id)} WHERE ${clause} GROUP BY DATE_FORMAT(ngay,'%Y-%m')) m`
+        ? `FROM (SELECT to_char(ngay, 'YYYY-MM') AS ky,CAST(sum((CASE WHEN loai='THU' THEN so_tien ELSE 0 END)) AS TEXT) AS tong_thu,CAST(sum((CASE WHEN loai='CHI' THEN so_tien ELSE 0 END)) AS TEXT) AS tong_chi ${"FROM " + source(id)} WHERE ${clause} GROUP BY to_char(ngay, 'YYYY-MM')) m`
         : `FROM ${source(id)} WHERE ${clause}`;
     const [n] = await rows(db, `SELECT COUNT(*) AS total ${dataFrom}`, args);
     window.check(n.total);
