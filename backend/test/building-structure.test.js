@@ -178,7 +178,7 @@ test("building catalog: empty parents, production provisioning, safe rename/dele
         );
         await assert.rejects(
           rows(pool, "DELETE FROM khoi_toa_nha WHERE khoi=?", [a]),
-          (error) => error.code === "23503",
+          (error) => error.code === "ER_ROW_IS_REFERENCED_2",
         );
       },
     );
@@ -244,7 +244,7 @@ test("building catalog: empty parents, production provisioning, safe rename/dele
               "INSERT INTO can_ho (so_can_ho,khoi,tang,dien_tich_m2) VALUES (?,?,1,60)",
               [`${suffix}-bad`, rollback],
             ),
-            (error) => error.code === "23503",
+            (error) => error.code === "ER_NO_REFERENCED_ROW_2",
           );
         } finally {
           await installParentFixtures();
@@ -321,7 +321,7 @@ test("building catalog: empty parents, production provisioning, safe rename/dele
         );
         await assert.rejects(
           rows(pool, "DELETE FROM tang_toa_nha WHERE khoi=? AND tang=0", [a]),
-          (error) => error.code === "23503",
+          (error) => error.code === "ER_ROW_IS_REFERENCED_2",
         );
       },
     );

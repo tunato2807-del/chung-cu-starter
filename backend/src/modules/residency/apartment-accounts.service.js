@@ -1,3 +1,4 @@
+import { appendHistory } from "../../lib/history.js";
 import bcrypt from "bcryptjs";
 import { randomBytes } from "node:crypto";
 import { pool, rows, transaction } from "../../lib/db.js";
@@ -15,9 +16,16 @@ export async function accountForApartment(id, db = pool) {
   return account || null;
 }
 async function audit(db, apartmentId, old, next, actor, event) {
-  await rows(
+  await appendHistory(
     db,
-    "INSERT INTO lich_su_ban_giao_can_ho (ma_can_ho,ma_cu_dan_cu,ma_cu_dan_moi,ma_nguoi_thuc_hien,su_kien) VALUES (?,?,?,?,?)",
+    "lich_su_ban_giao_can_ho",
+    [
+      "ma_can_ho",
+      "ma_cu_dan_cu",
+      "ma_cu_dan_moi",
+      "ma_nguoi_thuc_hien",
+      "su_kien",
+    ],
     [apartmentId, old, next, actor.ma_nguoi_dung, event],
   );
 }
@@ -186,7 +194,7 @@ export async function listApartmentAccounts(query) {
   if (query.q) {
     const q = `%${text(query.q, "q", 1, 100)}%`;
     conditions.push(
-      '(unaccent((a.so_can_ho)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((a.khoi)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((u.ten_dang_nhap)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((c.ho_va_ten)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((c.so_dien_thoai)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
+      "(a.so_can_ho LIKE ? OR a.khoi LIKE ? OR u.ten_dang_nhap LIKE ? OR c.ho_va_ten LIKE ? OR c.so_dien_thoai LIKE ?)",
     );
     values.push(q, q, q, q, q);
   }

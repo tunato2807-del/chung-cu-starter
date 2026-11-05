@@ -59,30 +59,11 @@ app.use("/api/health", healthRouter);
 app.get("/api/ready", async (req, res) => {
   try {
     const [migrations] = await pool.execute(
-      "SELECT name FROM schema_migrations WHERE name IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-      [
-        "001_auth_qr_incidents.sql",
-        "002_residency.sql",
-        "003_same_day_residency.sql",
-        "004_vehicles.sql",
-        "005_billing.sql",
-        "006_electricity_tiers.sql",
-        "007_apartment_accounts.sql",
-        "008_handover_audit_locks.sql",
-        "009_announcements.sql",
-        "010_maintenance.sql",
-        "011_maintenance_plan_checks.sql",
-        "012_amenity_bookings.sql",
-        "013_treasury.sql",
-        "014_data_imports.sql",
-        "015_bill_batches.sql",
-        "016_bill_actions.sql",
-        "017_building_structure.sql",
-        "018_equipment_qr.sql",
-        "019_incident_sender_privacy.sql",
-      ],
+      "SELECT name FROM schema_migrations WHERE name=?",
+      ["001_thesis_schema.sql"],
     );
-    if (migrations.length !== 19) throw new Error("Schema not initialized");
+    if (migrations.length !== 1)
+      throw new Error("Thesis schema not initialized");
     await pool.query("SELECT 1 FROM phan_anh LIMIT 1");
   } catch {
     fail(

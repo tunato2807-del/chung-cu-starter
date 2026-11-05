@@ -1,5 +1,7 @@
 # Chuyển đồ án từ MySQL sang PostgreSQL trên Windows
 
+> **Bản CSDL hiện tại:** theo lựa chọn mới của người dùng, dùng MySQL31 bảng trên nhánh `codex/thesis-mysql-database`. Xem [hướng dẫn mới](csdl-do-an-mysql.md). Các bước/chỉ tiêu của bài cũ là lịch sử, không chép code PostgreSQL hoặc SQL38 bảng vào bản mới.
+
 Cập nhật 05/11/2026, nhánh `codex/editorial-business-ui`. Backend hiện dùng **PostgreSQL 17 trở lên** và driver `pg`; frontend, URL API và các nghiệp vụ vẫn được giữ. Schema gồm **38 bảng / 397 cột / 88 khóa ngoại**. MySQL chỉ còn dùng làm nguồn cho công cụ chuyển dữ liệu một lần, qua dependency phát triển `mysql2`.
 
 Các kiểm thử trong workspace dùng database thử nghiệm riêng. Database trên máy Windows của bạn chỉ được chuyển khi bạn chạy các bước dưới đây. Không chạy `db:seed` hoặc tạo lại bộ nghiệm thu để thay thế dữ liệu cũ.

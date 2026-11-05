@@ -8,8 +8,8 @@ export async function buildingMap() {
     pool,
     `SELECT k.khoi,k.ten_khoi,k.mo_ta AS mo_ta_khoi,k.phien_ban AS phien_ban_khoi,
     t.tang,t.ten_tang,t.mo_ta,t.phien_ban,COUNT(c.ma_can_ho) AS so_can_ho,
-    sum(CASE WHEN COALESCE(l.so_cu_dan,0)>0 THEN 1 ELSE 0 END) AS co_nguoi_o,
-    sum(COALESCE(l.so_cu_dan,0)) AS so_cu_dan
+    SUM(CASE WHEN COALESCE(l.so_cu_dan,0)>0 THEN 1 ELSE 0 END) AS co_nguoi_o,
+    SUM(COALESCE(l.so_cu_dan,0)) AS so_cu_dan
     FROM khoi_toa_nha k LEFT JOIN tang_toa_nha t ON t.khoi=k.khoi
     LEFT JOIN can_ho c ON c.khoi=t.khoi AND c.tang=t.tang
     LEFT JOIN (SELECT ma_can_ho,COUNT(*) AS so_cu_dan FROM lich_su_cu_tru

@@ -114,7 +114,7 @@ for (const width of [1440, 375])
         }
         await rows(
           pool,
-          "INSERT INTO phieu_thu_chi (ma_quy,loai,nhom,ngay_hach_toan,so_tien,doi_tac,dien_giai,trang_thai,ma_nguoi_lap,ma_nguoi_duyet,ngay_duyet,khoa_yeu_cau,van_tay) VALUES (?,'THU','THU_KHAC',?,1000,?,?,'DA_GHI_SO',?,?,(CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),?,?)",
+          "INSERT INTO phieu_thu_chi (ma_quy,loai,nhom,ngay_hach_toan,so_tien,doi_tac,dien_giai,trang_thai,ma_nguoi_lap,ma_nguoi_duyet,ngay_duyet,khoa_yeu_cau,van_tay) VALUES (?,'THU','THU_KHAC',?,1000,?,?,'DA_GHI_SO',?,?,UTC_TIMESTAMP(6),?,?)",
           [
             fund,
             d,

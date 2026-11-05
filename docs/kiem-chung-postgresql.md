@@ -1,5 +1,7 @@
 # Kiểm chứng chuyển PostgreSQL
 
+> **Bản CSDL hiện tại:** theo lựa chọn mới của người dùng, dùng MySQL31 bảng trên nhánh `codex/thesis-mysql-database`. Xem [hướng dẫn mới](csdl-do-an-mysql.md). Các bước/chỉ tiêu của bài cũ là lịch sử, không chép code PostgreSQL hoặc SQL38 bảng vào bản mới.
+
 Ngày 05/11/2026. Mốc nguồn MySQL: `4f658f6`, nhánh nghiệp vụ `codex/editorial-business-ui`. Thay đổi này thực hiện yêu cầu đổi hệ quản trị; không đánh dấu các phát hiện ngoài phạm vi trong [review Spec Kit](ra-soat-spec-kit-2026-11-04.md) là đã sửa.
 
 ## Thay đổi đã thực hiện

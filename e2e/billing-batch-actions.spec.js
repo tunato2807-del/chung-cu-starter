@@ -279,7 +279,7 @@ for (const width of [1440, 375])
       for (const id of users) {
         await rows(
           pool,
-          "DELETE FROM chi_tiet_hoa_don d USING hoa_don h WHERE h.ma_hoa_don=d.ma_hoa_don AND h.ma_nguoi_lap=?",
+          "DELETE d FROM chi_tiet_hoa_don d JOIN hoa_don h ON h.ma_hoa_don=d.ma_hoa_don WHERE h.ma_nguoi_lap=?",
           [id],
         );
         await rows(pool, "DELETE FROM lich_su_hoa_don WHERE ma_nguoi_ghi=?", [

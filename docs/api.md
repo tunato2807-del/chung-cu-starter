@@ -60,7 +60,7 @@ Mọi endpoint bên dưới yêu cầu phiên BQL; cư dân và KTV không đư�
 | POST | `/api/can_ho` | `so_can_ho`, `khoi`, `tang`, `dien_tich_m2`, `tinh_phi_dich_vu` (boolean) |
 | PATCH | `/api/can_ho/:id` | Các trường như tạo và `phien_ban` hiện tại |
 
-Từ migration 017, `GET /can_ho/so_do` đọc danh mục khối/tầng độc lập, có cả khối chưa có tầng và tầng chưa có căn. Block thêm `ten_khoi`, `mo_ta`, `phien_ban`; tầng thêm `ten_tang`, `mo_ta`, `phien_ban`. Số căn/cư dân vẫn suy ra từ căn và đợt cư trú đang mở. `GET /can_ho` thêm `khoi_danh_muc` để form chọn đúng khối khi dữ liệu cũ khác chữ hoa/thường theo collation ICU app_ci.
+Từ migration 017, `GET /can_ho/so_do` đọc danh mục khối/tầng độc lập, có cả khối chưa có tầng và tầng chưa có căn. Block thêm `ten_khoi`, `mo_ta`, `phien_ban`; tầng thêm `ten_tang`, `mo_ta`, `phien_ban`. Số căn/cư dân vẫn suy ra từ căn và đợt cư trú đang mở. `GET /can_ho` thêm `khoi_danh_muc` để form chọn đúng khối khi dữ liệu cũ khác chữ hoa/thường theo collation MySQL.
 
 | Method | Đường dẫn dưới `/api/cau_truc_toa_nha` | Dữ liệu / quy tắc; chỉ BQL |
 |---|---|---|
@@ -72,7 +72,7 @@ Từ migration 017, `GET /can_ho/so_do` đọc danh mục khối/tầng độc l
 | PATCH | `/khoi/:khoi/tang/:tang` | Các trường như tạo + `phien_ban`; đổi số tầng cập nhật căn và tăng phiên bản căn |
 | DELETE | `/khoi/:khoi/tang/:tang` | Body `phien_ban`; chỉ tầng không có căn |
 
-Mã/số đã dùng trả 409, không gộp khối/tầng. Sửa phiên bản cũ trả 409; mục đã đổi khóa có thể trả 404. Không đổi mã khối chỉ bằng hoa/thường/dấu nếu ICU app_ci coi hai mã bằng nhau. POST/PATCH/DELETE vẫn cần cookie và `X-App-Request: 1`.
+Mã/số đã dùng trả 409, không gộp khối/tầng. Sửa phiên bản cũ trả 409; mục đã đổi khóa có thể trả 404. Không đổi mã khối chỉ bằng hoa/thường/dấu nếu MySQL coi hai mã bằng nhau. POST/PATCH/DELETE vẫn cần cookie và `X-App-Request: 1`.
 
 Form căn hộ mới gửi `chon_cau_truc: true`, `phien_ban_tang` và `khoi`/`tang` đang chọn: server kiểm tra mục còn tồn tại/đúng phiên bản trước khi lưu. Client cũ/nhập Excel không gửi cờ này vẫn được hỗ trợ: tự khai báo khối/tầng trong cùng transaction tạo/sửa căn; lô/ghi căn lỗi rollback cả các mục mới. Các mục tự phát sinh được giữ trong DB để ràng buộc khóa ngoại, nhưng khối tự phát sinh không còn căn và không có tầng khai báo riêng được ẩn khỏi danh mục. Các mục được BQL khai báo/sửa hoặc backfill từ dữ liệu cũ được giữ hiển thị khi trống.
 
@@ -235,7 +235,7 @@ summary công nợ: `tong_da_gui`, `da_thu`, `con_phai_thu`, `no_qua_han`, `so_h
 
 Data CAN_HO có căn/khối, số hóa đơn chưa thu, còn phải thu, nợ quá hạn, hạn sớm nhất và thông tin người phụ trách **hiện tại** (có thể NULL). HOA_DON có mã/số hóa đơn, căn/khối/kỳ, tổng/hạn và qua_han=0|1. THEO_KY có kỳ và các tổng/counters như summary, phân trang theo kỳ. Tổng hợp không bị giới hạn bởi 20 dòng chi tiết.
 
-Thu phí nhận `tu_ngay`, `den_ngay` YYYY-MM-DD, mặc định đầu tháng/hôm nay; không sau hôm nay, từ ngày không sau đến ngày. `che_do=GIAO_DICH` mặc định (từng hóa đơn đã thu) hoặc `THEO_NGAY` (gom ngày Việt Nam). Không lọc theo kỳ hóa đơn ở endpoint này; `ky_thanh_toan` chỉ là thông tin trong mỗi khoản thu. Khoảng ngày bao gồm cả ngày cuối: UTC timestamp >= đầu ngày Việt Nam và < đầu ngày kế tiếp. Dùng interval 7 giờ ở PostgreSQL để gom ngày Việt Nam.
+Thu phí nhận `tu_ngay`, `den_ngay` YYYY-MM-DD, mặc định đầu tháng/hôm nay; không sau hôm nay, từ ngày không sau đến ngày. `che_do=GIAO_DICH` mặc định (từng hóa đơn đã thu) hoặc `THEO_NGAY` (gom ngày Việt Nam). Không lọc theo kỳ hóa đơn ở endpoint này; `ky_thanh_toan` chỉ là thông tin trong mỗi khoản thu. Khoảng ngày bao gồm cả ngày cuối: UTC timestamp >= đầu ngày Việt Nam và < đầu ngày kế tiếp. Không cần dữ liệu timezone table của MySQL vì dùng offset +07:00.
 
 summary thu phí: `tong_da_thu`, `so_khoan_thu`, `so_can_da_thu`. Chỉ DA_THANH_TOAN có ngay_thanh_toan trong khoảng mới được tính; dùng so_tien_da_thu, không suy tiền từ việc quét QR hoặc nội dung chuyển khoản. Data GIAO_DICH có hóa đơn/căn/kỳ, số tiền đã thu, tham chiếu, thời điểm và tên người xác nhận; không trả số tài khoản ngân hàng/hash/mật khẩu. THEO_NGAY có ngay_thu, da_thu và so_khoan_thu. Ngày xác nhận là ngày BQL ghi nhận trên hệ thống, có thể khác ngày chuyển khoản; hóa đơn đã thu thiếu thời điểm không thể vào báo cáo theo ngày.
 
@@ -428,3 +428,7 @@ Mỗi điểm `{moc,nhan,da_thu,con_no,tiep_nhan,da_dong,lap_moi,nghiem_thu,cho_
 Riêng NGAY: con_no và lap_moi chỉ có tổng ngày trong tong; các điểm giờ của hai chuỗi để 0 và frontend không vẽ hai chuỗi đó theo giờ. Không gán giả 00h cho trường chỉ có DATE. Các mốc tiền/sự kiện UTC truy vấn bằng ranh giới UTC tương ứng rồi GROUP BY giờ/ngày/tháng Việt Nam; ngày nghiệp vụ và giờ đặt lịch giữ nguyên.
 
 Các biểu đồ dùng một snapshot REPEATABLE READ READ ONLY riêng với tai_luc; các thẻ/hàng đợi dùng API Tổng quan riêng. Mỗi phần hiển thị thời điểm đọc riêng. Không ghi dữ liệu hoặc audit. Frontend gắn response vào URL/kỳ/revision để bỏ request cũ, abort khi đổi bộ lọc, không render dữ liệu kỳ trước dưới nhãn kỳ mới. Không đổi phân quyền hoặc endpoint báo cáo hiện có.
+
+## CSDL đồ án31 bảng
+
+Bản MySQL hiện tại dùng baseline `database/thesis-mysql/001_thesis_schema.sql`, giữ mọi API/nghiệp vụ nhưng ghi8 loại lịch sử vào `nhat_ky_nghiep_vu` có FK/CHECK/JSON Schema. Các tên lịch sử cũ là view, các service ghi qua appendHistory trong cùng transaction. Readiness kiểm tra baseline mới. Xem [thiết kế và đối chiếu Word](csdl-do-an/README.md) và [cách chuyển dữ liệu](csdl-do-an-mysql.md).

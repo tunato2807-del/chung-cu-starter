@@ -1,7 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import pg from "pg";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const testDatabase = "chung_cu_test";
@@ -25,19 +24,8 @@ function runNode(args) {
 
 async function ensureTestDatabase() {
   const { databaseConfig } = await import("../backend/src/lib/db.js");
-  const admin = new pg.Client(databaseConfig({ database: "postgres" }));
-  try {
-    await admin.connect();
-    const existing = await admin.query(
-      "SELECT datname FROM pg_database WHERE datname=$1",
-      [testDatabase],
-    );
-    // Never reset a database. Only the fixed isolated test name is provisioned.
-    if (!existing.rows.length)
-      await admin.query('CREATE DATABASE "chung_cu_test"');
-  } finally {
-    await admin.end();
-  }
+  const { ensureDatabase } = await import("./mysql-admin.js");
+  await ensureDatabase(databaseConfig(), testDatabase);
 }
 
 try {

@@ -1,19 +1,20 @@
-name: chung-cu-postgresql
+name: chung-cu-thesis-mysql
 services:
   db:
-    image: postgres:17
+    image: mysql:8.4
     environment:
-      POSTGRES_DB: ${DB_NAME:-chung_cu}
-      POSTGRES_USER: ${DB_USER:-chung_cu}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:?Run npm run init:local or configure PostgreSQL first}
+      MYSQL_DATABASE: ${DB_NAME:-chung_cu_do_an}
+      MYSQL_USER: ${DB_USER:-chung_cu}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Run npm run init:local}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set a separate local root password}
     ports:
-      - "127.0.0.1:${DB_PORT:-5432}:5432"
+      - "127.0.0.1:${DB_PORT:-3306}:3306"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - thesis_mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 --silent"]
       interval: 3s
       timeout: 5s
       retries: 40
 volumes:
-  postgres_data:
+  thesis_mysql_data:

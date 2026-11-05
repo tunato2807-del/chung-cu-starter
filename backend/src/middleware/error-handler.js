@@ -24,7 +24,7 @@ export function errorHandler(error, req, res, next) {
         request_id: req.requestId,
       },
     });
-  if (error.code === "23505")
+  if (error.code === "ER_DUP_ENTRY")
     return res.status(409).json({
       error: {
         code: "ALREADY_EXISTS",
@@ -32,7 +32,10 @@ export function errorHandler(error, req, res, next) {
         request_id: req.requestId,
       },
     });
-  if (["40P01", "55P03", "40001", "57014"].includes(error.code))
+  if (
+    error.code === "ER_LOCK_DEADLOCK" ||
+    error.code === "ER_LOCK_WAIT_TIMEOUT"
+  )
     return res.status(409).json({
       error: {
         code: "CONCURRENT_UPDATE",
@@ -40,17 +43,6 @@ export function errorHandler(error, req, res, next) {
         request_id: req.requestId,
       },
     });
-  if (["23503", "23514", "22001", "22003", "22P02"].includes(error.code))
-    return res
-      .status(422)
-      .json({
-        error: {
-          code: "VALIDATION",
-          message:
-            "Dữ liệu không hợp lệ hoặc đang được tham chiếu. Kiểm tra lại biểu mẫu.",
-          request_id: req.requestId,
-        },
-      });
   if (error.status && error.code)
     return res.status(error.status).json({
       error: {

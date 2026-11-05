@@ -1,5 +1,7 @@
 # ERD rút gọn cho báo cáo đồ án
 
+> **CSDL hiện tại (05/11/2026):** [MySQL31 bảng thật, 8 view, giữ đủ nghiệp vụ và18 bảng trọng tâm](../../csdl-do-an/README.md). Các hình/kiểm tra schema38 bảng ở bản cũ là lịch sử; ERD vật lý và từ điển đã sinh lại theo baseline mới.
+
 **Database giữ nguyên 38 bảng; bản này rút gọn phần trình bày theo yêu cầu của người dùng.** Hình tổng quan chọn **12 bảng**, kèm **6 sơ đồ phân hệ**, mỗi hình 4–7 bảng. Các bảng/cột/quan hệ được đối chiếu với metadata MySQL sau migration `018_equipment_qr.sql`, ngày 21/10/2026. Không có migration hoặc thay đổi code nghiệp vụ.
 
 ## Mở ngay

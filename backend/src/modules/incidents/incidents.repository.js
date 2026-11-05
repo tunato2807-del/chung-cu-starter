@@ -1,3 +1,4 @@
+import { appendHistory } from "../../lib/history.js";
 import { pool, rows } from "../../lib/db.js";
 import { fail, integer } from "../../lib/http.js";
 export function canRead(user, r) {
@@ -39,11 +40,20 @@ export async function history(
   publicNote = "",
   technician = r.ma_ky_thuat_vien,
 ) {
-  await rows(
+  await appendHistory(
     db,
-    `INSERT INTO lich_su_phan_anh
-    (ma_phan_anh,loai_su_kien,trang_thai_cu,trang_thai_moi,ma_nguoi_thay_doi,ghi_chu,noi_dung_cong_khai,ma_ky_thuat_vien_cu,ma_ky_thuat_vien_moi)
-    VALUES (?,?,?,?,?,?,?,?,?)`,
+    "lich_su_phan_anh",
+    [
+      "ma_phan_anh",
+      "loai_su_kien",
+      "trang_thai_cu",
+      "trang_thai_moi",
+      "ma_nguoi_thay_doi",
+      "ghi_chu",
+      "noi_dung_cong_khai",
+      "ma_ky_thuat_vien_cu",
+      "ma_ky_thuat_vien_moi",
+    ],
     [
       r.ma_phan_anh,
       type,
@@ -127,9 +137,7 @@ export async function list(user, query) {
       params.push(query[key]);
     }
   if (typeof query.q === "string" && query.q) {
-    clauses.push(
-      '(unaccent((p.tieu_de)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((v.ten_vi_tri)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
-    );
+    clauses.push("(p.tieu_de LIKE ? OR v.ten_vi_tri LIKE ?)");
     params.push(`%${query.q.slice(0, 100)}%`, `%${query.q.slice(0, 100)}%`);
   }
   const where = clauses.length ? " WHERE " + clauses.join(" AND ") : "";

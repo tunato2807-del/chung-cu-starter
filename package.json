@@ -25,8 +25,8 @@
     "dev:frontend:https": "npm run dev:https -w frontend",
     "test:https": "node scripts/test-https.js",
     "db:acceptance": "node --env-file-if-exists=.env scripts/create-acceptance-data.js",
-    "db:configure:postgresql": "node scripts/configure-postgresql.js",
-    "db:import:mysql": "node --env-file-if-exists=.env.postgresql scripts/migrate-mysql-postgresql.js"
+    "db:copy:thesis": "node --env-file-if-exists=.env.thesis scripts/copy-thesis-data.js",
+    "db:configure:thesis": "node scripts/configure-thesis-mysql.js"
   },
   "type": "module",
   "devDependencies": {

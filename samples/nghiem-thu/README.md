@@ -1,5 +1,7 @@
 # Bộ dữ liệu nghiệm thu toàn hệ thống
 
+> **Bản CSDL hiện tại:** theo lựa chọn mới của người dùng, dùng MySQL31 bảng trên nhánh `codex/thesis-mysql-database`. Xem [hướng dẫn mới](../../docs/csdl-do-an-mysql.md). Các bước/chỉ tiêu của bài cũ là lịch sử, không chép code PostgreSQL hoặc SQL38 bảng vào bản mới.
+
 Bộ tạo mẫu cho schema **018_equipment_qr.sql**, bao phủ dữ liệu của **38 bảng**, không ghi dữ liệu mẫu vào database phát triển `chung_cu`. Các giá điện/thuế/ngân hàng chỉ là cấu hình giả lập theo kịch bản, không xác nhận biểu giá pháp lý hiện hành.
 
 Xem **[code đầy đủ từng file và lệnh PowerShell cho VS Code](../../docs/cap-nhat-du-lieu-nghiem-thu-vscode.md)**. Có hai file chạy tính năng và một file kiểm thử tùy chọn. Không cần dependency hoặc migration mới; sử dụng các migration 001–018 đã có.

@@ -2,7 +2,7 @@
 
 Frontend dùng React Router, điều hướng theo vai trò thật từ API, không còn nút giả lập vai trò. Màn công khai tách khỏi workspace BQL/KTV/cư dân. Các trạng thái tải, rỗng, lỗi, gửi chờ và xung đột được hiển thị tại màn đang thao tác. Bộ lọc và trang danh sách nằm trong URL, giữ khi trở lại từ chi tiết.
 
-Backend tách middleware xác thực, service nghiệp vụ phản ánh và repository truy vấn có tham số. PostgreSQL 17+ lưu dữ liệu lâu dài, `transaction()` là ranh giới cập nhật trạng thái + lịch sử + metadata ảnh. `phien_ban` và khóa hàng ngăn ghi đè dữ liệu cũ; trả 409 để người dùng tải lại. Lỗi có mã, thông báo, lỗi trường (khi có) và request ID.
+Backend tách middleware xác thực, service nghiệp vụ phản ánh và repository truy vấn có tham số. MySQL InnoDB lưu dữ liệu lâu dài, `transaction()` là ranh giới cập nhật trạng thái + lịch sử + metadata ảnh. `phien_ban` và khóa hàng ngăn ghi đè dữ liệu cũ; trả 409 để người dùng tải lại. Lỗi có mã, thông báo, lỗi trường (khi có) và request ID.
 
 ## Xác thực và quyền
 
@@ -26,7 +26,7 @@ BQL có thể phân công lại khi đã phân công/đang xử lý, giữ trạ
 
 QR dùng UUID v4; tạo lại thu hồi mã cũ. Server luôn tra lại token khi gửi. Bí mật tra cứu là 32 byte ngẫu nhiên, không đưa vào URL API. Tra cứu qua POST chỉ trả vị trí, trạng thái, thời gian và phản hồi công khai; bản trùng lấy trạng thái hiện tại của bản gốc. Ghi chú nội bộ không trả trong lịch sử cư dân/công khai.
 
-Khóa yêu cầu UUID và dấu vân tay nội dung/tài khoản/ảnh được lưu cùng giao dịch: gửi lại cùng yêu cầu trả mã cũ, nội dung khác trả 409. Giới hạn 5 lần gửi thành công trong 60 phút theo tổ hợp SĐT + IP được lưu trong PostgreSQL; cảnh báo tương tự chỉ thông báo có sự cố đang mở, không lộ hồ sơ của người khác.
+Khóa yêu cầu UUID và dấu vân tay nội dung/tài khoản/ảnh được lưu cùng giao dịch: gửi lại cùng yêu cầu trả mã cũ, nội dung khác trả 409. Giới hạn 5 lần gửi thành công trong 60 phút theo tổ hợp SĐT + IP được lưu trong MySQL; cảnh báo tương tự chỉ thông báo có sự cố đang mở, không lộ hồ sơ của người khác.
 
 Ảnh tối đa 5 tệp × 5 MB/request, tối đa 25 triệu điểm ảnh/tệp. Sharp giải mã kiểm tra JPEG/PNG/WebP, giới hạn kích thước, xuất JPEG loại metadata và đổi tên ngẫu nhiên. Ảnh chuẩn bị trước giao dịch được xóa nếu giao dịch thất bại. Chưa có tác vụ định kỳ thu gom ảnh mồ côi do tiến trình/máy bị dừng đột ngột; cần bổ sung trước vận hành dài hạn. Giới hạn IP trong bộ nhớ phù hợp một tiến trình demo; triển khai nhiều instance cần kho giới hạn dùng chung và cấu hình trust proxy đúng hạ tầng.
 
@@ -36,11 +36,11 @@ Frontend nhận ảnh thư viện tối đa 25 MB/tệp, kiểm tra chữ ký JP
 
 Sơ đồ `/quan-tri/so-do-toa-nha` đọc `/api/can_ho/so_do` chỉ dành cho BQL. Một truy vấn tổng hợp các đợt chưa kết thúc theo căn trước khi nhóm khối/tầng, tránh nhân số căn theo số thành viên; trả tổng và nhóm của mọi căn, không lấy trang danh sách đầu tiên. Từ 017, nguồn là khoi_toa_nha LEFT JOIN tang_toa_nha LEFT JOIN can_ho: giữ khối chưa có tầng và tầng chưa có căn, COUNT(c.ma_can_ho) tránh đếm hàng NULL thành căn. Thẻ căn đọc riêng qua khối chính xác/tầng/trạng thái và phân trang 20 căn. Tổng và thẻ là hai lần đọc, cần cập nhật nếu người khác chuyển cư dân giữa hai request. URL giữ bộ lọc; kết quả gắn path/revision và abort request cũ, không hiện thẻ tầng cũ khi chuyển nhanh hoặc lỗi. Màu có nhãn chữ; khối/tầng dùng nút bàn phím, tầng có vùng cuộn riêng trên điện thoại.
 
-BuildingStructure tại `/quan-tri/cau-truc-toa-nha` có CRUD danh mục cho BQL. FK khóa ghép (khoi,tang) của căn bảo đảm luôn có tầng/khối. Các mã dùng collation của DB; không đổi mã chỉ khác hoa/thường/dấu vì ICU app_ci có thể coi cùng khóa và không cascade. Đổi mã/số được FK cascade trong transaction, rồi tăng phien_ban của căn (và tầng khi đổi khối) để chặn ghi đè từ form cũ. ID căn/tài khoản/cư trú/hóa đơn giữ nguyên; không viết lại snapshot thu phí cũ. Xóa tầng phải không có căn, xóa khối phải không có tầng, có xác nhận UI và kiểm tra phiên bản/khóa hàng ở API. Trùng khóa không gộp. Thứ tự khóa catalog là khối → tầng → căn; các lỗi khóa của DB vẫn trả 409 qua middleware.
+BuildingStructure tại `/quan-tri/cau-truc-toa-nha` có CRUD danh mục cho BQL. FK khóa ghép (khoi,tang) của căn bảo đảm luôn có tầng/khối. Các mã dùng collation của DB; không đổi mã chỉ khác hoa/thường/dấu vì MySQL có thể coi cùng khóa và không cascade. Đổi mã/số được FK cascade trong transaction, rồi tăng phien_ban của căn (và tầng khi đổi khối) để chặn ghi đè từ form cũ. ID căn/tài khoản/cư trú/hóa đơn giữ nguyên; không viết lại snapshot thu phí cũ. Xóa tầng phải không có căn, xóa khối phải không có tầng, có xác nhận UI và kiểm tra phiên bản/khóa hàng ở API. Trùng khóa không gộp. Thứ tự khóa catalog là khối → tầng → căn; các lỗi khóa của DB vẫn trả 409 qua middleware.
 
 ApartmentFloorPicker chọn từ danh mục và gửi chon_cau_truc=true/phien_ban_tang. API cũ/Excel chưa có cờ vẫn dùng apartmentFloor để tạo đủ cha trong cùng transaction với căn; nguồn backfill/cấu hình riêng được giữ hiển thị khi trống. Cha tự phát sinh không bị xóa, nhưng khối không còn căn và không có tầng cấu hình riêng được ẩn. Tham chiếu khoi_danh_muc giúp chọn đúng tùy chọn khi căn cũ dùng cách viết khác mã cha theo collation. Production không cài trigger tự tạo cha. Chỉ chung_cu_test có trigger fixture, kiểm thử mới tắt trigger để xác minh đường ghi thật vẫn đúng.
 
-Migration 002 thêm can_ho, cu_dan và lich_su_cu_tru; không thay schema phản ánh hoặc migration 001 đã áp dụng. Runner đọc các migration SQL theo thứ tự tên, kiểm tra checksum và giữ advisory lock PostgreSQL. Migration 003 thay ràng buộc ngày kết thúc thành lớn hơn hoặc bằng ngày bắt đầu; không sửa các migration cũ đã chạy. Các migration 001–003 phải được giữ khi áp dụng migration 004 cho phương tiện; readiness kiểm tra cùng các migration phương tiện và hóa đơn hiện hành.
+Migration 002 thêm can_ho, cu_dan và lich_su_cu_tru; không thay schema phản ánh hoặc migration 001 đã áp dụng. Runner đọc các migration SQL theo thứ tự tên, kiểm tra checksum và giữ khóa MySQL. Migration 003 thay ràng buộc ngày kết thúc thành lớn hơn hoặc bằng ngày bắt đầu; không sửa các migration cũ đã chạy. Các migration 001–003 phải được giữ khi áp dụng migration 004 cho phương tiện; readiness kiểm tra cùng các migration phương tiện và hóa đơn hiện hành.
 
 Hồ sơ cu_dan giữ thông tin liên hệ, liên kết tài khoản tùy chọn/duy nhất và phien_ban. Căn hộ và quan hệ nằm trong đợt cư trú, không giữ thêm một nguồn mô tả căn hiện tại. Khoảng ngày nửa mở, không nhận ngày tương lai, không sửa hồi tố lịch sử đã đóng. Tình trạng đang ở/chuyển đi và số người trong căn được suy ra từ đợt chưa kết thúc. Cờ tính phí không phụ thuộc số người.
 
@@ -112,13 +112,13 @@ financial-reports tách truy vấn công nợ theo kỳ hóa đơn khỏi khoả
 
 Mỗi response dùng transaction REPEATABLE READ WITH CONSISTENT SNAPSHOT, READ ONLY; đọc tổng, count và trang trên cùng snapshot để thu tiền đồng thời không gây tổng/bảng lệch. Không FOR UPDATE, không chặn luồng xác nhận thu. SUM DECIMAL được trả CAST AS CHAR; frontend dùng BigInt để định dạng, tỷ lệ là số phần trăm làm tròn 2 số lẻ bằng BigInt trước khi trả. Bộ lọc quá hạn tác động danh sách; summary vẫn theo toàn bộ kỳ/khối/căn đã lọc.
 
-Ngày quá hạn chốt một lần bằng ngày Asia/Ho_Chi_Minh ở đầu request, dùng hạn < ngày đó, bỏ NULL. Hóa đơn đến hạn hôm nay chưa quá hạn. Thu phí dùng ngay_thanh_toan UTC và khoảng nửa mở tương ứng 00:00 ngày đầu tới 00:00 ngày sau ngày cuối tại +07:00; group ngày bằng cộng interval 7 giờ và to_char, không phụ thuộc bảng múi giờ. Luồng xác nhận thu ghi clock_timestamp() AT TIME ZONE UTC rõ ràng để không phụ thuộc timezone session. Không sửa thời điểm lịch sử khi thêm báo cáo.
+Ngày quá hạn chốt một lần bằng ngày Asia/Ho_Chi_Minh ở đầu request, dùng hạn < ngày đó, bỏ NULL. Hóa đơn đến hạn hôm nay chưa quá hạn. Thu phí dùng ngay_thanh_toan UTC và khoảng nửa mở tương ứng 00:00 ngày đầu tới 00:00 ngày sau ngày cuối tại +07:00; group ngày bằng CONVERT_TZ offset, không phụ thuộc MySQL timezone tables. Luồng xác nhận thu ghi UTC_TIMESTAMP() rõ ràng để không phụ thuộc timezone session. Không sửa thời điểm lịch sử khi thêm báo cáo.
 
 Report chỉ BQL ở route và giao diện, không xuất thông tin ngân hàng/hash. Màn báo cáo chỉ đọc; hành động thu/nhắc mở chi tiết hóa đơn theo API đang có. Không triển khai sổ chi, hoàn tiền, hạch toán hoặc số dư công nợ hồi tố trong module này. Ngày thu là lúc xác nhận tại phần mềm, không tự đồng bộ ngày chuyển tiền từ ngân hàng.
 
 ## Thiết bị và bảo trì
 
-010 thêm thiet_bi, phieu_bao_tri và lich_su_bao_tri. 011 thêm CHECK rõ IS NOT NULL cho cặp chu kỳ/ngày và snapshot định kỳ, vì CHECK của PostgreSQL không từ chối biểu thức UNKNOWN. Không sửa các migration đã áp dụng. Mã tài sản duy nhất và giữ cố định, lịch tách khỏi trạng thái vận hành: tạm dừng vẫn theo dõi, ngừng sử dụng bỏ lịch sau khi không còn phiếu mở.
+010 thêm thiet_bi, phieu_bao_tri và lich_su_bao_tri. 011 thêm CHECK rõ IS NOT NULL cho cặp chu kỳ/ngày và snapshot định kỳ, vì CHECK của MySQL không từ chối biểu thức UNKNOWN. Không sửa các migration đã áp dụng. Mã tài sản duy nhất và giữ cố định, lịch tách khỏi trạng thái vận hành: tạm dừng vẫn theo dõi, ngừng sử dụng bỏ lịch sau khi không còn phiếu mở.
 
 Một phiếu giữ tên/vị trí lúc lập, ngày đến hạn, chu kỳ định kỳ snapshot. UNIQUE cột sinh dinh_ky_dang_mo chỉ tồn tại với định kỳ chưa hoàn thành/hủy, chống hai phiếu định kỳ mở. UUID request duy nhất kèm fingerprint input chuẩn hóa và actor; retry trả ID cũ trước kiểm tra phiên bản/trạng thái mới. Khác input cùng key bị chặn, mã tài sản cũng chống tạo hồ sơ trùng. Không có API xóa thiết bị/phiếu.
 
@@ -218,6 +218,6 @@ Ledger UNIQUE(actor,UUID) serialize retry; input khác cùng UUID trả 409. Rep
 
 BatchBillActions nằm trong màn hóa đơn, lọc theo trạng thái phù hợp; chọn nhiều trang giữ version lúc chọn. Nút Tải lại và chọn lại bỏ ID/version cũ. Thay thao tác/thông tin nhận tiền bỏ xem trước; đổi tìm kiếm/kỳ vẫn giữ lựa chọn và liệt kê số hóa đơn đã chọn. Tất cả phải hợp lệ hoặc người dùng bỏ hóa đơn lỗi rồi xem lại; lỗi mạng giữ UUID/token để retry. Gửi cập nhật trạng thái hiển thị trên web và VietQR như API đơn lẻ, không ghi nhận thanh toán hoặc tự phát nhắc phí.
 
-## Chuyển PostgreSQL
+## CSDL đồ án31 bảng
 
-Từ 05/11/2026, runtime dùng pg và native SQL PostgreSQL; lớp db chỉ biên dịch placeholder và giữ hình dạng kết quả để không đổi API. Migration 19 file trong database/postgresql có checksum riêng, DDL transactional và advisory lock. Công cụ chuyển MySQL 018/019 đọc snapshot nguồn, khóa đích rỗng, kiểm chứng hash/số dòng và khởi động lại identity trong transaction. Xem [hướng dẫn](chuyen-postgresql-vscode.md) và [bằng chứng](kiem-chung-postgresql.md).
+Bản MySQL hiện tại dùng baseline `database/thesis-mysql/001_thesis_schema.sql`, giữ mọi API/nghiệp vụ nhưng ghi8 loại lịch sử vào `nhat_ky_nghiep_vu` có FK/CHECK/JSON Schema. Các tên lịch sử cũ là view, các service ghi qua appendHistory trong cùng transaction. Readiness kiểm tra baseline mới. Xem [thiết kế và đối chiếu Word](csdl-do-an/README.md) và [cách chuyển dữ liệu](csdl-do-an-mysql.md).

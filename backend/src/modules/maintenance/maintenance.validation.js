@@ -98,7 +98,7 @@ export function assetCode(value) {
   return code;
 }
 
-// PostgreSQL CHAR_LENGTH counts Unicode code points, not UTF-16 code units.
+// MySQL CHAR_LENGTH counts Unicode code points, not UTF-16 code units.
 export function recordText(value, field, min, max) {
   const result = text(value, field, min, max);
   if (Array.from(result).length < min)

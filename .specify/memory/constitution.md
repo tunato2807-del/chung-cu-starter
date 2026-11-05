@@ -41,3 +41,7 @@ Chỉ sửa trong phạm vi công việc hiện tại, lưu file/commit và ch�
 ## Sửa đổi theo yêu cầu mới: PostgreSQL
 
 Người dùng đã yêu cầu chuyển toàn bộ dự án từ MySQL sang PostgreSQL. Từ feature002, ràng buộc Data Layer MySQL ở mục I được thay bằng PostgreSQL; các nguyên tắc bảo toàn chức năng/API, dữ liệu nguồn, quyền riêng tư và bằng chứng vẫn giữ. Xem `specs/002-postgresql-migration/spec.md`. Không suy ra rằng đã chuyển dữ liệu trên máy Windows khi chỉ mới kiểm thử workspace.
+
+## Yêu cầu mới thay feature002: CSDL đồ án MySQL
+
+Ngày 05/11/2026, người dùng yêu cầu làm lại CSDL theo đề cương, xác nhận quay về MySQL và yêu cầu giữ đủ mọi nghiệp vụ, lấy luồng QR/phản ánh cùng quản lý vận hành trong Word làm trọng tâm. Feature003 dùng31 bảng thật,8 view; không cắt phần mở rộng đã có hoặc thay dữ liệu thật bằng seed. Baseline mới và công cụ chuyển phải bảo toàn dữ liệu/quyền; các nguyên tắc khác vẫn giữ. Spec002/PostgreSQL là lịch sử của lựa chọn trước. Xem specs/003-thesis-mysql-database/spec.md.

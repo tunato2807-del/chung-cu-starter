@@ -116,7 +116,7 @@ test("không xuất khi thiếu migration, checksum đổi hoặc DB chạy trư
     verifyMigrations(files, [...files, { name: "019.sql", checksum: "x" }]),
   );
 });
-test("metadata exporter chỉ đọc pg_catalog, không đọc hàng nghiệp vụ", async () => {
+test("metadata exporter chỉ đọc information_schema, không đọc hàng nghiệp vụ", async () => {
   const queries = [];
   const schema = await readMetadata({
     query: async (sql) => {
@@ -128,7 +128,7 @@ test("metadata exporter chỉ đọc pg_catalog, không đọc hàng nghiệp v�
   assert.equal(queries.length, 5);
   assert.ok(
     queries.every(
-      (sql) => /^SELECT /i.test(sql) && /FROM pg_catalog\./.test(sql),
+      (sql) => /^SELECT /i.test(sql) && /FROM information_schema\./.test(sql),
     ),
   );
   assert.ok(queries.every((sql) => !/password|mat_khau|SELECT \*/i.test(sql)));

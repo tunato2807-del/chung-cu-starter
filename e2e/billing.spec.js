@@ -1,4 +1,3 @@
-import { deleteVehicleFixtures } from "../scripts/test-db-fixtures.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -355,7 +354,11 @@ for (const width of [1440, 375])
         ]);
       }
       if (profileId) {
-        await deleteVehicleFixtures(profileId);
+        await rows(
+          pool,
+          "DELETE FROM phuong_tien WHERE ma_cu_dan=? ORDER BY ma_phuong_tien DESC",
+          [profileId],
+        );
         await rows(pool, "DELETE FROM lich_su_cu_tru WHERE ma_cu_dan=?", [
           profileId,
         ]);

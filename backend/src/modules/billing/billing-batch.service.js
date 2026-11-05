@@ -133,7 +133,7 @@ export async function batchBills(raw, user, commit = false) {
       // The unique request row serializes retries, including requests on another server.
       await rows(
         db,
-        "INSERT INTO dot_lap_hoa_don (ma_nguoi_lap,khoa_yeu_cau,dau_vao_sha256) VALUES (?,?,?) ON CONFLICT (ma_nguoi_lap,khoa_yeu_cau) DO UPDATE SET khoa_yeu_cau=EXCLUDED.khoa_yeu_cau",
+        "INSERT INTO dot_lap_hoa_don (ma_nguoi_lap,khoa_yeu_cau,dau_vao_sha256) VALUES (?,?,?) ON DUPLICATE KEY UPDATE khoa_yeu_cau=khoa_yeu_cau",
         [user.ma_nguoi_dung, key, bodyHash],
       );
       const [batch] = await rows(

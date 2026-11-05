@@ -196,12 +196,12 @@ export async function checkLocal({
   if (await isFile(appFile)) {
     const app = await readFile(appFile, "utf8");
     for (const name of new Set(app.match(/\d{3}_[a-z0-9_]+\.sql/g) || [])) {
-      if (!(await isFile(path.join(root, "database/postgresql", name))))
+      if (!(await isFile(path.join(root, "database/thesis-mysql", name))))
         add(
           "error",
           "MIGRATION_FILE",
           "Thiếu file migration mà /api/ready yêu cầu; không sửa checksum migration cũ.",
-          `database/postgresql/${name}`,
+          `database/thesis-mysql/${name}`,
         );
     }
   } else

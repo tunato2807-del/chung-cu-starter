@@ -6,7 +6,7 @@ import { acceptanceOptions } from "./create-acceptance-data.js";
 
 test("bộ mẫu mặc định dùng database riêng và origin xác định", () => {
   assert.deepEqual(acceptanceOptions([]), {
-    database: "chung_cu_nghiem_thu",
+    database: "chung_cu_nghiem_thu_doan",
     origin: "https://localhost:5173",
     docker: false,
   });

@@ -25,7 +25,7 @@ export async function list(query, exportFormat = null) {
   if (page < 1 || page > 100000)
     fail(422, "INVALID_PAGE", "Trang không hợp lệ.");
   const where = [
-    '(unaccent((v.ma_dang_ky)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((v.bien_so)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((c.ho_va_ten)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((c.so_dien_thoai)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((a.so_can_ho)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
+    "(v.ma_dang_ky LIKE ? OR v.bien_so LIKE ? OR c.ho_va_ten LIKE ? OR c.so_dien_thoai LIKE ? OR a.so_can_ho LIKE ?)",
   ];
   const values = [
     `%${q}%`,

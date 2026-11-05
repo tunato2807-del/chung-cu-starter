@@ -1,3 +1,4 @@
+import { appendHistory } from "../../lib/history.js";
 import { reportPage } from "../report-exports/report-files.js";
 import { createHash } from "node:crypto";
 import { pool, rows, transaction } from "../../lib/db.js";
@@ -40,9 +41,17 @@ async function lockEquipment(db, id) {
   return e;
 }
 async function audit(db, e, j, user, event, note, data) {
-  await rows(
+  await appendHistory(
     db,
-    "INSERT INTO lich_su_bao_tri (ma_thiet_bi,ma_phieu_bao_tri,ma_nguoi_thuc_hien,su_kien,ghi_chu,du_lieu) VALUES (?,?,?,?,?,?)",
+    "lich_su_bao_tri",
+    [
+      "ma_thiet_bi",
+      "ma_phieu_bao_tri",
+      "ma_nguoi_thuc_hien",
+      "su_kien",
+      "ghi_chu",
+      "du_lieu",
+    ],
     [e, j, user.ma_nguoi_dung, event, note, JSON.stringify(data)],
   );
 }
@@ -69,7 +78,7 @@ export async function equipmentList(query, exportFormat = null) {
   if (query.q) {
     const q = `%${text(query.q, "q", 1, 100)}%`;
     where.push(
-      '(unaccent((e.ma_tai_san)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((e.ten_thiet_bi)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((e.vi_tri)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
+      "(e.ma_tai_san LIKE ? OR e.ten_thiet_bi LIKE ? OR e.vi_tri LIKE ?)",
     );
     values.push(q, q, q);
   }
@@ -94,7 +103,7 @@ export async function equipmentList(query, exportFormat = null) {
       values.push(today);
     } else {
       where.push(
-        "e.ngay_bao_tri_tiep_theo>=? AND e.ngay_bao_tri_tiep_theo<=((?)::date + (e.nhac_truoc_ngay) * INTERVAL '1 day')",
+        "e.ngay_bao_tri_tiep_theo>=? AND e.ngay_bao_tri_tiep_theo<=DATE_ADD(?,INTERVAL e.nhac_truoc_ngay DAY)",
       );
       values.push(today, today);
     }
@@ -102,7 +111,7 @@ export async function equipmentList(query, exportFormat = null) {
   const condition = where.join(" AND ");
   const [summary] = await rows(
     pool,
-    `SELECT COUNT(*) AS total,CAST(COALESCE(sum(CASE WHEN e.trang_thai<>'NGUNG_SU_DUNG' AND e.ngay_bao_tri_tiep_theo<? THEN 1 ELSE 0 END),0) AS BIGINT) AS qua_han,CAST(COALESCE(sum(CASE WHEN e.trang_thai<>'NGUNG_SU_DUNG' AND e.ngay_bao_tri_tiep_theo>=? AND e.ngay_bao_tri_tiep_theo<=((?)::date + (e.nhac_truoc_ngay) * INTERVAL '1 day') THEN 1 ELSE 0 END),0) AS BIGINT) AS sap_den_han FROM thiet_bi e WHERE ${condition}`,
+    `SELECT COUNT(*) AS total,CAST(COALESCE(SUM(e.trang_thai<>'NGUNG_SU_DUNG' AND e.ngay_bao_tri_tiep_theo<?),0) AS UNSIGNED) AS qua_han,CAST(COALESCE(SUM(e.trang_thai<>'NGUNG_SU_DUNG' AND e.ngay_bao_tri_tiep_theo>=? AND e.ngay_bao_tri_tiep_theo<=DATE_ADD(?,INTERVAL e.nhac_truoc_ngay DAY)),0) AS UNSIGNED) AS sap_den_han FROM thiet_bi e WHERE ${condition}`,
     [today, today, today, ...values],
   );
   check(summary.total);
@@ -203,7 +212,7 @@ export async function updateEquipment(id, body, user) {
         .map((k) => `${k}=?`)
         .join(
           ",",
-        )},phien_ban=phien_ban+1,ngay_cap_nhat=(clock_timestamp() AT TIME ZONE 'UTC') WHERE ma_thiet_bi=?`,
+        )},phien_ban=phien_ban+1,ngay_cap_nhat=UTC_TIMESTAMP(6) WHERE ma_thiet_bi=?`,
       [...Object.values(fields), id],
     );
     await audit(
@@ -223,13 +232,13 @@ export async function technicians(query) {
     q = query.q ? `%${text(query.q, "q", 1, 100)}%` : "%";
   const [count] = await rows(
     pool,
-    'SELECT COUNT(*) AS total FROM nguoi_dung WHERE vai_tro=\'KY_THUAT_VIEN\' AND dang_hoat_dong=1 AND unaccent((ho_va_ten)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C")',
+    "SELECT COUNT(*) AS total FROM nguoi_dung WHERE vai_tro='KY_THUAT_VIEN' AND dang_hoat_dong=1 AND ho_va_ten LIKE ?",
     [q],
   );
   return {
     data: await rows(
       pool,
-      `SELECT ma_nguoi_dung,ho_va_ten,chuyen_mon FROM nguoi_dung WHERE vai_tro='KY_THUAT_VIEN' AND dang_hoat_dong=1 AND unaccent((ho_va_ten)::text COLLATE \"C\") ILIKE unaccent(?::text COLLATE \"C\") ORDER BY ma_nguoi_dung LIMIT 20 OFFSET ${offset}`,
+      `SELECT ma_nguoi_dung,ho_va_ten,chuyen_mon FROM nguoi_dung WHERE vai_tro='KY_THUAT_VIEN' AND dang_hoat_dong=1 AND ho_va_ten LIKE ? ORDER BY ma_nguoi_dung LIMIT 20 OFFSET ${offset}`,
       [q],
     ),
     total: count.total,
@@ -378,7 +387,7 @@ export async function jobs(query, user, exportFormat = null) {
   if (query.q) {
     const q = `%${text(query.q, "q", 1, 100)}%`;
     where.push(
-      '(unaccent((j.tieu_de)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((e.ma_tai_san)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((e.ten_thiet_bi)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
+      "(j.tieu_de LIKE ? OR e.ma_tai_san LIKE ? OR e.ten_thiet_bi LIKE ?)",
     );
     values.push(q, q, q);
   }
@@ -487,7 +496,7 @@ export async function act(id, action, body, user) {
       if (j.loai === "DINH_KY")
         await rows(
           db,
-          "UPDATE thiet_bi SET ngay_bao_tri_tiep_theo=?,phien_ban=phien_ban+1,ngay_cap_nhat=(clock_timestamp() AT TIME ZONE 'UTC') WHERE ma_thiet_bi=?",
+          "UPDATE thiet_bi SET ngay_bao_tri_tiep_theo=?,phien_ban=phien_ban+1,ngay_cap_nhat=UTC_TIMESTAMP(6) WHERE ma_thiet_bi=?",
           [due, e.ma_thiet_bi],
         );
       note = `Đổi hạn từ ${j.ngay_den_han} sang ${due}. ${note}`;
@@ -496,7 +505,7 @@ export async function act(id, action, body, user) {
       fields = { trang_thai: "DANG_THUC_HIEN" };
       await rows(
         db,
-        "UPDATE phieu_bao_tri SET ngay_bat_dau=(clock_timestamp() AT TIME ZONE 'UTC') WHERE ma_phieu_bao_tri=?",
+        "UPDATE phieu_bao_tri SET ngay_bat_dau=UTC_TIMESTAMP(6) WHERE ma_phieu_bao_tri=?",
         [id],
       );
       note = "Kỹ thuật viên bắt đầu thực hiện.";
@@ -516,7 +525,7 @@ export async function act(id, action, body, user) {
       };
       await rows(
         db,
-        "UPDATE phieu_bao_tri SET ngay_bao_cao=(clock_timestamp() AT TIME ZONE 'UTC') WHERE ma_phieu_bao_tri=?",
+        "UPDATE phieu_bao_tri SET ngay_bao_cao=UTC_TIMESTAMP(6) WHERE ma_phieu_bao_tri=?",
         [id],
       );
       note = `Báo cáo lượt ${j.luot_thuc_hien}, thực hiện ngày ${date}:\n${fields.ket_qua}`;
@@ -539,7 +548,7 @@ export async function act(id, action, body, user) {
       };
       await rows(
         db,
-        "UPDATE phieu_bao_tri SET ngay_nghiem_thu=(clock_timestamp() AT TIME ZONE 'UTC') WHERE ma_phieu_bao_tri=?",
+        "UPDATE phieu_bao_tri SET ngay_nghiem_thu=UTC_TIMESTAMP(6) WHERE ma_phieu_bao_tri=?",
         [id],
       );
       note = `Nghiệm thu đạt. ${fields.nhan_xet_nghiem_thu}`;
@@ -547,7 +556,7 @@ export async function act(id, action, body, user) {
         const next = v.addDays(j.ngay_thuc_hien, j.chu_ky_ngay);
         await rows(
           db,
-          "UPDATE thiet_bi SET ngay_bao_tri_tiep_theo=?,phien_ban=phien_ban+1,ngay_cap_nhat=(clock_timestamp() AT TIME ZONE 'UTC') WHERE ma_thiet_bi=?",
+          "UPDATE thiet_bi SET ngay_bao_tri_tiep_theo=?,phien_ban=phien_ban+1,ngay_cap_nhat=UTC_TIMESTAMP(6) WHERE ma_thiet_bi=?",
           [next, e.ma_thiet_bi],
         );
         note += ` Ngày bảo trì kế tiếp: ${next}.`;
@@ -561,7 +570,7 @@ export async function act(id, action, body, user) {
       };
       await rows(
         db,
-        "UPDATE phieu_bao_tri SET ngay_huy=(clock_timestamp() AT TIME ZONE 'UTC') WHERE ma_phieu_bao_tri=?",
+        "UPDATE phieu_bao_tri SET ngay_huy=UTC_TIMESTAMP(6) WHERE ma_phieu_bao_tri=?",
         [id],
       );
       note = `Hủy phiếu: ${fields.ly_do_huy}`;

@@ -56,7 +56,7 @@ export function requestContext(req, res, next) {
     );
   next();
 }
-// Memory is bounded; account lockouts are also persisted in PostgreSQL.
+// Memory is bounded; account lockouts are also persisted in MySQL.
 export function rateLimit(limit, windowMs) {
   const entries = new Map();
   return (req, res, next) => {

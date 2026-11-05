@@ -13,7 +13,7 @@ const server = app.listen(port, "127.0.0.1", () => {
     console.log(
       `Tài khoản bộ này: backend/storage/acceptance/${database}/TAI-KHOAN.md`,
     );
-  else if (database === "chung_cu")
+  else if (["chung_cu", "chung_cu_do_an"].includes(database))
     console.log(
       "Tài khoản demo: backend/.demo-credentials (khác tài khoản nghiệm thu).",
     );

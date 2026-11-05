@@ -1,10 +1,10 @@
 # Quản lý chung cư · Phản ánh QR
 
-> **PostgreSQL (05/11/2026):** [Hướng dẫn chuyển MySQL → PostgreSQL trên Windows, giữ dữ liệu/tài khoản/QR](docs/chuyen-postgresql-vscode.md) · [bằng chứng kiểm thử](docs/kiem-chung-postgresql.md). Bản hiện tại dùng PostgreSQL 17+; các bài hướng dẫn code MySQL cũ phía dưới được giữ để tham khảo lịch sử, không chép lại vào bản mới.
+> **CSDL đồ án mới — MySQL:** [31 bảng thật, 8 view lịch sử và đối chiếu đủ nghiệp vụ Word](docs/csdl-do-an/README.md) · [cách cập nhật/chuyển dữ liệu/chạy trên Windows](docs/csdl-do-an-mysql.md) · [kiểm chứng](docs/csdl-do-an/kiem-chung.md). Dùng nhánh `codex/thesis-mysql-database`; bản PostgreSQL trước được giữ trong lịch sử Git.
 
 > **Rà soát theo Spec Kit (04/11/2026):** [7 mục còn mở, bằng chứng và ưu tiên khắc phục](docs/ra-soat-spec-kit-2026-11-04.md) · [đặc tả, kế hoạch, task và ma trận nghiệm thu](specs/001-project-readiness/spec.md). Lượt này chưa sửa các lỗi mới; đã chạy lại 222 backend, 39 helper, 19 UI liên quan và build.
 
-> **Tải/cập nhật bằng Terminal VS Code:** [lệnh git clone, giữ cấu hình bản cũ và cập nhật bằng git pull](docs/tai-va-cap-nhat-du-an-bang-git-vscode.md). Dùng nhánh `codex/editorial-business-ui` cho bản đầy đủ.
+> **Tải/cập nhật bằng Terminal VS Code:** [lệnh git clone, giữ cấu hình bản cũ và cập nhật bằng git pull](docs/tai-va-cap-nhat-du-an-bang-git-vscode.md). Dùng nhánh `codex/thesis-mysql-database` cho bản đầy đủ.
 
 > **Đã sửa 4 lỗi sau rà soát (30/10/2026):** [code đầy đủ 15 file + cách cập nhật VS Code](docs/cap-nhat-4-loi-sau-ra-soat-vscode.md) · [kết quả kiểm chứng](docs/sua-4-loi-sau-ra-soat-2026-10-30.md). Cần migration **019** vào đúng database; chủ mới chỉ kế thừa hóa đơn, không nhận phản ánh/ảnh chủ trước.
 
@@ -16,11 +16,11 @@
 
 > **Xuất PDF và cài Vite:** [hướng dẫn + code đủ 6 file](docs/cap-nhat-xuat-pdf-va-vite-vscode.md). Nhập bằng Excel; xuất danh sách/báo cáo bằng Excel hoặc PDF. [Bản sửa Excel và menu](docs/cap-nhat-excel-va-menu-vscode.md) · [Excel đã điền để test](samples/nhap-du-lieu/README.md).
 
-> **Giao diện mới nhất (editorial):** ảnh toàn chiều ngang, chữ mạnh, nút đen và menu quản trị sáng. Xem [ảnh các màn hình](docs/giao-dien-editorial/README.md) và [code đầy đủ 6 file để copy vào VS Code](docs/cap-nhat-giao-dien-editorial-vscode.md). Nhánh `codex/editorial-business-ui` dành cho bản đầy đủ nghiệp vụ.
+> **Giao diện mới nhất (editorial):** ảnh toàn chiều ngang, chữ mạnh, nút đen và menu quản trị sáng. Xem [ảnh các màn hình](docs/giao-dien-editorial/README.md) và [code đầy đủ 6 file để copy vào VS Code](docs/cap-nhat-giao-dien-editorial-vscode.md). Nhánh `codex/thesis-mysql-database` dành cho bản đầy đủ nghiệp vụ.
 
 **Bản giao diện trước (navy, lưu tham khảo):** [xem ảnh cổng cư dân, đăng nhập, tổng quan và bảng căn hộ](docs/giao-dien-van-hanh-moi/README.md), [code đầy đủ 5 file để copy trong VS Code](docs/cap-nhat-giao-dien-moi-ban-nghiep-vu-vscode.md). Bản này dùng xanh navy/xanh dương, sidebar tối màu, ảnh thật và danh mục dịch vụ mới; giữ router, API và các nghiệp vụ đang có.
 
-React 19 + Vite 7, Express 5 và PostgreSQL 17+. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web, báo cáo công nợ/thu phí, bảo trì thiết bị, đặt lịch tiện ích, thu chi/quỹ và nhập Excel, xuất Excel/PDF** theo ba tài liệu thiết kế.
+React 19 + Vite 7, Express 5 và MySQL 8.0.21+/8.4. Phiên bản này triển khai **đăng nhập, phân quyền, phản ánh qua QR, quản lý căn hộ/cư trú, phương tiện, phí/hóa đơn, thông báo/nhắc phí trên web, báo cáo công nợ/thu phí, bảo trì thiết bị, đặt lịch tiện ích, thu chi/quỹ và nhập Excel, xuất Excel/PDF** theo ba tài liệu thiết kế.
 
 Giao diện được thống nhất cho BQL, cư dân và kỹ thuật viên: menu chia nhóm có biểu tượng, menu mở rộng trên điện thoại, bảng/biểu mẫu/thống kê cùng phong cách, cổng cư dân và đăng nhập mới. Xem [ảnh minh họa và code đầy đủ từng file để cập nhật VS Code](docs/cap-nhat-giao-dien-chuyen-nghiep-vscode.md).
 
@@ -28,32 +28,32 @@ Excel danh sách/báo cáo mở trực tiếp tại **Chi tiết**, có liên k�
 
 ## Chạy môi trường phát triển
 
-Máy đã có dữ liệu MySQL: thực hiện **[hướng dẫn chuyển PostgreSQL](docs/chuyen-postgresql-vscode.md)** trước. Công cụ đọc nguồn, kiểm chứng và không ghi đè database đích đã có dữ liệu.
+Máy đang có dữ liệu: làm theo **[hướng dẫn chuyển sang schema đồ án](docs/csdl-do-an-mysql.md)**. Tạo database đích mới, giữ nguyên nguồn và chép dữ liệu có đối chiếu; không chạy lại bộ seed để thay dữ liệu cũ.
 
-Nếu thiết lập lần đầu bằng **PostgreSQL Docker của dự án**, cần Node.js 24, npm và Docker có Compose. Chạy tại thư mục gốc repository:
+Máy mới dùng Docker: cần Node.js 24, npm và Docker Compose. Tại thư mục gốc:
 
-```bash
-npm ci
-npm run init:local
-npm run db:up
-npm run db:migrate
-npm run db:seed
-npm run dev:backend
+```powershell
+npm.cmd ci --include=dev
+npm.cmd run init:local
+npm.cmd run db:up
+npm.cmd run db:migrate
+npm.cmd run db:seed
+npm.cmd run dev:backend
 ```
 
-Terminal thứ hai, cũng tại thư mục gốc:
+Terminal thứ hai:
 
-```bash
-npm run dev:frontend
+```powershell
+npm.cmd run dev:frontend
 ```
 
-`init:local` tạo `.env` với mật khẩu PostgreSQL và khóa ký phiên ngẫu nhiên, không ghi đè file đã tồn tại. PostgreSQL chạy ở cổng 5432, API ở 3000, Vite ở 5173. Nếu đổi cổng API, đặt `API_TARGET` khi chạy Vite. Trên máy cloud có thư mục home chỉ đọc, dùng `npm ci --cache /workspace/.npm-cache`.
+`init:local` tạo `.env` MySQL với database `chung_cu_do_an`, cổng 3306, mật khẩu và JWT ngẫu nhiên; không ghi đè tệp đã có. PostgreSQL hoặc schema MySQL cũ cần bước cấu hình/chuyển riêng theo hướng dẫn. Máy đã có MySQL 8.0.46 có thể dùng dịch vụ hiện tại và database đích mới; sửa user/password/cổng cho đúng, tạo DB bằng tài khoản có quyền trước khi migrate. Docker dùng project `chung-cu-thesis-mysql`, volume `thesis_mysql_data`, tách khỏi volume cũ.
 
-`db:seed` chỉ dành cho phát triển: tạo BQL, KTV, cư dân và ba vị trí QR. SĐT tương ứng là `0900000001`, `0900000002`, `0900000003`. **Mật khẩu ngẫu nhiên nằm trong file local `backend/.demo-credentials`**; mở file bằng trình soạn thảo. File này và `.env` được Git bỏ qua. Chạy seed lại không thay mật khẩu hoặc xóa dữ liệu hiện có. Không dùng các tài khoản demo cho triển khai thật.
-
-Docker dùng project riêng `chung-cu-postgresql`, lưu PostgreSQL trong volume `postgres_data`; volume MySQL cũ được giữ nguyên; ảnh nằm tại `backend/storage/images`. `docker compose stop` dừng database và giữ dữ liệu. Cần sao lưu cả database và thư mục ảnh; không xóa volume để sửa lỗi kết nối.
+`db:seed` chỉ dùng cho database demo mới; mật khẩu local nằm trong `backend/.demo-credentials`. Bộ nghiệm thu mới dùng `npm.cmd run db:acceptance -- --database=chung_cu_nghiem_thu_doan --origin=https://IP:5173`, rồi `npm.cmd run start:backend:acceptance -- chung_cu_nghiem_thu_doan`; tài khoản trong đúng thư mục bộ đó. Giữ `backend/storage/` và `.certs/` để dùng lại ảnh, QR và HTTPS. Xem [HTTPS Windows/Android](docs/https-local.md).
 
 ## Tổng quan vận hành
+
+Các mốc migration001–019 và hướng dẫn code từng file dưới đây ghi lại quá trình phát triển. Bản MySQL hiện tại đã gộp schema vào baseline mới; dùng hướng dẫn CSDL đồ án ở đầu trang để cập nhật, giữ đầy đủ chức năng.
 
 Đã nối **thiết bị → QR → phản ánh**: chọn hồ sơ thiết bị khi tạo/liên kết QR và xem lịch sử thay đổi; biểu mẫu quét nhận mã/tên thiết bị, phản ánh lưu thông tin thiết bị lúc gửi. Đổi/bỏ liên kết không sửa các phản ánh cũ. Hồ sơ thiết bị mở được QR hiện tại và phản ánh theo thiết bị lúc gửi. Giữ token QR cũ, không tự gán thiết bị cho phản ánh lịch sử. Cần migration **018_equipment_qr.sql**; [code đầy đủ 11 file tính năng và 2 file kiểm thử](docs/cap-nhat-thiet-bi-qr-vscode.md).
 
@@ -283,7 +283,7 @@ npm test
 npm run test:e2e
 ```
 
-- `npm test`: tạo/migrate database riêng `chung_cu_test`, chạy kiểm thử HTTP với PostgreSQL thật. Gồm xác thực, khóa phiên, quyền bản ghi/ảnh, QR thu hồi, gửi lặp đồng thời, chuyển trạng thái, nghiệm thu mới, gộp trùng, giới hạn gửi, hóa đơn/cư trú/tài khoản căn, phạm vi thông báo, receipt sau bàn giao, nhắc phí đồng thời, bảo trì thiết bị, đặt lịch tiện ích đồng thời, thu chi/quỹ, chứng từ, file Excel/PDF và rollback khi lịch sử lỗi.
+- `npm test`: tạo/migrate database riêng `chung_cu_test`, chạy kiểm thử HTTP với MySQL thật. Gồm xác thực, khóa phiên, quyền bản ghi/ảnh, QR thu hồi, gửi lặp đồng thời, chuyển trạng thái, nghiệm thu mới, gộp trùng, giới hạn gửi, hóa đơn/cư trú/tài khoản căn, phạm vi thông báo, receipt sau bàn giao, nhắc phí đồng thời, bảo trì thiết bị, đặt lịch tiện ích đồng thời, thu chi/quỹ, chứng từ, file Excel/PDF và rollback khi lịch sử lỗi.
 - `npm run test:e2e`: chạy API/Vite riêng ở 3101/5174, mở Chromium và đi hết luồng qua giao diện ở 1440 px và 375 px. Browser Linux được đóng gói trong dependency `@sparticuz/chromium`; Windows cài một lần bằng `npx playwright install chromium`. Kiểm thử không thay dữ liệu database phát triển. Hai lệnh test nên chạy lần lượt.
 - `/api/health` kiểm tra tiến trình; `/api/ready` kiểm tra database và migration. Không coi một cổng mở là đã sẵn sàng.
 

@@ -9,7 +9,7 @@ import bcrypt from "bcryptjs";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
 
-test("PostgreSQL: apartments, accounts, residency dates, concurrent transfer and rollback", async (t) => {
+test("MySQL: apartments, accounts, residency dates, concurrent transfer and rollback", async (t) => {
   assert.equal(process.env.DB_NAME, "chung_cu_test");
   const server = app.listen(0, "127.0.0.1");
   await new Promise((resolve) => server.once("listening", resolve));
@@ -580,7 +580,7 @@ test("PostgreSQL: apartments, accounts, residency dates, concurrent transfer and
             "UPDATE lich_su_cu_tru SET den_ngay=? WHERE ma_lich_su_cu_tru=?",
             [previousDay, detail.history[1].ma_lich_su_cu_tru],
           ),
-          (error) => error.code === "23514",
+          (error) => error.code === "ER_CHECK_CONSTRAINT_VIOLATED",
         );
         assert.equal(
           (

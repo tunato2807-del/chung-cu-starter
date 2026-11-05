@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("..", import.meta.url));
 export function acceptanceOptions(args) {
   const options = {
-    database: "chung_cu_nghiem_thu",
+    database: "chung_cu_nghiem_thu_doan",
     origin: "https://localhost:5173",
     docker: false,
   };
@@ -53,15 +53,15 @@ function run(command, args, env, input) {
 }
 async function launch() {
   const options = acceptanceOptions(process.argv.slice(2));
-  // Both native PostgreSQL and Compose use the same TCP connection. The old
+  // Both native MySQL and Compose use the same TCP connection. The old
   // --docker flag remains accepted for existing acceptance instructions.
   if (
     options.docker &&
     !["127.0.0.1", "localhost"].includes(process.env.DB_HOST || "127.0.0.1")
   )
-    throw new Error("--docker chỉ dùng PostgreSQL Docker cục bộ của dự án.");
+    throw new Error("--docker chỉ dùng MySQL Docker cục bộ của dự án.");
   const { databaseConfig, pool } = await import("../backend/src/lib/db.js");
-  const { ensureDatabase } = await import("./postgresql-admin.js");
+  const { ensureDatabase } = await import("./mysql-admin.js");
   try {
     await ensureDatabase(databaseConfig(), options.database);
   } finally {
@@ -85,7 +85,7 @@ if (
   launch().catch((error) => {
     console.error(
       error.code
-        ? `Không tạo được bộ mẫu PostgreSQL (${error.code}). Kiểm tra dịch vụ, quyền CREATEDB và cấu hình.`
+        ? `Không tạo được bộ mẫu MySQL (${error.code}). Kiểm tra dịch vụ, quyền CREATE DATABASE và cấu hình.`
         : error.message,
     );
     process.exitCode = 1;

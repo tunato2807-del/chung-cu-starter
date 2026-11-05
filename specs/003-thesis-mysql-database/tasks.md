@@ -1,0 +1,7 @@
+- [x] TH01 Đọc Word, xác nhận quay về MySQL và giữ đầy đủ nghiệp vụ.
+- [x] TH02 Baseline 31 bảng, nhật ký có FK/CHECK/JSON Schema và 8 view tương thích.
+- [x] TH03 Đồng bộ runtime, SQL/module, readiness, seed, chẩn đoán và runner MySQL.
+- [x] TH04 Công cụ cấu hình riêng/chuyển nguồn 018–019, đối chiếu và rollback.
+- [x] TH05 ERD, từ điển, ma trận đối chiếu và hướng dẫn chạy/cập nhật.
+- [x] TH06 Full backend, browser, công cụ, build/HTTPS, bộ mẫu và chuyển dữ liệu thử.
+- [ ] TH07 Commit/push nhánh `codex/thesis-mysql-database`, xác nhận bàn giao.

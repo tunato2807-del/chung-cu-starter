@@ -8,7 +8,8 @@ import { reportPage } from "../report-exports/report-files.js";
 async function snapshot(work) {
   const db = await pool.getConnection();
   try {
-    await db.query("BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY");
+    await db.query("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ");
+    await db.query("START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY");
     const result = await work(db);
     await db.commit();
     return result;
@@ -38,9 +39,7 @@ function conditions(f) {
     values.push(f.khoi);
   }
   if (f.q) {
-    where.push(
-      'unaccent((a.so_can_ho)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C")',
-    );
+    where.push("a.so_can_ho LIKE ?");
     values.push(`%${f.q}%`);
   }
   if (f.ma_can_ho) {
@@ -50,7 +49,7 @@ function conditions(f) {
   return { where, values };
 }
 const from = "FROM hoa_don h JOIN can_ho a ON a.ma_can_ho=h.ma_can_ho";
-const money = (expression) => `CAST(COALESCE(sum(${expression}),0) AS TEXT)`;
+const money = (expression) => `CAST(COALESCE(SUM(${expression}),0) AS CHAR)`;
 const unpaid = "h.trang_thai='DA_GUI'";
 const paid = "h.trang_thai='DA_THANH_TOAN'";
 function aggregates(overdue) {
@@ -58,9 +57,9 @@ function aggregates(overdue) {
     ${money(`CASE WHEN ${paid} THEN h.so_tien_da_thu ELSE 0 END`)} AS da_thu,
     ${money(`CASE WHEN ${unpaid} THEN h.tong_tien ELSE 0 END`)} AS con_phai_thu,
     ${money(`CASE WHEN ${overdue} THEN h.tong_tien ELSE 0 END`)} AS no_qua_han,
-    COUNT(*) AS so_hoa_don, CAST(COALESCE(sum(CASE WHEN ${paid} THEN 1 ELSE 0 END),0) AS BIGINT) AS so_hoa_don_da_thu,
-    CAST(COALESCE(sum(CASE WHEN ${unpaid} THEN 1 ELSE 0 END),0) AS BIGINT) AS so_hoa_don_chua_thu,
-    CAST(COALESCE(sum(CASE WHEN ${overdue} THEN 1 ELSE 0 END),0) AS BIGINT) AS so_hoa_don_qua_han`;
+    COUNT(*) AS so_hoa_don, CAST(COALESCE(SUM(${paid}),0) AS UNSIGNED) AS so_hoa_don_da_thu,
+    CAST(COALESCE(SUM(${unpaid}),0) AS UNSIGNED) AS so_hoa_don_chua_thu,
+    CAST(COALESCE(SUM(${overdue}),0) AS UNSIGNED) AS so_hoa_don_qua_han`;
 }
 export async function blocks() {
   return rows(pool, "SELECT DISTINCT khoi FROM can_ho ORDER BY khoi");
@@ -100,10 +99,7 @@ export async function debts(query, exportFormat) {
   // Validated YYYY-MM-DD, interpolated once to keep summary/group parameters identical.
   const overdue = `(${unpaid} AND h.han_thanh_toan IS NOT NULL AND h.han_thanh_toan<'${calendarDay}')`;
   return snapshot(async (db) => {
-    const [stamp] = await rows(
-      db,
-      "SELECT (clock_timestamp() AT TIME ZONE 'UTC') AS tai_luc",
-    );
+    const [stamp] = await rows(db, "SELECT UTC_TIMESTAMP(6) AS tai_luc");
     const [summary] = await rows(
       db,
       `SELECT ${aggregates(overdue)},COUNT(DISTINCT CASE WHEN ${unpaid} THEN h.ma_can_ho END) AS so_can_con_no ${from} WHERE ${condition}`,
@@ -125,7 +121,7 @@ export async function debts(query, exportFormat) {
         ${money(`CASE WHEN ${overdue} THEN h.tong_tien ELSE 0 END`)} AS no_qua_han,
         MIN(h.han_thanh_toan) AS han_som_nhat
         ${from} WHERE ${condition} AND ${unpaid} GROUP BY h.ma_can_ho
-        ${f.qua_han === "1" ? `HAVING sum(CASE WHEN ${overdue} THEN 1 ELSE 0 END)>0` : ""}`;
+        ${f.qua_han === "1" ? `HAVING SUM(${overdue})>0` : ""}`;
       source = `FROM (${grouped}) d JOIN can_ho a ON a.ma_can_ho=d.ma_can_ho
         LEFT JOIN nguoi_dung tk ON tk.ma_can_ho_thanh_toan=a.ma_can_ho
         LEFT JOIN cu_dan c ON c.ma_cu_dan=tk.ma_cu_dan_phu_trach`;
@@ -185,12 +181,9 @@ export async function collections(query, exportFormat) {
   values.push(utcMidnight(f.tu_ngay), utcMidnight(f.den_ngay, true));
   const condition = where.join(" AND "),
     localDay =
-      "to_char((h.ngay_thanh_toan + INTERVAL '7 hours'), 'YYYY-MM-DD')";
+      "DATE_FORMAT(CONVERT_TZ(h.ngay_thanh_toan,'+00:00','+07:00'),'%Y-%m-%d')";
   return snapshot(async (db) => {
-    const [stamp] = await rows(
-      db,
-      "SELECT (clock_timestamp() AT TIME ZONE 'UTC') AS tai_luc",
-    );
+    const [stamp] = await rows(db, "SELECT UTC_TIMESTAMP(6) AS tai_luc");
     const [summary] = await rows(
       db,
       `SELECT ${money("h.so_tien_da_thu")} AS tong_da_thu,COUNT(*) AS so_khoan_thu,COUNT(DISTINCT h.ma_can_ho) AS so_can_da_thu ${from} WHERE ${condition}`,

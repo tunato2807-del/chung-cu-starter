@@ -41,7 +41,7 @@ export async function submit(body, files, user, ip) {
     const result = await transaction(async (db) => {
       await rows(
         db,
-        "INSERT INTO yeu_cau_gui (khoa,van_tay) VALUES (?,?) ON CONFLICT (khoa) DO UPDATE SET khoa=EXCLUDED.khoa",
+        "INSERT INTO yeu_cau_gui (khoa,van_tay) VALUES (?,?) ON DUPLICATE KEY UPDATE khoa=khoa",
         [b.key, fingerprint],
       );
       const [request] = await rows(
@@ -99,7 +99,7 @@ export async function submit(body, files, user, ip) {
       const rateKey = hash(b.phone + "|" + ip);
       await rows(
         db,
-        "INSERT INTO gioi_han_gui (khoa,cac_moc_thoi_gian) VALUES (?,'[]'::json) ON CONFLICT (khoa) DO UPDATE SET khoa=EXCLUDED.khoa",
+        "INSERT INTO gioi_han_gui (khoa,cac_moc_thoi_gian) VALUES (?,JSON_ARRAY()) ON DUPLICATE KEY UPDATE khoa=khoa",
         [rateKey],
       );
       const [rate] = await rows(
@@ -120,7 +120,7 @@ export async function submit(body, files, user, ip) {
         );
       const similar = await rows(
         db,
-        "SELECT 1 FROM phan_anh WHERE ma_vi_tri_qr=? AND ma_thiet_bi IS NOT DISTINCT FROM ? AND loai_su_co=? AND trang_thai IN ('MOI','DA_PHAN_CONG','DANG_XU_LY','DA_XU_LY') LIMIT 1",
+        "SELECT 1 FROM phan_anh WHERE ma_vi_tri_qr=? AND ma_thiet_bi <=> ? AND loai_su_co=? AND trang_thai IN ('MOI','DA_PHAN_CONG','DANG_XU_LY','DA_XU_LY') LIMIT 1",
         [loc.ma_vi_tri_qr, loc.ma_thiet_bi, b.category],
       );
       if (
@@ -373,7 +373,7 @@ export async function transition(id, body, files, actor) {
         (r.trang_thai === "DA_XU_LY" && target === "DANG_XU_LY" ? 1 : 0);
       await rows(
         db,
-        `UPDATE phan_anh SET trang_thai=?,phien_ban=phien_ban+1,luot_xu_ly=?,ma_phan_anh_goc=?,ngay_dong=(CASE WHEN ?='DA_DONG' THEN (clock_timestamp() AT TIME ZONE 'UTC') ELSE NULL END) WHERE ma_phan_anh=?`,
+        `UPDATE phan_anh SET trang_thai=?,phien_ban=phien_ban+1,luot_xu_ly=?,ma_phan_anh_goc=?,ngay_dong=IF(?='DA_DONG',UTC_TIMESTAMP(),NULL) WHERE ma_phan_anh=?`,
         [target, round, original, target, id],
       );
       await addImages(db, id, names, "NGHIEM_THU", round, actor);

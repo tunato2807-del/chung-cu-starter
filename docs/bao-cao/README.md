@@ -1,5 +1,7 @@
 # Hồ sơ phân tích thiết kế và nghiệm thu
 
+> **CSDL hiện tại (05/11/2026):** [MySQL31 bảng thật, 8 view, giữ đủ nghiệp vụ và18 bảng trọng tâm](../csdl-do-an/README.md). Các hình/kiểm tra schema38 bảng ở bản cũ là lịch sử; ERD vật lý và từ điển đã sinh lại theo baseline mới.
+
 Bộ tài liệu bổ sung cho đề cương `1250080221_To_Hoang_Tuan.docx` của Tô Hoàng Tuấn, đối chiếu mã nguồn ngày **21/10/2026**, schema **018_equipment_qr.sql**. Tài liệu tham chiếu là yêu cầu để đánh giá; không tự chứng minh ứng dụng đã chạy trên máy Windows hay điện thoại của người dùng.
 
 Các nghiệp vụ chính đã có. Phần làm tiếp lần này là hoàn thiện hồ sơ chương 2 và chuẩn bị nghiệm thu chương 3, thay vì thêm phân hệ không có trong phạm vi đề tài.

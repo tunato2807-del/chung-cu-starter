@@ -85,17 +85,17 @@ const apartments = [],
 async function freshDatabase() {
   const tables = await rows(
     pool,
-    "SELECT table_name AS name FROM information_schema.TABLES WHERE table_schema='public' AND TABLE_TYPE='BASE TABLE'",
+    "SELECT TABLE_NAME AS name FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_TYPE='BASE TABLE'",
   );
-  if (tables.length !== 38)
+  if (tables.length !== 31)
     throw new Error(
-      "Cần schema hiện tại với 38 bảng. Kiểm tra migration trước khi tạo dữ liệu.",
+      "Cần schema hiện tại với 31 bảng. Kiểm tra migration trước khi tạo dữ liệu.",
     );
   for (const { name } of tables) {
     if (["schema_migrations", "loai_phi", "quy_tai_chinh"].includes(name))
       continue;
     if (!/^[a-z0-9_]+$/.test(name)) throw new Error("Tên bảng không hỗ trợ.");
-    const [count] = await rows(pool, `SELECT COUNT(*) AS n FROM "${name}"`);
+    const [count] = await rows(pool, `SELECT COUNT(*) AS n FROM \`${name}\``);
     if (count.n)
       throw new Error(
         `Database đã có dữ liệu ở ${name}. Dừng để giữ nguyên. Dùng --database=chung_cu_nghiem_thu_<mã mới> cho bộ mới.`,
@@ -457,7 +457,7 @@ async function seedBilling() {
         : day;
       await rows(
         pool,
-        "UPDATE hoa_don SET ngay_tao=?,ngay_duyet=(CASE WHEN ngay_duyet IS NULL THEN NULL ELSE CAST(? AS TIMESTAMP) END),ngay_gui=(CASE WHEN ngay_gui IS NULL THEN NULL ELSE CAST(? AS TIMESTAMP) END),ngay_thanh_toan=(CASE WHEN ngay_thanh_toan IS NULL THEN NULL ELSE CAST(? AS TIMESTAMP) END),han_thanh_toan=(CASE WHEN trang_thai IN ('DA_GUI','DA_THANH_TOAN') THEN ? ELSE han_thanh_toan END) WHERE ma_hoa_don=?",
+        "UPDATE hoa_don SET ngay_tao=?,ngay_duyet=IF(ngay_duyet IS NULL,NULL,?),ngay_gui=IF(ngay_gui IS NULL,NULL,?),ngay_thanh_toan=IF(ngay_thanh_toan IS NULL,NULL,?),han_thanh_toan=IF(trang_thai IN ('DA_GUI','DA_THANH_TOAN'),?,han_thanh_toan) WHERE ma_hoa_don=?",
         [
           stamp(recorded),
           stamp(recorded, "03"),
@@ -655,12 +655,12 @@ async function seedAssetsAndReports() {
     );
     await rows(
       pool,
-      "UPDATE phan_anh SET ngay_tao=?,ngay_dong=(CASE WHEN trang_thai='DA_DONG' THEN CAST(? AS TIMESTAMP) ELSE NULL END) WHERE ma_phan_anh=?",
+      "UPDATE phan_anh SET ngay_tao=?,ngay_dong=IF(trang_thai='DA_DONG',?,NULL) WHERE ma_phan_anh=?",
       [stamp(date), stamp(date, "05"), id],
     );
     await rows(
       pool,
-      "UPDATE lich_su_phan_anh SET ngay_tao=((?)::timestamp + (ma_lich_su_phan_anh) * INTERVAL '1 second') WHERE ma_phan_anh=?",
+      "UPDATE lich_su_phan_anh SET ngay_tao=TIMESTAMPADD(SECOND,ma_lich_su_phan_anh,?) WHERE ma_phan_anh=?",
       [stamp(date), id],
     );
     manifest.scenarios.push({
@@ -1273,17 +1273,17 @@ async function verifyAndExport() {
     );
     const tables = await rows(
       pool,
-      "SELECT table_name AS name FROM information_schema.TABLES WHERE table_schema='public' AND TABLE_TYPE='BASE TABLE' ORDER BY table_name",
+      "SELECT TABLE_NAME AS name FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_TYPE='BASE TABLE' ORDER BY TABLE_NAME",
     );
     manifest.tables = [];
     for (const { name } of tables) {
-      const [count] = await rows(pool, `SELECT COUNT(*) AS n FROM "${name}"`);
+      const [count] = await rows(pool, `SELECT COUNT(*) AS n FROM \`${name}\``);
       manifest.tables.push({ table: name, rows: count.n });
       if (!count.n) throw new Error(`Bảng ${name} chưa có dữ liệu mẫu.`);
     }
     const [sum] = await rows(
       pool,
-      "SELECT COUNT(*) AS errors FROM hoa_don h WHERE h.tong_tien<>(SELECT COALESCE(sum(d.thanh_tien),0) FROM chi_tiet_hoa_don d WHERE d.ma_hoa_don=h.ma_hoa_don)",
+      "SELECT COUNT(*) AS errors FROM hoa_don h WHERE h.tong_tien<>(SELECT COALESCE(SUM(d.thanh_tien),0) FROM chi_tiet_hoa_don d WHERE d.ma_hoa_don=h.ma_hoa_don)",
     );
     if (sum.errors) throw new Error("Tổng hóa đơn không khớp chi tiết.");
     const [sampleFund] = await rows(
@@ -1293,7 +1293,7 @@ async function verifyAndExport() {
     if ((await treasury.fundDetail(sampleFund.ma_quy)).so_du !== "18500000")
       throw new Error("Số dư quỹ mẫu không khớp 18.500.000 đồng.");
     manifest.checks.push({
-      name: "38 bảng có dữ liệu; tổng hóa đơn khớp chi tiết",
+      name: "31 bảng có dữ liệu; tổng hóa đơn khớp chi tiết",
       status: "DAT",
     });
   } finally {
@@ -1361,7 +1361,7 @@ async function finish() {
     `Hoàn tất. Mở ${path.relative(root, out)}/README.md, TAI-KHOAN.md và QR.html trên máy bạn.`,
   );
   console.log(
-    `${manifest.checks.length} kiểm tra đạt; dữ liệu 38 bảng, không sửa DB chung_cu. Không in mật khẩu ra terminal.`,
+    `${manifest.checks.length} kiểm tra đạt; dữ liệu 31 bảng, không sửa DB chung_cu. Không in mật khẩu ra terminal.`,
   );
 }
 

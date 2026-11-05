@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import { app } from "../src/app.js";
 import { pool, rows } from "../src/lib/db.js";
 
-test("PostgreSQL: building hierarchy, occupancy, filters and live changes", async (t) => {
+test("MySQL: building hierarchy, occupancy, filters and live changes", async (t) => {
   assert.equal(process.env.DB_NAME, "chung_cu_test");
   const server = app.listen(0, "127.0.0.1");
   await new Promise((resolve) => server.once("listening", resolve));

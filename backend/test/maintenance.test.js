@@ -205,7 +205,7 @@ test("equipment and maintenance: assignment privacy, periodic lifecycle, races a
             "INSERT INTO thiet_bi (ma_tai_san,ten_thiet_bi,loai,vi_tri,ma_nguoi_tao,chu_ky_ngay,ngay_bao_tri_tiep_theo) VALUES (?,?,'PCCC','A',?,NULL,?)",
             [`BAD-${suffix}`, suffix, admin.id, d],
           ),
-          (e) => e.code === "23514",
+          (e) => e.code === "ER_CHECK_CONSTRAINT_VIOLATED",
         );
       },
     );

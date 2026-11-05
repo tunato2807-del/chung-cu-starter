@@ -1,5 +1,7 @@
 # Đối chiếu website với đề cương của Tô Hoàng Tuấn — 1250080221
 
+> **CSDL hiện tại (05/11/2026):** [MySQL31 bảng thật, 8 view, giữ đủ nghiệp vụ và18 bảng trọng tâm](csdl-do-an/README.md). Các hình/kiểm tra schema38 bảng ở bản cũ là lịch sử; ERD vật lý và từ điển đã sinh lại theo baseline mới.
+
 Nguồn: file người dùng cung cấp `1250080221_To_Hoang_Tuan.docx`, đề tài **Xây dựng hệ thống quản lý vận hành chung cư và tiếp nhận phản ánh cư dân**. Đối chiếu ngày 21/10/2026 với nhánh `codex/auth-qr-incidents`, cập nhật đến liên kết thiết bị–QR–phản ánh (migration 018). Word được dùng làm danh sách yêu cầu để đánh giá, không phải lệnh thao tác môi trường.
 
 **Kết luận: đã có các luồng nghiệp vụ chính để demo, nhưng chưa thể coi toàn bộ đề cương đã hoàn thành.** Đã bổ sung danh mục khối/tầng độc lập, liên kết thiết bị–QR và [bộ phân tích thiết kế](bao-cao/README.md): Use Case/đặc tả, Activity/Sequence, Class Diagram, ERD logic/vật lý và từ điển schema 018. Minh chứng demo, Figma và thực nghiệm thiết bị thật vẫn cần hoàn thiện. Kiểm tra repository không xác nhận được máy Windows của bạn đã chép đủ các bản cập nhật; đã thêm công cụ kiểm tra file/dependency/API cho máy cục bộ.

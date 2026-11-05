@@ -69,12 +69,12 @@ export async function apartmentFloor(db, code, number, body) {
   }
   await rows(
     db,
-    "INSERT INTO khoi_toa_nha (khoi,giu_khi_trong) VALUES (?,0) ON CONFLICT (khoi) DO UPDATE SET khoi=EXCLUDED.khoi",
+    "INSERT INTO khoi_toa_nha (khoi,giu_khi_trong) VALUES (?,0) ON DUPLICATE KEY UPDATE khoi=khoi_toa_nha.khoi",
     [code],
   );
   await rows(
     db,
-    "INSERT INTO tang_toa_nha (khoi,tang,giu_khi_trong) VALUES (?,?,0) ON CONFLICT (khoi,tang) DO UPDATE SET tang=EXCLUDED.tang",
+    "INSERT INTO tang_toa_nha (khoi,tang,giu_khi_trong) VALUES (?,?,0) ON DUPLICATE KEY UPDATE tang=tang_toa_nha.tang",
     [code, number],
   );
   const [selected] = await rows(

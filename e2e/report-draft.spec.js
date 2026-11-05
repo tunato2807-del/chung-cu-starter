@@ -13,8 +13,6 @@ const formValues = {
 };
 
 test.beforeEach(async ({ page }) => {
-  // Keep the notification request consistent with the mocked auth session;
-  // a real anonymous 401 correctly expires that mocked session otherwise.
   await page.route("**/api/cua_toi/thong_bao/chua_doc", (route) =>
     route.fulfill({ json: { data: { so_chua_doc: 0 } } }),
   );

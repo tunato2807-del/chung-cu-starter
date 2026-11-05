@@ -56,11 +56,11 @@ for (const width of [1440, 375])
       await page.goto("/dang-nhap");
       await rows(
         pool,
-        "INSERT INTO khoi_toa_nha (khoi) VALUES ('E2E') ON CONFLICT (khoi) DO UPDATE SET giu_khi_trong=1",
+        "INSERT INTO khoi_toa_nha (khoi) VALUES ('E2E') ON DUPLICATE KEY UPDATE giu_khi_trong=1",
       );
       await rows(
         pool,
-        "INSERT INTO tang_toa_nha (khoi,tang) VALUES ('E2E',5) ON CONFLICT (khoi,tang) DO UPDATE SET giu_khi_trong=1",
+        "INSERT INTO tang_toa_nha (khoi,tang) VALUES ('E2E',5) ON DUPLICATE KEY UPDATE giu_khi_trong=1",
       );
       await page.getByLabel("Số điện thoại").fill(phones[0]);
       await page.getByLabel("Mật khẩu", { exact: true }).fill(password);
@@ -87,7 +87,7 @@ for (const width of [1440, 375])
       }
       const apartments = await rows(
         pool,
-        'SELECT ma_can_ho,so_can_ho FROM can_ho WHERE so_can_ho COLLATE "C" LIKE ? ORDER BY so_can_ho',
+        "SELECT ma_can_ho,so_can_ho FROM can_ho WHERE so_can_ho LIKE ? ORDER BY so_can_ho",
         [`${apartmentName}%`],
       );
       expect(apartments).toHaveLength(2);
@@ -265,18 +265,16 @@ for (const width of [1440, 375])
       // Clean only this run's fixtures, including rows created before an assertion failed.
       const profiles = await rows(
         pool,
-        'SELECT ma_cu_dan FROM cu_dan WHERE ho_va_ten COLLATE "C" LIKE ?',
+        "SELECT ma_cu_dan FROM cu_dan WHERE ho_va_ten LIKE ?",
         [`${residentName}%`],
       );
       for (const { ma_cu_dan: id } of profiles) {
         await rows(pool, "DELETE FROM lich_su_cu_tru WHERE ma_cu_dan=?", [id]);
         await rows(pool, "DELETE FROM cu_dan WHERE ma_cu_dan=?", [id]);
       }
-      await rows(
-        pool,
-        'DELETE FROM can_ho WHERE so_can_ho COLLATE "C" LIKE ?',
-        [`${apartmentName}%`],
-      );
+      await rows(pool, "DELETE FROM can_ho WHERE so_can_ho LIKE ?", [
+        `${apartmentName}%`,
+      ]);
       for (const id of accounts)
         await rows(pool, "DELETE FROM nguoi_dung WHERE ma_nguoi_dung=?", [id]);
     }

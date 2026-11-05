@@ -85,11 +85,11 @@ for (const width of [1440, 375])
       await login(admin, phone, password);
       await rows(
         pool,
-        "INSERT INTO khoi_toa_nha (khoi) VALUES ('TK') ON CONFLICT (khoi) DO UPDATE SET giu_khi_trong=1",
+        "INSERT INTO khoi_toa_nha (khoi) VALUES ('TK') ON DUPLICATE KEY UPDATE giu_khi_trong=1",
       );
       await rows(
         pool,
-        "INSERT INTO tang_toa_nha (khoi,tang) VALUES ('TK',1) ON CONFLICT (khoi,tang) DO UPDATE SET giu_khi_trong=1",
+        "INSERT INTO tang_toa_nha (khoi,tang) VALUES ('TK',1) ON DUPLICATE KEY UPDATE giu_khi_trong=1",
       );
       await admin.getByRole("link", { name: "Căn hộ", exact: true }).click();
       await admin.getByLabel("Số căn hộ", { exact: true }).fill(apartmentName);

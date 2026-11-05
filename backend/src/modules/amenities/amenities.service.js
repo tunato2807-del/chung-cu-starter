@@ -1,3 +1,4 @@
+import { appendHistory } from "../../lib/history.js";
 import { reportPage } from "../report-exports/report-files.js";
 import { createHash } from "node:crypto";
 import { pool, rows, transaction } from "../../lib/db.js";
@@ -95,9 +96,7 @@ export async function facilities(query) {
     args = [],
     where = ["1=1"];
   if (query.q) {
-    where.push(
-      '(unaccent((ten_tien_ich)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((vi_tri)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
-    );
+    where.push("(ten_tien_ich LIKE ? OR vi_tri LIKE ?)");
     const q = `%${text(query.q, "q", 1, 100)}%`;
     args.push(q, q);
   }
@@ -140,7 +139,7 @@ export async function saveFacility(id, body, user) {
       // Policy edits may not invalidate any live future reservation, including pending ones.
       const conflicts = await rows(
         db,
-        `SELECT ma_dat_lich FROM dat_lich_tien_ich WHERE ma_tien_ich=? AND trang_thai IN ${active} AND ket_thuc>? AND (so_nguoi>? OR CAST(bat_dau AS TIME)<? OR CAST(ket_thuc AS TIME)>? OR (EXTRACT(EPOCH FROM (ket_thuc-bat_dau))/60)>?) LIMIT 1 FOR UPDATE`,
+        `SELECT ma_dat_lich FROM dat_lich_tien_ich WHERE ma_tien_ich=? AND trang_thai IN ${active} AND ket_thuc>? AND (so_nguoi>? OR TIME(bat_dau)<? OR TIME(ket_thuc)>? OR TIMESTAMPDIFF(MINUTE,bat_dau,ket_thuc)>?) LIMIT 1 FOR UPDATE`,
         [
           id,
           v.nowVN(),
@@ -274,9 +273,10 @@ export async function createBooking(id, body, user) {
   });
 }
 async function audit(db, id, user, event, note) {
-  await rows(
+  await appendHistory(
     db,
-    "INSERT INTO lich_su_dat_lich (ma_dat_lich,ma_nguoi_thuc_hien,su_kien,ghi_chu) VALUES (?,?,?,?)",
+    "lich_su_dat_lich",
+    ["ma_dat_lich", "ma_nguoi_thuc_hien", "su_kien", "ghi_chu"],
     [id, user.ma_nguoi_dung, event, note],
   );
 }
@@ -307,7 +307,7 @@ export async function bookings(query, user, exportFormat = null) {
   }
   if (query.q) {
     where.push(
-      '(unaccent((a.so_can_ho)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((b.ten_tien_ich)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((b.ten_nguoi_dat)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
+      "(a.so_can_ho LIKE ? OR b.ten_tien_ich LIKE ? OR b.ten_nguoi_dat LIKE ?)",
     );
     const q = `%${text(query.q, "q", 1, 100)}%`;
     args.push(q, q, q);

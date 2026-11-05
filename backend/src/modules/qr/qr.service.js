@@ -1,3 +1,4 @@
+import { appendHistory } from "../../lib/history.js";
 import { randomUUID } from "node:crypto";
 import { pool, rows, transaction } from "../../lib/db.js";
 import { fail, text, integer, choice } from "../../lib/http.js";
@@ -41,9 +42,10 @@ async function locked(db, id, body, required = false) {
   return location;
 }
 async function linkHistory(db, location, oldId, newId, user) {
-  await rows(
+  await appendHistory(
     db,
-    "INSERT INTO lich_su_lien_ket_qr (ma_vi_tri_qr,ma_thiet_bi_cu,ma_thiet_bi_moi,ma_nguoi_thuc_hien) VALUES (?,?,?,?)",
+    "lich_su_lien_ket_qr",
+    ["ma_vi_tri_qr", "ma_thiet_bi_cu", "ma_thiet_bi_moi", "ma_nguoi_thuc_hien"],
     [location, oldId, newId, user.ma_nguoi_dung],
   );
 }
@@ -55,7 +57,7 @@ export async function list(query) {
     values = [];
   if (query.q) {
     clauses.push(
-      '(unaccent((v.ten_vi_tri)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((e.ma_tai_san)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C") OR unaccent((e.ten_thiet_bi)::text COLLATE "C") ILIKE unaccent(?::text COLLATE "C"))',
+      "(v.ten_vi_tri LIKE ? OR e.ma_tai_san LIKE ? OR e.ten_thiet_bi LIKE ?)",
     );
     const q = `%${text(query.q, "q", 1, 100)}%`;
     values.push(q, q, q);

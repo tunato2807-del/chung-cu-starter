@@ -2,7 +2,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 export function acceptanceDatabase(args) {
-  const database = args[0] || "chung_cu_nghiem_thu";
+  const database = args[0] || "chung_cu_nghiem_thu_doan";
   if (
     args.length > 1 ||
     !/^chung_cu_nghiem_thu(?:_[a-z0-9]{1,20})?$/.test(database)
