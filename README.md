@@ -37,7 +37,7 @@ npm.cmd ci --include=dev
 npm.cmd run init:local
 npm.cmd run db:up
 npm.cmd run db:migrate
-npm.cmd run db:seed
+npm.cmd run setup:admin
 npm.cmd run dev:backend
 ```
 
@@ -49,7 +49,9 @@ npm.cmd run dev:frontend
 
 `init:local` tạo `.env` MySQL với database `chung_cu_do_an`, cổng 3306, mật khẩu và JWT ngẫu nhiên; không ghi đè tệp đã có. PostgreSQL hoặc schema MySQL cũ cần bước cấu hình/chuyển riêng theo hướng dẫn. Máy đã có MySQL 8.0.46 có thể dùng dịch vụ hiện tại và database đích mới; sửa user/password/cổng cho đúng, tạo DB bằng tài khoản có quyền trước khi migrate. Docker dùng project `chung-cu-thesis-mysql`, volume `thesis_mysql_data`, tách khỏi volume cũ.
 
-`db:seed` chỉ dùng cho database demo mới; mật khẩu local nằm trong `backend/.demo-credentials`. Bộ nghiệm thu mới dùng `npm.cmd run db:acceptance -- --database=chung_cu_nghiem_thu_doan --origin=https://IP:5173`, rồi `npm.cmd run start:backend:acceptance -- chung_cu_nghiem_thu_doan`; tài khoản trong đúng thư mục bộ đó. Giữ `backend/storage/` và `.certs/` để dùng lại ảnh, QR và HTTPS. Xem [HTTPS Windows/Android](docs/https-local.md).
+`setup:admin` hỏi họ tên và số điện thoại quản trị viên trên máy bạn, chỉ tạo một tài khoản trên database chưa có người dùng. Mật khẩu ngẫu nhiên lưu tại `backend/storage/setup/<ten_database>.initial-admin.json`; không in ra terminal, không tạo cư dân/căn hộ/vị trí QR mẫu. `db:seed` cũng chuyển sang quy trình này. Database đã có tài khoản được giữ nguyên, kể cả khi chép dữ liệu từ bản cũ. Xem [dữ liệu thực tế và nguồn tham khảo](docs/du-lieu-thuc-te.md).
+
+Bộ nghiệm thu vẫn là dữ liệu giả lập riêng: `npm.cmd run db:acceptance -- --database=chung_cu_nghiem_thu_doan --origin=https://IP:5173`, rồi `npm.cmd run start:backend:acceptance -- chung_cu_nghiem_thu_doan`; tài khoản trong đúng thư mục bộ đó. Giữ `backend/storage/` và `.certs/` để dùng lại ảnh, QR và HTTPS. Xem [HTTPS Windows/Android](docs/https-local.md).
 
 ## Tổng quan vận hành
 

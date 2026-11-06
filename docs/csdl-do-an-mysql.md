@@ -135,7 +135,7 @@ Thử tài khoản BQL/KTV/cư dân cũ, QR cũ, phản ánh/ảnh, lịch sử 
 
 ## 5. Máy mới hoặc tạo bộ nghiệm thu mới
 
-Chỉ máy chưa có dữ liệu: `init:local` → `db:up` → `db:migrate` → `db:seed`. Với MySQL cài riêng, tạo `chung_cu_do_an` UTF8MB4 và điền cấu hình cho khớp trước migrate. Mật khẩu demo sinh tại `backend/.demo-credentials`, không có mật khẩu chung công khai.
+Chỉ máy chưa có dữ liệu: `init:local` → `db:up` → `db:migrate` → `setup:admin`. Với MySQL cài riêng, tạo `chung_cu_do_an` UTF8MB4 và điền cấu hình cho khớp trước migrate. Lệnh `setup:admin` hỏi tên và số điện thoại quản trị viên, sinh mật khẩu lưu tại `backend/storage/setup/<ten_database>.initial-admin.json`; không tạo dữ liệu nghiệp vụ giả. `db:seed` là tên lệnh tương thích cho cùng quy trình. Nếu database đã có bất kỳ tài khoản nào, lệnh dừng và giữ tài khoản/mật khẩu hiện có. Xem [khởi tạo bằng dữ liệu thực tế](du-lieu-thuc-te.md).
 
 Bộ mẫu mới độc lập:
 

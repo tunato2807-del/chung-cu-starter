@@ -51,8 +51,9 @@ export function diagnosticOptions(args, port = "3000") {
 export function credentialFile(database) {
   if (/^chung_cu_nghiem_thu(?:_[a-z0-9]{1,20})?$/.test(database))
     return `backend/storage/acceptance/${database}/TAI-KHOAN.md`;
-  return ["chung_cu", "chung_cu_do_an"].includes(database)
-    ? "backend/.demo-credentials"
+  if (database === "chung_cu") return "backend/.demo-credentials";
+  return /^[a-zA-Z0-9_]{1,64}$/.test(database)
+    ? `backend/storage/setup/${database}.initial-admin.json`
     : null;
 }
 

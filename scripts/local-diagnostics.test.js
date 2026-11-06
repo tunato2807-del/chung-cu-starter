@@ -43,6 +43,10 @@ test("diagnostics refuse remote API requests and malformed QR input", () => {
 test("credential paths are specific to the selected DB, with no path traversal", () => {
   assert.equal(credentialFile("chung_cu"), "backend/.demo-credentials");
   assert.equal(
+    credentialFile("chung_cu_do_an"),
+    "backend/storage/setup/chung_cu_do_an.initial-admin.json",
+  );
+  assert.equal(
     credentialFile("chung_cu_nghiem_thu"),
     "backend/storage/acceptance/chung_cu_nghiem_thu/TAI-KHOAN.md",
   );

@@ -19,6 +19,7 @@
     "db:up": "docker compose up -d --wait",
     "db:migrate": "npm run db:migrate -w backend",
     "db:seed": "npm run db:seed -w backend",
+    "setup:admin": "npm run setup:admin -w backend",
     "test": "node --env-file-if-exists=.env scripts/test-local.js",
     "test:e2e": "node --env-file-if-exists=.env scripts/test-local.js e2e",
     "format": "prettier --write \"backend/**/*.js\" \"frontend/src/**/*.{js,jsx,css}\" \"scripts/*.js\" \"e2e/*.js\" playwright.config.js",
