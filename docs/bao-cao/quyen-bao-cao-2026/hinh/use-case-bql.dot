@@ -1,0 +1,25 @@
+digraph G { graph [rankdir=LR, bgcolor="white", pad="0.18", nodesep="0.35", ranksep="0.45", dpi=180, fontname="Liberation Serif", fontsize=15, splines=polyline]; node [fontname="Liberation Serif", fontsize=15, shape=box, style="rounded", margin="0.13,0.09", color="#222222"]; edge [fontname="Liberation Serif", fontsize=12, color="#333333", arrowsize=0.65];
+edge [dir=none];
+b [shape=plaintext, label="«actor»\nBan quản lý"];
+subgraph cluster_system {label="Hệ thống quản lý vận hành chung cư"; color="#555555"; style=solid;
+u1 [shape=ellipse, style=solid, label="Khối / tầng / căn hộ"];
+u2 [shape=ellipse, style=solid, label="Cư dân / cư trú / phương tiện"];
+u3 [shape=ellipse, style=solid, label="Tài khoản căn / bàn giao"];
+u4 [shape=ellipse, style=solid, label="Vị trí / thiết bị / in QR"];
+u5 [shape=ellipse, style=solid, label="Tiếp nhận / phân công phản ánh"];
+u6 [shape=ellipse, style=solid, label="Nghiệm thu / trả lại"];
+u7 [shape=ellipse, style=solid, label="Phí / chỉ số / hóa đơn"];
+u8 [shape=ellipse, style=solid, label="Thu phí / công nợ / quỹ"];
+u9 [shape=ellipse, style=solid, label="Thông báo / tiện ích / báo cáo"];
+{rank=same;u1;u2;u3;u4;u5;u6;u7;u8;u9;} }
+{rank=min;b;}
+b -> u1;
+b -> u2;
+b -> u3;
+b -> u4;
+b -> u5;
+b -> u6;
+b -> u7;
+b -> u8;
+b -> u9;
+}

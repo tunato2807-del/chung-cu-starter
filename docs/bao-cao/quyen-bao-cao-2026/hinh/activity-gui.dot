@@ -1,0 +1,22 @@
+digraph G { graph [rankdir=TB, bgcolor="white", pad="0.18", nodesep="0.35", ranksep="0.45", dpi=180, fontname="Liberation Serif", fontsize=15, splines=polyline]; node [fontname="Liberation Serif", fontsize=15, shape=box, style="rounded", margin="0.13,0.09", color="#222222"]; edge [fontname="Liberation Serif", fontsize=12, color="#333333", arrowsize=0.65];
+start [shape=circle, label="", style=filled, fillcolor=black, width=.15];
+end [shape=doublecircle, label="", width=.2];
+n0 [label="Mở liên kết hoặc quét QR", shape=box];
+n1 [label="QR còn hoạt động?", shape=diamond];
+n2 [label="Nhập nội dung; chọn / chụp ảnh", shape=box];
+n3 [label="Gửi kèm khóa yêu cầu", shape=box];
+n4 [label="Yêu cầu mới và dữ liệu hợp lệ?", shape=diamond];
+n5 [label="Lưu MOI, snapshot, metadata ảnh\nvà biên nhận trong giao dịch", shape=box];
+n6 [label="Trả mã tra cứu; xóa nháp", shape=box];
+start -> n0;
+n0 -> n1;
+n1 -> n2 [label="Hợp lệ / Có"];
+n2 -> n3;
+n3 -> n4;
+n4 -> n5 [label="Hợp lệ / Có"];
+n5 -> n6;
+n6 -> end;
+n1 -> end [label="Không: báo mã hết hiệu lực", style=dashed, constraint=false];
+n4 -> n2 [label="Lỗi / tương tự: giữ nháp, xác nhận", style=dashed, constraint=false];
+n4 -> n6 [label="Replay hợp lệ: trả biên nhận cũ", style=dashed, constraint=false];
+}

@@ -1,0 +1,65 @@
+{
+  "participants": [
+    "Người gửi",
+    "React",
+    "API / service",
+    "MySQL + kho ảnh"
+  ],
+  "messages": [
+    [
+      0,
+      1,
+      "Mở /r/token",
+      false
+    ],
+    [
+      1,
+      2,
+      "GET vị trí công khai",
+      false
+    ],
+    [
+      2,
+      1,
+      "Vị trí và phiên bản",
+      true
+    ],
+    [
+      0,
+      1,
+      "Nội dung và ảnh",
+      false
+    ],
+    [
+      1,
+      2,
+      "POST multipart + khóa yêu cầu",
+      false
+    ],
+    [
+      2,
+      3,
+      "Chuẩn bị ảnh; BEGIN; kiểm tra",
+      false
+    ],
+    [
+      2,
+      3,
+      "Lưu MOI, snapshot, ảnh, nhật ký; COMMIT",
+      false
+    ],
+    [
+      2,
+      1,
+      "Biên nhận và mã tra cứu",
+      true
+    ],
+    [
+      1,
+      0,
+      "Hiển thị kết quả",
+      true
+    ]
+  ],
+  "note": "Replay cùng nội dung: trả biên nhận cũ. Lỗi/replay: dọn ảnh mới không được giữ lại."
+}

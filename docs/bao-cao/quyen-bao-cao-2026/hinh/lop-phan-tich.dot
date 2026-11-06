@@ -1,0 +1,20 @@
+digraph G { graph [rankdir=TB, bgcolor="white", pad="0.18", nodesep="0.35", ranksep="0.45", dpi=180, fontname="Liberation Serif", fontsize=15, splines=polyline]; node [fontname="Liberation Serif", fontsize=15, shape=box, style="rounded", margin="0.13,0.09", color="#222222"]; edge [fontname="Liberation Serif", fontsize=12, color="#333333", arrowsize=0.65];
+u [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>NguoiDung</B></TD></TR><TR><TD ALIGN="LEFT">ma_nguoi_dung, vai_tro</TD></TR><TR><TD ALIGN="LEFT">phien_ban_token</TD></TR></TABLE>>, pos="0,0!", pin=true];
+c [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>CuDan</B></TD></TR><TR><TD ALIGN="LEFT">ma_cu_dan, ho_va_ten</TD></TR><TR><TD ALIGN="LEFT">so_dien_thoai</TD></TR></TABLE>>, pos="270,0!", pin=true];
+h [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>CanHo</B></TD></TR><TR><TD ALIGN="LEFT">ma_can_ho, so_can_ho</TD></TR><TR><TD ALIGN="LEFT">dien_tich_m2</TD></TR></TABLE>>, pos="0,-145!", pin=true];
+r [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>DotCuTru</B></TD></TR><TR><TD ALIGN="LEFT">tu_ngay, den_ngay</TD></TR><TR><TD ALIGN="LEFT">quan_he</TD></TR></TABLE>>, pos="270,-145!", pin=true];
+q [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>ViTriQR</B></TD></TR><TR><TD ALIGN="LEFT">token_qr, phien_ban</TD></TR><TR><TD ALIGN="LEFT">dang_hoat_dong</TD></TR></TABLE>>, pos="0,-290!", pin=true];
+p [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>PhanAnh</B></TD></TR><TR><TD ALIGN="LEFT">trang_thai, luot_xu_ly</TD></TR><TR><TD ALIGN="LEFT">snapshot thiết bị</TD></TR></TABLE>>, pos="270,-290!", pin=true];
+b [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>HoaDon</B></TD></TR><TR><TD ALIGN="LEFT">ky_thanh_toan, tong_tien</TD></TR><TR><TD ALIGN="LEFT">trang_thai</TD></TR></TABLE>>, pos="0,-435!", pin=true];
+l [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>ChiTietHoaDon</B></TD></TR><TR><TD ALIGN="LEFT">so_luong, don_gia</TD></TR><TR><TD ALIGN="LEFT">thanh_tien</TD></TR></TABLE>>, pos="270,-435!", pin=true];
+e [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>ThietBi</B></TD></TR><TR><TD ALIGN="LEFT">ma_tai_san, ten_thiet_bi</TD></TR><TR><TD ALIGN="LEFT">trang_thai</TD></TR></TABLE>>, pos="0,-580!", pin=true];
+s [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>«module» XuLyPhanAnh</B></TD></TR><TR><TD ALIGN="LEFT">submit(), assign()</TD></TR><TR><TD ALIGN="LEFT">transition(), lookup()</TD></TR></TABLE>>, pos="270,-580!", pin=true];
+u -> c [dir=none, label="0..1 — 0..1"];
+c -> r [dir=none, label="1 — 0..*"];
+h -> r [dir=none, label="1 — 0..*"];
+q -> p [dir=none, label="1 — 0..*"];
+e -> q [dir=none, label="0..1 — 0..*"];
+h -> b [dir=none, label="1 — 0..*"];
+b -> l [dir=none, label="1 — 0..*"];
+s -> p [style=dashed, label="xử lý"];
+}

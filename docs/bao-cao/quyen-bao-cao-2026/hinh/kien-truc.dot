@@ -1,0 +1,19 @@
+digraph G { graph [rankdir=TB, bgcolor="white", pad="0.18", nodesep="0.35", ranksep="0.45", dpi=180, fontname="Liberation Serif", fontsize=15, splines=polyline]; node [fontname="Liberation Serif", fontsize=15, shape=box, style="rounded", margin="0.13,0.09", color="#222222"]; edge [fontname="Liberation Serif", fontsize=12, color="#333333", arrowsize=0.65];
+
+subgraph cluster_fe { label="Tầng trình bày — trình duyệt"; fe [label="React + Router + CSS
+Camera / chọn ảnh / QR"]; }
+subgraph cluster_api {label="Tầng ứng dụng — Node.js / Express";
+router [label="Router + middleware
+Phiên / quyền / giới hạn"];
+service [label="Service nghiệp vụ
+Validation / giao dịch / snapshot"];
+router -> service; }
+subgraph cluster_data {label="Tầng dữ liệu"; db [shape=cylinder,label="MySQL / InnoDB
+31 bảng + 8 view"]; fs [shape=cylinder,label="Kho tệp ảnh
+Metadata trong MySQL"]; }
+fe -> router [label="HTTPS /api
+JSON hoặc multipart",dir=both];
+service -> db [label="mysql2 / truy vấn tham số",dir=both];
+service -> fs [label="Kiểm tra và lưu ảnh",dir=both];
+
+}

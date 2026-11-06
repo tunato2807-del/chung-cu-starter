@@ -1,0 +1,194 @@
+[
+  [
+    "NT01",
+    "Đăng nhập hợp lệ",
+    "BQL đang hoạt động; nhập đúng định danh, loại và mật khẩu của bộ nghiệm thu.",
+    "Nhận phiên; mở đúng workspace BQL; không lộ token/mật khẩu trong nội dung trả về."
+  ],
+  [
+    "NT02",
+    "Sai thông tin và giới hạn",
+    "Thử sai mật khẩu; kiểm tra tình huống khóa theo giới hạn rồi chờ/đặt lại theo quy trình thử.",
+    "Không cấp phiên khi sai; có thông báo phù hợp và giới hạn theo cấu hình."
+  ],
+  [
+    "NT03",
+    "Phân quyền API",
+    "Dùng tài khoản cư dân/KTV gọi API quản trị ngoài quyền.",
+    "Máy chủ từ chối; không chỉ ẩn menu ở frontend."
+  ],
+  [
+    "NT04",
+    "Tạo QR vị trí",
+    "BQL tạo khu vực và một QR liên kết thiết bị hợp lệ; tải/in mã.",
+    "Mỗi vị trí có token riêng; mở đúng vị trí/thiết bị; ảnh tải và in mang đúng URL."
+  ],
+  [
+    "NT05",
+    "Mã hết hiệu lực",
+    "Vô hiệu mã rồi mở lại; thay mã và thử token trước khi thay.",
+    "Mã vô hiệu/token cũ không nhận phản ánh mới; mã mới còn hoạt động."
+  ],
+  [
+    "NT06",
+    "Camera, origin và HTTPS",
+    "Truy cập origin điện thoại mở được; cho/từ chối camera; kiểm tra IP khác origin tem cũ.",
+    "Xin quyền đúng điều kiện; báo lỗi rõ khi thiếu quyền/HTTPS; không tự sửa URL trên tem đã in."
+  ],
+  [
+    "NT07",
+    "Gửi ảnh hiện trường",
+    "Nhập form QR; lần lượt chụp ảnh và chọn ảnh thư viện; chờ xử lý rồi gửi.",
+    "Ảnh xem trước đúng; giữ nội dung; tạo một phản ánh và trả mã tra cứu riêng."
+  ],
+  [
+    "NT08",
+    "Ảnh không hợp lệ",
+    "Thử tệp không phải ảnh, ảnh quá giới hạn hoặc nhiều hơn số được phép.",
+    "Từ chối phù hợp; không tạo phản ánh/ảnh dở dang."
+  ],
+  [
+    "NT09",
+    "Phát lại yêu cầu",
+    "Gửi lại cùng khóa/cùng nội dung; sau đó thử cùng khóa nhưng nội dung khác.",
+    "Lần giống trả biên nhận cũ; lần khác báo xung đột; không tăng phản ánh trùng."
+  ],
+  [
+    "NT10",
+    "Phân công lại",
+    "BQL giao KTV A rồi đổi sang KTV B khi còn trạng thái cho phép.",
+    "Ghi lịch sử; A mất quyền; B có quyền theo phân công mới."
+  ],
+  [
+    "NT11",
+    "KTV hoàn thành",
+    "KTV được giao bắt đầu và nộp kết quả với ảnh mới.",
+    "Chuyển đúng DANG_XU_LY → DA_XU_LY; không cho thiếu bằng chứng bắt buộc."
+  ],
+  [
+    "NT12",
+    "Trả nghiệm thu",
+    "BQL trả lại kết quả có lý do; thử hoàn thành lại không có ảnh lượt mới.",
+    "Tăng lượt; quay lại xử lý; ảnh cũ không đủ để hoàn thành lần mới."
+  ],
+  [
+    "NT13",
+    "Đóng phản ánh",
+    "BQL nghiệm thu đạt; thử để KTV tự đóng.",
+    "Chỉ BQL được đóng; ghi thời điểm/lịch sử; KTV bị từ chối."
+  ],
+  [
+    "NT14",
+    "Tra cứu hợp lệ",
+    "Nhập mã tra cứu và thông tin xác minh đúng của phản ánh.",
+    "Thấy đúng tiến độ/phản hồi được công khai, không trả dữ liệu nội bộ."
+  ],
+  [
+    "NT15",
+    "Quyền ảnh và ghi chú",
+    "Sai mã/SĐT; tài khoản khác thử đọc ảnh hoặc chi tiết phản ánh không thuộc quyền.",
+    "Bị từ chối; không lộ ảnh, ghi chú nội bộ hoặc phản ánh người khác."
+  ],
+  [
+    "NT16",
+    "Chuyển căn cùng ngày",
+    "Tạo đợt ở bắt đầu hôm nay; chuyển sang căn khác ngay cùng ngày.",
+    "Giữ đợt cũ kết thúc và đợt mới bắt đầu cùng ngày; không còn hai đợt đang mở."
+  ],
+  [
+    "NT17",
+    "Tạo căn và chủ hộ",
+    "Tạo căn; thêm cư dân chủ hộ; xem danh sách tài khoản căn.",
+    "Có tài khoản theo căn, đúng người phụ trách; đăng nhập bằng mã căn/alias hiện tại với đúng mật khẩu căn."
+  ],
+  [
+    "NT18",
+    "Bàn giao và riêng tư",
+    "Bàn giao chủ mới; thử lại phiên và SĐT chủ cũ; kiểm tra phản ánh riêng.",
+    "Thu hồi phiên cũ; alias theo chủ mới; kế thừa hóa đơn nhưng không kế thừa phản ánh/nháp riêng của chủ cũ."
+  ],
+  [
+    "NT19",
+    "Số xe theo loại",
+    "Một căn có ô tô, xe máy, xe đạp; thêm đăng ký đã kết thúc trước ngày chốt.",
+    "Mỗi dòng phí có số lượng đúng loại còn hiệu lực; không đếm lại xe đã kết thúc."
+  ],
+  [
+    "NT20",
+    "Điện bậc thang",
+    "Cấu hình bộ giá ví dụ và VAT 8%; dùng 215 kWh.",
+    "Tiền trước thuế 484.670 đồng; thuế 38.774 đồng; tổng 523.444 đồng theo quy tắc ví dụ."
+  ],
+  [
+    "NT21",
+    "Snapshot và lô",
+    "Lập nháp; thay nguồn trước duyệt; thử lô có một căn lỗi.",
+    "Duyệt nhận biết nguồn đổi; yêu cầu tính lại; lô lỗi không để lại hóa đơn một phần."
+  ],
+  [
+    "NT22",
+    "VietQR hóa đơn",
+    "Gửi hóa đơn với ngân hàng/tài khoản nhận thử nghiệm; cư dân mở chi tiết.",
+    "QR và thông tin khớp snapshot; quét không tự đổi trạng thái đã thu; không chuyển tiền thật khi thử."
+  ],
+  [
+    "NT23",
+    "Xác nhận thu",
+    "BQL đối soát ngoài hệ thống, xác nhận đúng tổng và mã tham chiếu; thử thu lặp/sai tổng.",
+    "Ghi đã thu một lần đúng điều kiện; công nợ/thu/quỹ liên quan nhất quán; từ chối đầu vào sai."
+  ],
+  [
+    "NT24",
+    "Tổng quan và biểu đồ",
+    "Đổi bộ lọc ngày/tuần/tháng/quý/năm; hiện/ẩn biểu đồ; mở danh sách từ chỉ số.",
+    "Số liệu và điều hướng khớp phạm vi; ẩn biểu đồ không mất quyền/chức năng khác."
+  ],
+  [
+    "NT25",
+    "Thông báo và nhắc phí",
+    "BQL phát hành, cư dân đọc, BQL thu hồi; tạo nhắc phí theo hóa đơn.",
+    "Chỉ người trong phạm vi nhận được; biên nhận đọc đúng ngữ cảnh; không giả định đã gửi SMS/email."
+  ],
+  [
+    "NT26",
+    "Bảo trì thiết bị",
+    "Lập phiếu, phân công, thực hiện và nghiệm thu; thử KTV ngoài phân công.",
+    "Đúng vòng đời và quyền; giữ lịch sử; không tự biến phản ánh QR thành phiếu bảo trì."
+  ],
+  [
+    "NT27",
+    "Đặt tiện ích",
+    "Cư dân yêu cầu lịch, BQL duyệt; thử lịch xung đột/hủy theo quy tắc.",
+    "Chặn xung đột theo quy tắc; trạng thái và quyền hủy/duyệt phù hợp."
+  ],
+  [
+    "NT28",
+    "Quỹ và chứng từ",
+    "Lập thu/chi có chứng từ; ghi sổ; đảo phiếu theo luồng hợp lệ.",
+    "Số dư và lịch sử khớp; không sửa trực tiếp khoản đã ghi sổ để xóa dấu vết."
+  ],
+  [
+    "NT29",
+    "Nhập Excel",
+    "Tải mẫu mới; nhập đúng mã cư dân; thử dòng sai và xác nhận sau xem trước.",
+    "Báo rõ dòng lỗi; không dùng CH... làm mã cư dân; chỉ lưu khi lô hợp lệ."
+  ],
+  [
+    "NT30",
+    "Xuất Excel/PDF",
+    "Xuất theo bộ lọc; mở sheet Chi tiết và PDF.",
+    "Có dòng chi tiết/đúng tổng; giữ số 0 đầu của mã/SĐT; không xuất mật khẩu/phiên; PDF đọc và in được."
+  ],
+  [
+    "NT31",
+    "Phiên hết hạn",
+    "Hết hạn/thu hồi phiên khi đang mở trang; thử xem lại dữ liệu riêng.",
+    "Yêu cầu đăng nhập lại, không dùng phiên cũ; không giữ dữ liệu riêng ngoài phạm vi."
+  ],
+  [
+    "NT32",
+    "Sẵn sàng và xung đột",
+    "Thử form phiên bản cũ; kiểm tra health/ready khi database không sẵn sàng.",
+    "Không ghi đè form mới; health không che ready lỗi; không báo nhầm mọi lỗi thành sai mật khẩu."
+  ]
+]

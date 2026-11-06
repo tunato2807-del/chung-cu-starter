@@ -1,0 +1,53 @@
+{
+  "participants": [
+    "BQL",
+    "React",
+    "API / service",
+    "MySQL"
+  ],
+  "messages": [
+    [
+      0,
+      1,
+      "Nhập vị trí",
+      false
+    ],
+    [
+      1,
+      2,
+      "POST /vi_tri_qr",
+      false
+    ],
+    [
+      2,
+      3,
+      "BEGIN; kiểm tra thiết bị",
+      false
+    ],
+    [
+      2,
+      3,
+      "Lưu vị trí, token, lịch sử; COMMIT",
+      false
+    ],
+    [
+      3,
+      2,
+      "Bản ghi mới",
+      true
+    ],
+    [
+      2,
+      1,
+      "201: dữ liệu vị trí",
+      true
+    ],
+    [
+      1,
+      0,
+      "Tạo ảnh QR; xem / tải / in",
+      true
+    ]
+  ],
+  "note": "Lỗi kiểm tra hoặc ghi nhật ký: rollback, không tạo vị trí dở dang."
+}

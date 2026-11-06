@@ -1,0 +1,12 @@
+digraph G { graph [rankdir=TB, bgcolor="white", pad="0.18", nodesep="0.35", ranksep="0.45", dpi=180, fontname="Liberation Serif", fontsize=15, splines=polyline]; node [fontname="Liberation Serif", fontsize=15, shape=box, style="rounded", margin="0.13,0.09", color="#222222"]; edge [fontname="Liberation Serif", fontsize=12, color="#333333", arrowsize=0.65];
+u [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>nguoi_dung</B></TD></TR><TR><TD ALIGN="LEFT">PK ma_nguoi_dung</TD></TR><TR><TD ALIGN="LEFT">vai_tro</TD></TR></TABLE>>];
+e [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>thiet_bi</B></TD></TR><TR><TD ALIGN="LEFT">PK ma_thiet_bi</TD></TR><TR><TD ALIGN="LEFT">ma_tai_san, ten_thiet_bi</TD></TR></TABLE>>];
+q [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>vi_tri_qr</B></TD></TR><TR><TD ALIGN="LEFT">PK ma_vi_tri_qr</TD></TR><TR><TD ALIGN="LEFT">FK ma_thiet_bi (NULL)</TD></TR><TR><TD ALIGN="LEFT">token_qr, phien_ban</TD></TR></TABLE>>];
+p [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>phan_anh</B></TD></TR><TR><TD ALIGN="LEFT">PK ma_phan_anh</TD></TR><TR><TD ALIGN="LEFT">FK ma_vi_tri_qr</TD></TR><TR><TD ALIGN="LEFT">FK người gửi / KTV / thiết bị</TD></TR><TR><TD ALIGN="LEFT">trang_thai, snapshot</TD></TR></TABLE>>];
+i [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>hinh_anh_phan_anh</B></TD></TR><TR><TD ALIGN="LEFT">PK ma_hinh_anh_phan_anh</TD></TR><TR><TD ALIGN="LEFT">FK ma_phan_anh</TD></TR><TR><TD ALIGN="LEFT">loai, luot_xu_ly, duong_dan_tep</TD></TR></TABLE>>];
+e -> q [dir=both, arrowtail=none, arrowhead=none, label="0..1 : N; hiện tại"];
+q -> p [dir=both, arrowtail=none, arrowhead=none, label="1 : N; vị trí"];
+e -> p [dir=both, arrowtail=none, arrowhead=none, label="0..1 : N; lúc gửi"];
+u -> p [dir=both, arrowtail=none, arrowhead=none, label="0..1 : N; người gửi / KTV"];
+p -> i [dir=both, arrowtail=none, arrowhead=none, label="1 : N"];
+}

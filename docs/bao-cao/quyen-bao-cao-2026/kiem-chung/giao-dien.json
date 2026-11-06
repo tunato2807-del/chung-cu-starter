@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-06",
+  "source_commit": "56ebfe8",
+  "scope": "UI screenshots with mocked API only",
+  "errors": [],
+  "captures": [
+    {
+      "file": "giao-dien-dang-nhap.png",
+      "fixture": true,
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "details": "Current form only; no real account/login attempt; third-party photographs excluded."
+    },
+    {
+      "file": "giao-dien-phan-anh.png",
+      "route": "/r/00000000-0000-4000-8000-000000000011",
+      "fixture": true,
+      "viewport": {
+        "width": 375,
+        "height": 950
+      },
+      "details": "Current public form, synthetic location; no camera or submission test."
+    },
+    {
+      "file": "giao-dien-qr.png",
+      "route": "/quan-tri/vi-tri-qr",
+      "fixture": true,
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "details": "Current QR-only popover with synthetic location; preview points to ephemeral test origin."
+    },
+    {
+      "file": "giao-dien-cu-dan.png",
+      "fixture": true,
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "details": "Synthetic residents; no real identities, phone numbers or DB accessed."
+    }
+  ]
+}

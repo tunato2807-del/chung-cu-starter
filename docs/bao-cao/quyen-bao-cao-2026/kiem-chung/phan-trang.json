@@ -1,0 +1,42 @@
+{
+  "pdf_pages": 125,
+  "front_matter_pages": 16,
+  "main_content_pages": 64,
+  "appendix_pages": 43,
+  "references_pages": 2,
+  "first_numbered_physical_page": 17,
+  "word_sections": [
+    {
+      "page_cm": [
+        21.001,
+        29.7
+      ],
+      "margins_cm": [
+        2.0,
+        2.0,
+        3.0,
+        2.0
+      ]
+    },
+    {
+      "page_cm": [
+        21.001,
+        29.7
+      ],
+      "margins_cm": [
+        2.0,
+        2.0,
+        3.0,
+        2.0
+      ]
+    }
+  ],
+  "dynamic_toc_fields": 3,
+  "dynamic_page_refs": 154,
+  "captions": 79,
+  "missing_captions_in_pdf": [],
+  "text_outside_page": [],
+  "page_number_issues": [],
+  "preview_font": "Liberation Serif fallback; DOCX uses Times New Roman; reflow in Word before printing.",
+  "pdf_sha256": "c213cacf6dc530188a455cc94f217a62ca32202cd51d4c69ebbcb97f7b06da4c"
+}

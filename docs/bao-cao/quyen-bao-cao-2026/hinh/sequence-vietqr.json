@@ -1,0 +1,47 @@
+{
+  "participants": [
+    "Cư dân",
+    "React",
+    "API / quyền",
+    "MySQL"
+  ],
+  "messages": [
+    [
+      0,
+      1,
+      "Mở hóa đơn",
+      false
+    ],
+    [
+      1,
+      2,
+      "GET /cua_toi/hoa_don/id",
+      false
+    ],
+    [
+      2,
+      3,
+      "Đọc tài khoản và phạm vi hóa đơn",
+      false
+    ],
+    [
+      3,
+      2,
+      "Hóa đơn đã gửi / đã thu được phép",
+      true
+    ],
+    [
+      2,
+      1,
+      "Chi tiết và dữ liệu VietQR",
+      true
+    ],
+    [
+      1,
+      0,
+      "Hiển thị QR và thông tin nhận",
+      true
+    ]
+  ],
+  "note": "Không gọi ngân hàng trong luồng này. Quét mã không tự ghi đã thu; BQL đối soát riêng."
+}

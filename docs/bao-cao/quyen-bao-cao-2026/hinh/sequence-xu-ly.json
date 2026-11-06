@@ -1,0 +1,77 @@
+{
+  "participants": [
+    "BQL / KTV",
+    "React",
+    "API / service",
+    "MySQL"
+  ],
+  "messages": [
+    [
+      0,
+      1,
+      "BQL chọn KTV",
+      false
+    ],
+    [
+      1,
+      2,
+      "PATCH phân công + phiên bản",
+      false
+    ],
+    [
+      2,
+      3,
+      "Khóa hàng; kiểm tra; ghi lịch sử",
+      false
+    ],
+    [
+      2,
+      1,
+      "DA_PHAN_CONG",
+      true
+    ],
+    [
+      0,
+      1,
+      "KTV bắt đầu / nộp ảnh",
+      false
+    ],
+    [
+      1,
+      2,
+      "PATCH trạng thái",
+      false
+    ],
+    [
+      2,
+      3,
+      "Kiểm tra KTV, lượt, ảnh; cập nhật",
+      false
+    ],
+    [
+      2,
+      1,
+      "DA_XU_LY",
+      true
+    ],
+    [
+      0,
+      1,
+      "BQL nghiệm thu / trả lại",
+      false
+    ],
+    [
+      1,
+      2,
+      "PATCH quyết định",
+      false
+    ],
+    [
+      2,
+      3,
+      "Giao dịch trạng thái + lịch sử",
+      false
+    ]
+  ],
+  "note": "Trả lại tăng lượt; hoàn thành tiếp theo yêu cầu ảnh mới. KTV không được tự đóng phản ánh."
+}

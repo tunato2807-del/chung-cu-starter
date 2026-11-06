@@ -1,0 +1,24 @@
+{
+  "source_commit": "56ebfe8",
+  "date": "06/11/2026",
+  "tables": 31,
+  "columns": 362,
+  "foreign_keys": 81,
+  "views": 8,
+  "figures": 25,
+  "tables_in_report": 54,
+  "test_cases": 32,
+  "toc_entries": 75,
+  "page_map_entries": 151,
+  "docx_sha256": "9b91dc716f22811b6825b8c2eaa20305b4c1581d8db607b206769871f600be36",
+  "pending": [
+    "Submission month/year intentionally left blank as requested",
+    "Student reviews acknowledgements/declaration and contributions before signing",
+    "GVHD/reviewer comments and signatures",
+    "Actual work log",
+    "Hardware/OS and browser versions",
+    "Figma evidence if required",
+    "Device QR timings and functional acceptance evidence"
+  ],
+  "render_note": "DOCX requests Times New Roman. Linux preview uses Liberation Serif where Times New Roman is unavailable; final pagination must be updated in Microsoft Word on the submission machine."
+}

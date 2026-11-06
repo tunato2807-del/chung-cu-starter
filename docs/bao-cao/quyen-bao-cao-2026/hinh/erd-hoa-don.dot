@@ -1,0 +1,18 @@
+digraph G { graph [rankdir=TB, bgcolor="white", pad="0.18", nodesep="0.35", ranksep="0.45", dpi=180, fontname="Liberation Serif", fontsize=15, splines=polyline]; node [fontname="Liberation Serif", fontsize=15, shape=box, style="rounded", margin="0.13,0.09", color="#222222"]; edge [fontname="Liberation Serif", fontsize=12, color="#333333", arrowsize=0.65];
+h [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>can_ho</B></TD></TR><TR><TD ALIGN="LEFT">PK ma_can_ho</TD></TR></TABLE>>];
+f [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>loai_phi</B></TD></TR><TR><TD ALIGN="LEFT">PK loai_phi</TD></TR></TABLE>>];
+c [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>cau_hinh_phi</B></TD></TR><TR><TD ALIGN="LEFT">PK ma_cau_hinh_phi</TD></TR><TR><TD ALIGN="LEFT">FK loai_phi</TD></TR><TR><TD ALIGN="LEFT">tu_ngay, don_gia, bac_dien</TD></TR></TABLE>>];
+m [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>chi_so_dich_vu</B></TD></TR><TR><TD ALIGN="LEFT">PK ma_chi_so_dich_vu</TD></TR><TR><TD ALIGN="LEFT">FK ma_can_ho</TD></TR><TR><TD ALIGN="LEFT">ky_thanh_toan, chỉ số</TD></TR></TABLE>>];
+b [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>hoa_don</B></TD></TR><TR><TD ALIGN="LEFT">PK ma_hoa_don</TD></TR><TR><TD ALIGN="LEFT">FK ma_can_ho</TD></TR><TR><TD ALIGN="LEFT">ky_thanh_toan, tong_tien</TD></TR></TABLE>>];
+l [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>chi_tiet_hoa_don</B></TD></TR><TR><TD ALIGN="LEFT">PK ma_chi_tiet_hoa_don</TD></TR><TR><TD ALIGN="LEFT">FK hóa đơn / giá / chỉ số</TD></TR><TR><TD ALIGN="LEFT">so_luong, don_gia, thanh_tien</TD></TR></TABLE>>];
+n [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>thong_bao</B></TD></TR><TR><TD ALIGN="LEFT">PK ma_thong_bao</TD></TR><TR><TD ALIGN="LEFT">FK ma_hoa_don (NULL)</TD></TR></TABLE>>];
+r [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD BGCOLOR="#eeeeee"><B>thong_bao_da_doc</B></TD></TR><TR><TD ALIGN="LEFT">FK thông báo / người nhận</TD></TR><TR><TD ALIGN="LEFT">ngữ cảnh người phụ trách</TD></TR></TABLE>>];
+f -> c [dir=both, arrowtail=none, arrowhead=none, label="1 : N"];
+h -> m [dir=both, arrowtail=none, arrowhead=none, label="1 : N"];
+h -> b [dir=both, arrowtail=none, arrowhead=none, label="1 : N"];
+b -> l [dir=both, arrowtail=none, arrowhead=none, label="1 : N"];
+c -> l [dir=both, arrowtail=none, arrowhead=none, label="1 : N"];
+m -> l [dir=both, arrowtail=none, arrowhead=none, label="0..1 : N"];
+b -> n [dir=both, arrowtail=none, arrowhead=none, label="0..1 : N"];
+n -> r [dir=both, arrowtail=none, arrowhead=none, label="1 : N"];
+}

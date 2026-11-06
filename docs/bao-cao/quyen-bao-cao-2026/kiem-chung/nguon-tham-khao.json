@@ -1,0 +1,63 @@
+[
+  {
+    "id": "react",
+    "url": "https://raw.githubusercontent.com/facebook/react/main/README.md",
+    "status": 200,
+    "bytes": 5296,
+    "sha256": "9b6ac13cb03c06ae5643376cebd8d0e6cbae7ec0dd30a5cdc443a93160c348eb"
+  },
+  {
+    "id": "express",
+    "url": "https://raw.githubusercontent.com/expressjs/express/master/Readme.md",
+    "status": 200,
+    "bytes": 10375,
+    "sha256": "3cf5f3e224dbb9b5e2bc0ac255871de453762ae7a277f868da5f4a69d6ff2509"
+  },
+  {
+    "id": "html5-qrcode",
+    "url": "https://raw.githubusercontent.com/mebjas/html5-qrcode/master/README.md",
+    "status": 200,
+    "bytes": 23599,
+    "sha256": "c7838ec968b4679d73668f4ed2c23b45ca82c87f033bd231b580355194049396"
+  },
+  {
+    "id": "qrcode",
+    "url": "https://raw.githubusercontent.com/soldair/node-qrcode/master/README.md",
+    "status": 200,
+    "bytes": 22372,
+    "sha256": "2c562622aa4a285617dbf412fa51ae73b6f00a73c8423c295103c4bbbae72035"
+  },
+  {
+    "id": "authorization",
+    "url": "https://raw.githubusercontent.com/OWASP/CheatSheetSeries/master/cheatsheets/Authorization_Cheat_Sheet.md",
+    "status": 200,
+    "bytes": 31021,
+    "sha256": "fb8b6e5c60ed783025beefb5049142fd9da02d01f5c95de18a19d26479737975"
+  },
+  {
+    "id": "vite",
+    "url": "https://raw.githubusercontent.com/vitejs/vite/main/docs/guide/index.md",
+    "status": 200,
+    "bytes": 11552,
+    "sha256": "6a66574988783e1057b1d73ee4ed23a02e5f0e67b041ac4105fb930b5431194a"
+  },
+  {
+    "id": "mysql",
+    "url": "https://raw.githubusercontent.com/mysql/mysql-server/8.4/README.md",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "id": "node",
+    "url": "https://raw.githubusercontent.com/nodejs/node/v24.x/doc/api/https.md",
+    "status": 200,
+    "bytes": 22225,
+    "sha256": "491ff5732a855b66d55be3ff4653f02eca49953c9596d68684d620624f9c9e78"
+  },
+  {
+    "id": "erpnext",
+    "url": "https://raw.githubusercontent.com/frappe/erpnext/develop/README.md",
+    "status": 200,
+    "bytes": 7442,
+    "sha256": "c7d12496fddc6771a44d9c84dcaa6868eea52ef32aca5a6a68d5b59d88a7022b"
+  }
+]

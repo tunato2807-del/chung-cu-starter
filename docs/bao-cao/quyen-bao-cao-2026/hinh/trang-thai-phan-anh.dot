@@ -1,0 +1,12 @@
+digraph G { graph [rankdir=TB, bgcolor="white", pad="0.18", nodesep="0.35", ranksep="0.45", dpi=180, fontname="Liberation Serif", fontsize=15, splines=polyline]; node [fontname="Liberation Serif", fontsize=15, shape=box, style="rounded", margin="0.13,0.09", color="#222222"]; edge [fontname="Liberation Serif", fontsize=12, color="#333333", arrowsize=0.65];
+
+m [label="MOI
+Mới tiếp nhận"]; p [label="DA_PHAN_CONG"]; x [label="DANG_XU_LY"]; n [label="DA_XU_LY
+Chờ nghiệm thu"]; d [label="DA_DONG"];
+t [label="TU_CHOI"]; g [label="TRUNG
+Tham chiếu bản gốc"];
+m -> p [label="BQL phân công"]; p -> x [label="KTV bắt đầu"]; x -> n [label="Kết quả + ảnh mới"];
+n -> d [label="BQL đạt"]; n -> x [label="Trả lại + tăng lượt"];
+m -> t [label="BQL + lý do"]; m -> g [label="BQL + điều kiện gộp"];
+
+}

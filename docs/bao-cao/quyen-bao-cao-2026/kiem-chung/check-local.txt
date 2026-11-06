@@ -1,0 +1,8 @@
+[OK] NODE: Node 24.19.0; yêu cầu >=22.12, khuyến nghị Node 24.
+[OK] ENV: .env: chỉ kiểm tra sự tồn tại, không đọc nội dung. Nếu thiếu, tạo từ .env.example và điền cấu hình riêng.
+[OK] DEPENDENCIES package.json: Đã tìm thấy các dependency khai báo.
+[OK] DEPENDENCIES backend/package.json: Đã tìm thấy các dependency khai báo.
+[OK] DEPENDENCIES frontend/package.json: Đã tìm thấy các dependency khai báo.
+
+0 lỗi. Đây là kiểm tra file/dependency; chưa xác nhận nghiệp vụ, camera hay database trên máy khác.
+Khi backend đang chạy: node scripts/check-local.js --api http://127.0.0.1:3000
