@@ -14,6 +14,31 @@ const openssl = (...args) =>
 let vite;
 const api = http.createServer((req, res) => {
   res.setHeader("Content-Type", "application/json");
+  if (req.url === "/api/xac_thuc/dang_nhap") {
+    let body = "";
+    req.setEncoding("utf8");
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", () => {
+      // Transport fixture only; no actual credentials, database or auth state.
+      const valid =
+        req.method === "POST" &&
+        req.headers["x-app-request"] === "1" &&
+        req.headers["content-type"] === "application/json" &&
+        body === JSON.stringify({ probe: "https-login-transport" });
+      res.statusCode = valid ? 200 : 400;
+      if (valid)
+        res.setHeader(
+          "Set-Cookie",
+          "transport_probe=fixture; Path=/; HttpOnly; Secure; SameSite=Strict",
+        );
+      res.end(
+        JSON.stringify({
+          data: { status: valid ? "login-proxy-ok" : "invalid-probe" },
+        }),
+      );
+    });
+    return;
+  }
   res.end(JSON.stringify({ data: { status: "proxy-ok", path: req.url } }));
 });
 const variables = ["API_TARGET", "DEV_HTTPS_CERT", "DEV_HTTPS_KEY"];
@@ -123,7 +148,47 @@ try {
   assert.deepEqual(JSON.parse(proxied.body), {
     data: { status: "proxy-ok", path: "/api/probe" },
   });
-  console.log("PASS: HTTPS certificate trust, frontend content and API proxy.");
+  const loginBody = JSON.stringify({ probe: "https-login-transport" });
+  const login = await new Promise((resolve, reject) => {
+    const request = https.request(
+      origin + "/api/xac_thuc/dang_nhap",
+      {
+        method: "POST",
+        ca,
+        agent: false,
+        headers: {
+          "X-App-Request": "1",
+          "Content-Type": "application/json",
+          "Content-Length": Buffer.byteLength(loginBody),
+        },
+      },
+      (response) => {
+        let body = "";
+        response.setEncoding("utf8");
+        response.on("data", (chunk) => (body += chunk));
+        response.on("end", () =>
+          resolve({
+            status: response.statusCode,
+            body,
+            cookies: response.headers["set-cookie"],
+          }),
+        );
+        response.on("error", reject);
+      },
+    );
+    request.on("error", reject);
+    request.end(loginBody);
+  });
+  assert.equal(login.status, 200);
+  assert.deepEqual(JSON.parse(login.body), {
+    data: { status: "login-proxy-ok" },
+  });
+  assert.deepEqual(login.cookies, [
+    "transport_probe=fixture; Path=/; HttpOnly; Secure; SameSite=Strict",
+  ]);
+  console.log(
+    "PASS: HTTPS certificate trust, frontend content, API GET and login-shaped POST/cookie proxy (transport fixtures only).",
+  );
 } finally {
   await vite?.close();
   api.closeAllConnections();
