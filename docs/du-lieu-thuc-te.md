@@ -1,5 +1,7 @@
 # Dữ liệu thực tế cho đề tài
 
+Người dùng sau đó đã chọn **dữ liệu mô phỏng sát thực tế** cho bộ quy mô lớn. Xem [lệnh tạo bộ mô phỏng riêng](du-lieu-mo-phong-quy-mo.md); lựa chọn này không biến dữ liệu mô phỏng thành dữ liệu thật và không sửa thông tin nguồn bên dưới.
+
 Đề tài tập trung quản lý vận hành một chung cư và tiếp nhận phản ánh. Thông tin của nhiều chung cư trên website chỉ dùng làm tài liệu tham khảo có nguồn; không ghép cư dân, thiết bị, thu phí và phản ánh của các dự án khác nhau thành dữ liệu vận hành một tòa nhà.
 
 ## Nguồn đang chuẩn bị đối chiếu

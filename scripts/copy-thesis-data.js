@@ -115,7 +115,7 @@ async function verifySource(source) {
       throw new Error("SOURCE_CHECKSUM");
   return applied.length;
 }
-async function verifyForeignKeys(db) {
+export async function verifyForeignKeys(db) {
   const [parts] = await db.query(
     "SELECT table_name AS tab,constraint_name AS con,column_name AS col,referenced_table_name AS parent,referenced_column_name AS pcol,ordinal_position AS pos FROM information_schema.key_column_usage WHERE constraint_schema=DATABASE() AND referenced_table_name IS NOT NULL ORDER BY table_name,constraint_name,ordinal_position",
   );

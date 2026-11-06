@@ -51,8 +51,21 @@ function run(command, args, env, input) {
       `Lệnh dừng với mã ${result.status}. Không xóa database/volume để thử lại; xem hướng dẫn nghiệm thu.`,
     );
 }
-async function launch() {
-  const options = acceptanceOptions(process.argv.slice(2));
+export function profileOptions(args, profile = "acceptance") {
+  if (!["acceptance", "realistic"].includes(profile))
+    throw new Error("Unknown data profile.");
+  return acceptanceOptions(
+    profile === "realistic" &&
+      !args.some((arg) => arg.startsWith("--database="))
+      ? ["--database=chung_cu_nghiem_thu_quymo", ...args]
+      : args,
+  );
+}
+export async function launch(
+  args = process.argv.slice(2),
+  profile = "acceptance",
+) {
+  const options = profileOptions(args, profile);
   // Both native MySQL and Compose use the same TCP connection. The old
   // --docker flag remains accepted for existing acceptance instructions.
   if (
@@ -76,7 +89,15 @@ async function launch() {
     `Database nghiệm thu: ${options.database}; giữ nguyên .env và dữ liệu chung_cu.`,
   );
   run(process.execPath, ["backend/scripts/migrate.js"], env);
-  run(process.execPath, ["backend/scripts/seed-acceptance.js"], env);
+  run(
+    process.execPath,
+    [
+      profile === "realistic"
+        ? "backend/scripts/seed-realistic.js"
+        : "backend/scripts/seed-acceptance.js",
+    ],
+    env,
+  );
 }
 if (
   process.argv[1] &&
