@@ -26,7 +26,7 @@ const today = () =>
 const values = (event) => Object.fromEntries(new FormData(event.currentTarget));
 const displayDay = (day) => day.split("-").reverse().join("/");
 
-function ResidentCode({ value, label = false }) {
+function ResidentCode({ value, label = false, copyable = true }) {
   const [notice, setNotice] = useState("");
   async function copy() {
     const code = String(value);
@@ -68,14 +68,16 @@ function ResidentCode({ value, label = false }) {
     <div className="resident-code">
       {label && <span>Mã cư dân:</span>}
       <code>{value}</code>
-      <button
-        type="button"
-        aria-label={`Sao chép mã cư dân ${value}`}
-        onClick={copy}
-      >
-        Sao chép
-      </button>
-      {notice && <small role="status">{notice}</small>}
+      {copyable && (
+        <button
+          type="button"
+          aria-label={`Sao chép mã cư dân ${value}`}
+          onClick={copy}
+        >
+          Sao chép
+        </button>
+      )}
+      {copyable && notice && <small role="status">{notice}</small>}
     </div>
   );
 }
@@ -787,7 +789,7 @@ export function Residents() {
               {resource.result?.data.map((r) => (
                 <tr key={r.ma_cu_dan}>
                   <td>
-                    <ResidentCode value={r.ma_cu_dan} />
+                    <ResidentCode value={r.ma_cu_dan} copyable={false} />
                   </td>
                   <td>
                     <Link to={`/quan-tri/cu-dan/${r.ma_cu_dan}`}>
