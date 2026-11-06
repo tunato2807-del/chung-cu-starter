@@ -17,6 +17,7 @@
     "build": "npm run build -w frontend",
     "init:local": "node scripts/init-local.js",
     "init:fresh": "node scripts/init-fresh-local.js",
+    "config:check": "node --env-file-if-exists=.env scripts/check-fresh-config.js",
     "db:up": "docker compose up -d --wait",
     "db:migrate": "npm run db:migrate -w backend",
     "db:seed": "npm run db:seed -w backend",

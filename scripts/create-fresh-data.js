@@ -1,15 +1,13 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { launch } from "./create-acceptance-data.js";
+import { freshConfigIssues } from "./fresh-config-status.js";
 
 export function freshDataOptions(args, environment = process.env) {
-  if (
-    environment.FRESH_INSTALL !== "1" ||
-    !/^chung_cu_nghiem_thu_moi[a-z0-9]{1,17}$/.test(environment.DB_NAME || "")
-  )
+  if (freshConfigIssues(environment).length)
     throw Object.assign(
       new Error(
-        "Cần .env mới được tạo bởi npm run init:fresh. Không dùng cấu hình cũ.",
+        `Cấu hình cài mới chưa hợp lệ: ${freshConfigIssues(environment).join(", ")}. Chạy npm run config:check; sửa có sao lưu bằng npm run init:fresh -- --repair.`,
       ),
       { code: "FRESH_CONFIG_REQUIRED" },
     );
@@ -46,9 +44,14 @@ if (
             ? `Chưa tạo được bản cài mới (${error.code}). Kiểm tra MySQL và quyền tạo database.`
             : error.message,
     );
-    console.error(
-      "Nếu lần trước đã báo Hoàn tất, chạy npm run dev:backend để dùng đúng bản mới đó; không chạy lại lệnh tạo dữ liệu.",
-    );
+    if (error.code === "FRESH_CONFIG_REQUIRED")
+      console.error(
+        "Lệnh dừng trước bước tạo dữ liệu. Chỉ khởi động backend sau khi config:check báo OK và bộ dữ liệu đã báo Hoàn tất.",
+      );
+    else if (error.code === "ER_DB_CREATE_EXISTS")
+      console.error(
+        "Chỉ chạy npm run dev:backend nếu lần tạo trước đã báo Hoàn tất; nếu chưa, giữ bộ dở dang để kiểm tra.",
+      );
     process.exitCode = 1;
   }
 }

@@ -2,6 +2,8 @@
 
 > **Cài mới hoàn toàn, không chép dữ liệu cũ:** [hướng dẫn Windows / VS Code](docs/cai-moi-hoan-toan-vscode.md). `npm run init:fresh` tạo cấu hình và tên database mới; `npm run db:realistic:fresh` chỉ tạo database chưa tồn tại. Backend dùng `npm run dev:backend` với cấu hình mới.
 
+> **Nếu báo thiếu cấu hình cài mới/JWT:** chạy `npm run init:fresh -- --repair` rồi `npm run config:check`. Lệnh sửa có sao lưu, giữ thông tin kết nối MySQL và không đổi database/JWT đã hợp lệ. Chỉ sửa dòng mật khẩu trong `.env`, không thay cả tệp bằng ví dụ cấu hình rút gọn.
+
 > **Bộ dữ liệu mô phỏng quy mô lớn:** [tạo 200 căn, 400 cư dân, 13 kỳ hóa đơn và tối thiểu 100 dòng ở 25 bảng](docs/du-lieu-mo-phong-quy-mo.md). Lệnh `npm run db:realistic` tạo database riêng; sáu bảng danh mục/kỹ thuật giữ số lượng đúng nghiệp vụ.
 
 > **CSDL đồ án mới — MySQL:** [31 bảng thật, 8 view lịch sử và đối chiếu đủ nghiệp vụ Word](docs/csdl-do-an/README.md) · [cách cập nhật/chuyển dữ liệu/chạy trên Windows](docs/csdl-do-an-mysql.md) · [kiểm chứng](docs/csdl-do-an/kiem-chung.md). Dùng nhánh `codex/thesis-mysql-database`; bản PostgreSQL trước được giữ trong lịch sử Git.

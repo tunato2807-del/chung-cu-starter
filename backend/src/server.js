@@ -1,8 +1,8 @@
 import { app } from "./app.js";
 import { pool } from "./lib/db.js";
-if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32)
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET.trim().length < 32)
   throw new Error(
-    "JWT_SECRET must contain at least 32 characters. Run npm run init:local.",
+    "JWT_SECRET cần ít nhất 32 ký tự trong cấu hình đang nạp. Với bản cài mới: từ thư mục gốc chạy npm run config:check; dùng npm run init:fresh -- --repair để sửa .env có sao lưu.",
   );
 const port = Number(process.env.PORT || 3000);
 const server = app.listen(port, "127.0.0.1", () => {

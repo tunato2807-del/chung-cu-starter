@@ -25,7 +25,7 @@ Cần Git, Node.js 24 và MySQL 8.0.21+ hoặc 8.4 đang chạy. Dừng backend/
 }
 ```
 
-`init:fresh` không đọc tệp cấu hình cũ. Nó chỉ ghi độc quyền `.env` khi chưa có tệp, tạo tên database ngẫu nhiên dạng `chung_cu_nghiem_thu_moi...` và khóa JWT mới. Nếu đã có `.env`, lệnh dừng để bạn chọn thư mục cài mới khác.
+`init:fresh` mặc định chỉ ghi độc quyền `.env` khi chưa có tệp, tạo tên database ngẫu nhiên dạng `chung_cu_nghiem_thu_moi...` và khóa JWT mới. Nếu đã có `.env`, lệnh dừng; tùy chọn `--repair` bên dưới dành riêng cho việc sửa cấu hình bị thiếu trong bản cài hiện tại, có sao lưu trước khi sửa.
 
 ## 2. Nhập thông tin kết nối MySQL trên máy
 
@@ -33,17 +33,37 @@ Cần Git, Node.js 24 và MySQL 8.0.21+ hoặc 8.4 đang chạy. Dừng backend/
 code .env
 ```
 
-Với MySQL cài riêng trên máy bạn, kiểm tra các dòng:
+**Chỉ tìm và sửa dòng `DB_PASSWORD` trong tệp đã được sinh. Không thay toàn bộ `.env` bằng đoạn ví dụ dưới đây.** Ví dụ một dòng cần sửa:
 
 ```dotenv
-DB_ENGINE=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_USER=root
 DB_PASSWORD="MAT_KHAU_MYSQL_TREN_MAY_BAN"
 ```
 
 Thay mật khẩu mẫu bằng mật khẩu quản trị MySQL mà bạn nhập khi mở MySQL Command Line Client. Đây là mật khẩu kết nối dịch vụ MySQL, không phải mật khẩu web. Nếu dùng user/cổng khác thì điền đúng thông tin của dịch vụ. Tài khoản MySQL cần quyền tạo database. Giữ `FRESH_INSTALL=1`, `DB_NAME` và `JWT_SECRET` mới sinh; không chép giá trị từ bản cũ. Không gửi mật khẩu lên chat hoặc GitHub.
+
+Lưu tệp bằng Ctrl+S rồi chạy:
+
+```powershell
+npm.cmd run config:check
+```
+
+Chỉ tiếp tục khi có `[OK]`. Lệnh chỉ kiểm tra cấu hình, không xác nhận đã kết nối MySQL.
+
+### Khi báo thiếu cấu hình cài mới hoặc JWT_SECRET
+
+Dừng backend đang watch bằng Ctrl+C. Trong thư mục gốc bản cài hiện tại:
+
+```powershell
+git pull --ff-only origin codex/thesis-mysql-database
+npm.cmd run init:fresh -- --repair
+npm.cmd run config:check
+```
+
+`--repair` giữ các giá trị kết nối MySQL đã nhập, bổ sung trường còn thiếu, tạo database đích mới nếu tên hiện tại không đúng mẫu cài mới và tạo khóa JWT mới nếu khóa thiếu/ngắn hơn 32 ký tự. Database đích và JWT đã hợp lệ được giữ nguyên. Tệp trước sửa được sao lưu riêng dạng `.env.before-fresh-repair-...` và được Git bỏ qua; không có thao tác xóa/sửa database.
+
+Nếu báo `ENV_OVERRIDE`, biến của terminal đang khác tệp `.env`; công cụ in lệnh PowerShell `Remove-Item Env:...` chỉ gồm tên biến. Chạy đúng lệnh đó trong terminal đang dùng rồi chạy lại `config:check`. Kiểm tra tương tự trong terminal dùng chạy backend nếu mở terminal khác. Không gửi nội dung `.env`; kết quả `config:check` chỉ gồm tên trường và độ dài JWT, không có giá trị bí mật.
+
+Sau khi `[OK]`, nếu bộ dữ liệu chưa từng báo Hoàn tất thì chạy bước 3; chỉ chạy backend khi bộ đã được tạo thành công.
 
 ## 3. Tạo bộ dữ liệu mới
 
