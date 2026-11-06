@@ -16,6 +16,7 @@
     "diagnose": "node --env-file-if-exists=.env scripts/diagnose-local.js",
     "build": "npm run build -w frontend",
     "init:local": "node scripts/init-local.js",
+    "init:fresh": "node scripts/init-fresh-local.js",
     "db:up": "docker compose up -d --wait",
     "db:migrate": "npm run db:migrate -w backend",
     "db:seed": "npm run db:seed -w backend",
@@ -27,6 +28,7 @@
     "test:https": "node scripts/test-https.js",
     "db:acceptance": "node --env-file-if-exists=.env scripts/create-acceptance-data.js",
     "db:realistic": "node --env-file-if-exists=.env scripts/create-realistic-data.js",
+    "db:realistic:fresh": "node --env-file-if-exists=.env scripts/create-fresh-data.js",
     "db:copy:thesis": "node --env-file-if-exists=.env.thesis scripts/copy-thesis-data.js",
     "db:configure:thesis": "node scripts/configure-thesis-mysql.js"
   },

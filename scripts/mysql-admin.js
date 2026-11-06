@@ -1,5 +1,9 @@
 import mysql from "mysql2/promise";
-export async function ensureDatabase(config, database) {
+export async function ensureDatabase(
+  config,
+  database,
+  { newOnly = false } = {},
+) {
   if (!/^[a-z][a-z0-9_]{0,62}$/.test(database))
     throw new Error("Invalid database name");
   const { connectionLimit, ...base } = config;
@@ -13,7 +17,7 @@ export async function ensureDatabase(config, database) {
   });
   try {
     await db.query(
-      `CREATE DATABASE IF NOT EXISTS ${mysql.escapeId(database)} CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci`,
+      `CREATE DATABASE ${newOnly ? "" : "IF NOT EXISTS "}${mysql.escapeId(database)} CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci`,
     );
     if (useRoot)
       await db.query(

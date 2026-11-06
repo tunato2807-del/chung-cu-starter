@@ -1,5 +1,7 @@
 # Tải và cập nhật toàn bộ dự án bằng Terminal VS Code
 
+> **Yêu cầu mới nhất: cài sạch hoàn toàn.** Dùng [hướng dẫn cài mới không chép dữ liệu cũ](cai-moi-hoan-toan-vscode.md), nhánh `codex/thesis-mysql-database`. Các bước bảo toàn/chép tệp và nhánh cũ bên dưới là lịch sử của những lần cập nhật trước, không áp dụng cho quy trình cài sạch này.
+
 > **Bản CSDL hiện tại:** theo lựa chọn mới của người dùng, dùng MySQL31 bảng trên nhánh `codex/thesis-mysql-database`. Xem [hướng dẫn mới](csdl-do-an-mysql.md). Các bước/chỉ tiêu của bài cũ là lịch sử, không chép code PostgreSQL hoặc SQL38 bảng vào bản mới.
 
 > **Lịch sử bản MySQL:** Với mã nguồn từ 05/11/2026, dùng [hướng dẫn PostgreSQL](chuyen-postgresql-vscode.md). Giữ tài khoản/dữ liệu cũ bằng công cụ chuyển; không dùng lại lệnh MySQL của bài này để khởi động backend mới.

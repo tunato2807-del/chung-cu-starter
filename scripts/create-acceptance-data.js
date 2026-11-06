@@ -64,6 +64,7 @@ export function profileOptions(args, profile = "acceptance") {
 export async function launch(
   args = process.argv.slice(2),
   profile = "acceptance",
+  { newDatabaseOnly = false } = {},
 ) {
   const options = profileOptions(args, profile);
   // Both native MySQL and Compose use the same TCP connection. The old
@@ -76,7 +77,9 @@ export async function launch(
   const { databaseConfig, pool } = await import("../backend/src/lib/db.js");
   const { ensureDatabase } = await import("./mysql-admin.js");
   try {
-    await ensureDatabase(databaseConfig(), options.database);
+    await ensureDatabase(databaseConfig(), options.database, {
+      newOnly: newDatabaseOnly,
+    });
   } finally {
     await pool.end();
   }

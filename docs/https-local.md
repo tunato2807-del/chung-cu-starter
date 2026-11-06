@@ -6,7 +6,7 @@ Các bước dưới dành cho Windows và Android cùng Wi-Fi. Dùng IP Wi-Fi h
 
 ## 1. Lấy bản code có cấu hình HTTPS
 
-Bản nghiệp vụ hiện tại nằm trên nhánh `codex/editorial-business-ui`, đã có cấu hình HTTPS và lệnh `npm run dev:frontend:https`. Xem [hướng dẫn chạy đồ án trên Windows/VS Code](huong-dan-chay-do-an-windows.md) để chạy MySQL và backend trước. Nếu bạn đã chép bản này vào dự án thì tiếp tục mục 2, không cần tải lại ZIP hoặc đổi nhánh để bật HTTPS.
+Bản nghiệp vụ hiện tại nằm trên nhánh `codex/thesis-mysql-database`, đã có cấu hình HTTPS và lệnh `npm run dev:frontend:https`. Nếu cài lại hoàn toàn, dùng [quy trình tạo cấu hình, dữ liệu và CA mới](cai-moi-hoan-toan-vscode.md). Nếu đã có bản cài đang hoạt động, tiếp tục mục 2 để cấp chứng chỉ cho chính bản đó.
 
 ## 2. Tạo chứng chỉ phát triển bằng mkcert
 
