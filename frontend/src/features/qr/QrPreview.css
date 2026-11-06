@@ -1,0 +1,34 @@
+.qr-popover {
+  position: fixed;
+  z-index: 1000;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #d9ded6;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 36px rgb(23 25 23 / 18%);
+  outline: none;
+}
+.qr-popover > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
+.qr-popover-loading {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+}
+.qr-popover-loading > span {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #e3e7df;
+  border-top-color: #515f35;
+  border-radius: 50%;
+}
+@media print {
+  .qr-popover {
+    display: none !important;
+  }
+}

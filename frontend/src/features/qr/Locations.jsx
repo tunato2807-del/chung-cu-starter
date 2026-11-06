@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import QRCode from "qrcode";
+import React, { useCallback, useId, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { EquipmentPicker, QrLinkEditor } from "./QrEquipment.jsx";
+import QrPreview, { downloadQr, printQr } from "./QrPreview.jsx";
 import { getJson } from "../../shared/api/client.js";
 import {
   ErrorBox,
@@ -10,63 +10,9 @@ import {
   Options,
   useResource,
 } from "../../shared/ui.jsx";
-function QrCard({ location }) {
-  const [image, setImage] = useState(""),
-    [error, setError] = useState();
-  const url = `${window.location.origin}/r/${location.token_qr}`;
-  useEffect(() => {
-    let active = true;
-    QRCode.toDataURL(url, { width: 320, margin: 2, errorCorrectionLevel: "M" })
-      .then((x) => {
-        if (active) setImage(x);
-      })
-      .catch(setError);
-    return () => {
-      active = false;
-    };
-  }, [url]);
-  return (
-    <section className="qr-print card">
-      <h2>{location.ten_vi_tri}</h2>
-      {location.ma_thiet_bi && (
-        <p>
-          {location.ma_tai_san} · {location.ten_thiet_bi}
-        </p>
-      )}
-      <p>Quét mã để gửi phản ánh tại vị trí</p>
-      {image && (
-        <img
-          className="qr-image"
-          src={image}
-          alt={`Mã QR ${location.ten_vi_tri}`}
-        />
-      )}
-      <ErrorBox error={error} />
-      <p className="qr-url">{url}</p>
-      <div className="actions no-print">
-        <Link className="button" to={`/r/${location.token_qr}`}>
-          Mở thử biểu mẫu
-        </Link>
-        {image && (
-          <a
-            className="button"
-            href={image}
-            download={`vi-tri-${location.ma_vi_tri_qr}.png`}
-          >
-            Tải ảnh QR
-          </a>
-        )}
-        <button onClick={() => window.print()}>In mã này</button>
-      </div>
-      <p className="muted">
-        Để quét trên điện thoại, hãy mở hệ thống bằng tên miền HTTPS mà điện
-        thoại truy cập được trước khi in.
-      </p>
-    </section>
-  );
-}
 export default function Locations() {
   const [params, setParams] = useSearchParams();
+  const previewId = useId();
   const resource = useResource(`/vi_tri_qr?${params}`),
     [type, setType] = useState(
       params.get("ma_thiet_bi") ? "THIET_BI" : "KHU_VUC",
@@ -76,7 +22,20 @@ export default function Locations() {
     [selected, setSelected] = useState(),
     [error, setError] = useState(),
     [pending, setPending] = useState(false),
+    [exportPending, setExportPending] = useState(false),
     [confirmation, setConfirmation] = useState();
+  const closePreview = useCallback(() => setSelected(null), []);
+  async function exportQr(location, operation) {
+    setExportPending(true);
+    setError(null);
+    try {
+      await operation(location);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setExportPending(false);
+    }
+  }
   async function change(action) {
     setPending(true);
     setError(null);
@@ -106,6 +65,7 @@ export default function Locations() {
         onSubmit={(event) => {
           event.preventDefault();
           const next = new URLSearchParams(params);
+          setSelected(null);
           next.set("q", new FormData(event.currentTarget).get("q"));
           next.delete("page");
           setParams(next);
@@ -132,7 +92,7 @@ export default function Locations() {
           <Link to="/quan-tri/vi-tri-qr">Xem tất cả vị trí</Link>
         )}
       </form>
-      <div className="detail-grid">
+      <div className={editingLink || confirmation ? "detail-grid" : undefined}>
         <section className="card no-print">
           <h2>Thêm vị trí</h2>
           <form
@@ -206,14 +166,49 @@ export default function Locations() {
                 )}
                 <div className="actions">
                   <button
-                    onClick={() => {
-                      setSelected(l);
+                    type="button"
+                    aria-haspopup="dialog"
+                    aria-expanded={
+                      selected?.location.ma_vi_tri_qr === l.ma_vi_tri_qr
+                    }
+                    aria-controls={
+                      selected?.location.ma_vi_tri_qr === l.ma_vi_tri_qr
+                        ? previewId
+                        : undefined
+                    }
+                    onClick={(event) => {
+                      const anchor = event.currentTarget;
+                      setSelected((current) =>
+                        current?.anchor === anchor
+                          ? null
+                          : { location: l, anchor },
+                      );
                       setConfirmation(null);
+                      setEditingLink(null);
                     }}
                     disabled={!l.dang_hoat_dong}
                   >
                     Xem QR
                   </button>
+                  <button
+                    type="button"
+                    disabled={!l.dang_hoat_dong || pending || exportPending}
+                    onClick={() => exportQr(l, downloadQr)}
+                  >
+                    Tải ảnh QR
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!l.dang_hoat_dong || pending || exportPending}
+                    onClick={() => exportQr(l, printQr)}
+                  >
+                    In mã này
+                  </button>
+                  {!!l.dang_hoat_dong && (
+                    <Link className="button" to={`/r/${l.token_qr}`}>
+                      Mở thử biểu mẫu
+                    </Link>
+                  )}
                   <button
                     disabled={pending}
                     onClick={() =>
@@ -244,7 +239,11 @@ export default function Locations() {
                   )}
                   <button
                     disabled={pending || !l.dang_hoat_dong}
-                    onClick={() => setConfirmation(l)}
+                    onClick={() => {
+                      setSelected(null);
+                      setEditingLink(null);
+                      setConfirmation(l);
+                    }}
                   >
                     Thay mã
                   </button>
@@ -258,6 +257,7 @@ export default function Locations() {
               <button
                 disabled={resource.loading || resource.result.page <= 1}
                 onClick={() => {
+                  setSelected(null);
                   const next = new URLSearchParams(params);
                   next.set("page", String(resource.result.page - 1));
                   setParams(next);
@@ -274,6 +274,7 @@ export default function Locations() {
                   resource.result.page * 20 >= resource.result.total
                 }
                 onClick={() => {
+                  setSelected(null);
                   const next = new URLSearchParams(params);
                   next.set("page", String(resource.result.page + 1));
                   setParams(next);
@@ -284,59 +285,61 @@ export default function Locations() {
             </div>
           )}
         </section>
-        <div>
-          {editingLink && (
-            <QrLinkEditor
-              key={`${editingLink.ma_vi_tri_qr}:${editingLink.phien_ban}`}
-              location={editingLink}
-              onSaved={() => {
-                setEditingLink(null);
-                resource.reload();
-              }}
-              onClose={() => {
-                setEditingLink(null);
-                resource.reload();
-              }}
-            />
-          )}
-          {confirmation && (
-            <section className="card no-print" role="alert">
-              <h2>Thay QR: {confirmation.ten_vi_tri}?</h2>
-              <p>Mã đã in sẽ mất hiệu lực. Bạn cần in và dán mã mới.</p>
-              <div className="actions">
-                <button
-                  className="danger"
-                  disabled={pending}
-                  onClick={() =>
-                    change(() =>
-                      getJson(
-                        `/vi_tri_qr/${confirmation.ma_vi_tri_qr}/sinh_lai_qr`,
-                        {
-                          method: "POST",
-                          body: { phien_ban: confirmation.phien_ban },
-                        },
-                      ),
-                    )
-                  }
-                >
-                  Xác nhận thay mã
-                </button>
-                <button onClick={() => setConfirmation(null)}>Hủy</button>
-              </div>
-            </section>
-          )}
-          {selected ? (
-            <QrCard key={selected.token_qr} location={selected} />
-          ) : editingLink ? null : (
-            <div className="card no-print">
-              <h2>In mã tại vị trí</h2>
-              <p className="muted">
-                Chọn “Xem QR” để xem trước, tải ảnh hoặc in mã dán.
-              </p>
-            </div>
-          )}
-        </div>
+        {(editingLink || confirmation) && (
+          <div>
+            {editingLink && (
+              <QrLinkEditor
+                key={`${editingLink.ma_vi_tri_qr}:${editingLink.phien_ban}`}
+                location={editingLink}
+                onSaved={() => {
+                  setEditingLink(null);
+                  resource.reload();
+                }}
+                onClose={() => {
+                  setEditingLink(null);
+                  resource.reload();
+                }}
+              />
+            )}
+            {confirmation && (
+              <section className="card no-print" role="alert">
+                <h2>Thay QR: {confirmation.ten_vi_tri}?</h2>
+                <p>Mã đã in sẽ mất hiệu lực. Bạn cần in và dán mã mới.</p>
+                <div className="actions">
+                  <button
+                    className="danger"
+                    disabled={pending}
+                    onClick={() =>
+                      change(() =>
+                        getJson(
+                          `/vi_tri_qr/${confirmation.ma_vi_tri_qr}/sinh_lai_qr`,
+                          {
+                            method: "POST",
+                            body: { phien_ban: confirmation.phien_ban },
+                          },
+                        ),
+                      )
+                    }
+                  >
+                    Xác nhận thay mã
+                  </button>
+                  <button onClick={() => setConfirmation(null)}>Hủy</button>
+                </div>
+              </section>
+            )}
+          </div>
+        )}
       </div>
+      {selected && (
+        <QrPreview
+          key={selected.location.token_qr}
+          id={previewId}
+          location={selected.location}
+          anchor={selected.anchor}
+          onClose={closePreview}
+          onError={setError}
+        />
+      )}
     </>
   );
 }
