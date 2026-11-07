@@ -46,6 +46,9 @@ Khi chép dữ liệu cũ, `ma_goc` và loại nhật ký phân biệt các lị
 
 ## Tệp để dùng trong báo cáo và chạy đồ án
 
+- [Ràng buộc của từng bảng, giải thích theo nghiệp vụ](rang-buoc-bang.md): 31 PK, 35 UNIQUE ngoài PK, 81 FK, 66 CHECK; phân biệt ràng buộc SQL và kiểm tra trong API.
+- [SQL xem ràng buộc trên máy bạn](xem-rang-buoc.sql): chỉ SELECT metadata, có PK/UNIQUE/FK/CHECK, NULL/DEFAULT, cột sinh và INDEX.
+
 - [SQL baseline](../../database/thesis-mysql/001_thesis_schema.sql): schema MySQL mới; dùng runner trên database đích mới theo hướng dẫn.
 - [ERD nghiệp vụ trọng tâm](erd-trong-tam.md):18 bảng chia theo luồng chính; bảng mở rộng và hỗ trợ không bị xóa.
 - [ERD vật lý theo phân hệ](../bao-cao/erd-phan-he.md), [ERD đủ 31 bảng](../bao-cao/erd-vat-ly.mmd), [từ điển vật lý](../bao-cao/tu-dien-du-lieu.md): lấy từ schema thật, không tính cột view thành cột bảng.
