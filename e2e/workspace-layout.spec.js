@@ -41,7 +41,16 @@ for (const width of [320, 768, 1024, 1440]) {
       await expect(
         page.getByRole("heading", { name: "Nhập phương tiện", exact: true }),
       ).toBeVisible();
-      await page.locator(".import-help").evaluate((el) => (el.open = true));
+      await page
+        .getByRole("button", { name: "Hướng dẫn điền mẫu Excel", exact: true })
+        .click();
+      await expect(
+        page.getByRole("dialog", {
+          name: "Hướng dẫn điền mẫu Excel",
+          exact: true,
+        }),
+      ).toBeVisible();
+      await page.keyboard.press("Escape");
       if (process.env.UI_QA_AXE) {
         await page.addScriptTag({ path: process.env.UI_QA_AXE });
         const violations = await page.evaluate(async () =>

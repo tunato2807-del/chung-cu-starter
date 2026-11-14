@@ -1,3 +1,4 @@
+import { activeView } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -89,7 +90,7 @@ for (const width of [1440, 375])
       }
       await meter(apartments[0]);
       await page.goto("/quan-tri/hoa-don");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Lập hàng loạt", exact: true })
         .click();
       const batch = page.locator(".batch-bills");
@@ -185,7 +186,10 @@ for (const width of [1440, 375])
       await batch.screenshot({ path: `/tmp/chung-cu-batch-${width}.png` });
       await batch.locator(".batch-result a").first().click();
       await expect(
-        page.getByRole("button", { name: "Duyệt hóa đơn", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Duyệt hóa đơn",
+          exact: true,
+        }),
       ).toBeVisible();
       expect(errors).toEqual([]);
     } finally {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { getJson } from "../../shared/api/client.js";
+import { useSearchParams } from "react-router-dom";
+import { DetailLink as Link } from "../../shared/dialog-navigation.jsx";
 import { ErrorBox, Field, Loading, useResource } from "../../shared/ui.jsx";
 
 import ReportExport from "../../shared/ReportExport.jsx";
@@ -57,30 +57,9 @@ function Pager({ result, loading, go }) {
     </div>
   );
 }
-// Tag results with their request so switching report types never renders stale columns/totals.
+// A closed invoice dialog refreshes totals without resetting report filters.
 function useReport(path) {
-  const [state, setState] = useState({ loading: true }),
-    [revision, setRevision] = useState(0);
-  useEffect(() => {
-    const controller = new AbortController();
-    setState({ path, revision, loading: true });
-    getJson(path, { signal: controller.signal })
-      .then((result) => {
-        if (!controller.signal.aborted)
-          setState({ path, revision, result, loading: false });
-      })
-      .catch((error) => {
-        if (!controller.signal.aborted)
-          setState({ path, revision, error, loading: false });
-      });
-    return () => controller.abort();
-  }, [path, revision]);
-  return {
-    ...(state.path === path && state.revision === revision
-      ? state
-      : { loading: true }),
-    reload: () => setRevision((n) => n + 1),
-  };
+  return useResource(path);
 }
 
 function OverdueFilter({ value, loading, label, onChange }) {
@@ -187,7 +166,13 @@ export default function FinancialReports() {
           next.set("bao_cao", cash ? "THU_PHI" : "CONG_NO");
           next.set("che_do", view);
           if (!cash && overdue && view !== "THEO_KY") next.set("qua_han", "1");
+          const nextQuery = new URLSearchParams(next);
+          nextQuery.delete("bao_cao");
+          // bao_cao is UI state and is omitted from the API query. Submitting
+          // unchanged API filters must still refresh the current figures.
+          const unchangedRequest = nextQuery.toString() === query.toString();
           setParams(next);
+          if (unchangedRequest) resource.reload();
         }}
       >
         {cash ? (

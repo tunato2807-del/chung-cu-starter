@@ -1,3 +1,4 @@
+import { activeView, openAction, closeDialog } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -99,7 +100,7 @@ for (const width of [1440, 375])
           exact: true,
         }),
       ).toBeVisible();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Thêm thiết bị", exact: true })
         .first()
         .click();
@@ -114,7 +115,7 @@ for (const width of [1440, 375])
         .getByLabel("Ghi chú thiết bị")
         .fill("Kiểm tra cửa và phanh trước vận hành.");
       const created = await waitPost(page, "/api/thiet_bi", () =>
-        page
+        activeView(page)
           .getByRole("button", { name: "Thêm thiết bị", exact: true })
           .last()
           .click(),
@@ -123,8 +124,10 @@ for (const width of [1440, 375])
       await expect(
         page.getByRole("heading", { name: assetName, exact: true }),
       ).toBeVisible();
-      await expect(page.getByText("Quá hạn", { exact: true })).toBeVisible();
-      await page
+      await expect(
+        activeView(page).getByText("Quá hạn", { exact: true }),
+      ).toBeVisible();
+      await activeView(page)
         .getByRole("button", { name: "Lập phiếu định kỳ", exact: true })
         .click();
       await chooseTechnician();
@@ -132,7 +135,7 @@ for (const width of [1440, 375])
           page,
           `/api/thiet_bi/${equipmentId}/phieu_bao_tri`,
           () =>
-            page
+            activeView(page)
               .getByRole("button", { name: "Tạo phiếu bảo trì", exact: true })
               .click(),
         ),
@@ -144,26 +147,28 @@ for (const width of [1440, 375])
         }),
       ).toBeVisible();
       await expect(
-        page.getByText("Đã phân công", { exact: true }),
+        activeView(page).getByText("Đã phân công", { exact: true }),
       ).toBeVisible();
       await tech.goto("/ky-thuat/bao-tri");
       await tech.getByRole("link", { name: code(jobId), exact: true }).click();
+      await openAction(tech, "Thực hiện công việc");
       await waitPost(tech, `/api/bao_tri/${jobId}/bat_dau`, () =>
-        tech
+        activeView(tech)
           .getByRole("button", { name: "Bắt đầu bảo trì", exact: true })
           .click(),
       );
+      await openAction(tech, "Gửi kết quả để nghiệm thu");
       await expect(tech.getByLabel("Kết quả bảo trì")).toBeVisible();
       const firstResult =
         "Lượt một đã kiểm tra cửa, cần làm lại phanh.\n<script>window.maintenanceInjected=true</script>";
       await tech.getByLabel("Kết quả bảo trì").fill(firstResult);
       await waitPost(tech, `/api/bao_tri/${jobId}/bao_cao`, () =>
-        tech
+        activeView(tech)
           .getByRole("button", { name: "Gửi báo cáo bảo trì", exact: true })
           .click(),
       );
       await expect(
-        tech.getByText("Chờ nghiệm thu", { exact: true }),
+        activeView(tech).getByText("Chờ nghiệm thu", { exact: true }),
       ).toBeVisible();
       expect(
         await tech.evaluate(() => window.maintenanceInjected),
@@ -172,41 +177,52 @@ for (const width of [1440, 375])
       await expect(
         page.getByRole("heading", { name: "Kết quả thực hiện", exact: true }),
       ).toBeVisible();
+      await openAction(page, "Yêu cầu thực hiện lại");
       await page
         .getByLabel("Lý do chưa đạt")
         .fill("Kiểm tra và chạy thử phanh thêm một lượt.");
       await waitPost(page, `/api/bao_tri/${jobId}/tra_lai`, () =>
-        page
+        activeView(page)
           .getByRole("button", { name: "Trả lại kỹ thuật viên", exact: true })
           .click(),
       );
       await expect(
-        page.getByText("Đang thực hiện", { exact: true }),
+        activeView(page).getByText("Đang thực hiện", { exact: true }),
       ).toBeVisible();
       await tech.reload();
+      await openAction(tech, "Gửi kết quả để nghiệm thu");
       await expect(tech.getByLabel("Kết quả bảo trì")).toHaveValue("");
-      await expect(tech.getByText(/Lượt một đã kiểm tra cửa/)).toBeVisible();
+      await closeDialog(tech);
+      await openAction(tech, "Lịch sử thực hiện");
+      await expect(
+        activeView(tech).getByText(/Lượt một đã kiểm tra cửa/),
+      ).toBeVisible();
+      await closeDialog(tech);
+      await openAction(tech, "Gửi kết quả để nghiệm thu");
       const finalResult =
         "Lượt hai đã kiểm tra phanh, vệ sinh và chạy thử đầy đủ, hoạt động ổn định.";
       await tech.getByLabel("Kết quả bảo trì").fill(finalResult);
       await waitPost(tech, `/api/bao_tri/${jobId}/bao_cao`, () =>
-        tech
+        activeView(tech)
           .getByRole("button", { name: "Gửi báo cáo bảo trì", exact: true })
           .click(),
       );
       await expect(
-        tech.getByText("Chờ nghiệm thu", { exact: true }),
+        activeView(tech).getByText("Chờ nghiệm thu", { exact: true }),
       ).toBeVisible();
       await page.reload();
+      await openAction(page, "Nghiệm thu kết quả");
       await page
         .getByLabel("Nhận xét nghiệm thu")
         .fill("Đã kiểm tra và chạy thử đạt yêu cầu.");
       await waitPost(page, `/api/bao_tri/${jobId}/nghiem_thu`, () =>
-        page
+        activeView(page)
           .getByRole("button", { name: "Nghiệm thu đạt", exact: true })
           .click(),
       );
-      await expect(page.getByText("Hoàn thành", { exact: true })).toBeVisible();
+      await expect(
+        activeView(page).getByText("Hoàn thành", { exact: true }),
+      ).toBeVisible();
       await page
         .getByRole("link", { name: "Mở hồ sơ thiết bị", exact: true })
         .click();
@@ -214,16 +230,19 @@ for (const width of [1440, 375])
         page.getByRole("heading", { name: assetName, exact: true }),
       ).toBeVisible();
       await expect(
-        page.getByText(dateVN(addDays(d, 30)), { exact: false }),
+        activeView(page).getByText(dateVN(addDays(d, 30)), { exact: false }),
       ).toBeVisible();
       await expect(
-        page.getByRole("button", { name: "Lập phiếu định kỳ", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Lập phiếu định kỳ",
+          exact: true,
+        }),
       ).toBeEnabled();
       await page.screenshot({
         path: `/tmp/chung-cu-maintenance-equipment-${width}.png`,
         fullPage: true,
       });
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Lập phiếu đột xuất", exact: true })
         .click();
       await page.getByLabel("Tiêu đề công việc").fill(`Tiếng ồn ${suffix}`);
@@ -235,62 +254,79 @@ for (const width of [1440, 375])
           page,
           `/api/thiet_bi/${equipmentId}/phieu_bao_tri`,
           () =>
-            page
+            activeView(page)
               .getByRole("button", { name: "Tạo phiếu bảo trì", exact: true })
               .click(),
         ),
         oneOffId = oneOff.data.ma_phieu_bao_tri;
       await expect(
-        page.getByText("Chưa phân công", { exact: true }).first(),
+        activeView(page).getByText("Chưa phân công", { exact: true }).first(),
       ).toBeVisible();
       await tech.goto("/ky-thuat/bao-tri");
       await expect(
         tech.getByRole("link", { name: code(oneOffId), exact: true }),
       ).toHaveCount(0);
+      await openAction(page, "Giao công việc");
       await chooseTechnician();
       await waitPost(page, `/api/bao_tri/${oneOffId}/phan_cong`, () =>
-        page
+        activeView(page)
           .getByRole("button", { name: "Lưu phân công", exact: true })
           .click(),
       );
       await expect(
-        page.getByText("Đã phân công", { exact: true }),
+        activeView(page).getByText("Đã phân công", { exact: true }),
       ).toBeVisible();
+      await openAction(page, "Điều chỉnh lịch thực hiện");
       await page.getByLabel("Hạn thực hiện mới").fill(addDays(d, 2));
       await page
         .getByLabel("Lý do đổi lịch")
         .fill("Thực hiện theo lịch nhà cung cấp.");
       await waitPost(page, `/api/bao_tri/${oneOffId}/doi_lich`, () =>
-        page.getByRole("button", { name: "Lưu lịch mới", exact: true }).click(),
+        activeView(page)
+          .getByRole("button", { name: "Lưu lịch mới", exact: true })
+          .click(),
       );
+      await openAction(page, "Điều chỉnh lịch thực hiện");
       await expect(page.getByLabel("Hạn thực hiện mới")).toHaveValue(
         addDays(d, 2),
       );
+      await closeDialog(page);
       await tech.reload();
       await tech
         .getByRole("link", { name: code(oneOffId), exact: true })
         .click();
       await expect(
-        tech.getByRole("button", { name: "Bắt đầu bảo trì", exact: true }),
+        activeView(tech).getByRole("button", {
+          name: "Thực hiện công việc",
+          exact: true,
+        }),
       ).toBeVisible();
+      await openAction(page, "Hủy phiếu");
       await page
         .getByLabel("Lý do hủy phiếu")
         .fill("Tạm hoãn kiểm tra đột xuất.");
       await waitPost(page, `/api/bao_tri/${oneOffId}/huy`, () =>
-        page
+        activeView(page)
           .getByRole("button", { name: "Hủy phiếu bảo trì", exact: true })
           .click(),
       );
-      await expect(page.getByText("Đã hủy", { exact: true })).toBeVisible();
-      await tech.reload();
-      await expect(tech.getByText("Đã hủy", { exact: true })).toBeVisible();
       await expect(
-        tech.getByRole("button", { name: "Bắt đầu bảo trì", exact: true }),
+        activeView(page).getByText("Đã hủy", { exact: true }),
+      ).toBeVisible();
+      await tech.reload();
+      await expect(
+        activeView(tech).getByText("Đã hủy", { exact: true }),
+      ).toBeVisible();
+      await expect(
+        activeView(tech).getByRole("button", {
+          name: "Thực hiện công việc",
+          exact: true,
+        }),
       ).toHaveCount(0);
       await page
         .getByRole("link", { name: "Mở hồ sơ thiết bị", exact: true })
         .click();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Sửa thiết bị / lịch", exact: true })
         .click();
       await page
@@ -301,15 +337,18 @@ for (const width of [1440, 375])
           new URL(r.url()).pathname === `/api/thiet_bi/${equipmentId}` &&
           r.request().method() === "PUT",
       );
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Lưu thiết bị", exact: true })
         .click();
       expect((await saved).status()).toBe(200);
       await expect(
-        page.getByText("Ngừng theo dõi", { exact: true }),
+        activeView(page).getByText("Ngừng theo dõi", { exact: true }),
       ).toBeVisible();
       await expect(
-        page.getByRole("button", { name: "Lập phiếu định kỳ", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Lập phiếu định kỳ",
+          exact: true,
+        }),
       ).toHaveCount(0);
       for (const p of [page, tech])
         expect(

@@ -1,3 +1,4 @@
+import Dialog, { ActionPanel } from "../../shared/Dialog.jsx";
 import React, { useEffect, useState } from "react";
 import { getJson } from "../../shared/api/client.js";
 import { ErrorBox, Field, Loading } from "../../shared/ui.jsx";
@@ -505,8 +506,7 @@ function Chart({ data, definition, type, onType }) {
           </div>
         </>
       )}
-      <details className="trend-table">
-        <summary>Xem bảng số liệu — {title}</summary>
+      <ActionPanel inline wide title={<>Xem bảng số liệu — {title}</>}>
         <div className="table-wrap">
           <table>
             <caption>
@@ -546,7 +546,7 @@ function Chart({ data, definition, type, onType }) {
             </tfoot>
           </table>
         </div>
-      </details>
+      </ActionPanel>
     </section>
   );
 }
@@ -624,127 +624,133 @@ function ChartsPanel({ refresh, preferenceKey }) {
         </button>
       </div>
       {preferences.expanded && (
-        <div id="trends-body">
-          <fieldset className="trends-visibility">
-            <legend>Biểu đồ muốn hiển thị</legend>
-            {config.map((c) => (
-              <label key={c.id}>
-                <input
-                  type="checkbox"
-                  checked={preferences.visible.includes(c.id)}
-                  onChange={(e) =>
-                    setPreferences((p) => ({
-                      ...p,
-                      visible: e.target.checked
-                        ? [...p.visible, c.id]
-                        : p.visible.filter((id) => id !== c.id),
-                    }))
-                  }
-                />
-                {c.short}
-              </label>
-            ))}
-          </fieldset>
-          <p className="overview-note">
-            Ngày chia theo giờ; tuần từ thứ Hai đến Chủ nhật. Thời gian tính
-            theo giờ Việt Nam.
-          </p>
-          <div className="trends-filters">
-            <Field label="Khoảng thống kê">
-              <select
-                value={period}
-                onChange={(e) => setPeriod(e.target.value)}
-              >
-                {Object.entries(periods).map(([k, v]) => (
-                  <option key={k} value={k}>
-                    {v}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Ngày trong kỳ">
-              <input
-                type="date"
-                min="1900-01-01"
-                max="2199-12-31"
-                value={anchor}
-                onChange={(e) => {
-                  if (/^\d{4}-\d{2}-\d{2}$/.test(e.target.value))
-                    setAnchor(e.target.value);
-                }}
-              />
-            </Field>
-            <button
-              type="button"
-              disabled={!enabled || resource.loading}
-              onClick={() => setRevision((n) => n + 1)}
-            >
-              Cập nhật biểu đồ
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setAnchor(localDay());
-                setRevision((n) => n + 1);
-              }}
-            >
-              Về kỳ hiện tại
-            </button>
-          </div>
-          {!enabled && (
-            <p className="trend-empty">
-              Chọn ít nhất một nhóm biểu đồ để xem. Các công việc bên dưới vẫn
-              hiển thị.
+        <Dialog
+          title="Biểu đồ vận hành"
+          wide
+          onClose={() => setPreferences((p) => ({ ...p, expanded: false }))}
+        >
+          <div id="trends-body">
+            <fieldset className="trends-visibility">
+              <legend>Biểu đồ muốn hiển thị</legend>
+              {config.map((c) => (
+                <label key={c.id}>
+                  <input
+                    type="checkbox"
+                    checked={preferences.visible.includes(c.id)}
+                    onChange={(e) =>
+                      setPreferences((p) => ({
+                        ...p,
+                        visible: e.target.checked
+                          ? [...p.visible, c.id]
+                          : p.visible.filter((id) => id !== c.id),
+                      }))
+                    }
+                  />
+                  {c.short}
+                </label>
+              ))}
+            </fieldset>
+            <p className="overview-note">
+              Ngày chia theo giờ; tuần từ thứ Hai đến Chủ nhật. Thời gian tính
+              theo giờ Việt Nam.
             </p>
-          )}
-          <ErrorBox error={resource.error} />
-          {enabled && resource.loading && <Loading />}
-          {enabled && data && (
-            <>
-              <p className="trends-range">
-                <strong>{data.nhan_khoang}</strong> · {day(data.tu_ngay)} –{" "}
-                {day(data.den_ngay)}
-                <br />
-                <small>
-                  Biểu đồ đọc lúc{" "}
-                  {new Intl.DateTimeFormat("vi-VN", {
-                    timeZone: "Asia/Ho_Chi_Minh",
-                    dateStyle: "short",
-                    timeStyle: "short",
-                  }).format(new Date(data.tai_luc.replace(" ", "T") + "Z"))}
-                  . Bộ lọc này áp dụng cho biểu đồ; các thẻ tổng quan vẫn phản
-                  ánh số liệu hiện tại.
-                </small>
-              </p>
-              <div className="trends-grid">
-                {config
-                  .filter((definition) =>
-                    preferences.visible.includes(definition.id),
-                  )
-                  .map((definition) => (
-                    <Chart
-                      key={`${requestKey}:${definition.id}`}
-                      data={data}
-                      definition={definition}
-                      type={preferences.types[definition.id]}
-                      onType={(type) =>
-                        setPreferences((p) => ({
-                          ...p,
-                          types: { ...p.types, [definition.id]: type },
-                        }))
-                      }
-                    />
+            <div className="trends-filters">
+              <Field label="Khoảng thống kê">
+                <select
+                  value={period}
+                  onChange={(e) => setPeriod(e.target.value)}
+                >
+                  {Object.entries(periods).map(([k, v]) => (
+                    <option key={k} value={k}>
+                      {v}
+                    </option>
                   ))}
-              </div>
-              <p className="overview-note">
-                Chạm, rê chuột hoặc dùng Tab để xem chi tiết. Với biểu đồ theo
-                thời gian, dùng ← → để chuyển mốc. Biểu đồ tròn thể hiện tỷ
-                trọng trạng thái trong toàn kỳ; bảng bên dưới vẫn có từng mốc
-                thời gian.
+                </select>
+              </Field>
+              <Field label="Ngày trong kỳ">
+                <input
+                  type="date"
+                  min="1900-01-01"
+                  max="2199-12-31"
+                  value={anchor}
+                  onChange={(e) => {
+                    if (/^\d{4}-\d{2}-\d{2}$/.test(e.target.value))
+                      setAnchor(e.target.value);
+                  }}
+                />
+              </Field>
+              <button
+                type="button"
+                disabled={!enabled || resource.loading}
+                onClick={() => setRevision((n) => n + 1)}
+              >
+                Cập nhật biểu đồ
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setAnchor(localDay());
+                  setRevision((n) => n + 1);
+                }}
+              >
+                Về kỳ hiện tại
+              </button>
+            </div>
+            {!enabled && (
+              <p className="trend-empty">
+                Chọn ít nhất một nhóm biểu đồ để xem. Các công việc bên dưới vẫn
+                hiển thị.
               </p>
-            </>
-          )}
-        </div>
+            )}
+            <ErrorBox error={resource.error} />
+            {enabled && resource.loading && <Loading />}
+            {enabled && data && (
+              <>
+                <p className="trends-range">
+                  <strong>{data.nhan_khoang}</strong> · {day(data.tu_ngay)} –{" "}
+                  {day(data.den_ngay)}
+                  <br />
+                  <small>
+                    Biểu đồ đọc lúc{" "}
+                    {new Intl.DateTimeFormat("vi-VN", {
+                      timeZone: "Asia/Ho_Chi_Minh",
+                      dateStyle: "short",
+                      timeStyle: "short",
+                    }).format(new Date(data.tai_luc.replace(" ", "T") + "Z"))}
+                    . Bộ lọc này áp dụng cho biểu đồ; các thẻ tổng quan vẫn phản
+                    ánh số liệu hiện tại.
+                  </small>
+                </p>
+                <div className="trends-grid">
+                  {config
+                    .filter((definition) =>
+                      preferences.visible.includes(definition.id),
+                    )
+                    .map((definition) => (
+                      <Chart
+                        key={`${requestKey}:${definition.id}`}
+                        data={data}
+                        definition={definition}
+                        type={preferences.types[definition.id]}
+                        onType={(type) =>
+                          setPreferences((p) => ({
+                            ...p,
+                            types: { ...p.types, [definition.id]: type },
+                          }))
+                        }
+                      />
+                    ))}
+                </div>
+                <p className="overview-note">
+                  Chạm, rê chuột hoặc dùng Tab để xem chi tiết. Với biểu đồ theo
+                  thời gian, dùng ← → để chuyển mốc. Biểu đồ tròn thể hiện tỷ
+                  trọng trạng thái trong toàn kỳ; bảng bên dưới vẫn có từng mốc
+                  thời gian.
+                </p>
+              </>
+            )}
+          </div>
+        </Dialog>
       )}
     </section>
   );

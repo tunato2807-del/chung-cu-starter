@@ -1,3 +1,4 @@
+import { activeView, openAction } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -74,24 +75,31 @@ for (const width of [1440, 375])
       const a = devices[0],
         b = devices[21];
       await page.goto("/quan-tri/vi-tri-qr");
+      await openAction(page, "Thêm vị trí");
       await page.getByLabel("Tên vị trí", { exact: true }).fill(locationName);
       await page
         .getByLabel("Loại vị trí", { exact: true })
         .selectOption("THIET_BI");
       await page.getByLabel("Tìm thiết bị theo mã hoặc tên").fill(suffix);
       await expect(
-        page.getByRole("button", { name: "Trang thiết bị sau", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Trang thiết bị sau",
+          exact: true,
+        }),
       ).toBeEnabled();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Trang thiết bị sau", exact: true })
         .click();
       await page
         .getByLabel("Chọn thiết bị", { exact: true })
         .selectOption(String(b));
       await expect(
-        page.getByText(`Đã chọn: EQ-${suffix}-B · Máy ${suffix}-B`, {
-          exact: true,
-        }),
+        activeView(page).getByText(
+          `Đã chọn: EQ-${suffix}-B · Máy ${suffix}-B`,
+          {
+            exact: true,
+          },
+        ),
       ).toBeVisible();
       // Selection survives subsequent searching rather than becoming the first
       // item of a new result page.
@@ -99,16 +107,19 @@ for (const width of [1440, 375])
         .getByLabel("Tìm thiết bị theo mã hoặc tên")
         .fill(`EQ-${suffix}-A`);
       await expect(
-        page.getByText(`Đã chọn: EQ-${suffix}-B · Máy ${suffix}-B`, {
-          exact: true,
-        }),
+        activeView(page).getByText(
+          `Đã chọn: EQ-${suffix}-B · Máy ${suffix}-B`,
+          {
+            exact: true,
+          },
+        ),
       ).toBeVisible();
       const created = page.waitForResponse(
         (r) =>
           new URL(r.url()).pathname === "/api/vi_tri_qr" &&
           r.request().method() === "POST",
       );
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Tạo vị trí và mã QR", exact: true })
         .click();
       const r = await created;
@@ -159,8 +170,8 @@ for (const width of [1440, 375])
       await locationRow
         .getByRole("button", { name: "Liên kết thiết bị", exact: true })
         .click();
-      const editor = page.getByRole("region", {
-        name: "Liên kết thiết bị với QR",
+      const editor = page.getByRole("dialog", {
+        name: `Liên kết thiết bị · ${locationName}`,
       });
       await editor
         .getByLabel("Tìm thiết bị theo mã hoặc tên")
@@ -178,10 +189,10 @@ for (const width of [1440, 375])
           )
         )[0].token_qr,
       ).toBe(location.token_qr);
-      await stale
+      await activeView(stale)
         .getByRole("button", { name: "Gửi phản ánh", exact: true })
         .click();
-      await expect(stale.getByRole("alert")).toContainText(
+      await expect(activeView(stale).getByRole("alert")).toContainText(
         "Liên kết vị trí đã thay đổi",
       );
       await expect(stale.getByLabel("Tiêu đề", { exact: true })).toHaveValue(
@@ -196,7 +207,7 @@ for (const width of [1440, 375])
       await expect(stale.getByLabel("Tiêu đề", { exact: true })).toHaveValue(
         `Bản nháp chưa gửi ${suffix}`,
       );
-      await stale
+      await activeView(stale)
         .getByRole("button", { name: "Gửi phản ánh", exact: true })
         .click();
       await expect(
@@ -205,16 +216,22 @@ for (const width of [1440, 375])
 
       await page.goto(`/quan-tri/phan-anh/${reportB.ma_phan_anh}`);
       await expect(
-        page.getByText(`Thiết bị lúc gửi: EQ-${suffix}-B · Máy ${suffix}-B`, {
-          exact: true,
-        }),
+        activeView(page).getByText(
+          `Thiết bị lúc gửi: EQ-${suffix}-B · Máy ${suffix}-B`,
+          {
+            exact: true,
+          },
+        ),
       ).toBeVisible();
       await expect(page.locator(".image-grid img")).toHaveCount(1);
       await page
         .getByRole("link", { name: "Mở hồ sơ thiết bị", exact: true })
         .click();
       await expect(
-        page.getByRole("heading", { name: `Máy ${suffix}-B`, exact: true }),
+        activeView(page).getByRole("heading", {
+          name: `Máy ${suffix}-B`,
+          exact: true,
+        }),
       ).toBeVisible();
       const connections = page.getByRole("region", {
         name: "QR và phản ánh của thiết bị",
@@ -238,7 +255,10 @@ for (const width of [1440, 375])
         }),
       ).toHaveCount(0);
       await expect(
-        page.getByRole("button", { name: "Bỏ lọc thiết bị", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Bỏ lọc thiết bị",
+          exact: true,
+        }),
       ).toBeVisible();
 
       await page.goto(`/quan-tri/thiet-bi/${a}`);
@@ -260,9 +280,12 @@ for (const width of [1440, 375])
       await expect(guest.getByText(/Thiết bị: EQ-/)).toHaveCount(0);
       await page.goto(`/quan-tri/phan-anh/${reportB.ma_phan_anh}`);
       await expect(
-        page.getByText(`Thiết bị lúc gửi: EQ-${suffix}-B · Máy ${suffix}-B`, {
-          exact: true,
-        }),
+        activeView(page).getByText(
+          `Thiết bị lúc gửi: EQ-${suffix}-B · Máy ${suffix}-B`,
+          {
+            exact: true,
+          },
+        ),
       ).toBeVisible();
       expect(
         await page.evaluate(

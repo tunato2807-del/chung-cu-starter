@@ -1,5 +1,7 @@
+import Dialog, { ActionPanel, useDialogBusy } from "../../shared/Dialog.jsx";
 import React, { useCallback, useId, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { DetailLink as Link } from "../../shared/dialog-navigation.jsx";
 import { EquipmentPicker, QrLinkEditor } from "./QrEquipment.jsx";
 import QrPreview, { downloadQr, printQr } from "./QrPreview.jsx";
 import { getJson } from "../../shared/api/client.js";
@@ -24,6 +26,7 @@ export default function Locations() {
     [pending, setPending] = useState(false),
     [exportPending, setExportPending] = useState(false),
     [confirmation, setConfirmation] = useState();
+  useDialogBusy(pending);
   const closePreview = useCallback(() => setSelected(null), []);
   async function exportQr(location, operation) {
     setExportPending(true);
@@ -94,59 +97,60 @@ export default function Locations() {
       </form>
       <div className={editingLink || confirmation ? "detail-grid" : undefined}>
         <section className="card no-print">
-          <h2>Thêm vị trí</h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              const form = e.currentTarget;
-              const body = Object.fromEntries(new FormData(form));
-              body.ma_thiet_bi =
-                type === "THIET_BI" ? (device?.ma_thiet_bi ?? null) : null;
-              change(async () => {
-                await getJson("/vi_tri_qr", { method: "POST", body });
-                form.reset();
-                setDevice(null);
-                setType("KHU_VUC");
-              });
-            }}
-          >
-            <fieldset disabled={pending}>
-              <Field
-                label="Tên vị trí"
-                name="ten_vi_tri"
-                required
-                minLength={2}
-                maxLength={100}
-              />
-              <Field label="Loại vị trí">
-                <select
-                  name="loai"
-                  value={type}
-                  onChange={(event) => {
-                    setType(event.target.value);
-                    setDevice(null);
-                  }}
-                >
-                  <Options
-                    values={{ KHU_VUC: "Khu vực", THIET_BI: "Thiết bị" }}
-                  />
-                </select>
-              </Field>
-              {type === "THIET_BI" && (
-                <fieldset disabled={pending}>
-                  <EquipmentPicker
-                    value={device}
-                    onChange={setDevice}
-                    initialId={params.get("ma_thiet_bi")}
-                  />
-                </fieldset>
-              )}
-              <Field label="Mô tả" name="mo_ta" maxLength={255} />
-              <button className="primary" disabled={pending}>
-                Tạo vị trí và mã QR
-              </button>
-            </fieldset>
-          </form>
+          <ActionPanel title={"Thêm vị trí"} pending={pending} error={error}>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const form = e.currentTarget;
+                const body = Object.fromEntries(new FormData(form));
+                body.ma_thiet_bi =
+                  type === "THIET_BI" ? (device?.ma_thiet_bi ?? null) : null;
+                change(async () => {
+                  await getJson("/vi_tri_qr", { method: "POST", body });
+                  form.reset();
+                  setDevice(null);
+                  setType("KHU_VUC");
+                });
+              }}
+            >
+              <fieldset disabled={pending}>
+                <Field
+                  label="Tên vị trí"
+                  name="ten_vi_tri"
+                  required
+                  minLength={2}
+                  maxLength={100}
+                />
+                <Field label="Loại vị trí">
+                  <select
+                    name="loai"
+                    value={type}
+                    onChange={(event) => {
+                      setType(event.target.value);
+                      setDevice(null);
+                    }}
+                  >
+                    <Options
+                      values={{ KHU_VUC: "Khu vực", THIET_BI: "Thiết bị" }}
+                    />
+                  </select>
+                </Field>
+                {type === "THIET_BI" && (
+                  <fieldset disabled={pending}>
+                    <EquipmentPicker
+                      value={device}
+                      onChange={setDevice}
+                      initialId={params.get("ma_thiet_bi")}
+                    />
+                  </fieldset>
+                )}
+                <Field label="Mô tả" name="mo_ta" maxLength={255} />
+                <button className="primary" disabled={pending}>
+                  Tạo vị trí và mã QR
+                </button>
+              </fieldset>
+            </form>
+          </ActionPanel>
           <h2>Danh sách vị trí</h2>
           {resource.loading && <Loading />}
           <ErrorBox error={resource.error} />
@@ -302,8 +306,13 @@ export default function Locations() {
               />
             )}
             {confirmation && (
-              <section className="card no-print" role="alert">
-                <h2>Thay QR: {confirmation.ten_vi_tri}?</h2>
+              <Dialog
+                closeOnSuccess
+                title={<>Thay QR: {confirmation.ten_vi_tri}?</>}
+                pending={pending}
+                error={error}
+                onClose={() => setConfirmation(null)}
+              >
                 <p>Mã đã in sẽ mất hiệu lực. Bạn cần in và dán mã mới.</p>
                 <div className="actions">
                   <button
@@ -325,7 +334,7 @@ export default function Locations() {
                   </button>
                   <button onClick={() => setConfirmation(null)}>Hủy</button>
                 </div>
-              </section>
+              </Dialog>
             )}
           </div>
         )}

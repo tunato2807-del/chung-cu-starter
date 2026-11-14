@@ -1,5 +1,7 @@
 # Quản lý chung cư · Phản ánh QR
 
+> **Cửa sổ thao tác mới — nhánh `main`:** [cách cập nhật bằng một lệnh trong VS Code](docs/cua-so-thao-tac-vscode.md). Thêm/sửa, chi tiết, lịch sử, hóa đơn, đặt lịch và phân công/nghiệm thu mở thành cửa sổ có thể đóng bằng ×, Đóng hoặc Esc. Giữ API, MySQL và dữ liệu hiện có; không cần migration cho lần sửa giao diện này.
+
 > **Cài mới hoàn toàn, không chép dữ liệu cũ:** [hướng dẫn Windows / VS Code](docs/cai-moi-hoan-toan-vscode.md). `npm run init:fresh` tạo cấu hình và tên database mới; `npm run db:realistic:fresh` chỉ tạo database chưa tồn tại. Backend dùng `npm run dev:backend` với cấu hình mới.
 
 > **Nếu báo thiếu cấu hình cài mới/JWT:** chạy `npm run init:fresh -- --repair` rồi `npm run config:check`. Lệnh sửa có sao lưu, giữ thông tin kết nối MySQL và không đổi database/JWT đã hợp lệ. Chỉ sửa dòng mật khẩu trong `.env`, không thay cả tệp bằng ví dụ cấu hình rút gọn.
@@ -287,10 +289,12 @@ Preflight không đọc nội dung `.env` và không thay kiểm thử nghiệp 
 
 ```bash
 npm run build
+npm run test:ui
 npm test
 npm run test:e2e
 ```
 
+- `npm run test:ui`: kiểm tra cửa sổ, focus/bàn phím, responsive, ảnh, QR và đăng nhập hết phiên bằng fixture trong browser; không đọc `.env` và không kết nối MySQL.
 - `npm test`: tạo/migrate database riêng `chung_cu_test`, chạy kiểm thử HTTP với MySQL thật. Gồm xác thực, khóa phiên, quyền bản ghi/ảnh, QR thu hồi, gửi lặp đồng thời, chuyển trạng thái, nghiệm thu mới, gộp trùng, giới hạn gửi, hóa đơn/cư trú/tài khoản căn, phạm vi thông báo, receipt sau bàn giao, nhắc phí đồng thời, bảo trì thiết bị, đặt lịch tiện ích đồng thời, thu chi/quỹ, chứng từ, file Excel/PDF và rollback khi lịch sử lỗi.
 - `npm run test:e2e`: chạy API/Vite riêng ở 3101/5174, mở Chromium và đi hết luồng qua giao diện ở 1440 px và 375 px. Browser Linux được đóng gói trong dependency `@sparticuz/chromium`; Windows cài một lần bằng `npx playwright install chromium`. Kiểm thử không thay dữ liệu database phát triển. Hai lệnh test nên chạy lần lượt.
 - `/api/health` kiểm tra tiến trình; `/api/ready` kiểm tra database và migration. Không coi một cổng mở là đã sẵn sàng.
@@ -298,3 +302,7 @@ npm run test:e2e
 Chưa đo tải lớn, thử camera trên thiết bị thật hoặc kiểm thử sao lưu/phục hồi. Trước triển khai thật: phục vụ frontend và `/api` cùng origin qua HTTPS, đặt `COOKIE_SECURE=true`, dùng khóa/mật khẩu riêng, cấu hình backup và giới hạn request tại reverse proxy. Backend hiện bind loopback; Vite là máy chủ phát triển.
 
 Xem [kiến trúc và quy tắc](docs/architecture.md), [API](docs/api.md), [database](database/README.md). Các giới hạn nghiệp vụ và phát hiện còn mở được ghi riêng trong đặc tả/báo cáo rà soát.
+
+## Sửa giao diện với Codex
+
+Chọn repository `tunato2807-del/chung-cu-starter` trong Codex Web. Dự án có [AGENTS.md](AGENTS.md), 10 skill trong `.agents/skills/` và [prompt mẫu](docs/CODEX_UI.md) để chỉnh UI trên React/JavaScript/Vite hiện có. Không cần thêm link GitHub vào biến môi trường; MCP/plugin dùng cấu hình công cụ hoặc kết nối tài khoản riêng.

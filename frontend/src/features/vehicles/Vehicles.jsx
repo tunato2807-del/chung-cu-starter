@@ -1,6 +1,8 @@
+import Dialog, { useDialogBusy } from "../../shared/Dialog.jsx";
 import DataTools from "../../shared/DataTools.jsx";
 import React, { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { DetailLink as Link } from "../../shared/dialog-navigation.jsx";
 import { getJson } from "../../shared/api/client.js";
 import {
   ErrorBox,
@@ -205,6 +207,7 @@ export default function Vehicles() {
   const [pending, setPending] = useState(false),
     [error, setError] = useState(null),
     [notice, setNotice] = useState("");
+  useDialogBusy(pending);
   async function save(path, body, message) {
     setPending(true);
     setError(null);
@@ -266,18 +269,28 @@ export default function Vehicles() {
       )}
       <ErrorBox error={error} />
       {adding && (
-        <section className="card narrow">
-          <h2>Đăng ký xe mới</h2>
+        <Dialog
+          closeOnSuccess
+          title={<>Đăng ký xe mới</>}
+          pending={pending}
+          error={error}
+          onClose={() => setAdding(false)}
+        >
           <VehicleForm
             initialId={params.get("ma_cu_dan")}
             pending={pending}
             onSave={(body) => save("/phuong_tien", body, "Đã tạo đăng ký xe.")}
           />
-        </section>
+        </Dialog>
       )}
       {ending && (
-        <section className="card narrow">
-          <h2>Kết thúc đăng ký {ending.ma_dang_ky}</h2>
+        <Dialog
+          closeOnSuccess
+          title={<>Kết thúc đăng ký {ending.ma_dang_ky}</>}
+          pending={pending}
+          error={error}
+          onClose={() => setEnding(null)}
+        >
           <p>
             {ending.bien_so || types[ending.loai_xe]} · Căn {ending.so_can_ho}.
             Bản ghi cũ sẽ được giữ trong lịch sử.
@@ -318,7 +331,7 @@ export default function Vehicles() {
           <button disabled={pending} onClick={() => setEnding(null)}>
             Hủy
           </button>
-        </section>
+        </Dialog>
       )}
       <form
         key={params.toString()}
@@ -435,7 +448,15 @@ export default function Vehicles() {
           </button>
         </div>
       </section>
-      {selected && <VehicleDetail id={selected} />}
+      {selected && (
+        <Dialog
+          title="Chi tiết đăng ký xe"
+          wide
+          onClose={() => setSelected(null)}
+        >
+          <VehicleDetail id={selected} />
+        </Dialog>
+      )}
     </>
   );
 }

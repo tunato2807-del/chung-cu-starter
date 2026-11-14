@@ -1,7 +1,9 @@
+import Dialog, { ActionPanel, useDialogBusy } from "../../shared/Dialog.jsx";
 import DataTools from "../../shared/DataTools.jsx";
 import ApartmentFloorPicker from "./ApartmentFloorPicker.jsx";
 import React, { useState } from "react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
+import { DetailLink as Link } from "../../shared/dialog-navigation.jsx";
 import { getJson } from "../../shared/api/client.js";
 import {
   ErrorBox,
@@ -46,7 +48,7 @@ function ResidentCode({ value, label = false, copyable = true }) {
       input.readOnly = true;
       input.style.position = "fixed";
       input.style.opacity = "0";
-      document.body.append(input);
+      (previous?.closest?.("dialog[open]") || document.body).append(input);
       try {
         input.focus();
         input.select();
@@ -115,6 +117,7 @@ function useChange(reload) {
   const [pending, setPending] = useState(false),
     [error, setError] = useState(),
     [credentials, setCredentials] = useState(null);
+  useDialogBusy(pending);
   async function change(path, method, body, done) {
     setPending(true);
     setError(null);
@@ -143,8 +146,10 @@ function Credentials({ action }) {
   const account = action.credentials;
   return (
     account && (
-      <section className="card" aria-label="Thông tin bàn giao tài khoản">
-        <h2>Thông tin đăng nhập tài khoản căn hộ</h2>
+      <Dialog
+        title={<>Thông tin đăng nhập tài khoản căn hộ</>}
+        onClose={action.clearCredentials}
+      >
         <p>
           Tên đăng nhập: <strong>{account.ten_dang_nhap}</strong>
         </p>
@@ -170,7 +175,7 @@ function Credentials({ action }) {
         <button onClick={action.clearCredentials}>
           Đã lưu thông tin, ẩn mật khẩu
         </button>
-      </section>
+      </Dialog>
     )
   );
 }
@@ -217,64 +222,82 @@ export function ApartmentAccount({ id, onChange }) {
             hoặc cấp lại mật khẩu sẽ ngắt mọi phiên cũ. Khi người phụ trách
             chuyển đi, tài khoản tạm khóa đến khi BQL bàn giao/cấp lại.
           </p>
-          <button
-            disabled={action.pending}
-            onClick={() =>
-              action.change(
-                `/can_ho/${apartment.ma_can_ho}/tai_khoan`,
-                "POST",
-                {
-                  thao_tac: "cap_lai_mat_khau",
-                  phien_ban_ban_giao: account.phien_ban_ban_giao,
-                },
-              )
-            }
+          <ActionPanel
+            inline
+            title="Cấp lại mật khẩu tài khoản căn hộ"
+            pending={action.pending}
+            error={action.error}
           >
-            Cấp lại mật khẩu và ngắt phiên cũ
-          </button>
-          {owners.some((r) => r.ma_cu_dan !== account.ma_cu_dan_phu_trach) && (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const body = values(e);
-                body.thao_tac = "ban_giao";
-                body.phien_ban_ban_giao = account.phien_ban_ban_giao;
-                body.xac_nhan_ban_giao = body.xac_nhan_ban_giao === "1";
+            <p>
+              Xác nhận cấp mật khẩu mới và ngắt mọi phiên đăng nhập cũ của tài
+              khoản căn hộ.
+            </p>
+            <button
+              disabled={action.pending}
+              onClick={() =>
                 action.change(
                   `/can_ho/${apartment.ma_can_ho}/tai_khoan`,
                   "POST",
-                  body,
-                );
-              }}
+                  {
+                    thao_tac: "cap_lai_mat_khau",
+                    phien_ban_ban_giao: account.phien_ban_ban_giao,
+                  },
+                )
+              }
             >
-              <fieldset disabled={action.pending}>
-                <h3>Bàn giao người phụ trách</h3>
-                <Field label="Chủ hộ nhận tài khoản">
-                  <select name="ma_cu_dan" required defaultValue="">
-                    <option value="">Chọn chủ hộ đang ở</option>
-                    {owners
-                      .filter(
-                        (r) => r.ma_cu_dan !== account.ma_cu_dan_phu_trach,
-                      )
-                      .map((r) => (
-                        <option key={r.ma_cu_dan} value={r.ma_cu_dan}>
-                          {r.ho_va_ten} · {r.so_dien_thoai}
-                        </option>
-                      ))}
-                  </select>
-                </Field>
-                <label className="checkbox">
-                  <input
-                    type="checkbox"
-                    name="xac_nhan_ban_giao"
-                    value="1"
-                    required={!!account.ma_cu_dan_phu_trach}
-                  />
-                  Xác nhận bàn giao và đổi mật khẩu tài khoản căn hộ
-                </label>
-                <button className="primary">Bàn giao tài khoản</button>
-              </fieldset>
-            </form>
+              Cấp lại mật khẩu và ngắt phiên cũ
+            </button>
+          </ActionPanel>
+          {owners.some((r) => r.ma_cu_dan !== account.ma_cu_dan_phu_trach) && (
+            <ActionPanel
+              title={"Bàn giao người phụ trách"}
+              pending={action.pending}
+              error={action.error}
+              inline
+            >
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const body = values(e);
+                  body.thao_tac = "ban_giao";
+                  body.phien_ban_ban_giao = account.phien_ban_ban_giao;
+                  body.xac_nhan_ban_giao = body.xac_nhan_ban_giao === "1";
+                  action.change(
+                    `/can_ho/${apartment.ma_can_ho}/tai_khoan`,
+                    "POST",
+                    body,
+                  );
+                }}
+              >
+                <fieldset disabled={action.pending}>
+                  <h3>Bàn giao người phụ trách</h3>
+                  <Field label="Chủ hộ nhận tài khoản">
+                    <select name="ma_cu_dan" required defaultValue="">
+                      <option value="">Chọn chủ hộ đang ở</option>
+                      {owners
+                        .filter(
+                          (r) => r.ma_cu_dan !== account.ma_cu_dan_phu_trach,
+                        )
+                        .map((r) => (
+                          <option key={r.ma_cu_dan} value={r.ma_cu_dan}>
+                            {r.ho_va_ten} · {r.so_dien_thoai}
+                          </option>
+                        ))}
+                    </select>
+                  </Field>
+                  <label className="checkbox">
+                    <input
+                      type="checkbox"
+                      name="xac_nhan_ban_giao"
+                      value="1"
+                      required={!!account.ma_cu_dan_phu_trach}
+                    />
+                    Xác nhận bàn giao và đổi mật khẩu tài khoản căn hộ
+                  </label>
+                  <button className="primary">Bàn giao tài khoản</button>
+                </fieldset>
+              </form>
+            </ActionPanel>
           )}
         </>
       ) : (
@@ -283,8 +306,7 @@ export function ApartmentAccount({ id, onChange }) {
         </p>
       )}
       {apartment?.lich_su_ban_giao?.length > 0 && (
-        <details>
-          <summary>Lịch sử bàn giao tài khoản</summary>
+        <ActionPanel inline wide title={<>Lịch sử bàn giao tài khoản</>}>
           <ul>
             {apartment.lich_su_ban_giao.map((row) => (
               <li key={row.ma_ban_giao}>
@@ -302,7 +324,7 @@ export function ApartmentAccount({ id, onChange }) {
               </li>
             ))}
           </ul>
-        </details>
+        </ActionPanel>
       )}
     </section>
   );
@@ -361,7 +383,7 @@ export function Apartments() {
       </form>
       <ErrorBox error={resource.error || action.error} />
       <Credentials action={action} />
-      <div className="detail-grid">
+      <div className="workflow-list-layout">
         <section className="card">
           <h2>Danh sách căn hộ</h2>
           {resource.loading && <Loading />}
@@ -413,8 +435,17 @@ export function Apartments() {
           )}
           <Pager resource={resource} />
         </section>
-        <section className="card">
-          <h2>{editing ? `Sửa căn ${editing.so_can_ho}` : "Thêm căn hộ"}</h2>
+        <ActionPanel
+          title={
+            <>{editing ? `Sửa căn ${editing.so_can_ho}` : "Thêm căn hộ"}</>
+          }
+          pending={action.pending}
+          error={action.error}
+          label="Thêm căn hộ"
+          editKey={editing}
+          onOpen={() => setEditing(null)}
+          onDismiss={() => setEditing(null)}
+        >
           <form
             key={editing?.ma_can_ho || "new"}
             onSubmit={(e) => {
@@ -473,9 +504,13 @@ export function Apartments() {
               Hủy sửa
             </button>
           )}
-        </section>
+        </ActionPanel>
       </div>
-      {selected && <ApartmentResidents id={selected} />}
+      {selected && (
+        <Dialog title="Chi tiết căn hộ" wide onClose={() => setSelected(null)}>
+          <ApartmentResidents id={selected} />
+        </Dialog>
+      )}
     </>
   );
 }
@@ -490,6 +525,7 @@ function ApartmentResidents({ id: selected }) {
         <>
           <h2>Cư dân căn {detail.result.data.so_can_ho}</h2>
           <Link
+            dialog
             className="button"
             to={`/quan-tri/cu-dan?ma_can_ho=${selected}&so=${encodeURIComponent(detail.result.data.so_can_ho)}`}
           >
@@ -711,8 +747,13 @@ export function Residents() {
       />
       <Credentials action={action} />
       {adding && (
-        <section className="card narrow">
-          <h2>Hồ sơ và đợt cư trú đầu tiên</h2>
+        <Dialog
+          closeOnSuccess
+          title="Thêm cư dân"
+          pending={action.pending}
+          error={action.error}
+          onClose={() => setAdding(false)}
+        >
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -732,7 +773,7 @@ export function Residents() {
               </button>
             </fieldset>
           </form>
-        </section>
+        </Dialog>
       )}
       <form
         className="filters"
@@ -858,6 +899,7 @@ export function ResidentDetail() {
           )}
           <p>
             <Link
+              dialog
               className="button"
               to={`/quan-tri/phuong-tien?ma_cu_dan=${id}`}
             >
@@ -884,17 +926,24 @@ export function ResidentDetail() {
             ))}
           </div>
           {mode && (
-            <section className="card narrow">
-              <h2>
-                {
+            <Dialog
+              closeOnSuccess
+              title={
+                <>
                   {
-                    profile: "Sửa hồ sơ",
-                    chuyen_can: "Chuyển căn",
-                    chuyen_di: "Ghi nhận chuyển đi",
-                    nhap_cu: "Ghi nhận quay lại",
-                  }[mode]
-                }
-              </h2>
+                    {
+                      profile: "Sửa hồ sơ",
+                      chuyen_can: "Chuyển căn",
+                      chuyen_di: "Ghi nhận chuyển đi",
+                      nhap_cu: "Ghi nhận quay lại",
+                    }[mode]
+                  }
+                </>
+              }
+              pending={action.pending}
+              error={action.error}
+              onClose={() => setMode("")}
+            >
               {mode !== "profile" && (
                 <p className="note" role="status">
                   {dateBlocked
@@ -968,10 +1017,9 @@ export function ResidentDetail() {
               <button disabled={action.pending} onClick={() => setMode("")}>
                 Hủy
               </button>
-            </section>
+            </Dialog>
           )}
-          <section className="card">
-            <h2>Lịch sử cư trú</h2>
+          <ActionPanel title={<>Lịch sử cư trú</>} wide inline>
             <p>
               Ngày kết thúc không thuộc đợt cũ; khi chuyển căn, đợt mới bắt đầu
               cùng ngày đó. Các đợt bắt đầu và kết thúc cùng ngày được giữ để
@@ -1006,7 +1054,7 @@ export function ResidentDetail() {
                 </tbody>
               </table>
             </div>
-          </section>
+          </ActionPanel>
         </>
       )}
     </>

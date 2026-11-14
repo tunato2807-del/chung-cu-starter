@@ -1,3 +1,4 @@
+import { activeView, openAction, closeDialog } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -46,26 +47,31 @@ for (const width of [1440, 375])
         .fill("Ban quản lý thử nghiệm");
       await page.getByLabel("Diễn giải thu / chi").fill(description);
       const p = await saved("/api/phieu_thu_chi", "POST", () =>
-        page
+        activeView(page)
           .getByRole("button", { name: "Lưu phiếu nháp", exact: true })
           .click(),
       );
-      await expect(page.getByText("Bản nháp", { exact: true })).toBeVisible();
+      await expect(
+        activeView(page).getByText("Bản nháp", { exact: true }),
+      ).toBeVisible();
       return p.ma_phieu;
     }
     async function post(id) {
+      await openAction(page, "Duyệt và ghi sổ");
       await page
         .getByLabel("Ghi chú duyệt phiếu")
         .fill("Đã kiểm tra số tiền và chứng từ.");
       await saved(`/api/phieu_thu_chi/${id}/duyet`, "POST", () =>
-        page
+        activeView(page)
           .getByRole("button", {
             name: "Xác nhận duyệt và ghi sổ",
             exact: true,
           })
           .click(),
       );
-      await expect(page.getByText("Đã ghi sổ", { exact: true })).toBeVisible();
+      await expect(
+        activeView(page).getByText("Đã ghi sổ", { exact: true }),
+      ).toBeVisible();
     }
     try {
       const u = await rows(
@@ -88,22 +94,26 @@ for (const width of [1440, 375])
         },
       ]);
       await page.goto("/quan-tri/quy");
-      await page.getByRole("button", { name: "Tạo quỹ", exact: true }).click();
+      await activeView(page)
+        .getByRole("button", { name: "Tạo quỹ", exact: true })
+        .click();
       await page.getByLabel("Tên quỹ", { exact: true }).fill(name);
       await page
         .getByLabel("Mô tả quỹ")
         .fill("Theo dõi thu chi và chứng từ riêng.");
       fund = (
         await saved("/api/quy", "POST", () =>
-          page.getByRole("button", { name: "Lưu quỹ", exact: true }).click(),
+          activeView(page)
+            .getByRole("button", { name: "Lưu quỹ", exact: true })
+            .click(),
         )
       ).ma_quy;
       await expect(
-        page.getByRole("heading", { name, exact: true }),
+        activeView(page).getByRole("heading", { name, exact: true }),
       ).toBeVisible();
       receipt = await newDraft("THU", "1000000", "Bổ sung quỹ ban đầu");
       await post(receipt);
-      await page.getByRole("link", { name, exact: true }).click();
+      await activeView(page).getByRole("link", { name, exact: true }).click();
       await expect(page.getByLabel("Tổng hợp số dư")).toContainText(
         "1.000.000 đ",
       );
@@ -112,18 +122,21 @@ for (const width of [1440, 375])
         "250000",
         "Sửa thiết bị cộng đồng\n<script>window.treasuryInjected=true</script>",
       );
+      await openAction(page, "Duyệt và ghi sổ");
       const blocked = page.waitForResponse(
         (r) =>
           new URL(r.url()).pathname === `/api/phieu_thu_chi/${expense}/duyet` &&
           r.request().method() === "POST",
       );
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xác nhận duyệt và ghi sổ", exact: true })
         .click();
       expect((await blocked).status()).toBe(422);
-      await expect(page.getByRole("alert")).toContainText(
+      await expect(activeView(page).getByRole("alert")).toContainText(
         "cần ít nhất một chứng từ",
       );
+      await closeDialog(page);
+      await openAction(page, "Thêm chứng từ");
       await page.getByLabel("Chọn chứng từ ảnh hoặc PDF").setInputFiles([
         {
           name: "hoa-don.png",
@@ -149,7 +162,7 @@ for (const width of [1440, 375])
         page.getByRole("status").filter({ hasText: "Đã chọn 2 tệp" }),
       ).toBeVisible();
       await saved(`/api/phieu_thu_chi/${expense}/chung_tu`, "POST", () =>
-        page
+        activeView(page)
           .getByRole("button", { name: "Tải chứng từ lên", exact: true })
           .click(),
       );
@@ -159,24 +172,27 @@ for (const width of [1440, 375])
       await expect(
         page.getByRole("link", { name: "bien-lai.pdf", exact: true }),
       ).toBeVisible();
-      await expect(page.getByRole("alert")).toHaveCount(0);
+      await expect(activeView(page).getByRole("alert")).toHaveCount(0);
       await post(expense);
       expect(
         await page.evaluate(() => window.treasuryInjected),
       ).toBeUndefined();
       await expect(
-        page.getByRole("button", { name: "Sửa phiếu nháp", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Sửa phiếu nháp",
+          exact: true,
+        }),
       ).toHaveCount(0);
       await page.screenshot({
         path: `/tmp/chung-cu-treasury-voucher-${width}.png`,
         fullPage: true,
       });
-      await page.getByRole("link", { name, exact: true }).click();
+      await activeView(page).getByRole("link", { name, exact: true }).click();
       await expect(page.getByLabel("Tổng hợp số dư")).toContainText(
         "750.000 đ",
       );
       await page.getByLabel("Cách xem sổ quỹ").selectOption("THEO_THANG");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Lọc sổ quỹ", exact: true })
         .click();
       await expect(
@@ -188,6 +204,7 @@ for (const width of [1440, 375])
         fullPage: true,
       });
       await page.goto(`/quan-tri/phieu-thu-chi/${expense}`);
+      await openAction(page, "Đảo phiếu đã ghi sổ");
       await page
         .getByLabel("Lý do đảo phiếu")
         .fill("Nhà cung cấp hoàn trả khoản chi.");
@@ -195,15 +212,18 @@ for (const width of [1440, 375])
         `/api/phieu_thu_chi/${expense}/dao`,
         "POST",
         () =>
-          page
+          activeView(page)
             .getByRole("button", { name: "Lập phiếu đảo", exact: true })
             .click(),
       );
       await expect(
-        page.getByText("Đây là phiếu đảo của", { exact: false }),
+        activeView(page).getByText("Đây là phiếu đảo của", { exact: false }),
       ).toBeVisible();
       await expect(
-        page.getByRole("button", { name: "Lập phiếu đảo", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Lập phiếu đảo",
+          exact: true,
+        }),
       ).toHaveCount(0);
       await page
         .getByRole("link", { name: "phiếu gốc", exact: true })
@@ -221,33 +241,36 @@ for (const width of [1440, 375])
           )
         )[0].ma_phieu_goc,
       ).toBe(expense);
-      await page.getByRole("link", { name, exact: true }).click();
+      await activeView(page).getByRole("link", { name, exact: true }).click();
       await expect(page.getByLabel("Tổng hợp số dư")).toContainText(
         "1.000.000 đ",
       );
       // A fresh draft can be edited and canceled without changing the posted balance.
       const draft = await newDraft("THU", "30000", "Khoản nháp cần kiểm tra");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Sửa phiếu nháp", exact: true })
         .click();
       await page.getByLabel("Số tiền (đồng)").fill("40000");
       await saved(`/api/phieu_thu_chi/${draft}`, "PUT", () =>
-        page
+        activeView(page)
           .getByRole("button", { name: "Lưu phiếu nháp", exact: true })
           .click(),
       );
       await expect(
-        page.getByText("40.000 đ", { exact: true }).first(),
+        activeView(page).getByText("40.000 đ", { exact: true }).first(),
       ).toBeVisible();
+      await openAction(page, "Hủy phiếu nháp");
       await page
         .getByLabel("Lý do hủy phiếu")
         .fill("Không phát sinh khoản thu thực tế.");
       await saved(`/api/phieu_thu_chi/${draft}/huy`, "POST", () =>
-        page
+        activeView(page)
           .getByRole("button", { name: "Xác nhận hủy nháp", exact: true })
           .click(),
       );
-      await expect(page.getByText("Đã hủy", { exact: true })).toBeVisible();
+      await expect(
+        activeView(page).getByText("Đã hủy", { exact: true }),
+      ).toBeVisible();
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= window.innerWidth,

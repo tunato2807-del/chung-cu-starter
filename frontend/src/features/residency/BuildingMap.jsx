@@ -1,31 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { getJson } from "../../shared/api/client.js";
-import { ErrorBox, Field, Loading } from "../../shared/ui.jsx";
+import React, { useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { DetailLink as Link } from "../../shared/dialog-navigation.jsx";
+import { ErrorBox, Field, Loading, useResource } from "../../shared/ui.jsx";
 import "./BuildingMap.css";
 
-// Associate results with the current path/revision; old floors never flash when
-// filters change, and a slow response cannot overwrite the latest selection.
+// Reuse session scoping and the refresh event emitted when a related record
+// dialog closes, while keeping the selected block, floor and list filters.
 function useMapData(path, revision) {
-  const key = JSON.stringify([path, revision]);
-  const [state, setState] = useState({});
-  useEffect(() => {
-    if (!path) return;
-    const controller = new AbortController();
-    setState({ key, loading: true });
-    getJson(path, { signal: controller.signal })
-      .then((result) => {
-        if (!controller.signal.aborted)
-          setState({ key, result, loading: false });
-      })
-      .catch((error) => {
-        if (!controller.signal.aborted)
-          setState({ key, error, loading: false });
-      });
-    return () => controller.abort();
-  }, [path, key]);
-  if (!path) return { loading: false };
-  return state.key === key ? state : { loading: true };
+  const resource = useResource(path, revision);
+  return path ? resource : { loading: false };
 }
 
 const number = (value) => Number(value).toLocaleString("vi-VN");
@@ -268,11 +251,13 @@ export default function BuildingMap() {
                                       : "Không tính phí dịch vụ"}
                                   </p>
                                   <Link
+                                    dialog
                                     to={`/quan-tri/can-ho?ma_can_ho=${item.ma_can_ho}`}
                                   >
                                     Xem / sửa căn {item.so_can_ho}
                                   </Link>
                                   <Link
+                                    dialog
                                     to={`/quan-tri/cu-dan?ma_can_ho=${item.ma_can_ho}&so=${encodeURIComponent(item.so_can_ho)}`}
                                   >
                                     Cư dân căn {item.so_can_ho}

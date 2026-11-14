@@ -1,12 +1,13 @@
+import { useResource } from "../../shared/ui.jsx";
+import Dialog, { ActionPanel, useDialogBusy } from "../../shared/Dialog.jsx";
 import DataTools from "../../shared/DataTools.jsx";
 import { EquipmentQrConnections } from "../qr/QrEquipment.jsx";
 import React, { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+  DetailLink as Link,
+  useDialogNavigate as useNavigate,
+} from "../../shared/dialog-navigation.jsx";
 import { getJson } from "../../shared/api/client.js";
 import { Field, ErrorBox, Loading, Options } from "../../shared/ui.jsx";
 import { newRequestKey } from "../../shared/request-key.js";
@@ -72,33 +73,13 @@ const time = (x) =>
 const code = (id) => `BT${String(id).padStart(6, "0")}`;
 const values = (e) => Object.fromEntries(new FormData(e.currentTarget));
 function useData(path) {
-  const [state, setState] = useState({ loading: true }),
-    [revision, setRevision] = useState(0);
-  useEffect(() => {
-    const controller = new AbortController();
-    setState({ path, revision, loading: true });
-    getJson(path, { signal: controller.signal })
-      .then((result) => {
-        if (!controller.signal.aborted)
-          setState({ path, revision, result, loading: false });
-      })
-      .catch((error) => {
-        if (!controller.signal.aborted)
-          setState({ path, revision, error, loading: false });
-      });
-    return () => controller.abort();
-  }, [path, revision]);
-  return {
-    ...(state.path === path && state.revision === revision
-      ? state
-      : { loading: true }),
-    reload: () => setRevision((n) => n + 1),
-  };
+  return useResource(path);
 }
 function useAction(done) {
   const [pending, setPending] = useState(false),
     [error, setError] = useState(null),
     [notice, setNotice] = useState("");
+  useDialogBusy(pending);
   async function run(path, method, body, after) {
     setPending(true);
     setError(null);
@@ -134,8 +115,7 @@ function Feedback({ action }) {
 }
 function History({ items, title = "Lịch sử thực hiện" }) {
   return (
-    <section className="card">
-      <h2>{title}</h2>
+    <ActionPanel title={<>{title}</>} wide inline>
       <ol className="maintenance-history">
         {items.map((h) => (
           <li key={h.ma_lich_su}>
@@ -149,7 +129,7 @@ function History({ items, title = "Lịch sử thực hiện" }) {
           </li>
         ))}
       </ol>
-    </section>
+    </ActionPanel>
   );
 }
 function Pager({ resource }) {
@@ -459,8 +439,13 @@ export function EquipmentList() {
         disabled={resource.loading}
       />
       {adding && (
-        <section className="card">
-          <h2>Đăng ký thiết bị</h2>
+        <Dialog
+          closeOnSuccess
+          title={<>Đăng ký thiết bị</>}
+          pending={action.pending}
+          error={action.error}
+          onClose={() => setAdding(false)}
+        >
           <EquipmentForm
             action={action}
             onSave={(body) =>
@@ -469,7 +454,7 @@ export function EquipmentList() {
               )
             }
           />
-        </section>
+        </Dialog>
       )}
       <form
         className="filters"
@@ -663,6 +648,7 @@ export function EquipmentDetail() {
             {e.ghi_chu && <p className="maintenance-text">{e.ghi_chu}</p>}
             <div className="actions">
               <Link
+                dialog
                 className="button"
                 to={`/quan-tri/bao-tri?ma_thiet_bi=${id}`}
               >
@@ -703,8 +689,13 @@ export function EquipmentDetail() {
           </section>
           <EquipmentQrConnections key={e.ma_thiet_bi} id={e.ma_thiet_bi} />
           {editing && (
-            <section className="card">
-              <h2>Sửa thông tin và lịch</h2>
+            <Dialog
+              closeOnSuccess
+              title={<>Sửa thông tin và lịch</>}
+              pending={action.pending}
+              error={action.error}
+              onClose={() => setEditing(false)}
+            >
               <EquipmentForm
                 initial={e}
                 action={action}
@@ -717,20 +708,32 @@ export function EquipmentDetail() {
                   )
                 }
               />
-            </section>
+            </Dialog>
           )}
           {creating && (
-            <NewJob
+            <Dialog
+              closeOnSuccess
               key={creating}
-              equipment={e}
-              type={creating}
-              action={action}
-              onSave={(body) =>
-                action.run(`/thiet_bi/${id}/phieu_bao_tri`, "POST", body, (j) =>
-                  navigate(`/quan-tri/bao-tri/${j.ma_phieu_bao_tri}`),
-                )
-              }
-            />
+              title="Lập phiếu bảo trì"
+              pending={action.pending}
+              error={action.error}
+              onClose={() => setCreating("")}
+            >
+              <NewJob
+                key={creating}
+                equipment={e}
+                type={creating}
+                action={action}
+                onSave={(body) =>
+                  action.run(
+                    `/thiet_bi/${id}/phieu_bao_tri`,
+                    "POST",
+                    body,
+                    (j) => navigate(`/quan-tri/bao-tri/${j.ma_phieu_bao_tri}`),
+                  )
+                }
+              />
+            </Dialog>
           )}
           <History items={e.history} title="Lịch sử thông tin thiết bị" />
         </>
@@ -868,8 +871,11 @@ export function MaintenanceList() {
 }
 function ActionForm({ title, button, action, onSubmit, children }) {
   return (
-    <section className="card">
-      <h2>{title}</h2>
+    <ActionPanel
+      title={<>{title}</>}
+      pending={action.pending}
+      error={action.error}
+    >
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -881,7 +887,7 @@ function ActionForm({ title, button, action, onSubmit, children }) {
           <button className="primary">{button}</button>
         </fieldset>
       </form>
-    </section>
+    </ActionPanel>
   );
 }
 export function MaintenanceDetail() {
@@ -980,8 +986,11 @@ export function MaintenanceDetail() {
             </section>
           )}
           {!isAdmin && j.trang_thai === "DA_PHAN_CONG" && (
-            <section className="card">
-              <h2>Thực hiện công việc</h2>
+            <ActionPanel
+              title={<>Thực hiện công việc</>}
+              pending={action.pending}
+              error={action.error}
+            >
               <button
                 className="primary"
                 disabled={action.pending}
@@ -989,7 +998,7 @@ export function MaintenanceDetail() {
               >
                 Bắt đầu bảo trì
               </button>
-            </section>
+            </ActionPanel>
           )}
           {!isAdmin && j.trang_thai === "DANG_THUC_HIEN" && (
             <ActionForm

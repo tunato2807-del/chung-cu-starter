@@ -1,3 +1,4 @@
+import { activeView, openAction, closeDialog } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -64,20 +65,34 @@ for (const width of [1440, 375])
       );
       await page.getByLabel("Số điện thoại").fill(phones[0]);
       await page.getByLabel("Mật khẩu", { exact: true }).fill(password);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Đăng nhập", exact: true })
         .click();
-      await page.getByRole("link", { name: "Căn hộ", exact: true }).click();
+      await activeView(page)
+        .getByRole("link", { name: "Căn hộ", exact: true })
+        .click();
       await page.getByLabel("Tìm số căn hộ hoặc khối").fill(apartmentName);
-      await page.getByRole("button", { name: "Tìm kiếm", exact: true }).click();
+      await activeView(page)
+        .getByRole("button", { name: "Tìm kiếm", exact: true })
+        .click();
       for (const ending of ["A", "B"]) {
+        await openAction(page, "Thêm căn hộ");
         await page
           .getByLabel("Số căn hộ", { exact: true })
           .fill(`${apartmentName}-${ending}`);
         await page.getByLabel("Khối", { exact: true }).selectOption("E2E");
         await page.getByLabel("Tầng", { exact: true }).selectOption("5");
         await page.getByLabel("Diện tích (m²)").fill("75.50");
-        await page.getByRole("button", { name: "Lưu căn hộ" }).click();
+        await activeView(page)
+          .getByRole("button", { name: "Lưu căn hộ" })
+          .click();
+        await page
+          .getByRole("dialog", {
+            name: "Thông tin đăng nhập tài khoản căn hộ",
+            exact: true,
+          })
+          .waitFor();
+        await closeDialog(page);
         await expect(
           page.getByRole("cell", {
             name: `${apartmentName}-${ending}`,
@@ -99,13 +114,15 @@ for (const width of [1440, 375])
       });
       await row.getByRole("button", { name: "Sửa", exact: true }).click();
       await page.getByLabel("Diện tích (m²)").fill("80.25");
-      await page.getByRole("button", { name: "Lưu căn hộ" }).click();
+      await activeView(page)
+        .getByRole("button", { name: "Lưu căn hộ" })
+        .click();
       await expect(row.getByText("80.25 m²")).toBeVisible();
       await row.getByRole("button", { name: "Xem", exact: true }).click();
-      await page
+      await activeView(page)
         .getByRole("link", { name: "Thêm hoặc xem cư dân căn này" })
         .click();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Thêm cư dân", exact: true })
         .click();
       await page.getByLabel("Họ tên", { exact: true }).fill(residentName);
@@ -121,26 +138,28 @@ for (const width of [1440, 375])
         .selectOption(String(accounts[1]));
       await page.getByLabel("Quan hệ với căn hộ").selectOption("NGUOI_THUE");
       await page.getByLabel("Ngày bắt đầu / chuyển căn").fill(day);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Lưu cư dân", exact: true })
         .click();
-      await page.getByRole("link", { name: residentName, exact: true }).click();
+      await activeView(page)
+        .getByRole("link", { name: residentName, exact: true })
+        .click();
       await expect(
         page.getByRole("heading", { name: residentName, exact: true }),
       ).toBeVisible();
       profileId = Number(page.url().split("/").at(-1));
-      await expect(page.locator(".resident-code code")).toHaveText(
+      await expect(activeView(page).locator(".resident-code code")).toHaveText(
         String(profileId),
       );
-      await page
+      await activeView(page)
         .getByRole("button", {
           name: `Sao chép mã cư dân ${profileId}`,
           exact: true,
         })
         .click();
-      await expect(page.locator(".resident-code [role='status']")).toHaveText(
-        `Đã sao chép mã ${profileId}.`,
-      );
+      await expect(
+        activeView(page).locator(".resident-code [role='status']"),
+      ).toHaveText(`Đã sao chép mã ${profileId}.`);
       expect(await page.evaluate(() => window.__copiedResidentCode)).toBe(
         String(profileId),
       );
@@ -148,18 +167,22 @@ for (const width of [1440, 375])
         path: `/tmp/chung-cu-resident-code-${width}.png`,
         fullPage: true,
       });
-      await page
+      await activeView(page)
         .getByRole("link", { name: "← Danh sách cư dân", exact: true })
         .click();
       await page.getByLabel("Mã cư dân (tùy chọn)").fill(String(profileId));
-      await page.getByRole("button", { name: "Tìm kiếm", exact: true }).click();
+      await activeView(page)
+        .getByRole("button", { name: "Tìm kiếm", exact: true })
+        .click();
       await expect(
         page.getByRole("columnheader", { name: "Mã cư dân", exact: true }),
       ).toBeVisible();
-      await expect(page.locator("tbody .resident-code code")).toHaveText(
-        String(profileId),
-      );
-      await page.getByRole("link", { name: residentName, exact: true }).click();
+      await expect(
+        activeView(page).locator("tbody .resident-code code"),
+      ).toHaveText(String(profileId));
+      await activeView(page)
+        .getByRole("link", { name: residentName, exact: true })
+        .click();
 
       // A slow account selector must not silently unlink an existing account.
       await page.evaluate(() => {
@@ -172,7 +195,7 @@ for (const width of [1440, 375])
               }).then(() => original(...args))
             : original(...args);
       });
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Sửa hồ sơ", exact: true })
         .click();
       await expect
@@ -181,7 +204,7 @@ for (const width of [1440, 375])
       await page
         .getByLabel("Họ tên", { exact: true })
         .fill(residentName + " sửa");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xác nhận lưu", exact: true })
         .click();
       await expect(
@@ -198,7 +221,7 @@ for (const width of [1440, 375])
       );
       expect(linked.ma_nguoi_dung).toBe(accounts[1]);
 
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Chuyển căn", exact: true })
         .click();
       await page
@@ -211,28 +234,37 @@ for (const width of [1440, 375])
         .getByLabel("Căn hộ", { exact: true })
         .selectOption(String(apartments[1].ma_can_ho));
       await page.getByLabel("Ngày bắt đầu / chuyển căn").fill(day);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xác nhận lưu", exact: true })
         .click();
       await expect(
-        page.getByText(`Đang ở căn ${apartments[1].so_can_ho}`, {
+        activeView(page).getByText(`Đang ở căn ${apartments[1].so_can_ho}`, {
           exact: false,
         }),
       ).toBeVisible();
+      await openAction(page, "Lịch sử cư trú");
       await expect(
-        page.locator("tbody small").filter({ hasText: "Chuyển trong ngày" }),
+        page
+          .locator("dialog[open]")
+          .last()
+          .locator("tbody small")
+          .filter({ hasText: "Chuyển trong ngày" }),
       ).toHaveCount(1);
-      await page
+      await closeDialog(page);
+      await activeView(page)
         .getByRole("button", { name: "Ghi nhận chuyển đi", exact: true })
         .click();
       await page.getByLabel("Ngày chuyển đi", { exact: true }).fill(day);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xác nhận lưu", exact: true })
         .click();
       await expect(
-        page.getByRole("button", { name: "Ghi nhận quay lại", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Ghi nhận quay lại",
+          exact: true,
+        }),
       ).toBeVisible();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Ghi nhận quay lại", exact: true })
         .click();
       await page
@@ -245,16 +277,17 @@ for (const width of [1440, 375])
         .getByLabel("Căn hộ", { exact: true })
         .selectOption(String(apartments[0].ma_can_ho));
       await page.getByLabel("Ngày bắt đầu / chuyển căn").fill(day);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xác nhận lưu", exact: true })
         .click();
       await page.reload();
       await expect(
-        page.getByText(`Đang ở căn ${apartments[0].so_can_ho}`, {
+        activeView(page).getByText(`Đang ở căn ${apartments[0].so_can_ho}`, {
           exact: false,
         }),
       ).toBeVisible();
-      await expect(page.locator("tbody tr")).toHaveCount(3);
+      await openAction(page, "Lịch sử cư trú");
+      await expect(activeView(page).locator("tbody tr")).toHaveCount(3);
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -335,17 +368,25 @@ for (const width of [1440, 375])
     });
     await page.goto("/quan-tri/cu-dan/999");
     await expect(
-      page.getByText("Đợt cư trú hiện tại bắt đầu ngày 19/10/2026.", {
-        exact: true,
-      }),
+      activeView(page).getByText(
+        "Đợt cư trú hiện tại bắt đầu ngày 19/10/2026.",
+        {
+          exact: true,
+        },
+      ),
     ).toBeVisible();
     for (const label of ["Chuyển căn", "Ghi nhận chuyển đi"]) {
-      await page.getByRole("button", { name: label, exact: true }).click();
+      await activeView(page)
+        .getByRole("button", { name: label, exact: true })
+        .click();
       await expect(
         page.getByRole("status").filter({ hasText: "Có thể chọn ngày" }),
       ).toContainText("kể cả chuyển căn trong ngày bắt đầu ở");
       await expect(
-        page.getByRole("button", { name: "Xác nhận lưu", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Xác nhận lưu",
+          exact: true,
+        }),
       ).toBeEnabled();
       const date = page.locator('input[name="ngay"]');
       await expect(date).toHaveAttribute("min", "2026-10-19");
@@ -361,11 +402,17 @@ for (const width of [1440, 375])
       );
       await date.fill("2026-10-19");
       expect(await date.evaluate((input) => input.validity.valid)).toBe(true);
+      await closeDialog(page);
     }
     expect(writes).toBe(0);
-    await page.getByRole("button", { name: "Sửa hồ sơ", exact: true }).click();
+    await activeView(page)
+      .getByRole("button", { name: "Sửa hồ sơ", exact: true })
+      .click();
     await expect(
-      page.getByRole("button", { name: "Xác nhận lưu", exact: true }),
+      activeView(page).getByRole("button", {
+        name: "Xác nhận lưu",
+        exact: true,
+      }),
     ).toBeEnabled();
     await expect(page.getByLabel("Họ tên", { exact: true })).toBeEditable();
   });

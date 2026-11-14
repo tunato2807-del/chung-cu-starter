@@ -1,5 +1,6 @@
+import Dialog, { useDialogBusy } from "../../shared/Dialog.jsx";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { DetailLink as Link } from "../../shared/dialog-navigation.jsx";
 import { getJson } from "../../shared/api/client.js";
 import { ErrorBox, Field, Loading, useResource } from "../../shared/ui.jsx";
 import "./BuildingMap.css";
@@ -12,6 +13,7 @@ export default function BuildingStructure() {
   const [pending, setPending] = useState(false),
     [error, setError] = useState(null),
     [notice, setNotice] = useState("");
+  useDialogBusy(pending);
   const blocks = resource.result?.data.khoi || [];
   const block = blocks.find((item) => item.khoi === selected) || blocks[0];
   function open(value) {
@@ -214,14 +216,18 @@ export default function BuildingStructure() {
         </section>
       )}
       {editor && (
-        <section
-          className="card building-structure-editor"
-          aria-label="Biểu mẫu khối tầng"
+        <Dialog
+          closeOnSuccess
+          title={
+            <>
+              {editor.row ? "Sửa" : "Thêm"}{" "}
+              {editor.type === "block" ? "khối" : `tầng · Khối ${editor.khoi}`}
+            </>
+          }
+          pending={pending}
+          error={error}
+          onClose={() => setEditor(null)}
         >
-          <h2>
-            {editor.row ? "Sửa" : "Thêm"}{" "}
-            {editor.type === "block" ? "khối" : `tầng · Khối ${editor.khoi}`}
-          </h2>
           <form
             key={`${editor.type}:${editor.khoi}:${editor.row?.khoi}:${editor.row?.tang}:${editor.row?.phien_ban}`}
             onSubmit={(event) => {
@@ -297,21 +303,24 @@ export default function BuildingStructure() {
               </div>
             </fieldset>
           </form>
-        </section>
+        </Dialog>
       )}
       {confirmation && (
-        <section
-          className="card building-structure-editor"
-          role="alertdialog"
-          aria-label="Xác nhận xóa cấu trúc"
+        <Dialog
+          closeOnSuccess
+          title={
+            <>
+              Xóa{" "}
+              {confirmation.type === "block"
+                ? `khối ${confirmation.khoi}`
+                : `tầng ${confirmation.row.tang} · Khối ${confirmation.khoi}`}
+              ?
+            </>
+          }
+          pending={pending}
+          error={error}
+          onClose={() => setConfirmation(null)}
         >
-          <h2>
-            Xóa{" "}
-            {confirmation.type === "block"
-              ? `khối ${confirmation.khoi}`
-              : `tầng ${confirmation.row.tang} · Khối ${confirmation.khoi}`}
-            ?
-          </h2>
           <p>
             Hệ thống sẽ kiểm tra lại mục này chưa được sử dụng trước khi xóa.
           </p>
@@ -333,7 +342,7 @@ export default function BuildingStructure() {
               Giữ lại
             </button>
           </div>
-        </section>
+        </Dialog>
       )}
     </div>
   );

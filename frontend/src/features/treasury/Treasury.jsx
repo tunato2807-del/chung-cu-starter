@@ -1,10 +1,11 @@
+import { useResource } from "../../shared/ui.jsx";
+import Dialog, { ActionPanel, useDialogBusy } from "../../shared/Dialog.jsx";
 import React, { useEffect, useRef, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+  DetailLink as Link,
+  useDialogNavigate as useNavigate,
+} from "../../shared/dialog-navigation.jsx";
 import { getJson } from "../../shared/api/client.js";
 import { Field, ErrorBox, Loading, Options } from "../../shared/ui.jsx";
 import { newRequestKey } from "../../shared/request-key.js";
@@ -56,33 +57,13 @@ const events = {
 };
 const values = (e) => Object.fromEntries(new FormData(e.currentTarget));
 function useData(path) {
-  const [state, setState] = useState({ loading: true }),
-    [revision, setRevision] = useState(0);
-  useEffect(() => {
-    const c = new AbortController();
-    setState({ path, revision, loading: true });
-    getJson(path, { signal: c.signal })
-      .then((result) => {
-        if (!c.signal.aborted)
-          setState({ path, revision, result, loading: false });
-      })
-      .catch((error) => {
-        if (!c.signal.aborted)
-          setState({ path, revision, error, loading: false });
-      });
-    return () => c.abort();
-  }, [path, revision]);
-  return {
-    ...(state.path === path && state.revision === revision
-      ? state
-      : { loading: true }),
-    reload: () => setRevision((x) => x + 1),
-  };
+  return useResource(path);
 }
 function useAction(done) {
   const [pending, setPending] = useState(false),
     [error, setError] = useState(null),
     [notice, setNotice] = useState("");
+  useDialogBusy(pending);
   async function run(path, method, body, after) {
     setPending(true);
     setError(null);
@@ -263,18 +244,26 @@ export function Funds() {
         <button>Tìm kiếm</button>
       </form>
       {form && (
-        <FundForm
-          action={action}
-          onCancel={() => setForm(false)}
-          onSave={(b) =>
-            action.run("/quy", "POST", b, (d) =>
-              navigate(`/quan-tri/quy/${d.ma_quy}`),
-            )
-          }
-        />
+        <Dialog
+          closeOnSuccess
+          title="Tạo quỹ"
+          pending={action.pending}
+          error={action.error}
+          onClose={() => setForm(false)}
+        >
+          <FundForm
+            action={action}
+            onCancel={() => setForm(false)}
+            onSave={(b) =>
+              action.run("/quy", "POST", b, (d) =>
+                navigate(`/quan-tri/quy/${d.ma_quy}`),
+              )
+            }
+          />
+        </Dialog>
       )}
       <ErrorBox error={resource.error} />
-      {resource.loading ? (
+      {resource.loading && !resource.result ? (
         <Loading />
       ) : (
         <div className="treasury-funds">
@@ -325,7 +314,7 @@ export function FundDetail() {
     <>
       <Nav />
       <ErrorBox error={resource.error} />
-      {resource.loading ? (
+      {resource.loading && !resource.result ? (
         <Loading />
       ) : (
         f && (
@@ -339,6 +328,7 @@ export function FundDetail() {
               <div className="actions">
                 <button onClick={() => setEdit(true)}>Sửa quỹ</button>
                 <Link
+                  dialog
                   className="button primary"
                   to={`/quan-tri/phieu-thu-chi/moi?ma_quy=${id}`}
                 >
@@ -347,12 +337,20 @@ export function FundDetail() {
               </div>
             </div>
             {edit && (
-              <FundForm
-                fund={f}
-                action={action}
-                onCancel={() => setEdit(false)}
-                onSave={(b) => action.run(`/quy/${id}`, "PUT", b)}
-              />
+              <Dialog
+                closeOnSuccess
+                title="Sửa thông tin quỹ"
+                pending={action.pending}
+                error={action.error}
+                onClose={() => setEdit(false)}
+              >
+                <FundForm
+                  fund={f}
+                  action={action}
+                  onCancel={() => setEdit(false)}
+                  onSave={(b) => action.run(`/quy/${id}`, "PUT", b)}
+                />
+              </Dialog>
             )}
             <p className="note">
               Chỉ tính phiếu đã ghi sổ và hóa đơn đã xác nhận thu. Dữ liệu lúc{" "}
@@ -446,7 +444,7 @@ export function FundDetail() {
             )}
             <section className="card">
               <div className="actions">
-                <Link to={`/quan-tri/phieu-thu-chi?ma_quy=${id}`}>
+                <Link dialog to={`/quan-tri/phieu-thu-chi?ma_quy=${id}`}>
                   Xem phiếu nháp / đã ghi sổ của quỹ
                 </Link>
                 <button onClick={resource.reload}>Cập nhật sổ quỹ</button>
@@ -640,7 +638,7 @@ export function VoucherNew() {
     <>
       <Nav />
       <ErrorBox error={resource.error} />
-      {resource.loading ? (
+      {resource.loading && !resource.result ? (
         <Loading />
       ) : (
         fund && (
@@ -673,6 +671,7 @@ export function Vouchers() {
           <h1>Phiếu thu và phiếu chi</h1>
         </div>
         <Link
+          dialog
           className="button primary"
           to={
             params.get("ma_quy")
@@ -724,7 +723,7 @@ export function Vouchers() {
       )}
       <ErrorBox error={resource.error} />
       <section className="card">
-        {resource.loading ? (
+        {resource.loading && !resource.result ? (
           <Loading />
         ) : (
           <>
@@ -837,46 +836,52 @@ function Proofs({ p, reload }) {
         </p>
       )}
       {p.trang_thai === "NHAP" && (
-        <form
-          ref={form}
-          onSubmit={(e) => {
-            e.preventDefault();
-            const b = new FormData();
-            b.set("phien_ban", p.phien_ban);
-            for (const f of files) b.append("chung_tu", f, f.name);
-            action.run(
-              `/phieu_thu_chi/${p.ma_phieu}/chung_tu`,
-              "POST",
-              b,
-              () => {
-                setFiles([]);
-                form.current?.reset();
-              },
-            );
-          }}
+        <ActionPanel
+          title={"Thêm chứng từ"}
+          pending={action.pending}
+          error={action.error}
         >
-          <Field label="Chọn chứng từ ảnh hoặc PDF">
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/webp,application/pdf,.pdf"
-              multiple
-              onChange={(e) => setFiles(Array.from(e.target.files || []))}
-            />
-          </Field>
-          <p role="status">
-            {files.length
-              ? `Đã chọn ${files.length} tệp: ${files.map((f) => f.name).join(", ")}`
-              : "Chưa chọn tệp để tải lên."}
-          </p>
-          <p className="muted">
-            Tối đa 5 chứng từ mỗi phiếu, 5 MB mỗi tệp. Ảnh JPEG/PNG/WebP được
-            chuyển JPEG và bỏ metadata; PDF chỉ tải xuống. Chọn tệp rồi bấm Tải
-            chứng từ lên, sau đó mới duyệt phiếu.
-          </p>
-          <button disabled={action.pending || !files.length}>
-            Tải chứng từ lên
-          </button>
-        </form>
+          <form
+            ref={form}
+            onSubmit={(e) => {
+              e.preventDefault();
+              const b = new FormData();
+              b.set("phien_ban", p.phien_ban);
+              for (const f of files) b.append("chung_tu", f, f.name);
+              action.run(
+                `/phieu_thu_chi/${p.ma_phieu}/chung_tu`,
+                "POST",
+                b,
+                () => {
+                  setFiles([]);
+                  form.current?.reset();
+                },
+              );
+            }}
+          >
+            <Field label="Chọn chứng từ ảnh hoặc PDF">
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,application/pdf,.pdf"
+                multiple
+                onChange={(e) => setFiles(Array.from(e.target.files || []))}
+              />
+            </Field>
+            <p role="status">
+              {files.length
+                ? `Đã chọn ${files.length} tệp: ${files.map((f) => f.name).join(", ")}`
+                : "Chưa chọn tệp để tải lên."}
+            </p>
+            <p className="muted">
+              Tối đa 5 chứng từ mỗi phiếu, 5 MB mỗi tệp. Ảnh JPEG/PNG/WebP được
+              chuyển JPEG và bỏ metadata; PDF chỉ tải xuống. Chọn tệp rồi bấm
+              Tải chứng từ lên, sau đó mới duyệt phiếu.
+            </p>
+            <button disabled={action.pending || !files.length}>
+              Tải chứng từ lên
+            </button>
+          </form>
+        </ActionPanel>
       )}
     </section>
   );
@@ -906,7 +911,7 @@ export function VoucherDetail() {
     <>
       <Nav />
       <ErrorBox error={resource.error} />
-      {resource.loading ? (
+      {resource.loading && !resource.result ? (
         <Loading />
       ) : (
         p && (
@@ -964,14 +969,23 @@ export function VoucherDetail() {
             </section>
             <Feedback action={action} />
             {editing && (
-              <VoucherForm
+              <Dialog
+                closeOnSuccess
                 key={p.phien_ban}
-                fund={{ ma_quy: p.ma_quy, ten_quy: p.ten_quy }}
-                data={p}
-                action={action}
-                onCancel={() => setEditing(false)}
-                onSave={(b) => action.run(`/phieu_thu_chi/${id}`, "PUT", b)}
-              />
+                title="Sửa phiếu nháp"
+                pending={action.pending}
+                error={action.error}
+                onClose={() => setEditing(false)}
+              >
+                <VoucherForm
+                  key={p.phien_ban}
+                  fund={{ ma_quy: p.ma_quy, ten_quy: p.ten_quy }}
+                  data={p}
+                  action={action}
+                  onCancel={() => setEditing(false)}
+                  onSave={(b) => action.run(`/phieu_thu_chi/${id}`, "PUT", b)}
+                />
+              </Dialog>
             )}
             <Proofs
               p={p}
@@ -989,75 +1003,82 @@ export function VoucherDetail() {
                   ? ["dao"]
                   : []
               ).map((kind) => (
-                <form
-                  className="card"
+                <ActionPanel
                   key={`${kind}-${p.phien_ban}`}
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    action.run(
-                      `/phieu_thu_chi/${id}/${kind}`,
-                      "POST",
-                      { ...values(e), phien_ban: p.phien_ban },
-                      kind === "dao"
-                        ? (d) =>
-                            navigate(`/quan-tri/phieu-thu-chi/${d.ma_phieu}`)
-                        : undefined,
-                    );
-                  }}
+                  title={
+                    <>
+                      {
+                        {
+                          duyet: "Duyệt và ghi sổ",
+                          huy: "Hủy phiếu nháp",
+                          dao: "Đảo phiếu đã ghi sổ",
+                        }[kind]
+                      }
+                    </>
+                  }
+                  pending={action.pending}
+                  error={action.error}
                 >
-                  <h2>
-                    {
-                      {
-                        duyet: "Duyệt và ghi sổ",
-                        huy: "Hủy phiếu nháp",
-                        dao: "Đảo phiếu đã ghi sổ",
-                      }[kind]
-                    }
-                  </h2>
-                  <p className="muted">
-                    {
-                      {
-                        duyet:
-                          "Chỉ duyệt khi khoản tiền thực tế và chứng từ đã được kiểm tra. Duyệt chi cần quỹ đủ số dư hiện tại.",
-                        huy: "Hủy nháp không thay đổi số dư quỹ.",
-                        dao: "Giữ phiếu gốc và tạo khoản ngược chiều cùng số tiền, hạch toán hôm nay. Đảo khoản thu cần quỹ đủ số dư.",
-                      }[kind]
-                    }
-                  </p>
-                  <Field
-                    label={
-                      kind === "duyet"
-                        ? "Ghi chú duyệt phiếu"
-                        : kind === "huy"
-                          ? "Lý do hủy phiếu"
-                          : "Lý do đảo phiếu"
-                    }
+                  <form
+                    className="card"
+                    key={`${kind}-${p.phien_ban}`}
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      action.run(
+                        `/phieu_thu_chi/${id}/${kind}`,
+                        "POST",
+                        { ...values(e), phien_ban: p.phien_ban },
+                        kind === "dao"
+                          ? (d) =>
+                              navigate(`/quan-tri/phieu-thu-chi/${d.ma_phieu}`)
+                          : undefined,
+                      );
+                    }}
                   >
-                    <textarea
-                      name={kind === "duyet" ? "ghi_chu" : "ly_do"}
-                      rows={3}
-                      maxLength={1000}
-                      minLength={kind === "duyet" ? 0 : 5}
-                      required={kind !== "duyet"}
-                    />
-                  </Field>
-                  <button
-                    className={kind === "duyet" ? "primary" : "danger"}
-                    disabled={action.pending}
-                  >
-                    {
+                    <p className="muted">
                       {
-                        duyet: "Xác nhận duyệt và ghi sổ",
-                        huy: "Xác nhận hủy nháp",
-                        dao: "Lập phiếu đảo",
-                      }[kind]
-                    }
-                  </button>
-                </form>
+                        {
+                          duyet:
+                            "Chỉ duyệt khi khoản tiền thực tế và chứng từ đã được kiểm tra. Duyệt chi cần quỹ đủ số dư hiện tại.",
+                          huy: "Hủy nháp không thay đổi số dư quỹ.",
+                          dao: "Giữ phiếu gốc và tạo khoản ngược chiều cùng số tiền, hạch toán hôm nay. Đảo khoản thu cần quỹ đủ số dư.",
+                        }[kind]
+                      }
+                    </p>
+                    <Field
+                      label={
+                        kind === "duyet"
+                          ? "Ghi chú duyệt phiếu"
+                          : kind === "huy"
+                            ? "Lý do hủy phiếu"
+                            : "Lý do đảo phiếu"
+                      }
+                    >
+                      <textarea
+                        name={kind === "duyet" ? "ghi_chu" : "ly_do"}
+                        rows={3}
+                        maxLength={1000}
+                        minLength={kind === "duyet" ? 0 : 5}
+                        required={kind !== "duyet"}
+                      />
+                    </Field>
+                    <button
+                      className={kind === "duyet" ? "primary" : "danger"}
+                      disabled={action.pending}
+                    >
+                      {
+                        {
+                          duyet: "Xác nhận duyệt và ghi sổ",
+                          huy: "Xác nhận hủy nháp",
+                          dao: "Lập phiếu đảo",
+                        }[kind]
+                      }
+                    </button>
+                  </form>
+                </ActionPanel>
               ))}
             </div>
-            <section className="card">
-              <h2>Lịch sử phiếu</h2>
+            <ActionPanel title={<>Lịch sử phiếu</>} wide inline>
               <ol className="treasury-history">
                 {p.history.map((h) => (
                   <li key={h.ma_lich_su}>
@@ -1069,7 +1090,7 @@ export function VoucherDetail() {
                   </li>
                 ))}
               </ol>
-            </section>
+            </ActionPanel>
           </>
         )
       )}

@@ -1,3 +1,4 @@
+import { activeView, openAction, closeDialog } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -27,7 +28,7 @@ for (const width of [1440, 375])
           new URL(r.url()).pathname.startsWith("/api/cau_truc_toa_nha/khoi") &&
           ["PATCH", "POST"].includes(r.request().method()),
       );
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Lưu cấu trúc", exact: true })
         .click();
       const result = await response;
@@ -36,11 +37,14 @@ for (const width of [1440, 375])
         page.getByRole("region", { name: "Biểu mẫu khối tầng" }),
       ).toHaveCount(0);
       await expect(
-        page.getByRole("button", { name: "Tải lại danh mục", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Tải lại danh mục",
+          exact: true,
+        }),
       ).toBeEnabled();
     }
     async function addBlock(code) {
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Thêm khối", exact: true })
         .click();
       await page.getByLabel("Mã khối", { exact: true }).fill(code);
@@ -69,24 +73,27 @@ for (const width of [1440, 375])
       await page.goto("/quan-tri/cau-truc-toa-nha");
       await addBlock(a);
       await expect(
-        page.getByText("Khối chưa có tầng. Bấm Thêm tầng để khai báo.", {
-          exact: true,
-        }),
+        activeView(page).getByText(
+          "Khối chưa có tầng. Bấm Thêm tầng để khai báo.",
+          {
+            exact: true,
+          },
+        ),
       ).toBeVisible();
       await page
         .getByRole("link", { name: "Xem sơ đồ tòa nhà", exact: true })
         .click();
-      await page
+      await activeView(page)
         .getByRole("button", { name: new RegExp(`^Khối ${a} `) })
         .click();
       await expect(
-        page.getByText("Khối chưa có tầng.", { exact: false }),
+        activeView(page).getByText("Khối chưa có tầng.", { exact: false }),
       ).toBeVisible();
       await page
         .getByRole("link", { name: "Quản lý khối & tầng", exact: true })
         .click();
       await page.getByLabel("Khối cần quản lý").selectOption(a);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Thêm tầng", exact: true })
         .click();
       await page.getByLabel("Số tầng", { exact: true }).fill("0");
@@ -98,7 +105,7 @@ for (const width of [1440, 375])
       await page
         .getByRole("link", { name: "Xem sơ đồ tòa nhà", exact: true })
         .click();
-      await page
+      await activeView(page)
         .getByRole("button", { name: new RegExp(`^Khối ${a} `) })
         .click();
       await expect(
@@ -107,6 +114,7 @@ for (const width of [1440, 375])
       await page
         .getByRole("link", { name: "Quản lý căn hộ", exact: true })
         .click();
+      await openAction(page, "Thêm căn hộ");
       await page.getByLabel("Số căn hộ", { exact: true }).fill(name);
       await page.getByLabel("Khối", { exact: true }).selectOption(a);
       await page.getByLabel("Tầng", { exact: true }).selectOption("0");
@@ -116,16 +124,25 @@ for (const width of [1440, 375])
           new URL(r.url()).pathname === "/api/can_ho" &&
           r.request().method() === "POST",
       );
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Lưu căn hộ", exact: true })
         .click();
       const response = await created;
       expect(response.status()).toBe(201);
       apt = (await response.json()).data.ma_can_ho;
+      await page
+        .getByRole("dialog", {
+          name: "Thông tin đăng nhập tài khoản căn hộ",
+          exact: true,
+        })
+        .waitFor();
+      await closeDialog(page);
       stale = await context.newPage();
       stale.on("pageerror", (error) => errors.push(error.message));
       await stale.goto(`/quan-tri/can-ho?ma_can_ho=${apt}`);
-      await stale.getByRole("button", { name: "Sửa", exact: true }).click();
+      await activeView(stale)
+        .getByRole("button", { name: "Sửa", exact: true })
+        .click();
       await expect(stale.getByLabel("Tầng", { exact: true })).toHaveValue("0");
       await stale.getByLabel("Diện tích (m²)").fill("80");
 
@@ -134,12 +151,15 @@ for (const width of [1440, 375])
         .click();
       await page.getByLabel("Khối cần quản lý").selectOption(a);
       await expect(
-        page.getByRole("button", { name: "Xóa tầng 0", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Xóa tầng 0",
+          exact: true,
+        }),
       ).toBeDisabled();
       await expect(
-        page.getByRole("button", { name: "Xóa khối", exact: true }),
+        activeView(page).getByRole("button", { name: "Xóa khối", exact: true }),
       ).toBeDisabled();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Sửa tầng 0", exact: true })
         .click();
       await page.getByLabel("Số tầng", { exact: true }).fill("2");
@@ -148,29 +168,36 @@ for (const width of [1440, 375])
       await expect(
         page.getByRole("cell", { name: "Tầng 2", exact: true }),
       ).toBeVisible();
-      await stale
+      await activeView(stale)
         .getByRole("button", { name: "Lưu căn hộ", exact: true })
         .click();
-      await expect(stale.getByRole("alert")).toContainText("Khối/tầng đã đổi");
+      await expect(activeView(stale).getByRole("alert")).toContainText(
+        "Khối/tầng đã đổi",
+      );
       await expect(stale.getByLabel("Diện tích (m²)")).toHaveValue("80");
       await stale.close();
       stale = null;
 
-      await page.getByRole("button", { name: "Sửa khối", exact: true }).click();
+      await activeView(page)
+        .getByRole("button", { name: "Sửa khối", exact: true })
+        .click();
       await page.getByLabel("Mã khối", { exact: true }).fill(b);
       await save();
       await expect(page.getByLabel("Khối cần quản lý")).toHaveValue(b);
       await page
         .getByRole("link", { name: "Xem sơ đồ tòa nhà", exact: true })
         .click();
-      await page
+      await activeView(page)
         .getByRole("button", { name: new RegExp(`^Khối ${b} `) })
         .click();
       await expect(
-        page.getByRole("heading", { name: `Căn ${name}`, exact: true }),
+        activeView(page).getByRole("heading", {
+          name: `Căn ${name}`,
+          exact: true,
+        }),
       ).toBeVisible();
       await expect(
-        page.getByRole("button", { name: /^Tầng 2 / }),
+        activeView(page).getByRole("button", { name: /^Tầng 2 / }),
       ).toContainText("Tầng hai");
       expect(
         (
@@ -186,16 +213,16 @@ for (const width of [1440, 375])
         .getByRole("link", { name: "Quản lý khối & tầng", exact: true })
         .click();
       await page.getByLabel("Khối cần quản lý").selectOption(b);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Thêm tầng", exact: true })
         .click();
       await page.getByLabel("Số tầng", { exact: true }).fill("9");
       await save();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xóa tầng 9", exact: true })
         .click();
-      const confirmation = page.getByRole("alertdialog", {
-        name: "Xác nhận xóa cấu trúc",
+      const confirmation = page.getByRole("dialog", {
+        name: /^Xóa (tầng|khối)/,
       });
       await confirmation
         .getByRole("button", { name: "Giữ lại", exact: true })
@@ -203,7 +230,7 @@ for (const width of [1440, 375])
       await expect(
         page.getByRole("cell", { name: "Tầng 9", exact: true }),
       ).toBeVisible();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xóa tầng 9", exact: true })
         .click();
       await confirmation
@@ -213,7 +240,9 @@ for (const width of [1440, 375])
         page.getByRole("cell", { name: "Tầng 9", exact: true }),
       ).toHaveCount(0);
       await addBlock(c);
-      await page.getByRole("button", { name: "Xóa khối", exact: true }).click();
+      await activeView(page)
+        .getByRole("button", { name: "Xóa khối", exact: true })
+        .click();
       await confirmation
         .getByRole("button", { name: "Xác nhận xóa", exact: true })
         .click();
@@ -236,12 +265,14 @@ for (const width of [1440, 375])
           json: { error: { message: "Danh mục tạm ngắt" } },
         }),
       );
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Tải lại danh mục", exact: true })
         .click();
-      await expect(page.getByRole("alert")).toContainText("Danh mục tạm ngắt");
+      await expect(activeView(page).getByRole("alert")).toContainText(
+        "Danh mục tạm ngắt",
+      );
       await page.unroute("**/api/cau_truc_toa_nha");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Tải lại danh mục", exact: true })
         .click();
       await expect(page.getByLabel("Khối cần quản lý")).toBeVisible();

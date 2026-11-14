@@ -1,11 +1,12 @@
+import { useResource } from "../../shared/ui.jsx";
+import Dialog, { ActionPanel, useDialogBusy } from "../../shared/Dialog.jsx";
 import DataTools from "../../shared/DataTools.jsx";
 import React, { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+  DetailLink as Link,
+  useDialogNavigate as useNavigate,
+} from "../../shared/dialog-navigation.jsx";
 import { useAuth } from "../auth/Auth.jsx";
 import { Field, ErrorBox, Loading, Options } from "../../shared/ui.jsx";
 import { getJson } from "../../shared/api/client.js";
@@ -40,37 +41,13 @@ const auditTime = (s) =>
 const code = (id) => `DL${String(id).padStart(6, "0")}`;
 const values = (e) => Object.fromEntries(new FormData(e.currentTarget));
 function useData(path) {
-  const [state, setState] = useState({ loading: true }),
-    [revision, setRevision] = useState(0);
-  useEffect(() => {
-    if (!path) {
-      setState({ path, revision, result: { data: null }, loading: false });
-      return;
-    }
-    const c = new AbortController();
-    setState({ path, revision, loading: true });
-    getJson(path, { signal: c.signal })
-      .then((result) => {
-        if (!c.signal.aborted)
-          setState({ path, revision, result, loading: false });
-      })
-      .catch((error) => {
-        if (!c.signal.aborted)
-          setState({ path, revision, error, loading: false });
-      });
-    return () => c.abort();
-  }, [path, revision]);
-  return {
-    ...(state.path === path && state.revision === revision
-      ? state
-      : { loading: true }),
-    reload: () => setRevision((n) => n + 1),
-  };
+  return useResource(path);
 }
 function useAction(done) {
   const [pending, setPending] = useState(false),
     [error, setError] = useState(null),
     [notice, setNotice] = useState("");
+  useDialogBusy(pending);
   async function run(path, method, body, after) {
     setPending(true);
     setError(null);
@@ -316,18 +293,26 @@ export function Amenities() {
         <button>Tìm kiếm</button>
       </form>
       {form && (
-        <FacilityForm
-          action={action}
-          onCancel={() => setForm(false)}
-          onSave={(b) =>
-            action.run("/tien_ich", "POST", b, (d) =>
-              navigate(`${base}/tien-ich/${d.ma_tien_ich}`),
-            )
-          }
-        />
+        <Dialog
+          closeOnSuccess
+          title="Thêm tiện ích"
+          pending={action.pending}
+          error={action.error}
+          onClose={() => setForm(false)}
+        >
+          <FacilityForm
+            action={action}
+            onCancel={() => setForm(false)}
+            onSave={(b) =>
+              action.run("/tien_ich", "POST", b, (d) =>
+                navigate(`${base}/tien-ich/${d.ma_tien_ich}`),
+              )
+            }
+          />
+        </Dialog>
       )}
       <ErrorBox error={resource.error} />
-      {resource.loading ? (
+      {resource.loading && !resource.result ? (
         <Loading />
       ) : (
         <div className="amenity-cards">
@@ -386,7 +371,7 @@ function Availability({ id, date, refresh, onChoose, selected }) {
         </div>
       </div>
       <ErrorBox error={resource.error} />
-      {resource.loading ? (
+      {resource.loading && !resource.result ? (
         <Loading />
       ) : (
         <div className="amenity-slots">
@@ -454,7 +439,7 @@ export function AmenityDetail() {
     <>
       <Nav admin={admin} detail />
       <ErrorBox error={resource.error} />
-      {resource.loading ? (
+      {resource.loading && !resource.result ? (
         <Loading />
       ) : (
         f && (
@@ -485,13 +470,22 @@ export function AmenityDetail() {
               )}
             </section>
             {editing && (
-              <FacilityForm
+              <Dialog
+                closeOnSuccess
                 key={f.phien_ban}
-                data={f}
-                action={edit}
-                onCancel={() => setEditing(false)}
-                onSave={(b) => edit.run(`/tien_ich/${id}`, "PUT", b)}
-              />
+                title="Sửa tiện ích"
+                pending={edit.pending}
+                error={edit.error}
+                onClose={() => setEditing(false)}
+              >
+                <FacilityForm
+                  key={f.phien_ban}
+                  data={f}
+                  action={edit}
+                  onCancel={() => setEditing(false)}
+                  onSave={(b) => edit.run(`/tien_ich/${id}`, "PUT", b)}
+                />
+              </Dialog>
             )}
             <div className="card amenity-calendar-toolbar">
               <Field label="Ngày sử dụng">
@@ -528,8 +522,11 @@ export function AmenityDetail() {
               }}
             />
             {!admin && (
-              <section className="card amenity-booking-form">
-                <h2>Đặt lịch sử dụng</h2>
+              <ActionPanel
+                title={<>Đặt lịch sử dụng</>}
+                pending={book.pending}
+                error={book.error}
+              >
                 <ErrorBox error={context.error} />
                 {context.loading ? (
                   <Loading />
@@ -612,7 +609,7 @@ export function AmenityDetail() {
                     </form>
                   </>
                 )}
-              </section>
+              </ActionPanel>
             )}
           </>
         )
@@ -691,7 +688,7 @@ export function Bookings() {
       )}
       <section className="card">
         <ErrorBox error={resource.error} />
-        {resource.loading ? (
+        {resource.loading && !resource.result ? (
           <Loading />
         ) : (
           <div className="table-wrap">
@@ -756,7 +753,7 @@ export function BookingDetail() {
     <>
       <Link to={`${base}/dat-lich`}>← Danh sách lượt đặt</Link>
       <ErrorBox error={resource.error} />
-      {resource.loading ? (
+      {resource.loading && !resource.result ? (
         <Loading />
       ) : (
         b && (
@@ -792,7 +789,10 @@ export function BookingDetail() {
                   Xem tiện ích và lịch trống
                 </Link>
                 {admin && (
-                  <Link to={`${base}/dat-lich?ma_tien_ich=${b.ma_tien_ich}`}>
+                  <Link
+                    dialog
+                    to={`${base}/dat-lich?ma_tien_ich=${b.ma_tien_ich}`}
+                  >
                     Các lịch của tiện ích này
                   </Link>
                 )}
@@ -816,60 +816,67 @@ export function BookingDetail() {
               )
                 .concat(b.co_the_huy ? ["huy"] : [])
                 .map((kind) => (
-                  <form
-                    className="card"
+                  <ActionPanel
                     key={`${kind}-${b.phien_ban}`}
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      action.run(`${api}/${id}/${kind}`, "POST", {
-                        ...values(e),
-                        phien_ban: b.phien_ban,
-                      });
-                    }}
+                    title={
+                      <>
+                        {
+                          {
+                            duyet: "Duyệt yêu cầu",
+                            tu_choi: "Từ chối yêu cầu",
+                            huy: "Hủy lượt đặt",
+                          }[kind]
+                        }
+                      </>
+                    }
+                    pending={action.pending}
+                    error={action.error}
                   >
-                    <h2>
-                      {
-                        {
-                          duyet: "Duyệt yêu cầu",
-                          tu_choi: "Từ chối yêu cầu",
-                          huy: "Hủy lượt đặt",
-                        }[kind]
-                      }
-                    </h2>
-                    <Field
-                      label={
-                        {
-                          duyet: "Ghi chú duyệt",
-                          tu_choi: "Lý do từ chối",
-                          huy: "Lý do hủy lịch",
-                        }[kind]
-                      }
+                    <form
+                      className="card"
+                      key={`${kind}-${b.phien_ban}`}
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        action.run(`${api}/${id}/${kind}`, "POST", {
+                          ...values(e),
+                          phien_ban: b.phien_ban,
+                        });
+                      }}
                     >
-                      <textarea
-                        name="ghi_chu"
-                        maxLength={1000}
-                        minLength={kind === "duyet" ? 0 : 5}
-                        required={kind !== "duyet"}
-                        rows={3}
-                      />
-                    </Field>
-                    <button
-                      className={kind === "duyet" ? "primary" : "danger"}
-                      disabled={action.pending}
-                    >
-                      {
+                      <Field
+                        label={
+                          {
+                            duyet: "Ghi chú duyệt",
+                            tu_choi: "Lý do từ chối",
+                            huy: "Lý do hủy lịch",
+                          }[kind]
+                        }
+                      >
+                        <textarea
+                          name="ghi_chu"
+                          maxLength={1000}
+                          minLength={kind === "duyet" ? 0 : 5}
+                          required={kind !== "duyet"}
+                          rows={3}
+                        />
+                      </Field>
+                      <button
+                        className={kind === "duyet" ? "primary" : "danger"}
+                        disabled={action.pending}
+                      >
                         {
-                          duyet: "Duyệt lịch",
-                          tu_choi: "Từ chối lịch",
-                          huy: "Xác nhận hủy lịch",
-                        }[kind]
-                      }
-                    </button>
-                  </form>
+                          {
+                            duyet: "Duyệt lịch",
+                            tu_choi: "Từ chối lịch",
+                            huy: "Xác nhận hủy lịch",
+                          }[kind]
+                        }
+                      </button>
+                    </form>
+                  </ActionPanel>
                 ))}
             </div>
-            <section className="card">
-              <h2>Lịch sử đặt lịch</h2>
+            <ActionPanel title={<>Lịch sử đặt lịch</>} wide inline>
               <ol className="amenity-history">
                 {b.history.map((h) => (
                   <li key={h.ma_lich_su}>
@@ -881,7 +888,7 @@ export function BookingDetail() {
                   </li>
                 ))}
               </ol>
-            </section>
+            </ActionPanel>
           </>
         )
       )}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { DetailLink as Link } from "../../shared/dialog-navigation.jsx";
 import { ErrorBox, Field, Loading, useResource } from "../../shared/ui.jsx";
 
 export default function ApartmentFloorPicker({ apartment }) {
@@ -64,7 +64,9 @@ export default function ApartmentFloorPicker({ apartment }) {
         >
           Tải lại khối/tầng
         </button>
-        <Link to="/quan-tri/cau-truc-toa-nha">Khai báo khối/tầng mới</Link>
+        <Link dialog to="/quan-tri/cau-truc-toa-nha">
+          Khai báo khối/tầng mới
+        </Link>
       </div>
     </>
   );

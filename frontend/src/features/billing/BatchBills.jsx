@@ -1,5 +1,7 @@
+import { ActionPanel } from "../../shared/Dialog.jsx";
+import { useDialogBusy } from "../../shared/Dialog.jsx";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { DetailLink as Link } from "../../shared/dialog-navigation.jsx";
 import { getJson } from "../../shared/api/client.js";
 import { newRequestKey } from "../../shared/request-key.js";
 import { ErrorBox, Field, Loading } from "../../shared/ui.jsx";
@@ -35,6 +37,7 @@ export default function BatchBills({ onDone, onBusy }) {
   const [pending, setPending] = useState(false),
     [error, setError] = useState(null),
     [result, setResult] = useState(null);
+  useDialogBusy(pending);
   const path = `/can_ho?q=${encodeURIComponent(query)}&page=${page}`;
   useEffect(() => {
     const controller = new AbortController();
@@ -341,8 +344,11 @@ export default function BatchBills({ onDone, onBusy }) {
                         ) : (
                           <span>Hợp lệ</span>
                         )}
-                        <details>
-                          <summary>Xem khoản thu căn {r.so_can_ho}</summary>
+                        <ActionPanel
+                          inline
+                          wide
+                          title={<>Xem khoản thu căn {r.so_can_ho}</>}
+                        >
                           <ul>
                             {r.chi_tiet.map((l, i) => (
                               <li key={i}>
@@ -352,7 +358,7 @@ export default function BatchBills({ onDone, onBusy }) {
                               </li>
                             ))}
                           </ul>
-                        </details>
+                        </ActionPanel>
                       </td>
                     </tr>
                   ))}

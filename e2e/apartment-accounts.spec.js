@@ -1,3 +1,4 @@
+import { activeView, openAction, closeDialog } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -47,7 +48,7 @@ for (const width of [1440, 375])
         .getByLabel("Loại tài khoản", { exact: true })
         .selectOption(kind);
       await page.getByLabel("Mật khẩu", { exact: true }).fill(secret);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Đăng nhập", exact: true })
         .click();
       await expect(page).toHaveURL(
@@ -70,7 +71,9 @@ for (const width of [1440, 375])
           new URL(r.url()).pathname === `/api${path}` &&
           r.request().method() === "POST",
       );
-      await admin.getByRole("button", { name: button, exact: true }).click();
+      await activeView(admin)
+        .getByRole("button", { name: button, exact: true })
+        .click();
       const result = await response;
       expect(result.ok()).toBe(true);
       return (await result.json()).data;
@@ -92,6 +95,7 @@ for (const width of [1440, 375])
         "INSERT INTO tang_toa_nha (khoi,tang) VALUES ('TK',1) ON DUPLICATE KEY UPDATE giu_khi_trong=1",
       );
       await admin.getByRole("link", { name: "Căn hộ", exact: true }).click();
+      await openAction(admin, "Thêm căn hộ");
       await admin.getByLabel("Số căn hộ", { exact: true }).fill(apartmentName);
       await admin.getByLabel("Khối", { exact: true }).selectOption("TK");
       await admin.getByLabel("Tầng", { exact: true }).selectOption("1");
@@ -99,8 +103,8 @@ for (const width of [1440, 375])
       const apartment = await saveResponse("/can_ho", "Lưu căn hộ");
       apartmentId = apartment.ma_can_ho;
       const initial = apartment.tai_khoan_can_ho;
-      const initialNotice = admin.getByRole("region", {
-        name: "Thông tin bàn giao tài khoản",
+      const initialNotice = admin.getByRole("dialog", {
+        name: "Thông tin đăng nhập tài khoản căn hộ",
       });
       await expect(initialNotice).toContainText(initial.ten_dang_nhap);
       await expect(initialNotice).toContainText(initial.mat_khau_tam_thoi);
@@ -136,7 +140,7 @@ for (const width of [1440, 375])
         await admin.goto(
           `/quan-tri/cu-dan?ma_can_ho=${apartmentId}&so=${apartmentName}`,
         );
-        await admin
+        await activeView(admin)
           .getByRole("button", { name: "Thêm cư dân", exact: true })
           .click();
         await admin.getByLabel("Họ tên", { exact: true }).fill(names[index]);
@@ -156,8 +160,8 @@ for (const width of [1440, 375])
             })
             .check();
         const profile = await saveResponse("/cu_dan", "Lưu cư dân");
-        const notice = admin.getByRole("region", {
-          name: "Thông tin bàn giao tài khoản",
+        const notice = admin.getByRole("dialog", {
+          name: "Thông tin đăng nhập tài khoản căn hộ",
         });
         await expect(
           admin.getByRole("link", { name: names[index], exact: true }),
@@ -170,6 +174,7 @@ for (const width of [1440, 375])
         return profile;
       }
       const first = await createOwner(0);
+      await closeDialog(admin);
       expect(
         (await ownerContext.request.get("/api/xac_thuc/toi")).status(),
       ).toBe(401);
@@ -181,19 +186,22 @@ for (const width of [1440, 375])
       );
       await owner.goto(`/cu-dan/hoa-don/${billId}`);
       await expect(
-        owner.getByRole("heading", {
+        activeView(owner).getByRole("heading", {
           name: "Tổng cộng: 50.000 đ",
           exact: true,
         }),
       ).toBeVisible();
+      await openAction(owner, "Xem QR thanh toán");
       await expect(owner.getByAltText(/^VietQR hóa đơn/)).toBeVisible();
+      while (await admin.locator("dialog[open]").count())
+        await closeDialog(admin);
       await admin
         .getByRole("link", { name: "Tài khoản căn hộ", exact: true })
         .click();
       await admin
         .getByLabel("Tìm căn hộ, mã tài khoản, chủ hộ hoặc số điện thoại")
         .fill(ownerPhones[0]);
-      await admin
+      await activeView(admin)
         .getByRole("button", { name: "Tìm tài khoản căn hộ", exact: true })
         .click();
       await expect(admin.locator("tbody tr")).toHaveCount(1);
@@ -203,24 +211,25 @@ for (const width of [1440, 375])
       await expect(
         admin.getByRole("cell", { name: ownerPhones[0], exact: true }),
       ).toBeVisible();
-      await admin
+      await activeView(admin)
         .getByRole("button", { name: "Quản lý tài khoản", exact: true })
         .click();
       await expect(
-        admin.getByRole("heading", {
+        activeView(admin).getByRole("heading", {
           name: "Tài khoản thanh toán căn hộ",
           exact: true,
         }),
       ).toBeVisible();
+      await openAction(admin, "Cấp lại mật khẩu tài khoản căn hộ");
       const reset = await saveResponse(
         `/can_ho/${apartmentId}/tai_khoan`,
         "Cấp lại mật khẩu và ngắt phiên cũ",
       );
+
       await expect(
-        admin.getByText("Người phụ trách:", { exact: false }),
-      ).toBeVisible();
-      await expect(
-        admin.getByRole("region", { name: "Thông tin bàn giao tài khoản" }),
+        admin.getByRole("dialog", {
+          name: "Thông tin đăng nhập tài khoản căn hộ",
+        }),
       ).toContainText(reset.mat_khau_tam_thoi);
       expect(
         (await ownerContext.request.get("/api/xac_thuc/toi")).status(),
@@ -245,15 +254,18 @@ for (const width of [1440, 375])
       );
       await owner.goto(`/cu-dan/hoa-don/${billId}`);
       await expect(
-        owner.getByRole("heading", {
+        activeView(owner).getByRole("heading", {
           name: "Tổng cộng: 50.000 đ",
           exact: true,
         }),
       ).toBeVisible();
       await expect(
-        owner.getByText(`Người phụ trách thanh toán hiện tại: ${names[1]}`, {
-          exact: true,
-        }),
+        activeView(owner).getByText(
+          `Người phụ trách thanh toán hiện tại: ${names[1]}`,
+          {
+            exact: true,
+          },
+        ),
       ).toBeVisible();
       const oldAlias = await ownerContext.request.post(
         "/api/xac_thuc/dang_nhap",
@@ -267,13 +279,15 @@ for (const width of [1440, 375])
         },
       );
       expect(oldAlias.status()).toBe(401);
+      while (await admin.locator("dialog[open]").count())
+        await closeDialog(admin);
       await admin
         .getByRole("link", { name: "Tài khoản căn hộ", exact: true })
         .click();
       await admin
         .getByLabel("Tìm căn hộ, mã tài khoản, chủ hộ hoặc số điện thoại")
         .fill(apartmentName);
-      await admin
+      await activeView(admin)
         .getByRole("button", { name: "Tìm tài khoản căn hộ", exact: true })
         .click();
       await expect(admin.locator("tbody tr")).toHaveCount(1);

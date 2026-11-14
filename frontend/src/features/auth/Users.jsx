@@ -1,3 +1,4 @@
+import { ActionPanel, useDialogBusy } from "../../shared/Dialog.jsx";
 import React, { useState } from "react";
 import { getJson } from "../../shared/api/client.js";
 import {
@@ -13,6 +14,7 @@ export default function Users() {
     [error, setError] = useState(),
     [pending, setPending] = useState(false),
     [notice, setNotice] = useState("");
+  useDialogBusy(pending);
   async function run(action) {
     setPending(true);
     setError(null);
@@ -29,7 +31,7 @@ export default function Users() {
     <>
       <p className="eyebrow">CẤP VÀ QUẢN LÝ QUYỀN</p>
       <h1>Nhân sự & tài khoản</h1>
-      <div className="detail-grid">
+      <div className="workflow-list-layout">
         <section className="card">
           <h2>Tài khoản hiện có</h2>
           <ErrorBox error={error} />
@@ -62,8 +64,7 @@ export default function Users() {
             ))}
           </ul>
         </section>
-        <section className="card">
-          <h2>Cấp tài khoản</h2>
+        <ActionPanel title={<>Cấp tài khoản</>} pending={pending} error={error}>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -116,7 +117,7 @@ export default function Users() {
             </button>
             <p role="status">{notice}</p>
           </form>
-        </section>
+        </ActionPanel>
       </div>
     </>
   );

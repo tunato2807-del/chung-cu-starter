@@ -1,3 +1,4 @@
+import { activeView, openAction } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -108,7 +109,7 @@ for (const width of [1440, 375])
         )
       ).insertId;
       await page.goto("/quan-tri/hoa-don");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Duyệt/gửi hàng loạt", exact: true })
         .click();
       const panel = page.locator(".batch-actions");
@@ -261,6 +262,7 @@ for (const width of [1440, 375])
         path: `/tmp/chung-cu-bill-actions-${width}.png`,
       });
       await residentPage.goto(`/cu-dan/hoa-don/${bills[0]}`);
+      await openAction(residentPage, "Xem QR thanh toán");
       await expect(
         residentPage.getByRole("img", { name: /VietQR hóa đơn/ }),
       ).toBeVisible();

@@ -1,3 +1,4 @@
+import { activeView, closeDialog } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -56,7 +57,7 @@ for (const width of [1440, 375])
       await page.goto("/dang-nhap");
       await page.getByLabel("Số điện thoại").fill(phone);
       await page.getByLabel("Mật khẩu", { exact: true }).fill(password);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Đăng nhập", exact: true })
         .click();
       await expect(
@@ -67,7 +68,7 @@ for (const width of [1440, 375])
         .getByRole("link", { name: "Phương tiện của cư dân", exact: true })
         .click();
       async function startRegistration() {
-        await page
+        await activeView(page)
           .getByRole("button", { name: "Đăng ký xe", exact: true })
           .click();
         await expect(
@@ -81,7 +82,7 @@ for (const width of [1440, 375])
       await page.getByLabel("Biển số", { exact: true }).fill(`e-${suffix}9`);
       await page.getByLabel("Hãng xe", { exact: true }).fill("Honda");
       await page.getByLabel("Màu sắc", { exact: true }).fill("Đen");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Lưu đăng ký xe", exact: true })
         .click();
       await expect(
@@ -95,24 +96,22 @@ for (const width of [1440, 375])
       await expect(
         page.getByLabel("Biển số (tùy chọn)", { exact: true }),
       ).not.toHaveAttribute("required");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Lưu đăng ký xe", exact: true })
         .click();
       await expect(page.locator("tbody tr")).toHaveCount(2);
       await startRegistration();
       await page.getByLabel("Biển số", { exact: true }).fill(plate);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Lưu đăng ký xe", exact: true })
         .click();
-      await expect(page.getByRole("alert")).toContainText(
+      await expect(activeView(page).getByRole("alert")).toContainText(
         "Biển số đã có đăng ký",
       );
       await expect(page.getByLabel("Biển số", { exact: true })).toHaveValue(
         plate,
       );
-      await page
-        .getByRole("button", { name: "Đóng biểu mẫu", exact: true })
-        .click();
+      await closeDialog(page);
 
       const original = await rows(
         pool,
@@ -121,7 +120,7 @@ for (const width of [1440, 375])
       );
       expect(original).toHaveLength(2);
       await page.goto(`/quan-tri/cu-dan/${ownerId}`);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Chuyển căn", exact: true })
         .click();
       await expect(
@@ -136,11 +135,13 @@ for (const width of [1440, 375])
       await page
         .getByLabel("Căn hộ", { exact: true })
         .selectOption(String(apartments[1]));
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xác nhận lưu", exact: true })
         .click();
       await expect(
-        page.getByText(`Đang ở căn VX-${suffix}-2`, { exact: false }),
+        activeView(page).getByText(`Đang ở căn VX-${suffix}-2`, {
+          exact: false,
+        }),
       ).toBeVisible();
       await page
         .getByRole("link", { name: "Phương tiện của cư dân", exact: true })
@@ -175,18 +176,19 @@ for (const width of [1440, 375])
         .getByRole("button", { name: "Chi tiết", exact: true })
         .click();
       await expect(
-        page.getByRole("heading", { name: "Chi tiết đăng ký xe", exact: true }),
+        page.getByRole("dialog", { name: "Chi tiết đăng ký xe", exact: true }),
       ).toBeVisible();
       await expect(
-        page.getByText(`Lý do kết thúc:`, { exact: false }),
+        activeView(page).getByText(`Lý do kết thúc:`, { exact: false }),
       ).toHaveCount(0);
+      await closeDialog(page);
       await bikeRow
         .getByRole("button", { name: "Kết thúc", exact: true })
         .click();
       await page
         .getByLabel("Lý do kết thúc", { exact: true })
         .fill("Không gửi xe đạp nữa");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xác nhận kết thúc", exact: true })
         .click();
       await expect(
@@ -197,7 +199,7 @@ for (const width of [1440, 375])
       ).toHaveCount(0);
 
       await page.goto(`/quan-tri/cu-dan/${ownerId}`);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Chuyển căn", exact: true })
         .click();
       await page
@@ -212,11 +214,13 @@ for (const width of [1440, 375])
       await page
         .getByLabel("Căn hộ", { exact: true })
         .selectOption(String(apartments[0]));
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xác nhận lưu", exact: true })
         .click();
       await expect(
-        page.getByText(`Đang ở căn VX-${suffix}-1`, { exact: false }),
+        activeView(page).getByText(`Đang ở căn VX-${suffix}-1`, {
+          exact: false,
+        }),
       ).toBeVisible();
       await page
         .getByRole("link", { name: "Phương tiện của cư dân", exact: true })
@@ -224,14 +228,20 @@ for (const width of [1440, 375])
       await page
         .getByLabel("Tình trạng đăng ký", { exact: true })
         .selectOption("DANG_GUI");
-      await page.getByRole("button", { name: "Tìm kiếm", exact: true }).click();
+      await activeView(page)
+        .getByRole("button", { name: "Tìm kiếm", exact: true })
+        .click();
       await expect(
-        page.getByText("Chưa có đăng ký xe phù hợp.", { exact: true }),
+        activeView(page).getByText("Chưa có đăng ký xe phù hợp.", {
+          exact: true,
+        }),
       ).toBeVisible();
       await page
         .getByLabel("Tình trạng đăng ký", { exact: true })
         .selectOption("DA_KET_THUC");
-      await page.getByRole("button", { name: "Tìm kiếm", exact: true }).click();
+      await activeView(page)
+        .getByRole("button", { name: "Tìm kiếm", exact: true })
+        .click();
       await expect(page.locator("tbody tr")).toHaveCount(4);
       expect(
         await page.evaluate(

@@ -1,5 +1,16 @@
-import React, { useEffect, useState, useId } from "react";
+import React, {
+  useEffect,
+  useState,
+  useId,
+  useRef,
+  useSyncExternalStore,
+  useContext,
+} from "react";
 import { getJson } from "./api/client.js";
+import { getAuthSession, subscribeAuthSession } from "./auth-session.js";
+import { subscribeResources } from "./resource-events.js";
+import { topDialog } from "./dialog-state.js";
+import { DialogErrorContext } from "./dialog-feedback.js";
 export const statuses = {
   MOI: "Mới tiếp nhận",
   DA_PHAN_CONG: "Đã phân công",
@@ -62,8 +73,19 @@ export function Options({ values, empty }) {
   );
 }
 export function ErrorBox({ error }) {
-  return error ? (
-    <div className="error" role="alert">
+  const presentedError = useContext(DialogErrorContext);
+  const visibleError = error && presentedError !== error ? error : null;
+  const ref = useRef(null);
+  useEffect(() => {
+    const node = ref.current;
+    const dialog = node?.closest("dialog[open]");
+    if (visibleError && dialog && topDialog() === dialog) {
+      node.focus({ preventScroll: true });
+      node.scrollIntoView({ block: "nearest" });
+    }
+  }, [visibleError]);
+  return visibleError ? (
+    <div className="error" role="alert" ref={ref} tabIndex={-1}>
       <strong>{error.message}</strong>
       {error.field_errors && (
         <ul>
@@ -102,20 +124,52 @@ export function Field({ label, name, children, ...props }) {
     </div>
   );
 }
-export function useResource(path) {
+export function useResource(path, refreshKey = 0) {
+  const session = useSyncExternalStore(
+    subscribeAuthSession,
+    getAuthSession,
+    getAuthSession,
+  );
+  // Location metadata is public and independent of the current account. Keep
+  // its report form mounted when an authenticated reporter's session expires.
+  const epoch = path?.startsWith("/cong_khai/vi_tri_qr/")
+    ? null
+    : session.epoch;
   const [state, setState] = useState({ loading: true }),
     [revision, setRevision] = useState(0);
+  useEffect(() => subscribeResources(() => setRevision((n) => n + 1)), []);
   useEffect(() => {
     const controller = new AbortController();
-    setState({ loading: true });
+    const scope = { path, epoch };
+    if (!path) {
+      setState({ ...scope, result: { data: null }, loading: false });
+      return () => controller.abort();
+    }
+    setState((previous) =>
+      previous.path === path && previous.epoch === epoch && previous.result
+        ? { ...previous, error: undefined, loading: true }
+        : { ...scope, loading: true },
+    );
     getJson(path, { signal: controller.signal })
-      .then((result) => setState({ result, loading: false }))
+      .then((result) => {
+        if (
+          !controller.signal.aborted &&
+          (epoch === null || getAuthSession().epoch === epoch)
+        )
+          setState({ ...scope, result, loading: false });
+      })
       .catch((error) => {
-        if (!controller.signal.aborted) setState({ error, loading: false });
+        if (
+          !controller.signal.aborted &&
+          (epoch === null || getAuthSession().epoch === epoch)
+        )
+          setState({ ...scope, error, loading: false });
       });
     return () => controller.abort();
-  }, [path, revision]);
-  return { ...state, reload: () => setRevision((n) => n + 1) };
+  }, [path, revision, epoch, refreshKey]);
+  const current =
+    state.path === path && state.epoch === epoch ? state : { loading: true };
+  return { ...current, revision, reload: () => setRevision((n) => n + 1) };
 }
 export function Loading() {
   return (

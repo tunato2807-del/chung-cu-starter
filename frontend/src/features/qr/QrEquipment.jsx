@@ -1,5 +1,7 @@
+import { ActionPanel } from "../../shared/Dialog.jsx";
+import Dialog, { useDialogBusy } from "../../shared/Dialog.jsx";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { DetailLink as Link } from "../../shared/dialog-navigation.jsx";
 import { getJson } from "../../shared/api/client.js";
 import {
   ErrorBox,
@@ -125,10 +127,16 @@ export function QrLinkEditor({ location, onSaved, onClose }) {
   const [device, setDevice] = useState(location.ma_thiet_bi ? location : null),
     [pending, setPending] = useState(false),
     [error, setError] = useState(null);
+  useDialogBusy(pending);
   const history = useResource(`/vi_tri_qr/${location.ma_vi_tri_qr}`);
   return (
-    <section className="card no-print" aria-label="Liên kết thiết bị với QR">
-      <h2>Liên kết thiết bị · {location.ten_vi_tri}</h2>
+    <Dialog
+      closeOnSuccess
+      title={<>Liên kết thiết bị · {location.ten_vi_tri}</>}
+      pending={pending}
+      error={error}
+      onClose={onClose}
+    >
       <p>
         Liên kết áp dụng cho phản ánh gửi sau khi lưu. Phản ánh cũ giữ nguyên
         thiết bị lúc gửi. URL và ảnh QR không đổi; kiểm tra lại tem đang dán
@@ -173,8 +181,7 @@ export function QrLinkEditor({ location, onSaved, onClose }) {
           </div>
         </fieldset>
       </form>
-      <details>
-        <summary>20 thay đổi liên kết gần nhất</summary>
+      <ActionPanel inline wide title={<>20 thay đổi liên kết gần nhất</>}>
         {history.loading && <Loading />}
         <ErrorBox error={history.error} />
         <ul>
@@ -185,8 +192,8 @@ export function QrLinkEditor({ location, onSaved, onClose }) {
             </li>
           ))}
         </ul>
-      </details>
-    </section>
+      </ActionPanel>
+    </Dialog>
   );
 }
 
@@ -197,10 +204,18 @@ export function EquipmentQrConnections({ id }) {
     <section className="card" aria-label="QR và phản ánh của thiết bị">
       <h2>QR & phản ánh của thiết bị</h2>
       <div className="actions">
-        <Link className="button" to={`/quan-tri/vi-tri-qr?ma_thiet_bi=${id}`}>
+        <Link
+          dialog
+          className="button"
+          to={`/quan-tri/vi-tri-qr?ma_thiet_bi=${id}`}
+        >
           Quản lý QR của thiết bị
         </Link>
-        <Link className="button" to={`/quan-tri/phan-anh?ma_thiet_bi=${id}`}>
+        <Link
+          dialog
+          className="button"
+          to={`/quan-tri/phan-anh?ma_thiet_bi=${id}`}
+        >
           Xem phản ánh của thiết bị
         </Link>
         <button

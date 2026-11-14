@@ -168,6 +168,6 @@ export default function QrPreview({ id, location, anchor, onClose, onError }) {
         </div>
       )}
     </div>,
-    document.body,
+    anchor?.closest("dialog[open]") || document.body,
   );
 }

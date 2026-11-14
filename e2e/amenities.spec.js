@@ -1,3 +1,4 @@
+import { activeView, openAction, closeDialog } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -67,15 +68,18 @@ for (const width of [1440, 375])
       await resident.goto(`/cu-dan/tien-ich/${facility}`);
       await resident.getByLabel("Ngày sử dụng", { exact: true }).fill(day);
       await expect(
-        resident.getByRole("heading", {
+        activeView(resident).getByRole("heading", {
           name: `Lịch trống ngày ${day.split("-").reverse().join("/")}`,
         }),
       ).toBeVisible();
+      await openAction(resident, "Đặt lịch sử dụng");
     }
     async function submitBooking() {
-      await resident
+      await closeDialog(resident);
+      await activeView(resident)
         .getByRole("button", { name: "08:00 – 08:30: Còn trống", exact: true })
         .click();
+      await openAction(resident, "Đặt lịch sử dụng");
       await resident.getByLabel("Giờ kết thúc", { exact: true }).fill("09:00");
       await resident.getByLabel("Số người tham gia").fill("5");
       await resident
@@ -88,7 +92,7 @@ for (const width of [1440, 375])
         `/api/tien_ich/${facility}/dat_lich`,
         "POST",
         () =>
-          resident
+          activeView(resident)
             .getByRole("button", { name: "Gửi yêu cầu đặt lịch", exact: true })
             .click(),
       );
@@ -131,7 +135,7 @@ for (const width of [1440, 375])
         }
       }
       await page.goto("/quan-tri/tien-ich");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Thêm tiện ích", exact: true })
         .click();
       await page.getByLabel("Tên tiện ích", { exact: true }).fill(name);
@@ -141,31 +145,35 @@ for (const width of [1440, 375])
         .fill("Giữ vệ sinh và sử dụng đúng khung giờ.");
       await page.getByLabel("Sức chứa (người)").fill("20");
       const f = await waitSave(page, "/api/tien_ich", "POST", () =>
-        page.getByRole("button", { name: "Lưu tiện ích", exact: true }).click(),
+        activeView(page)
+          .getByRole("button", { name: "Lưu tiện ích", exact: true })
+          .click(),
       );
       facility = f.ma_tien_ich;
       await expect(
-        page.getByRole("heading", { name, exact: true }),
+        activeView(page).getByRole("heading", { name, exact: true }),
       ).toBeVisible();
       await openBookingForm();
       await expect(
-        resident.getByText(`Chủ hộ ${suffix}`, { exact: false }),
+        activeView(resident).getByText(`Chủ hộ ${suffix}`, { exact: false }),
       ).toBeVisible();
       const first = await submitBooking(),
         id = first.ma_dat_lich;
       await expect(
-        resident.getByText("Chờ duyệt", { exact: true }),
+        activeView(resident).getByText("Chờ duyệt", { exact: true }),
       ).toBeVisible();
       expect(
         await resident.evaluate(() => window.amenityInjected),
       ).toBeUndefined();
       await openBookingForm();
+      await closeDialog(resident);
       await expect(
-        resident.getByRole("button", {
+        activeView(resident).getByRole("button", {
           name: "08:00 – 08:30: Đã đặt",
           exact: true,
         }),
       ).toBeDisabled();
+      await openAction(resident, "Đặt lịch sử dụng");
       await resident.getByLabel("Giờ bắt đầu", { exact: true }).fill("08:00");
       await resident.getByLabel("Giờ kết thúc", { exact: true }).fill("09:00");
       await resident
@@ -176,11 +184,11 @@ for (const width of [1440, 375])
           new URL(r.url()).pathname === `/api/tien_ich/${facility}/dat_lich` &&
           r.request().method() === "POST",
       );
-      await resident
+      await activeView(resident)
         .getByRole("button", { name: "Gửi yêu cầu đặt lịch", exact: true })
         .click();
       expect((await conflict).status()).toBe(409);
-      await expect(resident.getByRole("alert")).toContainText(
+      await expect(activeView(resident).getByRole("alert")).toContainText(
         "đã có người giữ chỗ",
       );
       await expect(resident.getByLabel("Ghi chú đặt lịch")).toHaveValue(
@@ -188,7 +196,7 @@ for (const width of [1440, 375])
       );
       await page.goto("/quan-tri/dat-lich");
       await page.getByLabel("Tìm lượt đặt").fill(suffix);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Lọc lịch đặt", exact: true })
         .click();
       await page
@@ -197,34 +205,43 @@ for (const width of [1440, 375])
           exact: true,
         })
         .click();
+      await openAction(page, "Duyệt yêu cầu");
       await page
         .getByLabel("Ghi chú duyệt")
         .fill("Đã sắp xếp phòng, sử dụng đúng giờ.");
       await waitSave(page, `/api/dat_lich_tien_ich/${id}/duyet`, "POST", () =>
-        page.getByRole("button", { name: "Duyệt lịch", exact: true }).click(),
+        activeView(page)
+          .getByRole("button", { name: "Duyệt lịch", exact: true })
+          .click(),
       );
-      await expect(page.getByText("Đã duyệt", { exact: true })).toBeVisible();
+      await expect(
+        activeView(page).getByText("Đã duyệt", { exact: true }),
+      ).toBeVisible();
       await resident.goto(`/cu-dan/dat-lich/${id}`);
       await expect(
-        resident.getByText("Đã duyệt", { exact: true }),
+        activeView(resident).getByText("Đã duyệt", { exact: true }),
       ).toBeVisible();
       await resident.screenshot({
         path: `/tmp/chung-cu-amenity-booking-${width}.png`,
         fullPage: true,
       });
+      await openAction(resident, "Hủy lượt đặt");
       await resident
         .getByLabel("Lý do hủy lịch")
         .fill("Gia đình đổi kế hoạch sử dụng.");
       await waitSave(resident, `/api/cua_toi/dat_lich/${id}/huy`, "POST", () =>
-        resident
+        activeView(resident)
           .getByRole("button", { name: "Xác nhận hủy lịch", exact: true })
           .click(),
       );
-      await expect(resident.getByText("Đã hủy", { exact: true })).toBeVisible();
+      await expect(
+        activeView(resident).getByText("Đã hủy", { exact: true }),
+      ).toBeVisible();
       await openBookingForm();
       const next = await submitBooking(),
         second = next.ma_dat_lich;
       await page.goto(`/quan-tri/dat-lich/${second}`);
+      await openAction(page, "Từ chối yêu cầu");
       await page
         .getByLabel("Lý do từ chối")
         .fill("Tạm dành phòng cho kiểm tra bảo trì.");
@@ -233,29 +250,31 @@ for (const width of [1440, 375])
         `/api/dat_lich_tien_ich/${second}/tu_choi`,
         "POST",
         () =>
-          page
+          activeView(page)
             .getByRole("button", { name: "Từ chối lịch", exact: true })
             .click(),
       );
       await expect(
-        page.getByText("Từ chối", { exact: true }).first(),
+        activeView(page).getByText("Từ chối", { exact: true }).first(),
       ).toBeVisible();
       await page
         .getByRole("link", { name: "Xem tiện ích và lịch trống", exact: true })
         .click();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Sửa tiện ích", exact: true })
         .click();
       await page.getByLabel("Mở nhận lịch").selectOption("0");
       await waitSave(page, `/api/tien_ich/${facility}`, "PUT", () =>
-        page.getByRole("button", { name: "Lưu tiện ích", exact: true }).click(),
+        activeView(page)
+          .getByRole("button", { name: "Lưu tiện ích", exact: true })
+          .click(),
       );
       await expect(
-        page.getByText("Tạm ngừng nhận lịch mới", { exact: true }),
+        activeView(page).getByText("Tạm ngừng nhận lịch mới", { exact: true }),
       ).toBeVisible();
       await openBookingForm();
       await expect(
-        resident.getByRole("button", {
+        activeView(resident).getByRole("button", {
           name: "Gửi yêu cầu đặt lịch",
           exact: true,
         }),

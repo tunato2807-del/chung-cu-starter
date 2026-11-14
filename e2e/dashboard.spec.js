@@ -1,3 +1,4 @@
+import { activeView, openAction, closeDialog } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -34,7 +35,10 @@ for (const width of [1440, 375])
       expect(response.status()).toBe(200);
       const result = (await response.json()).data;
       await expect(
-        page.getByRole("button", { name: "Cập nhật số liệu", exact: true }),
+        page.getByRole("button", {
+          name: "Cập nhật số liệu",
+          exact: true,
+        }),
       ).toBeEnabled();
       return result;
     }
@@ -87,7 +91,10 @@ for (const width of [1440, 375])
       }
       let current = await loaded(() => page.goto("/quan-tri"));
       await expect(
-        page.getByRole("heading", { name: "Tổng quan vận hành", exact: true }),
+        activeView(page).getByRole("heading", {
+          name: "Tổng quan vận hành",
+          exact: true,
+        }),
       ).toBeVisible();
       await expect(debt().locator("strong")).toHaveText(
         money(current.tai_chinh.con_phai_thu),
@@ -102,9 +109,9 @@ for (const width of [1440, 375])
         "Đặt lịch tiện ích",
       ])
         await expect(
-          page.getByRole("heading", { name: title, exact: true }),
+          activeView(page).getByRole("heading", { name: title, exact: true }),
         ).toBeVisible();
-      const charts = page.locator(".trends");
+      const charts = activeView(page);
       await expect(charts.locator(".trend-card")).toHaveCount(0);
       await expect(
         charts.getByRole("button", { name: "Hiện biểu đồ", exact: true }),
@@ -190,9 +197,9 @@ for (const width of [1440, 375])
       await expect(financeChart.locator(".trend-detail > strong")).toHaveText(
         `Tháng 03/${today().slice(0, 4)}`,
       );
-      await financeChart.locator("summary").click();
-      await expect(financeChart.locator("tbody tr")).toHaveCount(12);
-      await financeChart.locator("summary").click();
+      await openAction(page, "Xem bảng số liệu — Thu phí và hạn công nợ");
+      await expect(activeView(page).locator("tbody tr")).toHaveCount(12);
+      await closeDialog(page);
       const pieData = structuredClone(lastChart);
       for (const [key, value] of [
         ["da_duyet", 1],
@@ -252,9 +259,7 @@ for (const width of [1440, 375])
       await page.unroute("**/api/tong_quan/thong_ke?*", pieResponse);
       await typeSelect("Thu phí và hạn công nợ").selectOption("MIEN");
       await charts.getByLabel("Bảo trì", { exact: true }).uncheck();
-      await charts
-        .getByRole("button", { name: "Ẩn biểu đồ", exact: true })
-        .click();
+      await closeDialog(page);
       await expect(charts.locator("#trends-body")).toHaveCount(0);
       const beforeHidden = chartRequests;
       await loaded(() => page.reload());
@@ -308,9 +313,11 @@ for (const width of [1440, 375])
         path: `/tmp/chung-cu-dashboard-${width}.png`,
         fullPage: true,
       });
+      await closeDialog(page);
       await debt().click();
       await expect(page).toHaveURL(/che_do=HOA_DON/);
       current = await loaded(() => page.goto("/quan-tri"));
+      await chartLoaded(() => openAction(page, "Hiện biểu đồ"));
       await chartLoaded(() =>
         charts
           .getByLabel("Khoảng thống kê", { exact: true })
@@ -321,8 +328,9 @@ for (const width of [1440, 375])
         "UPDATE hoa_don SET tong_tien=tong_tien+1 WHERE ma_hoa_don=?",
         [first],
       );
+      await closeDialog(page);
       const updated = await loaded(() =>
-        page
+        activeView(page)
           .getByRole("button", { name: "Cập nhật số liệu", exact: true })
           .click(),
       );
@@ -332,6 +340,7 @@ for (const width of [1440, 375])
       await expect(debt().locator("strong")).toHaveText(
         money(updated.tai_chinh.con_phai_thu),
       );
+      await chartLoaded(() => openAction(page, "Hiện biểu đồ"));
       await expect(
         charts.getByLabel("Khoảng thống kê", { exact: true }),
       ).toHaveValue("NAM");
@@ -380,11 +389,12 @@ for (const width of [1440, 375])
             },
           }),
         });
+      await closeDialog(page);
       await page.route("**/api/tong_quan", failure);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Cập nhật số liệu", exact: true })
         .click();
-      await expect(page.getByRole("alert")).toContainText(
+      await expect(activeView(page).getByRole("alert")).toContainText(
         "Không tải được tổng quan",
       );
       await expect(page.locator(".overview-metrics")).toHaveCount(0);
@@ -404,16 +414,20 @@ for (const width of [1440, 375])
         }),
       );
       await loaded(() =>
-        page
+        activeView(page)
           .getByRole("button", { name: "Cập nhật số liệu", exact: true })
           .click(),
       );
       await expect(debt().locator("strong")).toHaveText("0 đ");
       await expect(
-        page.getByText("Không có phản ánh đang mở.", { exact: true }),
+        activeView(page).getByText("Không có phản ánh đang mở.", {
+          exact: true,
+        }),
       ).toBeVisible();
       await expect(
-        page.getByText("Không có phiếu bảo trì đang mở.", { exact: true }),
+        activeView(page).getByText("Không có phiếu bảo trì đang mở.", {
+          exact: true,
+        }),
       ).toBeVisible();
       if (width === 1440) {
         await page.evaluate(

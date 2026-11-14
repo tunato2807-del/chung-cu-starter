@@ -7,14 +7,15 @@ import Icon from "../shared/Icon.jsx";
 import { navigation, isFunctionActive } from "./navigation.js";
 import FunctionSearch from "../shared/FunctionSearch.jsx";
 
-export default function Layout({ children }) {
+export default function Layout({ children, location: displayLocation }) {
   const { user, logout } = useAuth();
-  const { pathname } = useLocation();
+  const { pathname: livePathname } = useLocation();
+  const pathname = displayLocation?.pathname || livePathname;
   const [error, setError] = useState();
   const [expanded, setExpanded] = useState(false);
   const menu = useRef(null);
   const profile = useRef(null);
-  const unread = useUnreadCount(user, pathname);
+  const unread = useUnreadCount(user, livePathname);
   const workspace =
     !!user &&
     ["/quan-tri", "/ky-thuat", "/cu-dan", "/tai-khoan"].some((path) =>

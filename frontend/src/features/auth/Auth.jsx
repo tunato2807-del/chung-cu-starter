@@ -1,3 +1,4 @@
+import { ActionPanel } from "../../shared/Dialog.jsx";
 import React, {
   createContext,
   useContext,
@@ -242,58 +243,60 @@ export function Account() {
           {user.dien_thoai_dang_nhap || "Chưa gắn chủ hộ"}
         </p>
       )}
-      <h2>Đổi mật khẩu</h2>
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          const form = new FormData(e.currentTarget);
-          setError(null);
-          if (form.get("mat_khau_moi") !== form.get("xac_nhan")) {
-            setError(new Error("Mật khẩu xác nhận không khớp."));
-            return;
-          }
-          setPending(true);
-          try {
-            await getJson("/xac_thuc/doi_mat_khau", {
-              method: "POST",
-              body: Object.fromEntries(form),
-            });
-            setDone(true);
-          } catch (err) {
-            setError(err);
-          } finally {
-            setPending(false);
-          }
-        }}
-      >
-        <Field
-          label="Mật khẩu hiện tại"
-          name="mat_khau_cu"
-          type="password"
-          required
-          autoComplete="current-password"
-        />
-        <Field
-          label="Mật khẩu mới (ít nhất 10 ký tự)"
-          name="mat_khau_moi"
-          type="password"
-          minLength={10}
-          required
-          autoComplete="new-password"
-        />
-        <Field
-          label="Nhập lại mật khẩu mới"
-          name="xac_nhan"
-          type="password"
-          minLength={10}
-          required
-          autoComplete="new-password"
-        />
-        <ErrorBox error={error} />
-        <button className="primary" disabled={pending}>
-          Đổi mật khẩu và kết thúc mọi phiên
-        </button>
-      </form>
+
+      <ActionPanel title={"Đổi mật khẩu"} pending={pending} error={error}>
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const form = new FormData(e.currentTarget);
+            setError(null);
+            if (form.get("mat_khau_moi") !== form.get("xac_nhan")) {
+              setError(new Error("Mật khẩu xác nhận không khớp."));
+              return;
+            }
+            setPending(true);
+            try {
+              await getJson("/xac_thuc/doi_mat_khau", {
+                method: "POST",
+                body: Object.fromEntries(form),
+              });
+              setDone(true);
+            } catch (err) {
+              setError(err);
+            } finally {
+              setPending(false);
+            }
+          }}
+        >
+          <Field
+            label="Mật khẩu hiện tại"
+            name="mat_khau_cu"
+            type="password"
+            required
+            autoComplete="current-password"
+          />
+          <Field
+            label="Mật khẩu mới (ít nhất 10 ký tự)"
+            name="mat_khau_moi"
+            type="password"
+            minLength={10}
+            required
+            autoComplete="new-password"
+          />
+          <Field
+            label="Nhập lại mật khẩu mới"
+            name="xac_nhan"
+            type="password"
+            minLength={10}
+            required
+            autoComplete="new-password"
+          />
+          <ErrorBox error={error} />
+          <button className="primary" disabled={pending}>
+            Đổi mật khẩu và kết thúc mọi phiên
+          </button>
+        </form>
+      </ActionPanel>
     </section>
   );
 }

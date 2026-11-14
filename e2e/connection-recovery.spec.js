@@ -255,6 +255,9 @@ test("phiên hết hạn mở lại đăng nhập, giữ lỗi sai mật khẩu 
     await expect(
       page.getByRole("heading", { name: "Tài khoản", exact: true }),
     ).toBeVisible();
+    await page
+      .getByRole("button", { name: "Đổi mật khẩu", exact: true })
+      .click();
     const oldRequestStarted = page.waitForRequest("**/api/old-session-request");
     await page.evaluate(() => {
       window.oldSessionResult = import("/src/shared/api/client.js").then(

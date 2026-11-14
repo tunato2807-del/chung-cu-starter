@@ -1,10 +1,11 @@
-import React, { useState } from "react";
 import {
-  Link,
-  useLocation,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+  ActionPanel,
+  PageAction,
+  useDialogBusy,
+} from "../../shared/Dialog.jsx";
+import React, { useState } from "react";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
+import { DetailLink as Link } from "../../shared/dialog-navigation.jsx";
 import { getJson } from "../../shared/api/client.js";
 import { useAuth } from "../auth/Auth.jsx";
 import {
@@ -199,6 +200,7 @@ export function ReportDetail() {
     resource = useResource(`/phan_anh/${id}`);
   const [error, setError] = useState(),
     [pending, setPending] = useState(false);
+  useDialogBusy(pending);
   const r = resource.result?.data;
   async function mutate(path, body) {
     setPending(true);
@@ -231,7 +233,7 @@ export function ReportDetail() {
             </div>
             <Badge status={r.trang_thai} />
           </div>
-          <div className="detail-grid">
+          <div className="workflow-list-layout">
             <div>
               <section className="card">
                 <h2>{r.ten_vi_tri}</h2>
@@ -297,10 +299,9 @@ export function ReportDetail() {
                   </React.Fragment>
                 ))}
               </section>
-              <section className="card">
-                <h2>Lịch sử xử lý</h2>
+              <ActionPanel title={<>Lịch sử xử lý</>} wide inline>
                 <Timeline items={r.lich_su} />
-              </section>
+              </ActionPanel>
             </div>
             <section className="card action-panel">
               <h2>Thao tác</h2>
@@ -322,6 +323,7 @@ export function ReportDetail() {
                   <Assignment
                     key={`assign-${r.phien_ban}`}
                     report={r}
+                    error={error}
                     pending={pending}
                     onSubmit={(body) => mutate("phan_cong", body)}
                   />
@@ -331,6 +333,7 @@ export function ReportDetail() {
                   <AdminDecision
                     key={`decision-${r.phien_ban}`}
                     report={r}
+                    error={error}
                     pending={pending}
                     onSubmit={(body) => mutate("trang_thai", body)}
                   />
@@ -339,55 +342,64 @@ export function ReportDetail() {
                 r.trang_thai === "DA_PHAN_CONG" && (
                   <>
                     <p>Bắt đầu khi bạn sẵn sàng xử lý tại hiện trường.</p>
-                    <button
-                      className="primary"
-                      disabled={pending}
-                      onClick={() =>
-                        mutate("trang_thai", {
-                          phien_ban: r.phien_ban,
-                          trang_thai: "DANG_XU_LY",
-                        })
-                      }
-                    >
-                      Bắt đầu xử lý
-                    </button>
+                    <PageAction>
+                      <button
+                        className="primary"
+                        disabled={pending}
+                        onClick={() =>
+                          mutate("trang_thai", {
+                            phien_ban: r.phien_ban,
+                            trang_thai: "DANG_XU_LY",
+                          })
+                        }
+                      >
+                        Bắt đầu xử lý
+                      </button>
+                    </PageAction>
                   </>
                 )}
               {user.vai_tro === "KY_THUAT_VIEN" &&
                 r.trang_thai === "DANG_XU_LY" && (
-                  <form
+                  <ActionPanel
                     key={r.phien_ban}
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      const data = new FormData(e.currentTarget);
-                      data.set("phien_ban", r.phien_ban);
-                      data.set("trang_thai", "DA_XU_LY");
-                      mutate("trang_thai", data);
-                    }}
+                    title={"Hoàn thành và gửi nghiệm thu"}
+                    pending={pending}
+                    error={error}
                   >
-                    <Field label="Kết quả xử lý (bắt buộc)">
-                      <textarea
-                        name="ghi_chu"
-                        required
-                        maxLength={500}
-                        rows={4}
-                      />
-                    </Field>
-                    <Field label="Phản hồi công khai (tùy chọn)">
-                      <textarea
-                        name="noi_dung_cong_khai"
-                        maxLength={500}
-                        rows={3}
-                      />
-                    </Field>
-                    <p className="muted">
-                      Cần ảnh nghiệm thu mới của lượt xử lý hiện tại.
-                    </p>
-                    <ImagesInput />
-                    <button className="primary" disabled={pending}>
-                      Hoàn thành và gửi nghiệm thu
-                    </button>
-                  </form>
+                    <form
+                      key={r.phien_ban}
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        const data = new FormData(e.currentTarget);
+                        data.set("phien_ban", r.phien_ban);
+                        data.set("trang_thai", "DA_XU_LY");
+                        mutate("trang_thai", data);
+                      }}
+                    >
+                      <Field label="Kết quả xử lý (bắt buộc)">
+                        <textarea
+                          name="ghi_chu"
+                          required
+                          maxLength={500}
+                          rows={4}
+                        />
+                      </Field>
+                      <Field label="Phản hồi công khai (tùy chọn)">
+                        <textarea
+                          name="noi_dung_cong_khai"
+                          maxLength={500}
+                          rows={3}
+                        />
+                      </Field>
+                      <p className="muted">
+                        Cần ảnh nghiệm thu mới của lượt xử lý hiện tại.
+                      </p>
+                      <ImagesInput />
+                      <button className="primary" disabled={pending}>
+                        Hoàn thành và gửi nghiệm thu
+                      </button>
+                    </form>
+                  </ActionPanel>
                 )}
               {(user.vai_tro === "CU_DAN" ||
                 ["DA_DONG", "TU_CHOI", "TRUNG"].includes(r.trang_thai) ||
@@ -406,108 +418,120 @@ export function ReportDetail() {
     </>
   );
 }
-function Assignment({ report: r, pending, onSubmit }) {
+function Assignment({ report: r, pending, error, onSubmit }) {
   const resource = useResource("/nguoi_dung");
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit({
-          ...Object.fromEntries(new FormData(e.currentTarget)),
-          phien_ban: r.phien_ban,
-        });
-      }}
+    <ActionPanel
+      title={
+        <>
+          {r.trang_thai === "MOI"
+            ? "Phân công kỹ thuật viên"
+            : "Điều chỉnh phân công"}
+        </>
+      }
+      pending={pending}
+      error={error}
     >
-      <h3>
-        {r.trang_thai === "MOI"
-          ? "Phân công kỹ thuật viên"
-          : "Điều chỉnh phân công"}
-      </h3>
-      <ErrorBox error={resource.error} />
-      <Field label="Kỹ thuật viên">
-        <select
-          name="ma_ky_thuat_vien"
-          required
-          defaultValue={r.ma_ky_thuat_vien || ""}
-        >
-          <option value="">Chọn kỹ thuật viên</option>
-          {resource.result?.data
-            .filter((u) => u.vai_tro === "KY_THUAT_VIEN" && u.dang_hoat_dong)
-            .map((u) => (
-              <option value={u.ma_nguoi_dung} key={u.ma_nguoi_dung}>
-                {u.ho_va_ten}
-              </option>
-            ))}
-        </select>
-      </Field>
-      <Field label="Độ ưu tiên">
-        <select name="do_uu_tien" defaultValue={r.do_uu_tien}>
-          <Options values={priorities} />
-        </select>
-      </Field>
-      <Field label="Ghi chú nội bộ">
-        <textarea name="ghi_chu" maxLength={500} rows={2} />
-      </Field>
-      <button className="primary" disabled={pending || resource.loading}>
-        Lưu phân công
-      </button>
-    </form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit({
+            ...Object.fromEntries(new FormData(e.currentTarget)),
+            phien_ban: r.phien_ban,
+          });
+        }}
+      >
+        <ErrorBox error={resource.error} />
+        <Field label="Kỹ thuật viên">
+          <select
+            name="ma_ky_thuat_vien"
+            required
+            defaultValue={r.ma_ky_thuat_vien || ""}
+          >
+            <option value="">Chọn kỹ thuật viên</option>
+            {resource.result?.data
+              .filter((u) => u.vai_tro === "KY_THUAT_VIEN" && u.dang_hoat_dong)
+              .map((u) => (
+                <option value={u.ma_nguoi_dung} key={u.ma_nguoi_dung}>
+                  {u.ho_va_ten}
+                </option>
+              ))}
+          </select>
+        </Field>
+        <Field label="Độ ưu tiên">
+          <select name="do_uu_tien" defaultValue={r.do_uu_tien}>
+            <Options values={priorities} />
+          </select>
+        </Field>
+        <Field label="Ghi chú nội bộ">
+          <textarea name="ghi_chu" maxLength={500} rows={2} />
+        </Field>
+        <button className="primary" disabled={pending || resource.loading}>
+          Lưu phân công
+        </button>
+      </form>
+    </ActionPanel>
   );
 }
-function AdminDecision({ report: r, pending, onSubmit }) {
+function AdminDecision({ report: r, pending, error, onSubmit }) {
   const options =
     r.trang_thai === "MOI"
       ? { TU_CHOI: "Từ chối", TRUNG: "Gộp vào phản ánh khác" }
       : { DA_DONG: "Nghiệm thu đạt và đóng", DANG_XU_LY: "Trả lại xử lý" };
   const [target, setTarget] = useState(Object.keys(options)[0]);
   return (
-    <form
-      className="decision"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit({
-          ...Object.fromEntries(new FormData(e.currentTarget)),
-          phien_ban: r.phien_ban,
-          trang_thai: target,
-        });
-      }}
+    <ActionPanel
+      title={
+        <>{r.trang_thai === "MOI" ? "Quyết định khác" : "Nghiệm thu kết quả"}</>
+      }
+      pending={pending}
+      error={error}
     >
-      <h3>
-        {r.trang_thai === "MOI" ? "Quyết định khác" : "Nghiệm thu kết quả"}
-      </h3>
-      <Field label="Thao tác">
-        <select value={target} onChange={(e) => setTarget(e.target.value)}>
-          <Options values={options} />
-        </select>
-      </Field>
-      {target === "TRUNG" && (
+      <form
+        className="decision"
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit({
+            ...Object.fromEntries(new FormData(e.currentTarget)),
+            phien_ban: r.phien_ban,
+            trang_thai: target,
+          });
+        }}
+      >
+        <Field label="Thao tác">
+          <select value={target} onChange={(e) => setTarget(e.target.value)}>
+            <Options values={options} />
+          </select>
+        </Field>
+        {target === "TRUNG" && (
+          <Field
+            label="Mã số phản ánh gốc (cùng vị trí)"
+            name="ma_phan_anh_goc"
+            type="number"
+            min="1"
+            required
+          />
+        )}
         <Field
-          label="Mã số phản ánh gốc (cùng vị trí)"
-          name="ma_phan_anh_goc"
-          type="number"
-          min="1"
-          required
-        />
-      )}
-      <Field
-        label={target === "DA_DONG" ? "Ghi chú nội bộ" : "Lý do (bắt buộc)"}
-      >
-        <textarea
-          name="ghi_chu"
-          required={target !== "DA_DONG"}
-          maxLength={500}
-          rows={3}
-        />
-      </Field>
-      <Field label="Phản hồi công khai">
-        <textarea name="noi_dung_cong_khai" maxLength={500} rows={3} />
-      </Field>
-      <button
-        disabled={pending}
-        className={target === "DA_DONG" ? "primary" : "danger"}
-      >
-        Xác nhận quyết định
-      </button>
-    </form>
+          label={target === "DA_DONG" ? "Ghi chú nội bộ" : "Lý do (bắt buộc)"}
+        >
+          <textarea
+            name="ghi_chu"
+            required={target !== "DA_DONG"}
+            maxLength={500}
+            rows={3}
+          />
+        </Field>
+        <Field label="Phản hồi công khai">
+          <textarea name="noi_dung_cong_khai" maxLength={500} rows={3} />
+        </Field>
+        <button
+          disabled={pending}
+          className={target === "DA_DONG" ? "primary" : "danger"}
+        >
+          Xác nhận quyết định
+        </button>
+      </form>
+    </ActionPanel>
   );
 }

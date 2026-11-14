@@ -1,13 +1,17 @@
+import Dialog, {
+  ActionPanel,
+  PageAction,
+  useDialogBusy,
+} from "../../shared/Dialog.jsx";
 import DataTools from "../../shared/DataTools.jsx";
 import BatchBills from "./BatchBills.jsx";
 import BatchBillActions from "./BatchBillActions.jsx";
 import React, { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+  DetailLink as Link,
+  useDialogNavigate as useNavigate,
+} from "../../shared/dialog-navigation.jsx";
 import QRCode from "qrcode";
 import { banks, bankName, bankSearch } from "./banks.js";
 import { useAuth } from "../auth/Auth.jsx";
@@ -70,6 +74,7 @@ function useAction(done) {
   const [pending, setPending] = useState(false),
     [error, setError] = useState(null),
     [notice, setNotice] = useState("");
+  useDialogBusy(pending);
   async function run(path, method, body, after) {
     setPending(true);
     setError(null);
@@ -236,8 +241,12 @@ export function Rates() {
         các đơn giá và chi tiết hóa đơn đã lưu được giữ lại.
       </p>
       <Feedback action={action} />
-      <section className="card narrow">
-        <h2>Thêm phiên bản giá</h2>
+      <ActionPanel
+        title={<>Thêm phiên bản giá</>}
+        pending={action.pending}
+        error={action.error}
+        wide
+      >
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -413,7 +422,7 @@ export function Rates() {
             <button className="primary">Lưu đơn giá</button>
           </fieldset>
         </form>
-      </section>
+      </ActionPanel>
       <form
         className="filters"
         key={params.toString()}
@@ -449,8 +458,7 @@ export function Rates() {
                   <td>{r.ten_phi}</td>
                   <td>
                     {r.cach_tinh === "BAC_THANG" ? (
-                      <details>
-                        <summary>Biểu giá bậc thang</summary>
+                      <ActionPanel inline wide title={<>Biểu giá bậc thang</>}>
                         <ol>
                           {(typeof r.bac_dien === "string"
                             ? JSON.parse(r.bac_dien)
@@ -462,7 +470,7 @@ export function Rates() {
                             </li>
                           ))}
                         </ol>
-                      </details>
+                      </ActionPanel>
                     ) : (
                       number(r.don_gia)
                     )}
@@ -503,8 +511,15 @@ export function Meters() {
         đầu cần xác nhận riêng.
       </p>
       <Feedback action={action} />
-      <section className="card narrow">
-        <h2>{editing ? "Sửa chỉ số" : "Ghi chỉ số"}</h2>
+      <ActionPanel
+        title={<>{editing ? "Sửa chỉ số" : "Ghi chỉ số"}</>}
+        pending={action.pending}
+        error={action.error}
+        editKey={editing}
+        label="Ghi chỉ số"
+        onOpen={() => setEditing(null)}
+        onDismiss={() => setEditing(null)}
+      >
         <form
           key={editing?.ma_chi_so_dich_vu || "new"}
           onSubmit={(e) => {
@@ -605,7 +620,7 @@ export function Meters() {
             Hủy sửa
           </button>
         )}
-      </section>
+      </ActionPanel>
       <form
         className="filters"
         onSubmit={(e) => {
@@ -724,17 +739,36 @@ export function Bills() {
       </div>
       <Feedback action={action} />
       {batchProcessing && (
-        <BatchBillActions onDone={resource.reload} onBusy={setBatchBusy} />
+        <Dialog
+          title="Duyệt và gửi hóa đơn hàng loạt"
+          wide
+          pending={batchBusy}
+          onClose={() => setBatchProcessing(false)}
+        >
+          <BatchBillActions onDone={resource.reload} onBusy={setBatchBusy} />
+        </Dialog>
       )}
       {batchAdding && (
-        <BatchBills onDone={resource.reload} onBusy={setBatchBusy} />
+        <Dialog
+          title="Lập hóa đơn hàng loạt"
+          wide
+          pending={batchBusy}
+          onClose={() => setBatchAdding(false)}
+        >
+          <BatchBills onDone={resource.reload} onBusy={setBatchBusy} />
+        </Dialog>
       )}
       {admin && (
         <DataTools kind="hoa_don" params={params} disabled={resource.loading} />
       )}
       {adding && (
-        <section className="card narrow">
-          <h2>Lập bản nháp cho căn hộ</h2>
+        <Dialog
+          closeOnSuccess
+          title={<>Lập bản nháp cho căn hộ</>}
+          pending={action.pending}
+          error={action.error}
+          onClose={() => setAdding(false)}
+        >
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -765,7 +799,7 @@ export function Bills() {
               <button className="primary">Tạo bản nháp</button>
             </fieldset>
           </form>
-        </section>
+        </Dialog>
       )}
       <form
         className="filters"
@@ -924,10 +958,7 @@ function PaymentQR({ bill }) {
   }, [bill.qr_payload]);
   if (!bill.qr_payload) return null;
   return (
-    <section
-      className="card payment-card"
-      aria-label="Thông tin thanh toán hóa đơn"
-    >
+    <ActionPanel title={"Thanh toán hóa đơn"} label="Xem QR thanh toán" inline>
       <header className="payment-header">
         <span className="payment-status">Chờ thanh toán</span>
         <h2>Chuyển khoản bằng VietQR</h2>
@@ -991,7 +1022,7 @@ function PaymentQR({ bill }) {
           quản lý sẽ xác nhận sau khi đối soát giao dịch.
         </p>
       </div>
-    </section>
+    </ActionPanel>
   );
 }
 export function BillDetail() {
@@ -1086,44 +1117,54 @@ export function BillDetail() {
             </p>
           )}
           {admin && bill.trang_thai === "NHAP" && (
-            <section className="card narrow">
-              <h2>Tính lại bản nháp</h2>
-              <form
-                key={bill.phien_ban}
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  run("tinh_lai", billOptions(values(e)));
-                }}
+            <>
+              <ActionPanel
+                title={<>Tính lại bản nháp</>}
+                pending={action.pending}
+                error={action.error}
               >
-                <fieldset disabled={action.pending}>
-                  <Field
-                    label="Ngày chốt phí"
-                    name="ngay_chot_phi"
-                    type="date"
-                    required
-                    max={today()}
-                    defaultValue={bill.ngay_chot_phi}
-                  />
-                  <ChargeOptions bill={bill} />
-                  <button>Tính lại bản nháp</button>
-                </fieldset>
-              </form>
-              <button
-                className="primary"
-                disabled={
-                  action.pending ||
-                  bill.loi_du_lieu.length > 0 ||
-                  BigInt(bill.tong_tien) <= 0n
-                }
-                onClick={() => run("duyet")}
-              >
-                Duyệt hóa đơn
-              </button>
-            </section>
+                <form
+                  key={bill.phien_ban}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    run("tinh_lai", billOptions(values(e)));
+                  }}
+                >
+                  <fieldset disabled={action.pending}>
+                    <Field
+                      label="Ngày chốt phí"
+                      name="ngay_chot_phi"
+                      type="date"
+                      required
+                      max={today()}
+                      defaultValue={bill.ngay_chot_phi}
+                    />
+                    <ChargeOptions bill={bill} />
+                    <button>Tính lại bản nháp</button>
+                  </fieldset>
+                </form>
+              </ActionPanel>
+              <PageAction>
+                <button
+                  className="primary"
+                  disabled={
+                    action.pending ||
+                    bill.loi_du_lieu.length > 0 ||
+                    BigInt(bill.tong_tien) <= 0n
+                  }
+                  onClick={() => run("duyet")}
+                >
+                  Duyệt hóa đơn
+                </button>
+              </PageAction>
+            </>
           )}
           {admin && bill.trang_thai === "DA_DUYET" && (
-            <section className="card narrow bill-publish">
-              <h2>Gửi hóa đơn cho cư dân</h2>
+            <ActionPanel
+              title={<>Gửi hóa đơn cho cư dân</>}
+              pending={action.pending}
+              error={action.error}
+            >
               <p className="muted">
                 Chọn ngân hàng và điền thông tin nhận tiền để tạo mã thanh toán
                 cho hóa đơn.
@@ -1161,56 +1202,70 @@ export function BillDetail() {
                   <button className="primary">Gửi hóa đơn</button>
                 </fieldset>
               </form>
-            </section>
+            </ActionPanel>
           )}
           {admin && bill.trang_thai === "DA_GUI" && (
-            <section className="card narrow">
-              <h2>Nhắc phí và xác nhận thu tiền</h2>
-              <p className="muted">
-                Gửi vào hộp thông báo của tài khoản căn hộ và người phụ trách
-                thanh toán hiện tại. Mỗi hóa đơn được nhắc tối đa một lần trong
-                ngày.
-              </p>
-              <button disabled={action.pending} onClick={() => run("nhac_phi")}>
-                Nhắc thanh toán trên web
-              </button>
-              <h3>Xác nhận thu tiền</h3>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  run("xac_nhan_thanh_toan", values(e));
-                }}
+            <>
+              <ActionPanel
+                title={<>Nhắc phí và xác nhận thu tiền</>}
+                pending={action.pending}
+                error={action.error}
               >
-                <fieldset disabled={action.pending}>
-                  <Field
-                    label="Số tiền đã đối soát"
-                    name="so_tien"
-                    type="number"
-                    step="1"
-                    min="1"
-                    required
-                    defaultValue={bill.tong_tien}
-                  />
-                  <Field
-                    label="Mã tham chiếu giao dịch"
-                    name="ma_tham_chieu"
-                    required
-                    minLength={3}
-                    maxLength={100}
-                  />
-                  <label className="checkbox">
-                    <input type="checkbox" required />
-                    Đã đối soát đủ số tiền hóa đơn
-                  </label>
-                  <button className="primary">Xác nhận đã thu</button>
-                </fieldset>
-              </form>
-            </section>
+                <p className="muted">
+                  Gửi vào hộp thông báo của tài khoản căn hộ và người phụ trách
+                  thanh toán hiện tại. Mỗi hóa đơn được nhắc tối đa một lần
+                  trong ngày.
+                </p>
+
+                <h3>Xác nhận thu tiền</h3>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    run("xac_nhan_thanh_toan", values(e));
+                  }}
+                >
+                  <fieldset disabled={action.pending}>
+                    <Field
+                      label="Số tiền đã đối soát"
+                      name="so_tien"
+                      type="number"
+                      step="1"
+                      min="1"
+                      required
+                      defaultValue={bill.tong_tien}
+                    />
+                    <Field
+                      label="Mã tham chiếu giao dịch"
+                      name="ma_tham_chieu"
+                      required
+                      minLength={3}
+                      maxLength={100}
+                    />
+                    <label className="checkbox">
+                      <input type="checkbox" required />
+                      Đã đối soát đủ số tiền hóa đơn
+                    </label>
+                    <button className="primary">Xác nhận đã thu</button>
+                  </fieldset>
+                </form>
+              </ActionPanel>
+              <PageAction>
+                <button
+                  disabled={action.pending}
+                  onClick={() => run("nhac_phi")}
+                >
+                  Nhắc thanh toán trên web
+                </button>
+              </PageAction>
+            </>
           )}
           {admin &&
             ["NHAP", "DA_DUYET", "DA_GUI"].includes(bill.trang_thai) && (
-              <section className="card narrow">
-                <h2>Hủy hóa đơn</h2>
+              <ActionPanel
+                title={<>Hủy hóa đơn</>}
+                pending={action.pending}
+                error={action.error}
+              >
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -1228,7 +1283,7 @@ export function BillDetail() {
                     <button>Hủy hóa đơn</button>
                   </fieldset>
                 </form>
-              </section>
+              </ActionPanel>
             )}
           {admin && bill.trang_thai === "HUY" && (
             <section className="card">
@@ -1247,8 +1302,7 @@ export function BillDetail() {
             </section>
           )}
           {admin && (
-            <section className="card">
-              <h2>Lịch sử hóa đơn</h2>
+            <ActionPanel title={<>Lịch sử hóa đơn</>} wide inline>
               <ul>
                 {bill.history.map((h) => (
                   <li key={h.ma_lich_su_hoa_don}>
@@ -1258,7 +1312,7 @@ export function BillDetail() {
                   </li>
                 ))}
               </ul>
-            </section>
+            </ActionPanel>
           )}
         </>
       )}

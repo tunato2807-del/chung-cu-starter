@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { getJson } from "../../shared/api/client.js";
-import { Badge, ErrorBox, Loading, priorities } from "../../shared/ui.jsx";
+import React from "react";
+import { DetailLink as Link } from "../../shared/dialog-navigation.jsx";
+import {
+  Badge,
+  ErrorBox,
+  Loading,
+  priorities,
+  useResource,
+} from "../../shared/ui.jsx";
 import "./Dashboard.css";
 import DashboardCharts from "./DashboardCharts.jsx";
 import Icon from "../../shared/Icon.jsx";
@@ -26,28 +31,10 @@ const jobs = {
   CHO_NGHIEM_THU: "Chờ nghiệm thu",
 };
 function useOverview() {
-  const [revision, setRevision] = useState(0),
-    [state, setState] = useState({ loading: true });
-  useEffect(() => {
-    const controller = new AbortController();
-    setState({ revision, loading: true });
-    getJson("/tong_quan", { signal: controller.signal })
-      .then((result) => {
-        if (!controller.signal.aborted)
-          setState({ revision, data: result.data, loading: false });
-      })
-      .catch((error) => {
-        if (!controller.signal.aborted)
-          setState({ revision, error, loading: false });
-      });
-    return () => controller.abort();
-  }, [revision]);
-  return {
-    ...(state.revision === revision ? state : { loading: true }),
-    revision,
-    reload: () => setRevision((n) => n + 1),
-  };
+  const resource = useResource("/tong_quan");
+  return { ...resource, data: resource.result?.data };
 }
+
 function Metric({ title, value, hint, to, money = false, alert = false }) {
   return (
     <Link
@@ -124,7 +111,9 @@ export default function Dashboard() {
           onClick={resource.reload}
         >
           <Icon name="refresh" size={17} />
-          {resource.loading ? "Đang cập nhật…" : "Cập nhật số liệu"}
+          {resource.loading && !resource.result
+            ? "Đang cập nhật…"
+            : "Cập nhật số liệu"}
         </button>
       </div>
       <ErrorBox error={resource.error} />

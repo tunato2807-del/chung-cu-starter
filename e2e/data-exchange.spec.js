@@ -1,3 +1,4 @@
+import { activeView, closeDialog } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import { readFile } from "node:fs/promises";
@@ -28,7 +29,9 @@ for (const width of [1440, 375])
     page.on("pageerror", (e) => errors.push(e.message));
     async function download(label) {
       const waiting = page.waitForEvent("download");
-      await page.getByRole("button", { name: label, exact: true }).click();
+      await activeView(page)
+        .getByRole("button", { name: label, exact: true })
+        .click();
       const file = await waiting;
       expect(await file.failure()).toBeNull();
       return await readFile(await file.path());
@@ -81,7 +84,7 @@ for (const width of [1440, 375])
         }),
       ).toBeVisible();
       await page.getByLabel("Tìm kiếm", { exact: true }).fill(suffix);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Áp dụng bộ lọc xuất", exact: true })
         .click();
       await expect(page).toHaveURL(new RegExp(`q=${suffix}`));
@@ -100,7 +103,10 @@ for (const width of [1440, 375])
       expect(wb.getWorksheet("Nhap").rowCount).toBe(1);
       expect(wb.getWorksheet("Vi du").rowCount).toBe(2);
       await expect(
-        page.getByRole("button", { name: "Tải mẫu PDF", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Tải mẫu PDF",
+          exact: true,
+        }),
       ).toHaveCount(0);
       const picker = page.getByLabel(
         "Chọn tệp Excel .xlsx đã điền (tối đa 5 MB)",
@@ -111,14 +117,14 @@ for (const width of [1440, 375])
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         buffer: await excel([asset("01"), { ...asset("02"), loai: "WRONG" }]),
       });
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xem trước tệp", exact: true })
         .click();
       await expect(
         page.getByRole("heading", { name: "2 dòng · 1 dòng lỗi" }),
       ).toBeVisible();
       await expect(
-        page.getByRole("button", { name: "Xác nhận nhập 2 dòng" }),
+        activeView(page).getByRole("button", { name: "Xác nhận nhập 2 dòng" }),
       ).toBeDisabled();
       expect(
         (
@@ -129,13 +135,14 @@ for (const width of [1440, 375])
           )
         ).length,
       ).toBe(0);
+      await closeDialog(page);
       await picker.setInputFiles({
         name: "good.xlsx",
         mimeType:
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         buffer: await excel([asset("01"), asset("02")]),
       });
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xem trước tệp", exact: true })
         .click();
       await expect(
@@ -150,7 +157,9 @@ for (const width of [1440, 375])
         path: `/tmp/chung-cu-data-import-${width}.png`,
         fullPage: true,
       });
-      await page.getByRole("button", { name: "Xác nhận nhập 2 dòng" }).click();
+      await activeView(page)
+        .getByRole("button", { name: "Xác nhận nhập 2 dòng" })
+        .click();
       await expect(
         page.getByRole("heading", { name: "Nhập thành công" }),
       ).toBeVisible();
@@ -163,21 +172,27 @@ for (const width of [1440, 375])
           )
         ).length,
       ).toBe(2);
+      await closeDialog(page);
       await picker.setInputFiles({
         name: "scan.pdf",
         mimeType: "application/pdf",
         buffer: Buffer.from("%PDF-1.7"),
       });
-      await expect(page.getByRole("alert")).toContainText("Chỉ nhận tệp Excel");
+      await expect(activeView(page).getByRole("alert")).toContainText(
+        "Chỉ nhận tệp Excel",
+      );
       await expect(
-        page.getByRole("button", { name: "Xem trước tệp", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Xem trước tệp",
+          exact: true,
+        }),
       ).toBeDisabled();
       await page.getByLabel("Phần dữ liệu").selectOption("can_ho");
       await expect(
         page.getByRole("heading", { name: "Nhập căn hộ", exact: true }),
       ).toBeVisible();
       await expect(
-        page.getByRole("button", { name: /Xác nhận nhập/ }),
+        activeView(page).getByRole("button", { name: /Xác nhận nhập/ }),
       ).toHaveCount(0);
       await picker.setInputFiles({
         name: "02_cu_dan.xlsx",
@@ -187,15 +202,18 @@ for (const width of [1440, 375])
           new URL("../samples/nhap-du-lieu/02_cu_dan.xlsx", import.meta.url),
         ),
       });
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xem trước tệp", exact: true })
         .click();
-      await expect(page.getByRole("alert")).toContainText(
+      await expect(activeView(page).getByRole("alert")).toContainText(
         "Bạn đang chọn “Căn hộ” nhưng tệp thuộc phần “Cư dân”",
       );
       await page.goto(`/quan-tri/can-ho?q=${block}&page=2`);
       await expect(
-        page.getByRole("button", { name: "Xuất Excel", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Xuất Excel",
+          exact: true,
+        }),
       ).toBeEnabled();
       const report = await download("Xuất Excel"),
         result = new ExcelJS.Workbook();

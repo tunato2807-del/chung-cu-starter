@@ -1,5 +1,7 @@
+import Dialog, { ActionPanel, useDialogBusy } from "../../shared/Dialog.jsx";
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { DetailLink as Link } from "../../shared/dialog-navigation.jsx";
 import { getJson } from "../../shared/api/client.js";
 import { ErrorBox, Field, Loading, useResource } from "../../shared/ui.jsx";
 import ReportExport from "../../shared/ReportExport.jsx";
@@ -13,6 +15,7 @@ function ImportPanel({ config, onDone }) {
     [error, setError] = useState(null),
     request = useRef(null),
     key = useRef(null);
+  useDialogBusy(pending);
   useEffect(() => () => request.current?.abort(), []);
   async function run(commit) {
     const controller = new AbortController();
@@ -70,8 +73,7 @@ function ImportPanel({ config, onDone }) {
         template
         disabled={!!pending}
       />
-      <details className="import-help">
-        <summary>Hướng dẫn điền mẫu Excel</summary>
+      <ActionPanel inline wide title={<>Hướng dẫn điền mẫu Excel</>}>
         <p>
           Excel: điền sheet <strong>Nhap</strong> từ dòng 2, giữ nguyên tên cột.
           Số điện thoại và mã căn cần là văn bản để giữ số 0 đầu. Ngày dùng
@@ -109,7 +111,7 @@ function ImportPanel({ config, onDone }) {
             </tbody>
           </table>
         </div>
-      </details>
+      </ActionPanel>
       <p className="note">
         Phần đang nhập: <strong>{config.title}</strong>. Tệp phải thuộc đúng
         phần này.
@@ -160,11 +162,18 @@ function ImportPanel({ config, onDone }) {
       </div>
       <ErrorBox error={error} />
       {preview && (
-        <section aria-label="Bản xem trước" className="import-preview">
-          <p className="muted">Vuốt hoặc cuộn ngang bảng để xem đủ các cột.</p>
+        <Dialog
+          title={"Xem trước dữ liệu Excel"}
+          wide
+          pending={!!pending}
+          error={error}
+          onClose={() => setPreview(null)}
+        >
           <h3>
             {preview.total} dòng · {preview.errors} dòng lỗi
           </h3>
+          <p className="muted">Vuốt hoặc cuộn ngang bảng để xem đủ các cột.</p>
+
           <p className="muted">
             Chưa lưu dữ liệu. Sửa tất cả dòng lỗi trong tệp rồi xem trước lại.
             Khi xác nhận, hệ thống kiểm tra lại và chỉ lưu nếu toàn bộ lô hợp
@@ -211,24 +220,26 @@ function ImportPanel({ config, onDone }) {
               ? "Đang lưu toàn bộ lô…"
               : `Xác nhận nhập ${preview.total} dòng`}
           </button>
-        </section>
+        </Dialog>
       )}
       {result && (
-        <section role="status" className="import-result">
-          <h3>
-            {result.da_nhap_truoc
-              ? "Tệp này đã được nhập trước đó"
-              : "Nhập thành công"}
-          </h3>
+        <Dialog
+          title={"Kết quả nhập dữ liệu"}
+          wide
+          pending={!!pending}
+          onClose={() => setResult(null)}
+        >
+          <h3>Nhập thành công</h3>
           <p>
             Đã lưu {result.so_dong} dòng. Yêu cầu gửi lại không tạo dữ liệu
             trùng.
           </p>
           {!!result.tai_khoan_moi?.length && (
-            <details open>
-              <summary>
-                Tài khoản căn hộ vừa cấp — chỉ hiện mật khẩu lần này
-              </summary>
+            <ActionPanel
+              inline
+              wide
+              title={<>Tài khoản căn hộ vừa cấp — chỉ hiện mật khẩu lần này</>}
+            >
               <p>
                 Sao chép và bàn giao riêng cho người phụ trách. Không đưa mật
                 khẩu vào tệp danh sách.
@@ -260,7 +271,7 @@ function ImportPanel({ config, onDone }) {
                   </tbody>
                 </table>
               </div>
-            </details>
+            </ActionPanel>
           )}
           {result.da_nhap_truoc && (
             <p>
@@ -271,7 +282,7 @@ function ImportPanel({ config, onDone }) {
           <Link className="button" to={config.path}>
             Mở danh sách {config.title.toLowerCase()}
           </Link>
-        </section>
+        </Dialog>
       )}
     </section>
   );
@@ -386,8 +397,7 @@ export default function DataExchange() {
           )}
         </>
       )}
-      <section className="card">
-        <h2>20 lần nhập gần nhất của bạn</h2>
+      <ActionPanel title={<>20 lần nhập gần nhất của bạn</>} wide inline>
         <div
           className="table-wrap"
           tabIndex={0}
@@ -422,7 +432,7 @@ export default function DataExchange() {
         {!history.loading && !history.result?.data?.length && (
           <p className="muted">Chưa có lần nhập nào.</p>
         )}
-      </section>
+      </ActionPanel>
       <section className="card">
         <h2>Báo cáo tài chính</h2>
         <div className="actions">

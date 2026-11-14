@@ -1,10 +1,10 @@
+import Dialog, { ActionPanel, useDialogBusy } from "../../shared/Dialog.jsx";
 import React, { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+  DetailLink as Link,
+  useDialogNavigate as useNavigate,
+} from "../../shared/dialog-navigation.jsx";
 import { useAuth } from "../auth/Auth.jsx";
 import { getJson } from "../../shared/api/client.js";
 import {
@@ -79,6 +79,7 @@ function useAction(done) {
   const [pending, setPending] = useState(false),
     [error, setError] = useState(null),
     [notice, setNotice] = useState("");
+  useDialogBusy(pending);
   async function run(path, method, body, after) {
     setPending(true);
     setError(null);
@@ -280,8 +281,13 @@ export function Announcements() {
       </p>
       <Feedback action={action} />
       {adding && (
-        <section className="card narrow">
-          <h2>Soạn thông báo</h2>
+        <Dialog
+          closeOnSuccess
+          title={<>Soạn thông báo</>}
+          pending={action.pending}
+          error={action.error}
+          onClose={() => setAdding(false)}
+        >
           <Editor
             action={action}
             onSave={(body) =>
@@ -290,7 +296,7 @@ export function Announcements() {
               )
             }
           />
-        </section>
+        </Dialog>
       )}
       <form
         className="filters"
@@ -449,8 +455,11 @@ export function AnnouncementDetail() {
             )}
           </section>
           {admin && n.trang_thai === "NHAP" && (
-            <section className="card narrow">
-              <h2>Chỉnh sửa bản nháp</h2>
+            <ActionPanel
+              title="Chỉnh sửa và phát hành thông báo"
+              pending={action.pending}
+              error={action.error}
+            >
               <Editor
                 initial={n}
                 action={action}
@@ -467,11 +476,14 @@ export function AnnouncementDetail() {
               >
                 Phát hành thông báo đã lưu
               </button>
-            </section>
+            </ActionPanel>
           )}
           {admin && n.trang_thai !== "THU_HOI" && (
-            <section className="card narrow">
-              <h2>Thu hồi thông báo</h2>
+            <ActionPanel
+              title={<>Thu hồi thông báo</>}
+              pending={action.pending}
+              error={action.error}
+            >
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -489,11 +501,10 @@ export function AnnouncementDetail() {
                   <button>Thu hồi thông báo</button>
                 </fieldset>
               </form>
-            </section>
+            </ActionPanel>
           )}
           {admin && (
-            <section className="card">
-              <h2>Lịch sử thông báo</h2>
+            <ActionPanel title={<>Lịch sử thông báo</>} wide inline>
               <ul>
                 {n.history.map((h) => (
                   <li key={h.ma_lich_su}>
@@ -503,7 +514,7 @@ export function AnnouncementDetail() {
                   </li>
                 ))}
               </ul>
-            </section>
+            </ActionPanel>
           )}
         </>
       )}

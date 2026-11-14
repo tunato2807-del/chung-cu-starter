@@ -1,3 +1,4 @@
+import { activeView, closeDialog } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -67,9 +68,9 @@ for (const width of [1440, 375])
         map.getByRole("heading", { name: "Sơ đồ tòa nhà", exact: true }),
       ).toBeVisible();
       const rooms = map.getByRole("region", { name: "Căn hộ trên sơ đồ" });
-      await expect(rooms.getByRole("status")).toHaveText(
-        "22 căn phù hợp · Trang 1",
-      );
+      await expect(
+        rooms.getByRole("status").filter({ hasText: "căn phù hợp" }),
+      ).toHaveText("22 căn phù hợp · Trang 1");
       await expect(
         map
           .getByRole("navigation", { name: "Chọn khối" })
@@ -79,21 +80,21 @@ for (const width of [1440, 375])
       await rooms
         .getByRole("button", { name: "Trang sau", exact: true })
         .click();
-      await expect(rooms.getByRole("status")).toHaveText(
-        "22 căn phù hợp · Trang 2",
-      );
+      await expect(
+        rooms.getByRole("status").filter({ hasText: "căn phù hợp" }),
+      ).toHaveText("22 căn phù hợp · Trang 2");
       await expect(rooms.locator("article")).toHaveCount(2);
       await page.reload();
-      await expect(rooms.getByRole("status")).toHaveText(
-        "22 căn phù hợp · Trang 2",
-      );
+      await expect(
+        rooms.getByRole("status").filter({ hasText: "căn phù hợp" }),
+      ).toHaveText("22 căn phù hợp · Trang 2");
       await map.getByLabel("Tình trạng cư trú").selectOption("DANG_O");
       await rooms
         .getByRole("button", { name: "Lọc căn hộ", exact: true })
         .click();
-      await expect(rooms.getByRole("status")).toHaveText(
-        "1 căn phù hợp · Trang 1",
-      );
+      await expect(
+        rooms.getByRole("status").filter({ hasText: "căn phù hợp" }),
+      ).toHaveText("1 căn phù hợp · Trang 1");
       await expect(rooms.locator("article")).toHaveCount(1);
       await expect(
         rooms.getByText("Có người ở · 2 cư dân", { exact: true }),
@@ -102,30 +103,30 @@ for (const width of [1440, 375])
       await rooms
         .getByRole("button", { name: "Lọc căn hộ", exact: true })
         .click();
-      await expect(rooms.getByRole("status")).toHaveText(
-        "21 căn phù hợp · Trang 1",
-      );
+      await expect(
+        rooms.getByRole("status").filter({ hasText: "căn phù hợp" }),
+      ).toHaveText("21 căn phù hợp · Trang 1");
       await rooms
         .getByRole("button", { name: "Xóa bộ lọc", exact: true })
         .click();
       await expect(map.getByLabel("Tình trạng cư trú")).toHaveValue("");
-      await expect(rooms.getByRole("status")).toHaveText(
-        "22 căn phù hợp · Trang 1",
-      );
+      await expect(
+        rooms.getByRole("status").filter({ hasText: "căn phù hợp" }),
+      ).toHaveText("22 căn phù hợp · Trang 1");
       await map.getByLabel("Tìm căn hộ trong tầng").fill(`${suffix}-0`);
       await rooms
         .getByRole("button", { name: "Lọc căn hộ", exact: true })
         .click();
-      await expect(rooms.getByRole("status")).toHaveText(
-        "1 căn phù hợp · Trang 1",
-      );
+      await expect(
+        rooms.getByRole("status").filter({ hasText: "căn phù hợp" }),
+      ).toHaveText("1 căn phù hợp · Trang 1");
       await rooms
         .getByRole("button", { name: "Xóa bộ lọc", exact: true })
         .click();
       await map.getByRole("button", { name: /^Tầng 10 / }).click();
-      await expect(rooms.getByRole("status")).toHaveText(
-        "1 căn phù hợp · Trang 1",
-      );
+      await expect(
+        rooms.getByRole("status").filter({ hasText: "căn phù hợp" }),
+      ).toHaveText("1 căn phù hợp · Trang 1");
       await expect(
         rooms.getByRole("heading", { name: `Căn ${suffix}-22`, exact: true }),
       ).toBeVisible();
@@ -139,9 +140,9 @@ for (const width of [1440, 375])
         .getByRole("button", { name: new RegExp(`^Khối ${a} `) })
         .click();
       await map.getByRole("button", { name: /^Tầng 0 / }).click();
-      await expect(rooms.getByRole("status")).toHaveText(
-        "22 căn phù hợp · Trang 1",
-      );
+      await expect(
+        rooms.getByRole("status").filter({ hasText: "căn phù hợp" }),
+      ).toHaveText("22 căn phù hợp · Trang 1");
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= innerWidth + 1,
@@ -161,27 +162,33 @@ for (const width of [1440, 375])
       await expect(
         page.getByRole("cell", { name: `${suffix}-1`, exact: true }),
       ).toHaveCount(0);
-      await page.getByRole("button", { name: "Sửa", exact: true }).click();
+      await activeView(page)
+        .getByRole("button", { name: "Sửa", exact: true })
+        .click();
       const createdFloor = await page.request.post(
         `/api/cau_truc_toa_nha/khoi/${a}/tang`,
         { headers: { "X-App-Request": "1" }, data: { tang: 2 } },
       );
       expect(createdFloor.ok()).toBe(true);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Tải lại khối/tầng", exact: true })
         .click();
       await page.getByLabel("Tầng", { exact: true }).selectOption("2");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Lưu căn hộ", exact: true })
         .click();
       await expect(
         page.getByRole("cell", { name: `${a} / 2`, exact: true }),
       ).toBeVisible();
       await page
+        .getByRole("dialog", {
+          name: "Thông tin đăng nhập tài khoản căn hộ",
+          exact: true,
+        })
+        .waitFor();
+      await closeDialog(page);
+      await page
         .getByRole("link", { name: "Xem sơ đồ tòa nhà", exact: true })
-        .click();
-      await map
-        .getByRole("button", { name: new RegExp(`^Khối ${a} `) })
         .click();
       await map.getByRole("button", { name: /^Tầng 2 / }).click();
       await expect(
@@ -194,9 +201,9 @@ for (const width of [1440, 375])
         page.getByRole("cell", { name: `Sơ đồ ${suffix}-0`, exact: true }),
       ).toBeVisible();
       await page.goBack();
-      await expect(rooms.getByRole("status")).toHaveText(
-        "1 căn phù hợp · Trang 1",
-      );
+      await expect(
+        rooms.getByRole("status").filter({ hasText: "căn phù hợp" }),
+      ).toHaveText("1 căn phù hợp · Trang 1");
 
       await page.route("**/api/can_ho/so_do", (route) =>
         route.fulfill({
@@ -215,9 +222,9 @@ for (const width of [1440, 375])
       await map
         .getByRole("button", { name: "Cập nhật sơ đồ", exact: true })
         .click();
-      await expect(rooms.getByRole("status")).toHaveText(
-        "1 căn phù hợp · Trang 1",
-      );
+      await expect(
+        rooms.getByRole("status").filter({ hasText: "căn phù hợp" }),
+      ).toHaveText("1 căn phù hợp · Trang 1");
       await page.goto(`/quan-tri/so-do-toa-nha?khoi=${a}&tang=199`);
       await expect(map.getByRole("status")).toContainText(
         "Tầng trong liên kết không còn",
@@ -341,18 +348,20 @@ test("building map discards slow responses and blocks residents", async ({
   });
   await page.goto("/quan-tri/so-do-toa-nha?khoi=RACE&tang=2");
   await expect.poll(() => listRequests).toBeGreaterThan(0);
-  await page.getByRole("button", { name: /^Tầng 1 / }).click();
+  await activeView(page)
+    .getByRole("button", { name: /^Tầng 1 / })
+    .click();
   await expect(
-    page.getByRole("heading", { name: "Căn RACE-1", exact: true }),
+    activeView(page).getByRole("heading", { name: "Căn RACE-1", exact: true }),
   ).toBeVisible();
   release();
   await expect(
-    page.getByRole("heading", { name: "Căn RACE-2", exact: true }),
+    activeView(page).getByRole("heading", { name: "Căn RACE-2", exact: true }),
   ).toHaveCount(0);
   role = "CU_DAN";
   await page.reload();
   await expect(
-    page.getByRole("heading", {
+    activeView(page).getByRole("heading", {
       name: "Bạn không có quyền mở trang này",
       exact: true,
     }),

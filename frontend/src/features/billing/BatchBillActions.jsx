@@ -1,5 +1,6 @@
+import { useDialogBusy } from "../../shared/Dialog.jsx";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { DetailLink as Link } from "../../shared/dialog-navigation.jsx";
 import { getJson } from "../../shared/api/client.js";
 import { newRequestKey } from "../../shared/request-key.js";
 import { ErrorBox, Field, Loading } from "../../shared/ui.jsx";
@@ -28,6 +29,7 @@ export default function BatchBillActions({ onDone, onBusy }) {
     [pending, setPending] = useState(false),
     [error, setError] = useState(null),
     [result, setResult] = useState(null);
+  useDialogBusy(pending);
   const [bankQuery, setBankQuery] = useState(""),
     [payment, setPayment] = useState({
       han_thanh_toan: today(),

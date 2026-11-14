@@ -31,7 +31,8 @@
     "db:realistic": "node --env-file-if-exists=.env scripts/create-realistic-data.js",
     "db:realistic:fresh": "node --env-file-if-exists=.env scripts/create-fresh-data.js",
     "db:copy:thesis": "node --env-file-if-exists=.env.thesis scripts/copy-thesis-data.js",
-    "db:configure:thesis": "node scripts/configure-thesis-mysql.js"
+    "db:configure:thesis": "node scripts/configure-thesis-mysql.js",
+    "test:ui": "node scripts/test-ui.js"
   },
   "type": "module",
   "devDependencies": {

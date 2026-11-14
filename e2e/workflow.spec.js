@@ -1,3 +1,4 @@
+import { activeView, openAction } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -58,7 +59,9 @@ test("guest → management → technician → acceptance → private public look
     await page.goto(origin + "/dang-nhap");
     await page.getByLabel("Số điện thoại").fill(phones[index]);
     await page.getByLabel("Mật khẩu", { exact: true }).fill(password);
-    await page.getByRole("button", { name: "Đăng nhập", exact: true }).click();
+    await activeView(page)
+      .getByRole("button", { name: "Đăng nhập", exact: true })
+      .click();
   }
   async function fit(page) {
     expect(
@@ -73,9 +76,14 @@ test("guest → management → technician → acceptance → private public look
       admin.getByRole("heading", { name: "Tổng quan vận hành" }),
     ).toBeVisible();
     await admin.getByRole("link", { name: "Vị trí & QR", exact: true }).click();
+    await openAction(admin, "Thêm vị trí");
     await admin.getByLabel("Tên vị trí").fill(locationName);
-    await admin.getByRole("button", { name: "Tạo vị trí và mã QR" }).click();
-    await expect(admin.getByText(locationName, { exact: true })).toBeVisible();
+    await activeView(admin)
+      .getByRole("button", { name: "Tạo vị trí và mã QR" })
+      .click();
+    await expect(
+      activeView(admin).getByText(locationName, { exact: true }),
+    ).toBeVisible();
     const [loc] = await rows(
       pool,
       "SELECT * FROM vi_tri_qr WHERE ma_nguoi_tao=?",
@@ -132,21 +140,26 @@ test("guest → management → technician → acceptance → private public look
     await expect(
       admin.getByRole("heading", { name: reportTitle }),
     ).toBeVisible();
-    await expect(admin.locator(".action-panel")).toBeVisible();
+    await openAction(admin, "Phân công kỹ thuật viên");
     await admin
       .getByLabel("Kỹ thuật viên", { exact: true })
       .selectOption(String(users[1]));
-    await admin.getByRole("button", { name: "Lưu phân công" }).click();
+    await activeView(admin)
+      .getByRole("button", { name: "Lưu phân công" })
+      .click();
     await expect(
-      admin.locator(".page-heading .badge").filter({ hasText: "Đã phân công" }),
+      activeView(admin)
+        .locator(".page-heading .badge")
+        .filter({ hasText: "Đã phân công" }),
     ).toBeVisible();
     await fit(admin);
     await login(tech, 1);
     await tech.getByRole("link", { name: new RegExp(reportTitle) }).click();
     await fit(tech);
-    await tech
+    await activeView(tech)
       .getByRole("button", { name: "Bắt đầu xử lý", exact: true })
       .click();
+    await openAction(tech, "Hoàn thành và gửi nghiệm thu");
     await expect(tech.getByLabel("Kết quả xử lý (bắt buộc)")).toBeVisible();
     await tech
       .getByLabel("Kết quả xử lý (bắt buộc)")
@@ -156,19 +169,26 @@ test("guest → management → technician → acceptance → private public look
       mimeType: "image/png",
       buffer: image,
     });
-    await tech
+    await activeView(tech)
       .getByRole("button", { name: "Hoàn thành và gửi nghiệm thu" })
       .click();
     await expect(
-      tech.getByText("Kết quả đã gửi, đang chờ Ban quản lý nghiệm thu."),
+      activeView(tech).getByText(
+        "Kết quả đã gửi, đang chờ Ban quản lý nghiệm thu.",
+      ),
     ).toBeVisible();
     await admin.reload();
+    await openAction(admin, "Nghiệm thu kết quả");
     await admin
       .getByLabel("Phản hồi công khai", { exact: true })
       .fill("Đã kiểm tra và nghiệm thu đạt.");
-    await admin.getByRole("button", { name: "Xác nhận quyết định" }).click();
+    await activeView(admin)
+      .getByRole("button", { name: "Xác nhận quyết định" })
+      .click();
     await expect(
-      admin.getByText("Không có thao tác cập nhật ở trạng thái này."),
+      activeView(admin).getByText(
+        "Không có thao tác cập nhật ở trạng thái này.",
+      ),
     ).toBeVisible();
     await guest
       .getByRole("main")

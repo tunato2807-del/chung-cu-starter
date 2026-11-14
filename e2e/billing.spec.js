@@ -1,3 +1,4 @@
+import { activeView, openAction, closeDialog } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -112,9 +113,10 @@ for (const width of [1440, 375])
         ["TIEN_NUOC", "15000"],
         ["TIEN_DIEN", null],
       ]) {
+        await openAction(page, "Thêm phiên bản giá");
         await page.getByLabel("Loại phí", { exact: true }).selectOption(type);
         if (type === "TIEN_DIEN") {
-          await page
+          await activeView(page)
             .getByRole("button", {
               name: "Điền mẫu 6 bậc và thuế 8%",
               exact: true,
@@ -132,7 +134,7 @@ for (const width of [1440, 375])
             .fill(price);
         }
         await page.getByLabel("Áp dụng từ ngày").fill("2020-01-01");
-        await page
+        await activeView(page)
           .getByRole("button", { name: "Lưu đơn giá", exact: true })
           .click();
         await expect(page.locator("tbody tr")).toHaveCount(prices.length + 1);
@@ -146,7 +148,7 @@ for (const width of [1440, 375])
       await page
         .getByRole("link", { name: "Phí & hóa đơn", exact: true })
         .click();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Lập hóa đơn", exact: true })
         .click();
       await chooseApartment();
@@ -155,20 +157,27 @@ for (const width of [1440, 375])
         .getByLabel("Ngày chốt phí", { exact: true })
         .fill("2026-09-30");
       await page.getByLabel("BQL thu tiền điện", { exact: true }).check();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Tạo bản nháp", exact: true })
         .click();
       await expect(
         page.getByRole("heading", { name: /^Hóa đơn HD/ }),
       ).toBeVisible();
       const id = Number(page.url().split("/").at(-1));
-      await expect(page.getByRole("alert")).toContainText("Thiếu chỉ số NUOC");
+      await expect(activeView(page).getByRole("alert")).toContainText(
+        "Thiếu chỉ số NUOC",
+      );
       await expect(
-        page.getByRole("button", { name: "Duyệt hóa đơn", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Duyệt hóa đơn",
+          exact: true,
+        }),
       ).toBeDisabled();
+      await closeDialog(page);
       await page
         .getByRole("link", { name: "Chỉ số điện nước", exact: true })
         .click();
+      await openAction(page, "Ghi chỉ số");
       await chooseApartment();
       await page.getByLabel("Kỳ ghi chỉ số").fill("2026-09");
       await page.getByLabel("Chỉ số đầu kỳ").fill("113");
@@ -177,19 +186,30 @@ for (const width of [1440, 375])
       await page
         .getByLabel("Đây là kỳ đầu tiên của căn đối với dịch vụ này")
         .check();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Lưu chỉ số", exact: true })
         .click();
       await expect(page.locator("tbody tr")).toHaveCount(1);
+      await openAction(page, "Ghi chỉ số");
+      await chooseApartment();
+      await page.getByLabel("Kỳ ghi chỉ số").fill("2026-09");
+      await page.getByLabel("Ngày chốt chỉ số").fill("2026-09-30");
+      await page
+        .getByLabel("Đây là kỳ đầu tiên của căn đối với dịch vụ này")
+        .check();
       await page.getByLabel("Dịch vụ", { exact: true }).selectOption("DIEN");
       await page.getByLabel("Chỉ số đầu kỳ").fill("100");
       await page.getByLabel("Chỉ số cuối kỳ").fill("400");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Lưu chỉ số", exact: true })
         .click();
       await expect(page.locator("tbody tr")).toHaveCount(2);
       await page.goto(`/quan-tri/hoa-don/${id}`);
+      await activeView(page)
+        .getByRole("button", { name: "Tính lại bản nháp", exact: true })
+        .click();
       await page
+        .getByRole("dialog")
         .getByRole("button", { name: "Tính lại bản nháp", exact: true })
         .click();
       await expect(
@@ -198,7 +218,7 @@ for (const width of [1440, 375])
           exact: true,
         }),
       ).toBeVisible();
-      await expect(page.getByRole("alert")).toHaveCount(0);
+      await expect(activeView(page).getByRole("alert")).toHaveCount(0);
       for (const [fee, qty, unitPrice] of [
         ["Gửi ô tô", "1", "1.200.000 đ"],
         ["Gửi xe máy", "2", "100.000 đ"],
@@ -212,9 +232,10 @@ for (const width of [1440, 375])
         await expect(row.getByRole("cell").nth(1)).toHaveText(qty);
         await expect(row.getByRole("cell").nth(3)).toHaveText(unitPrice);
       }
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Duyệt hóa đơn", exact: true })
         .click();
+      await openAction(page, "Gửi hóa đơn cho cư dân");
       await expect(
         page.getByRole("heading", {
           name: "Gửi hóa đơn cho cư dân",
@@ -237,7 +258,7 @@ for (const width of [1440, 375])
         .getByLabel("Tìm ngân hàng", { exact: true })
         .fill("khong co ngan hang nay");
       await expect(
-        page.getByText(
+        activeView(page).getByText(
           "Không tìm thấy ngân hàng. Hãy thử tên khác hoặc xóa từ khóa.",
         ),
       ).toBeVisible();
@@ -250,7 +271,7 @@ for (const width of [1440, 375])
           new URL(r.url()).pathname === `/api/hoa_don/${id}/gui` &&
           r.request().method() === "POST",
       );
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Gửi hóa đơn", exact: true })
         .click();
       expect((await publish).status()).toBe(200);
@@ -260,6 +281,7 @@ for (const width of [1440, 375])
         [id],
       );
       expect(bill.ma_ngan_hang).toBe("970436");
+      await openAction(page, "Xem QR thanh toán");
       await expect(
         page.getByAltText(`VietQR hóa đơn ${bill.so_hoa_don}`),
       ).toBeVisible();
@@ -282,16 +304,20 @@ for (const width of [1440, 375])
           exact: true,
         }),
       ).toBeVisible();
+      await openAction(resident, "Xem QR thanh toán");
       const qr = resident.getByAltText(`VietQR hóa đơn ${bill.so_hoa_don}`);
       await expect(qr).toBeVisible();
       await expect
         .poll(() => qr.evaluate((img) => img.naturalWidth))
         .toBeGreaterThan(0);
       await expect(
-        resident.getByRole("button", { name: "Xác nhận đã thu", exact: true }),
+        activeView(resident).getByRole("button", {
+          name: "Xác nhận đã thu",
+          exact: true,
+        }),
       ).toHaveCount(0);
-      const payment = resident.getByRole("region", {
-        name: "Thông tin thanh toán hóa đơn",
+      const payment = resident.getByRole("dialog", {
+        name: "Thanh toán hóa đơn",
       });
       // Section has an accessible name; its QR must sit in the center at both sizes.
       const qrBox = await qr.boundingBox(),
@@ -309,17 +335,21 @@ for (const width of [1440, 375])
         payment.getByRole("link", { name: "Tải mã QR", exact: true }),
       ).toHaveAttribute("href", /^data:image\/png/);
       await payment.screenshot({ path: `/tmp/chung-cu-payment-${width}.png` });
+      await closeDialog(page);
+      await openAction(page, "Nhắc phí và xác nhận thu tiền");
       await page.getByLabel("Mã tham chiếu giao dịch").fill(`E2E-${suffix}`);
       await page.getByLabel("Đã đối soát đủ số tiền hóa đơn").check();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xác nhận đã thu", exact: true })
         .click();
       await expect(
-        page.getByText("Đã ghi nhận 3.370.535 đ", { exact: false }),
+        activeView(page).getByText("Đã ghi nhận 3.370.535 đ", { exact: false }),
       ).toBeVisible();
       await resident.reload();
       await expect(
-        resident.getByText("Đã ghi nhận 3.370.535 đ", { exact: false }),
+        activeView(resident).getByText("Đã ghi nhận 3.370.535 đ", {
+          exact: false,
+        }),
       ).toBeVisible();
       await expect(
         resident.getByAltText(`VietQR hóa đơn ${bill.so_hoa_don}`),

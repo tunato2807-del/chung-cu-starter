@@ -1,3 +1,4 @@
+import { activeView, openAction, closeDialog } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -63,21 +64,37 @@ for (const width of [1440, 375])
           )
         );
       });
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xem báo cáo", exact: true })
         .click();
       expect((await loaded).status()).toBe(200);
       await expect(
-        page.getByRole("button", { name: "Cập nhật số liệu", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Cập nhật số liệu",
+          exact: true,
+        }),
       ).toBeEnabled();
       await expect(page.locator(".finance-snapshot")).toBeVisible();
     }
     async function pickBlock() {
+      // Returning from an invoice preserves the old report until navigation
+      // commits. Wait for the unscoped form and its data before editing it.
+      await expect(
+        page.locator('form.finance-filters input[name="ma_can_ho"]'),
+      ).toHaveCount(0);
+      await expect(
+        activeView(page).getByRole("button", {
+          name: "Xem báo cáo",
+          exact: true,
+        }),
+      ).toBeEnabled();
       await expect(
         page.getByRole("option", { name: block, exact: true }),
       ).toBeAttached();
       await page.getByLabel("Khối", { exact: true }).selectOption(block);
+      await expect(page.getByLabel("Khối", { exact: true })).toHaveValue(block);
       await apply();
+      await expect(page.getByLabel("Khối", { exact: true })).toHaveValue(block);
     }
     const metrics = () => page.locator('[aria-label="Tổng hợp công nợ"]');
     try {
@@ -129,15 +146,17 @@ for (const width of [1440, 375])
       await page.goto("/dang-nhap");
       await page.getByLabel("Số điện thoại").fill(phone);
       await page.getByLabel("Mật khẩu", { exact: true }).fill(password);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Đăng nhập", exact: true })
         .click();
       await page.waitForURL("**/quan-tri");
+      while (await page.locator("dialog[open]").count())
+        await closeDialog(page);
       await page
         .getByRole("link", { name: "Công nợ & thu phí", exact: true })
         .click();
       await expect(
-        page.getByRole("heading", {
+        activeView(page).getByRole("heading", {
           name: "Báo cáo công nợ và thu phí",
           exact: true,
         }),
@@ -153,7 +172,9 @@ for (const width of [1440, 375])
           new URL(r.url()).pathname === "/api/bao_cao/cong_no" &&
           new URL(r.url()).searchParams.get("qua_han") === "1",
       );
-      await page.getByRole("button", { name: /^Nợ quá hạn/ }).click();
+      await activeView(page)
+        .getByRole("button", { name: /^Nợ quá hạn/ })
+        .click();
       expect((await overdueLoaded).status()).toBe(200);
       await expect(
         page.getByRole("link", { name: `RF-${suffix}-0`, exact: true }),
@@ -166,11 +187,11 @@ for (const width of [1440, 375])
       await expect(
         page.getByRole("cell", { name: "Chưa quá hạn", exact: true }),
       ).toHaveCount(1);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Tổng hợp theo kỳ", exact: true })
         .click();
       await expect(page.locator("tbody tr")).toHaveCount(4);
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Công nợ theo căn", exact: true })
         .click();
       const aptRow = page.getByRole("row").filter({
@@ -190,22 +211,28 @@ for (const width of [1440, 375])
       await mainRow
         .getByRole("link", { name: "Kiểm tra / nhắc phí", exact: true })
         .click();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Nhắc thanh toán trên web", exact: true })
         .click();
       await expect(
-        page.getByText("Đã gửi nhắc thanh toán vào hộp thông báo trên web.", {
-          exact: true,
-        }),
+        activeView(page).getByText(
+          "Đã gửi nhắc thanh toán vào hộp thông báo trên web.",
+          {
+            exact: true,
+          },
+        ),
       ).toBeVisible();
+      await openAction(page, "Nhắc phí và xác nhận thu tiền");
       await page.getByLabel("Mã tham chiếu giao dịch").fill(`RF-PAY-${suffix}`);
       await page.getByLabel("Đã đối soát đủ số tiền hóa đơn").check();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xác nhận đã thu", exact: true })
         .click();
       await expect(
-        page.getByText("Đã ghi nhận 100.000 đ", { exact: false }),
+        activeView(page).getByText("Đã ghi nhận 100.000 đ", { exact: false }),
       ).toBeVisible();
+      while (await page.locator("dialog[open]").count())
+        await closeDialog(page);
       await page
         .getByRole("link", { name: "Công nợ & thu phí", exact: true })
         .click();
@@ -213,7 +240,7 @@ for (const width of [1440, 375])
       await expect(metrics()).toContainText("900.000 đ");
       await expect(metrics()).toContainText("600.000 đ");
       await expect(metrics()).toContainText("400.000 đ");
-      await page
+      await activeView(page)
         .getByRole("button", {
           name: "Thu phí theo ngày xác nhận",
           exact: true,
@@ -231,7 +258,7 @@ for (const width of [1440, 375])
       ).toContainText("800.000 đ");
       await expect(page.locator("tbody tr")).toHaveCount(2);
       await expect(page.getByRole("cell", { name: /2026-08/ })).toBeVisible();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Tổng hợp theo ngày", exact: true })
         .click();
       await expect(page.locator("tbody tr")).toHaveCount(1);
@@ -244,7 +271,7 @@ for (const width of [1440, 375])
       await expect(
         page.locator('[aria-label="Tổng hợp thu phí"]'),
       ).toContainText("100.000 đ");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Các khoản đã thu", exact: true })
         .click();
       await expect(
@@ -253,7 +280,7 @@ for (const width of [1440, 375])
       await page.getByLabel("Tìm số căn hộ").fill("NO-RESULT-SENTINEL");
       await apply();
       await expect(
-        page.getByText(
+        activeView(page).getByText(
           "Chưa có khoản thu trong khoảng ngày và bộ lọc đã chọn.",
           { exact: true },
         ),
@@ -261,11 +288,11 @@ for (const width of [1440, 375])
       await expect(
         page.locator('[aria-label="Tổng hợp thu phí"]'),
       ).toContainText("0 đ");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xóa bộ lọc", exact: true })
         .click();
       await expect(page.getByLabel("Tìm số căn hộ")).toHaveValue("");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Công nợ theo kỳ hóa đơn", exact: true })
         .click();
       await expect(page.getByLabel("Từ kỳ hóa đơn")).toBeVisible();
@@ -275,7 +302,7 @@ for (const width of [1440, 375])
       await apply();
       await expect(metrics()).toContainText("700.000 đ");
       await expect(metrics()).toContainText("100.000 đ");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Tổng hợp theo kỳ", exact: true })
         .click();
       await expect(page.locator("tbody tr")).toHaveCount(2);
@@ -286,7 +313,10 @@ for (const width of [1440, 375])
         page.getByRole("cell", { name: "2026-09", exact: true }),
       ).toBeVisible();
       await expect(
-        page.getByRole("button", { name: "Cập nhật số liệu", exact: true }),
+        activeView(page).getByRole("button", {
+          name: "Cập nhật số liệu",
+          exact: true,
+        }),
       ).toBeEnabled();
       await page.screenshot({
         path: `/tmp/chung-cu-finance-${width}.png`,

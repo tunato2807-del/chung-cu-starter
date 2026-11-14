@@ -1,5 +1,7 @@
+import Dialog from "../../shared/Dialog.jsx";
 import React, { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { DetailLink as Link } from "../../shared/dialog-navigation.jsx";
 import { Field, ErrorBox, Loading, useResource } from "../../shared/ui.jsx";
 import { ApartmentAccount } from "./Residency.jsx";
 
@@ -130,11 +132,18 @@ export default function ApartmentAccounts() {
               Đóng quản lý tài khoản
             </button>
           </div>
-          <ApartmentAccount
+          <Dialog
             key={selected}
-            id={selected}
-            onChange={resource.reload}
-          />
+            title="Quản lý tài khoản căn hộ"
+            wide
+            onClose={() => setSelected(null)}
+          >
+            <ApartmentAccount
+              key={selected}
+              id={selected}
+              onChange={resource.reload}
+            />
+          </Dialog>
         </>
       )}
     </>

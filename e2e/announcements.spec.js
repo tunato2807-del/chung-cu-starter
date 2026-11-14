@@ -1,3 +1,4 @@
+import { activeView, openAction } from "./dialog-helpers.js";
 import { test, expect } from "@playwright/test";
 import { randomBytes } from "node:crypto";
 import bcrypt from "bcryptjs";
@@ -92,7 +93,7 @@ for (const width of [1440, 375])
       }
       await login(page, 0);
       await page.getByRole("link", { name: "Thông báo", exact: true }).click();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Soạn thông báo", exact: true })
         .click();
       const title = `Bảo trì khu vực ${suffix}`;
@@ -120,11 +121,11 @@ for (const width of [1440, 375])
       await page
         .getByLabel("Mức độ", { exact: true })
         .selectOption("QUAN_TRONG");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Tạo bản nháp", exact: true })
         .click();
       await expect(
-        page.getByRole("heading", { name: title, exact: true }),
+        activeView(page).getByRole("heading", { name: title, exact: true }),
       ).toBeVisible();
       const notificationId = Number(page.url().split("/").at(-1));
       notifications.push(notificationId);
@@ -133,14 +134,15 @@ for (const width of [1440, 375])
       await expect(
         resident.getByRole("link", { name: title, exact: true }),
       ).toHaveCount(0);
-      await page
+      await openAction(page, "Chỉnh sửa và phát hành thông báo");
+      await activeView(page)
         .getByRole("button", {
           name: "Phát hành thông báo đã lưu",
           exact: true,
         })
         .click();
       await expect(
-        page.getByText("Đã phát hành", { exact: true }),
+        activeView(page).getByText("Đã phát hành", { exact: true }),
       ).toBeVisible();
       await resident.reload();
       await expect(
@@ -151,7 +153,9 @@ for (const width of [1440, 375])
       ).toHaveCount(1);
       await resident.getByRole("link", { name: title, exact: true }).click();
       await expect(resident.locator(".notification-body")).toHaveText(content);
-      await expect(resident.getByText("Đã đọc", { exact: true })).toBeVisible();
+      await expect(
+        activeView(resident).getByText("Đã đọc", { exact: true }),
+      ).toBeVisible();
       expect(
         await resident.evaluate(() => window.notificationInjected),
       ).toBeUndefined();
@@ -162,24 +166,30 @@ for (const width of [1440, 375])
           new URL(r.url()).pathname === `/api/hoa_don/${billId}/nhac_phi` &&
           r.request().method() === "POST",
       );
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Nhắc thanh toán trên web", exact: true })
         .click();
       const reminderData = await (await reminderResponse).json();
       const reminderId = reminderData.data.ma_thong_bao;
       notifications.push(reminderId);
       await expect(
-        page.getByText("Đã gửi nhắc thanh toán vào hộp thông báo trên web.", {
-          exact: true,
-        }),
+        activeView(page).getByText(
+          "Đã gửi nhắc thanh toán vào hộp thông báo trên web.",
+          {
+            exact: true,
+          },
+        ),
       ).toBeVisible();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Nhắc thanh toán trên web", exact: true })
         .click();
       await expect(
-        page.getByText("Hóa đơn này đã được nhắc trên web hôm nay.", {
-          exact: true,
-        }),
+        activeView(page).getByText(
+          "Hóa đơn này đã được nhắc trên web hôm nay.",
+          {
+            exact: true,
+          },
+        ),
       ).toBeVisible();
       await resident.goto("/cu-dan/thong-bao");
       await expect(
@@ -190,13 +200,14 @@ for (const width of [1440, 375])
         resident.getByRole("link", { name: reminderTitle, exact: true }),
       ).toBeVisible();
       // Pay without reading: resolved reminder must disappear from unread, but remain accessible.
+      await openAction(page, "Nhắc phí và xác nhận thu tiền");
       await page.getByLabel("Mã tham chiếu giao dịch").fill(`TB-${suffix}`);
       await page.getByLabel("Đã đối soát đủ số tiền hóa đơn").check();
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Xác nhận đã thu", exact: true })
         .click();
       await expect(
-        page.getByText("Đã ghi nhận 150.000 đ", { exact: false }),
+        activeView(page).getByText("Đã ghi nhận 150.000 đ", { exact: false }),
       ).toBeVisible();
       await resident.reload();
       await expect(resident.locator(".notification-count")).toHaveCount(0);
@@ -204,7 +215,7 @@ for (const width of [1440, 375])
         .getByRole("link", { name: reminderTitle, exact: true })
         .click();
       await expect(
-        resident.getByText("Hóa đơn đã được xác nhận thanh toán.", {
+        activeView(resident).getByText("Hóa đơn đã được xác nhận thanh toán.", {
           exact: true,
         }),
       ).toBeVisible();
@@ -212,14 +223,19 @@ for (const width of [1440, 375])
         .getByRole("link", { name: "Xem hóa đơn", exact: true })
         .click();
       await expect(
-        resident.getByText("Đã ghi nhận 150.000 đ", { exact: false }),
+        activeView(resident).getByText("Đã ghi nhận 150.000 đ", {
+          exact: false,
+        }),
       ).toBeVisible();
       await page.goto(`/quan-tri/thong-bao/${notificationId}`);
+      await openAction(page, "Thu hồi thông báo");
       await page.getByLabel("Lý do thu hồi").fill("Lịch bảo trì đã thay đổi");
-      await page
+      await activeView(page)
         .getByRole("button", { name: "Thu hồi thông báo", exact: true })
         .click();
-      await expect(page.getByText("Đã thu hồi", { exact: true })).toBeVisible();
+      await expect(
+        activeView(page).getByText("Đã thu hồi", { exact: true }),
+      ).toBeVisible();
       await resident.goto("/cu-dan/thong-bao");
       await expect(
         resident.getByRole("link", { name: title, exact: true }),
