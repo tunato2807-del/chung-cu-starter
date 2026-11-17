@@ -1,5 +1,7 @@
 # 21 sơ đồ draw.io chỉnh sửa riêng
 
+> **Bản mới theo mẫu:** [21 sơ đồ đã vẽ lại cùng Word/PDF/PNG/SVG](../../so-do-theo-mau-2026-11-17/README.md). Thư mục hiện tại lưu bộ trước khi áp dụng mẫu.
+
 Các hình khớp số Hình 2.1–2.21 trong báo cáo Tô Hoàng Tuấn, MSSV 1250080221.
 Nguồn là các sơ đồ của chính bản DOCX đã gửi, đối chiếu với DOT/JSON đi kèm báo cáo trong repository. Đây là các đối tượng vector gốc: chữ, hình, ô thuộc tính và đường nối đều sửa được. Không dùng một ảnh PNG đặt vào draw.io làm “file chỉnh sửa”.
 

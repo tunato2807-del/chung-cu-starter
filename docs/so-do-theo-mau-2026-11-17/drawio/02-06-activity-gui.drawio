@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" version="24.7.17" type="device" compressed="false">
+  <diagram id="hinh-2-6" name="Hình 2.6. Hoạt động quét QR và gửi phản ánh">
+    <mxGraphModel dx="1390" dy="1830" grid="1" gridSize="10" guides="1" connect="1" arrows="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" background="#ffffff" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="d06-1" value="" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=none;strokeWidth=1.3;fillColor=none;align=center;verticalAlign=middle;spacing=5;rounded=0;opacity=0;" parent="1" vertex="1">
+          <mxGeometry x="0" y="0" width="1390" height="1830" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-2" value="Hoạt động quét QR và gửi phản ánh" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=25;fontStyle=1;fontColor=#111111;strokeColor=none;strokeWidth=1.3;fillColor=none;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="12" width="1330" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-3" value="" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#333333;strokeWidth=1.3;fillColor=none;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="20" y="85" width="450" height="1640" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-4" value="Người gửi" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=23;fontStyle=1;fontColor=#111111;strokeColor=none;strokeWidth=1.3;fillColor=none;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="24" y="95" width="442" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-5" value="" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#333333;strokeWidth=1.3;fillColor=none;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="470" y="85" width="900" height="1640" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-6" value="Hệ thống (React / API / MySQL)" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=23;fontStyle=1;fontColor=#111111;strokeColor=none;strokeWidth=1.3;fillColor=none;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="474" y="95" width="892" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-7" value="" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#222222;align=center;verticalAlign=middle;spacing=5;shape=ellipse;" parent="1" vertex="1">
+          <mxGeometry x="233" y="163" width="24" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-8" value="Mở URL / quét QR vị trí" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#f4f4f4;align=center;verticalAlign=middle;spacing=5;rounded=1;arcSize=18;" parent="1" vertex="1">
+          <mxGeometry x="102" y="232" width="286" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-9" value="Đọc vị trí từ token QR" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#f4f4f4;align=center;verticalAlign=middle;spacing=5;rounded=1;arcSize=18;" parent="1" vertex="1">
+          <mxGeometry x="777" y="362" width="286" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-10" value="QR còn hoạt động?" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=21;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=rhombus;" parent="1" vertex="1">
+          <mxGeometry x="780" y="496" width="280" height="108" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-11" value="Báo mã QR không hợp lệ" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#f4f4f4;align=center;verticalAlign=middle;spacing=5;rounded=1;arcSize=18;" parent="1" vertex="1">
+          <mxGeometry x="102" y="632" width="286" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-12" value="" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=ellipse;" parent="1" vertex="1">
+          <mxGeometry x="229" y="769" width="32" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-13" value="" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#222222;align=center;verticalAlign=middle;spacing=5;shape=ellipse;" parent="1" vertex="1">
+          <mxGeometry x="235" y="775" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-14" value="Nhập nội dung; chọn /&lt;br&gt;chụp ảnh; bấm Gửi" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#f4f4f4;align=center;verticalAlign=middle;spacing=5;rounded=1;arcSize=18;" parent="1" vertex="1">
+          <mxGeometry x="102" y="852" width="286" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-15" value="Chuẩn bị ảnh; kiểm tra&lt;br&gt;khóa yêu cầu và nội dung" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#f4f4f4;align=center;verticalAlign=middle;spacing=5;rounded=1;arcSize=18;" parent="1" vertex="1">
+          <mxGeometry x="777" y="982" width="286" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-16" value="Hợp lệ và&lt;br&gt;yêu cầu mới?" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=21;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=rhombus;" parent="1" vertex="1">
+          <mxGeometry x="780" y="1116" width="280" height="108" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-17" value="BEGIN; lưu MOI, snapshot,&lt;br&gt;ảnh và nhật ký" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#f4f4f4;align=center;verticalAlign=middle;spacing=5;rounded=1;arcSize=18;" parent="1" vertex="1">
+          <mxGeometry x="777" y="1262" width="286" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-18" value="Lỗi / replay: trả kết quả&lt;br&gt;phù hợp; dọn ảnh mới" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#f4f4f4;align=center;verticalAlign=middle;spacing=5;rounded=1;arcSize=18;" parent="1" vertex="1">
+          <mxGeometry x="1100" y="1262" width="240" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-19" value="COMMIT; trả biên nhận&lt;br&gt;và mã tra cứu" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#f4f4f4;align=center;verticalAlign=middle;spacing=5;rounded=1;arcSize=18;" parent="1" vertex="1">
+          <mxGeometry x="777" y="1392" width="286" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-20" value="Hiện kết quả; giữ nháp khi&lt;br&gt;lỗi,&lt;br&gt;xóa nháp khi thành công" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#f4f4f4;align=center;verticalAlign=middle;spacing=5;rounded=1;arcSize=18;" parent="1" vertex="1">
+          <mxGeometry x="102" y="1522" width="286" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-21" value="" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=ellipse;" parent="1" vertex="1">
+          <mxGeometry x="229" y="1674" width="32" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-22" value="" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#222222;align=center;verticalAlign=middle;spacing=5;shape=ellipse;" parent="1" vertex="1">
+          <mxGeometry x="235" y="1680" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-23" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;" edge="1" parent="1" source="d06-7" target="d06-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-24" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;" edge="1" parent="1" source="d06-8" target="d06-9">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="245" y="345" />
+              <mxPoint x="920" y="345" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d06-25" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;" edge="1" parent="1" source="d06-9" target="d06-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-26" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;" edge="1" parent="1" source="d06-10" target="d06-11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="584" y="550" />
+              <mxPoint x="584" y="680" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d06-27" value="Không" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=18;fontStyle=0;fontColor=#111111;strokeColor=none;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="534.97" y="594" width="70.06" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-28" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;" edge="1" parent="1" source="d06-11" target="d06-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-29" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=0.5;exitY=1;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;" edge="1" parent="1" source="d06-10" target="d06-14">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="920" y="760" />
+              <mxPoint x="388" y="760" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d06-30" value="Có" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=18;fontStyle=0;fontColor=#111111;strokeColor=none;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="934.49" y="664" width="41.02" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-31" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;" edge="1" parent="1" source="d06-14" target="d06-15">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="245" y="965" />
+              <mxPoint x="920" y="965" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d06-32" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;" edge="1" parent="1" source="d06-15" target="d06-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-33" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;" edge="1" parent="1" source="d06-16" target="d06-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-34" value="Có" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=18;fontStyle=0;fontColor=#111111;strokeColor=none;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="879.49" y="1224" width="41.02" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-35" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;" edge="1" parent="1" source="d06-16" target="d06-18">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1220" y="1170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d06-36" value="Không / replay" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=18;fontStyle=0;fontColor=#111111;strokeColor=none;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="1092.95" y="1114" width="134.11" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-37" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;" edge="1" parent="1" source="d06-17" target="d06-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-38" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;" edge="1" parent="1" source="d06-19" target="d06-20">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="610" y="1440" />
+              <mxPoint x="610" y="1570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d06-39" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=0.5;exitY=1;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;" edge="1" parent="1" source="d06-18" target="d06-20">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1220" y="1660" />
+              <mxPoint x="600" y="1660" />
+              <mxPoint x="600" y="1570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d06-40" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;" edge="1" parent="1" source="d06-20" target="d06-21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d06-41" value="Hình 2.6. Hoạt động quét QR và gửi phản ánh" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=26;fontStyle=2;fontColor=#111111;strokeColor=none;strokeWidth=1.3;fillColor=none;align=center;verticalAlign=middle;spacing=5;rounded=0;fontFamily=Times New Roman;" parent="1" vertex="1">
+          <mxGeometry x="25" y="1753" width="1340" height="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

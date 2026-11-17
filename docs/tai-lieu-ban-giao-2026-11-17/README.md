@@ -1,5 +1,7 @@
 # Báo cáo Word, sơ đồ draw.io và hình minh họa
 
+> **Bản vẽ lại mới theo mẫu bạn gửi:** [mở bộ 21 sơ đồ mới, tập hình Word/PDF và nguồn draw.io](../so-do-theo-mau-2026-11-17/README.md). Các file bên dưới giữ nguyên để đối chiếu với bản trước.
+
 **Tô Hoàng Tuấn — MSSV 1250080221 · Bộ bàn giao ngày 17/11/2026**
 
 Trang này tập hợp các tài liệu đã tạo trong lượt làm việc, để xem hoặc tải từng phần ngay trên GitHub. Các file mới được lưu riêng với bản thảo gốc.

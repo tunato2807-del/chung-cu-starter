@@ -1,5 +1,7 @@
 # Quản lý chung cư · Phản ánh QR
 
+> **Sơ đồ vẽ lại theo mẫu — 17/11/2026:** [21 hình Use Case, ERD, Class, Activity, Sequence cùng Word/PDF/PNG/SVG và draw.io chỉnh sửa](docs/so-do-theo-mau-2026-11-17/README.md).
+
 > **Word, draw.io và hình minh họa — 17/11/2026:** [mở mục lục đầy đủ để xem/tải từng file](docs/tai-lieu-ban-giao-2026-11-17/README.md). Có Word bổ sung trích dẫn, hướng dẫn sửa theo form riêng, 21 sơ đồ chỉnh sửa được và ảnh minh họa.
 
 > **Cửa sổ thao tác mới — nhánh `main`:** [cách cập nhật bằng một lệnh trong VS Code](docs/cua-so-thao-tac-vscode.md). Thêm/sửa, chi tiết, lịch sử, hóa đơn, đặt lịch và phân công/nghiệm thu mở thành cửa sổ có thể đóng bằng ×, Đóng hoặc Esc. Giữ API, MySQL và dữ liệu hiện có; không cần migration cho lần sửa giao diện này.
