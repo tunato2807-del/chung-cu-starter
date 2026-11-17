@@ -1,84 +1,21 @@
 {
-  "description": "Một ERD 18 bảng trọng tâm. Liệt kê toàn bộ thuộc tính của từng bảng được giữ trên một cột dọc, đường nối vuông góc, khóa chính gạch liền và khóa ngoại gạch đứt. Vẽ tất cả quan hệ khóa ngoại giữa 18 bảng. Không sửa database.",
+  "description": "ERD logic rút gọn theo yêu cầu mới: chỉ 12 bảng và 56 thuộc tính cần giải thích ba luồng nhà ở/cư trú, QR/phản ánh và hóa đơn. Giữ nguyên oval một cột dọc, chữ thường, khóa chính gạch liền và khóa ngoại gạch đứt. Chỉ lược trên hình, không sửa database.",
   "included_tables": {
+    "nguoi_dung": {
+      "purpose": "Quản lý tài khoản và vai trò",
+      "columns": [
+        "ma_nguoi_dung",
+        "ho_va_ten",
+        "vai_tro",
+        "ten_dang_nhap"
+      ]
+    },
     "can_ho": {
       "purpose": "Lưu căn hộ và diện tích tính phí",
       "columns": [
         "ma_can_ho",
         "so_can_ho",
-        "khoi",
-        "tang",
-        "dien_tich_m2",
-        "tinh_phi_dich_vu",
-        "phien_ban",
-        "ngay_tao"
-      ],
-      "business": [
-        "so_can_ho",
         "dien_tich_m2"
-      ]
-    },
-    "cau_hinh_phi": {
-      "purpose": "Thiết lập đơn giá và kỳ áp dụng",
-      "columns": [
-        "ma_cau_hinh_phi",
-        "loai_phi",
-        "don_gia",
-        "tu_ngay",
-        "den_ngay",
-        "ma_nguoi_tao",
-        "ngay_tao",
-        "cach_tinh",
-        "thue_gtgt",
-        "bac_dien"
-      ],
-      "business": [
-        "don_gia",
-        "tu_ngay",
-        "cach_tinh"
-      ]
-    },
-    "chi_so_dich_vu": {
-      "purpose": "Ghi chỉ số điện, nước theo kỳ",
-      "columns": [
-        "ma_chi_so_dich_vu",
-        "ma_can_ho",
-        "loai_dich_vu",
-        "ky_thanh_toan",
-        "chi_so_cu",
-        "chi_so_moi",
-        "ngay_chot",
-        "ghi_chu",
-        "ma_nguoi_ghi",
-        "phien_ban",
-        "ngay_ghi"
-      ],
-      "business": [
-        "loai_dich_vu",
-        "ky_thanh_toan",
-        "chi_so_cu",
-        "chi_so_moi"
-      ]
-    },
-    "chi_tiet_hoa_don": {
-      "purpose": "Lưu các khoản phí của hóa đơn",
-      "columns": [
-        "ma_chi_tiet_hoa_don",
-        "ma_hoa_don",
-        "ma_cau_hinh_phi",
-        "ma_chi_so_dich_vu",
-        "loai_phi",
-        "dien_giai",
-        "don_vi_tinh",
-        "so_luong",
-        "don_gia",
-        "thanh_tien",
-        "du_lieu_nguon"
-      ],
-      "business": [
-        "so_luong",
-        "don_gia",
-        "thanh_tien"
       ]
     },
     "cu_dan": {
@@ -87,87 +24,7 @@
         "ma_cu_dan",
         "ho_va_ten",
         "so_dien_thoai",
-        "ma_nguoi_dung",
-        "phien_ban",
-        "ngay_tao"
-      ],
-      "business": [
-        "ho_va_ten",
-        "so_dien_thoai"
-      ]
-    },
-    "hinh_anh_phan_anh": {
-      "purpose": "Lưu ảnh gửi và ảnh xử lý",
-      "columns": [
-        "ma_hinh_anh_phan_anh",
-        "ma_phan_anh",
-        "duong_dan_tep",
-        "loai",
-        "luot_xu_ly",
-        "ma_nguoi_tai_len",
-        "ngay_tai_len"
-      ],
-      "business": [
-        "duong_dan_tep",
-        "loai",
-        "luot_xu_ly"
-      ]
-    },
-    "hoa_don": {
-      "purpose": "Lập và theo dõi hóa đơn theo kỳ",
-      "columns": [
-        "ma_hoa_don",
-        "so_hoa_don",
-        "ma_can_ho",
-        "ky_thanh_toan",
-        "ngay_chot_phi",
-        "lan_lap",
-        "phien_ban",
-        "trang_thai",
-        "tinh_nuoc",
-        "tinh_dien",
-        "tinh_xe",
-        "tong_tien",
-        "loi_du_lieu",
-        "dau_van_tay",
-        "han_thanh_toan",
-        "ma_ngan_hang",
-        "so_tai_khoan",
-        "ten_nguoi_nhan",
-        "ma_hoa_don_thay_the_cho",
-        "ma_nguoi_lap",
-        "ma_nguoi_duyet",
-        "ma_nguoi_gui",
-        "ma_nguoi_huy",
-        "ma_nguoi_xac_nhan",
-        "ngay_tao",
-        "ngay_duyet",
-        "ngay_gui",
-        "ngay_huy",
-        "ngay_thanh_toan",
-        "ly_do_huy",
-        "so_tien_da_thu",
-        "ma_tham_chieu",
-        "hieu_luc"
-      ],
-      "business": [
-        "ky_thanh_toan",
-        "tong_tien",
-        "trang_thai"
-      ]
-    },
-    "khoi_toa_nha": {
-      "purpose": "Quản lý các khối tòa nhà",
-      "columns": [
-        "khoi",
-        "ten_khoi",
-        "mo_ta",
-        "giu_khi_trong",
-        "phien_ban",
-        "ngay_tao"
-      ],
-      "business": [
-        "ten_khoi"
+        "ma_nguoi_dung"
       ]
     },
     "lich_su_cu_tru": {
@@ -178,15 +35,47 @@
         "ma_can_ho",
         "quan_he",
         "tu_ngay",
-        "den_ngay",
-        "ma_nguoi_ghi_nhan",
-        "ngay_tao",
-        "cu_dan_dang_o"
-      ],
-      "business": [
-        "tu_ngay",
-        "den_ngay",
-        "quan_he"
+        "den_ngay"
+      ]
+    },
+    "thiet_bi": {
+      "purpose": "Quản lý tài sản và vị trí thiết bị",
+      "columns": [
+        "ma_thiet_bi",
+        "ten_thiet_bi",
+        "vi_tri",
+        "trang_thai"
+      ]
+    },
+    "vi_tri_qr": {
+      "purpose": "Gắn QR với vị trí hoặc thiết bị",
+      "columns": [
+        "ma_vi_tri_qr",
+        "ten_vi_tri",
+        "token_qr",
+        "dang_hoat_dong",
+        "ma_thiet_bi"
+      ]
+    },
+    "phan_anh": {
+      "purpose": "Tiếp nhận và theo dõi phản ánh",
+      "columns": [
+        "ma_phan_anh",
+        "ma_vi_tri_qr",
+        "tieu_de",
+        "noi_dung",
+        "trang_thai",
+        "ma_ky_thuat_vien",
+        "ma_cu_dan_nguoi_gui"
+      ]
+    },
+    "hinh_anh_phan_anh": {
+      "purpose": "Lưu ảnh gửi và ảnh xử lý",
+      "columns": [
+        "ma_hinh_anh_phan_anh",
+        "ma_phan_anh",
+        "duong_dan_tep",
+        "loai"
       ]
     },
     "loai_phi": {
@@ -195,248 +84,53 @@
         "loai_phi",
         "ten_phi",
         "don_vi_tinh"
-      ],
-      "business": [
-        "ten_phi",
-        "don_vi_tinh"
       ]
     },
-    "nguoi_dung": {
-      "purpose": "Quản lý tài khoản và vai trò",
+    "cau_hinh_phi": {
+      "purpose": "Thiết lập đơn giá và kỳ áp dụng",
       "columns": [
-        "ma_nguoi_dung",
-        "ho_va_ten",
-        "so_dien_thoai",
-        "mat_khau_ma_hoa",
-        "vai_tro",
-        "chuyen_mon",
-        "dang_hoat_dong",
-        "phien_ban_token",
-        "so_lan_dang_nhap_sai",
-        "khoa_den_luc",
-        "ngay_tao",
-        "ten_dang_nhap",
-        "ma_can_ho_thanh_toan",
-        "ma_cu_dan_phu_trach",
-        "phien_ban_ban_giao"
-      ],
-      "business": [
-        "ho_va_ten",
-        "vai_tro"
+        "ma_cau_hinh_phi",
+        "loai_phi",
+        "don_gia",
+        "tu_ngay",
+        "den_ngay"
       ]
     },
-    "phan_anh": {
-      "purpose": "Tiếp nhận và theo dõi phản ánh",
+    "hoa_don": {
+      "purpose": "Lập và theo dõi hóa đơn theo kỳ",
       "columns": [
-        "ma_phan_anh",
-        "ma_tra_cuu",
-        "khoa_yeu_cau",
-        "ma_vi_tri_qr",
-        "ma_nguoi_gui",
-        "ten_nguoi_gui",
-        "so_dien_thoai_nguoi_gui",
-        "can_ho_khai_bao",
-        "tieu_de",
-        "noi_dung",
-        "loai_su_co",
-        "do_uu_tien",
-        "trang_thai",
-        "ma_ky_thuat_vien",
-        "ma_phan_anh_goc",
-        "phien_ban",
-        "luot_xu_ly",
-        "ngay_tao",
-        "ngay_dong",
-        "ma_thiet_bi",
-        "ma_tai_san_luc_gui",
-        "ten_thiet_bi_luc_gui",
-        "vi_tri_thiet_bi_luc_gui",
-        "ma_cu_dan_nguoi_gui",
-        "gui_tu_tai_khoan_can_ho"
-      ],
-      "business": [
-        "tieu_de",
-        "noi_dung",
-        "trang_thai"
-      ]
-    },
-    "phuong_tien": {
-      "purpose": "Quản lý đăng ký xe cư dân",
-      "columns": [
-        "ma_phuong_tien",
-        "ma_dang_ky",
-        "ma_cu_dan",
-        "ma_can_ho",
-        "ma_lich_su_cu_tru",
-        "ma_dang_ky_truoc",
-        "loai_xe",
-        "bien_so",
-        "hang_xe",
-        "mau_sac",
-        "ngay_dang_ky",
-        "ngay_ket_thuc",
-        "ly_do_ket_thuc",
-        "ma_nguoi_tao",
-        "ma_nguoi_ket_thuc",
-        "phien_ban",
-        "ngay_tao",
-        "bien_so_dang_hoat_dong"
-      ],
-      "business": [
-        "bien_so",
-        "loai_xe"
-      ]
-    },
-    "tang_toa_nha": {
-      "purpose": "Quản lý tầng trong mỗi khối",
-      "columns": [
-        "khoi",
-        "tang",
-        "ten_tang",
-        "mo_ta",
-        "giu_khi_trong",
-        "phien_ban",
-        "ngay_tao"
-      ],
-      "business": [
-        "ten_tang"
-      ]
-    },
-    "thiet_bi": {
-      "purpose": "Quản lý tài sản và vị trí thiết bị",
-      "columns": [
-        "ma_thiet_bi",
-        "ma_tai_san",
-        "ten_thiet_bi",
-        "loai",
-        "vi_tri",
-        "so_serial",
-        "ngay_lap_dat",
-        "ghi_chu",
-        "trang_thai",
-        "chu_ky_ngay",
-        "ngay_bao_tri_tiep_theo",
-        "nhac_truoc_ngay",
-        "phien_ban",
-        "ma_nguoi_tao",
-        "ngay_tao",
-        "ngay_cap_nhat"
-      ],
-      "business": [
-        "ten_thiet_bi",
-        "vi_tri",
-        "trang_thai"
-      ]
-    },
-    "thong_bao": {
-      "purpose": "Gửi và theo dõi thông báo",
-      "columns": [
-        "ma_thong_bao",
-        "loai",
-        "tieu_de",
-        "noi_dung",
-        "pham_vi",
-        "khoi",
-        "ma_can_ho",
-        "muc_do",
-        "trang_thai",
-        "phien_ban",
         "ma_hoa_don",
-        "ngay_nhac",
-        "ma_nguoi_tao",
-        "ma_nguoi_gui",
-        "ma_nguoi_thu_hoi",
-        "ngay_tao",
-        "ngay_gui",
-        "ngay_thu_hoi",
-        "ly_do_thu_hoi"
-      ],
-      "business": [
-        "tieu_de",
-        "pham_vi",
-        "trang_thai"
+        "ma_can_ho",
+        "ky_thanh_toan",
+        "trang_thai",
+        "tong_tien"
       ]
     },
-    "thong_bao_da_doc": {
-      "purpose": "Theo dõi người đã đọc thông báo",
+    "chi_tiet_hoa_don": {
+      "purpose": "Lưu các khoản phí của hóa đơn",
       "columns": [
-        "ma_thong_bao",
-        "ma_nguoi_dung",
-        "nguoi_tiep_nhan",
-        "ngay_doc"
-      ],
-      "business": [
-        "ngay_doc"
-      ]
-    },
-    "vi_tri_qr": {
-      "purpose": "Gắn QR với vị trí hoặc thiết bị",
-      "columns": [
-        "ma_vi_tri_qr",
-        "ten_vi_tri",
-        "loai",
-        "mo_ta",
-        "token_qr",
-        "dang_hoat_dong",
-        "ma_nguoi_tao",
-        "ngay_tao",
-        "ma_thiet_bi",
-        "phien_ban"
-      ],
-      "business": [
-        "ten_vi_tri",
-        "token_qr",
-        "dang_hoat_dong"
+        "ma_chi_tiet_hoa_don",
+        "ma_hoa_don",
+        "ma_cau_hinh_phi",
+        "so_luong",
+        "don_gia",
+        "thanh_tien"
       ]
     }
   },
   "shown_foreign_keys": [
-    "fk_apartment_floor",
     "cau_hinh_phi_ibfk_1",
-    "cau_hinh_phi_ibfk_2",
-    "chi_so_dich_vu_ibfk_1",
-    "chi_so_dich_vu_ibfk_2",
     "chi_tiet_hoa_don_ibfk_1",
     "chi_tiet_hoa_don_ibfk_2",
-    "chi_tiet_hoa_don_ibfk_3",
     "cu_dan_ibfk_1",
     "hinh_anh_phan_anh_ibfk_1",
-    "hinh_anh_phan_anh_ibfk_2",
     "hoa_don_ibfk_1",
-    "hoa_don_ibfk_2",
-    "hoa_don_ibfk_3",
-    "hoa_don_ibfk_4",
-    "hoa_don_ibfk_5",
-    "hoa_don_ibfk_6",
-    "hoa_don_ibfk_7",
     "lich_su_cu_tru_ibfk_1",
     "lich_su_cu_tru_ibfk_2",
-    "lich_su_cu_tru_ibfk_3",
-    "fk_account_apartment",
-    "fk_account_owner",
-    "fk_incident_equipment",
     "fk_incident_sender_resident",
     "phan_anh_ibfk_1",
-    "phan_anh_ibfk_2",
     "phan_anh_ibfk_3",
-    "phan_anh_ibfk_4",
-    "phuong_tien_ibfk_1",
-    "phuong_tien_ibfk_2",
-    "phuong_tien_ibfk_3",
-    "phuong_tien_ibfk_4",
-    "phuong_tien_ibfk_5",
-    "phuong_tien_ibfk_6",
-    "fk_floor_block",
-    "thiet_bi_ibfk_1",
-    "thong_bao_ibfk_1",
-    "thong_bao_ibfk_2",
-    "thong_bao_ibfk_3",
-    "thong_bao_ibfk_4",
-    "thong_bao_ibfk_5",
-    "thong_bao_da_doc_ibfk_1",
-    "thong_bao_da_doc_ibfk_2",
-    "fk_qr_equipment",
-    "vi_tri_qr_ibfk_1"
+    "fk_qr_equipment"
   ],
   "omitted_tables": {
     "chung_tu_thu_chi": "Chứng từ của phần mở rộng quỹ, không cần trong hình nghiệp vụ trọng tâm.",
@@ -451,32 +145,32 @@
     "quy_tai_chinh": "Quỹ tài chính thuộc phần mở rộng.",
     "schema_migrations": "Metadata phiên bản schema.",
     "tien_ich": "Danh mục tiện ích thuộc phần mở rộng.",
-    "yeu_cau_gui": "Khóa kỹ thuật chống gửi phản ánh lặp."
+    "yeu_cau_gui": "Khóa kỹ thuật chống gửi phản ánh lặp.",
+    "khoi_toa_nha": "Danh mục khối được lược khỏi hình tổng quan; vẫn có trong schema.",
+    "tang_toa_nha": "Danh mục tầng được lược khỏi hình tổng quan; vẫn có trong schema.",
+    "phuong_tien": "Quản lý xe là chi tiết phụ so với ba luồng được chọn.",
+    "chi_so_dich_vu": "Chi tiết chốt chỉ số điện/nước lược khỏi hình tổng quan; số lượng/đơn giá/thành tiền giữ tại chi tiết hóa đơn.",
+    "thong_bao": "Thông báo là chức năng hỗ trợ, lược khỏi hình tổng quan.",
+    "thong_bao_da_doc": "Trạng thái đã đọc thông báo lược cùng bảng thông báo."
   },
   "layout_rows": [
     [
-      "khoi_toa_nha",
-      "tang_toa_nha",
-      "can_ho",
-      "cu_dan",
       "nguoi_dung",
-      "thiet_bi"
+      "cu_dan",
+      "lich_su_cu_tru",
+      "can_ho"
+    ],
+    [
+      "thiet_bi",
+      "vi_tri_qr",
+      "phan_anh",
+      "hinh_anh_phan_anh"
     ],
     [
       "loai_phi",
       "cau_hinh_phi",
-      "chi_so_dich_vu",
-      "lich_su_cu_tru",
-      "phuong_tien",
-      "vi_tri_qr"
-    ],
-    [
       "chi_tiet_hoa_don",
-      "hoa_don",
-      "thong_bao",
-      "thong_bao_da_doc",
-      "phan_anh",
-      "hinh_anh_phan_anh"
+      "hoa_don"
     ]
   ]
 }

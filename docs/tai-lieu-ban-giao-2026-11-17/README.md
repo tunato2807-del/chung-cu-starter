@@ -1,6 +1,6 @@
 # Báo cáo Word, sơ đồ draw.io và hình minh họa
 
-> **Bộ hiện hành — ERD theo mẫu cột dọc:** [17 sơ đồ, Word/PDF và draw.io](../so-do-theo-mau-2026-11-17/README.md). Một ERD giữ 18 bảng trọng tâm, đủ 218 thuộc tính và 46 FK giữa chúng; khóa chính gạch liền, khóa ngoại gạch đứt, không in đậm. Database vẫn đủ 31 bảng. Các sơ đồ và báo cáo toàn văn bên dưới lưu để đối chiếu bản trước.
+> **ERD hiện hành đã rút gọn:** [12 bảng, 56 thuộc tính và 12 quan hệ — draw.io, Word/PDF và hình](../so-do-theo-mau-2026-11-17/README.md). Tập trung vào nhà ở/cư trú, QR/phản ánh và hóa đơn; giữ oval dọc, chữ không in đậm, khóa chính liền và khóa ngoại đứt. Chỉ lược trên hình, database vẫn 31 bảng / 362 cột / 81 FK.
 
 **Tô Hoàng Tuấn — MSSV 1250080221 · Bộ bàn giao ngày 17/11/2026**
 

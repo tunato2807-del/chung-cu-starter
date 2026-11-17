@@ -1,6 +1,6 @@
 # Hồ sơ phân tích thiết kế và nghiệm thu
 
-> **Bộ sơ đồ hiện hành:** [17 hình cùng Word/PDF và draw.io — ERD theo mẫu một cột dọc](../so-do-theo-mau-2026-11-17/README.md). Một ERD giữ 18 bảng trọng tâm, đủ 218 thuộc tính và 46 FK giữa chúng; chữ thường, khóa chính gạch liền, khóa ngoại gạch đứt, đường ngang/dọc. Schema vẫn 31 bảng / 362 cột / 81 FK.
+> **ERD hiện hành đã rút gọn:** [12 bảng, 56 thuộc tính và 12 quan hệ — draw.io, Word/PDF và hình](../so-do-theo-mau-2026-11-17/README.md). Tập trung vào nhà ở/cư trú, QR/phản ánh và hóa đơn; giữ oval dọc, chữ không in đậm, khóa chính liền và khóa ngoại đứt. Chỉ lược trên hình, database vẫn 31 bảng / 362 cột / 81 FK.
 
 > **Bộ tài liệu bàn giao 17/11/2026:** [Word báo cáo, hướng dẫn sửa theo giao diện cửa sổ và hình minh họa](../tai-lieu-ban-giao-2026-11-17/README.md). Các ERD phân hệ trong bộ cũ đã được thay bằng ERD hợp nhất ở liên kết trên.
 
@@ -12,7 +12,7 @@ Bộ tài liệu bổ sung cho đề cương `1250080221_To_Hoang_Tuan.docx` c�
 
 Các nghiệp vụ chính đã có. Phần làm tiếp lần này là hoàn thiện hồ sơ chương 2 và chuẩn bị nghiệm thu chương 3, thay vì thêm phân hệ không có trong phạm vi đề tài.
 
-**ERD dùng cho Word:** [một ERD của 18 bảng nghiệp vụ trọng tâm, đầy đủ thuộc tính](../so-do-theo-mau-2026-11-17/README.md). 13 bảng kỹ thuật, nhật ký và phần mở rộng chỉ được lược khỏi hình theo yêu cầu trình bày. Các bộ 31 bảng, 185 thuộc tính và các sơ đồ phân hệ cũ lưu để đối chiếu lịch sử.
+**ERD dùng cho Word:** [một ERD logic rút gọn 12 bảng, 56 thuộc tính](../so-do-theo-mau-2026-11-17/README.md). Các bảng/cột hỗ trợ chỉ được lược khỏi hình theo yêu cầu làm gọn. Các bộ 31 bảng, 185 thuộc tính và các sơ đồ phân hệ cũ lưu để đối chiếu lịch sử.
 
 | Mục đề cương | Tài liệu dùng cho báo cáo |
 |---|---|
@@ -26,7 +26,7 @@ Các nghiệp vụ chính đã có. Phần làm tiếp lần này là hoàn thi�
 
 Sơ đồ Mermaid hiển thị ngay trên GitHub trong các tệp Markdown. Trong VS Code, dùng trình xem Markdown hỗ trợ Mermaid hoặc mở mã sơ đồ trong công cụ Mermaid tương thích. Sơ đồ Use Case dùng hình ellipse và actor qua `flowchart` để mô phỏng ký pháp, **không phải cú pháp UML Use Case nguyên bản**. Nếu GVHD yêu cầu chuẩn UML chặt chẽ, dùng đặc tả này để dựng lại trong StarUML/draw.io. Class Diagram là mô hình phân tích; dự án thực thi bằng hàm/module JavaScript, không dùng ORM entity classes.
 
-Trong Word thay năm ERD cũ (2.15–2.19) bằng **Hình 2.15 — ERD 18 bảng nghiệp vụ trọng tâm, đầy đủ thuộc tính**, đổi kiến trúc 2.20 thành 2.16 và luồng dữ liệu 2.21 thành 2.17. Ghi rõ hình vẽ đủ 218 thuộc tính và 46 FK giữa 18 bảng được giữ; không khẳng định đó là toàn bộ schema. Dùng SVG/PDF vector để phóng to. Nguồn: `database/thesis-mysql/001_thesis_schema.sql`, schema đầy đủ vẫn 31 bảng / 362 cột / 81 FK.
+Trong Word thay năm ERD cũ (2.15–2.19) bằng **Hình 2.15 — ERD logic rút gọn, 12 bảng nghiệp vụ chính**, đổi kiến trúc 2.20 thành 2.16 và luồng dữ liệu 2.21 thành 2.17. Ghi rõ hình chỉ chọn 12 bảng, 56 thuộc tính và 12 quan hệ chính; không khẳng định đó là toàn bộ schema. Dùng SVG/PDF vector để phóng to. Nguồn: `database/thesis-mysql/001_thesis_schema.sql`, schema đầy đủ vẫn 31 bảng / 362 cột / 81 FK.
 
 Để tái sinh **ba tệp vật lý** sau khi schema đã được migrate đầy đủ, chạy tại thư mục gốc:
 

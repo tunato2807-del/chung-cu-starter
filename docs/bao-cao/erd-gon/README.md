@@ -1,6 +1,6 @@
 # ERD rút gọn cho báo cáo đồ án
 
-> **Bản lưu lịch sử, đã được thay thế:** dùng [một ERD 18 bảng trọng tâm, đầy đủ thuộc tính theo cột dọc và ký pháp khóa như mẫu](../../so-do-theo-mau-2026-11-17/README.md). Schema vẫn 31 bảng; các số 38 bảng và hình phân hệ dưới đây thuộc bản thiết kế cũ.
+> **ERD hiện hành đã rút gọn:** [12 bảng, 56 thuộc tính và 12 quan hệ — draw.io, Word/PDF và hình](../../so-do-theo-mau-2026-11-17/README.md). Tập trung vào nhà ở/cư trú, QR/phản ánh và hóa đơn; giữ oval dọc, chữ không in đậm, khóa chính liền và khóa ngoại đứt. Chỉ lược trên hình, database vẫn 31 bảng / 362 cột / 81 FK.
 
 > **CSDL hiện tại (05/11/2026):** [MySQL31 bảng thật, 8 view, giữ đủ nghiệp vụ và18 bảng trọng tâm](../../csdl-do-an/README.md). Các hình/kiểm tra schema38 bảng ở bản cũ là lịch sử; ERD vật lý và từ điển đã sinh lại theo baseline mới.
 

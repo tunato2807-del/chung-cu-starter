@@ -1,6 +1,6 @@
 # Cơ sở dữ liệu theo đồ án chuyên ngành
 
-> **ERD hiện hành để trình bày:** [18 bảng trọng tâm, đủ 218 thuộc tính theo một cột oval dọc và 46 FK giữa chúng](../so-do-theo-mau-2026-11-17/README.md). Khóa chính gạch liền, khóa ngoại gạch đứt, không in đậm. 13 bảng còn lại chỉ lược khỏi hình; database vẫn có đủ 31 bảng / 362 cột / 81 FK. Không tách thành các ERD phân hệ độc lập.
+> **ERD hiện hành đã rút gọn:** [12 bảng, 56 thuộc tính và 12 quan hệ — draw.io, Word/PDF và hình](../so-do-theo-mau-2026-11-17/README.md). Tập trung vào nhà ở/cư trú, QR/phản ánh và hóa đơn; giữ oval dọc, chữ không in đậm, khóa chính liền và khóa ngoại đứt. Chỉ lược trên hình, database vẫn 31 bảng / 362 cột / 81 FK.
 
 Nguồn đối chiếu: Word `1250080221_To_Hoang_Tuan.docx`, đặc biệt Phạm vi chức năng chính, mục 2.4 Thiết kế CSDL và 3.2.1 Hiện thực CSDL. Người dùng đã xác nhận **quay về MySQL và giữ đầy đủ nghiệp vụ**, trong đó trọng tâm là đề tài “Xây dựng hệ thống quản lý vận hành chung cư và tiếp nhận phản ánh cư dân”.
 

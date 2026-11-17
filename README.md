@@ -1,6 +1,6 @@
 # Quản lý chung cư · Phản ánh QR
 
-> **Sơ đồ hiện hành — ERD theo mẫu cột dọc, 17/11/2026:** [17 hình; ERD giữ 18 bảng trọng tâm, đủ 218 thuộc tính và 46 quan hệ giữa chúng; khóa chính gạch liền, khóa ngoại gạch đứt, không in đậm; kèm draw.io/Word/PDF/PNG/SVG](docs/so-do-theo-mau-2026-11-17/README.md).
+> **ERD hiện hành đã rút gọn:** [12 bảng, 56 thuộc tính và 12 quan hệ — draw.io, Word/PDF và hình](docs/so-do-theo-mau-2026-11-17/README.md). Tập trung vào nhà ở/cư trú, QR/phản ánh và hóa đơn; giữ oval dọc, chữ không in đậm, khóa chính liền và khóa ngoại đứt. Chỉ lược trên hình, database vẫn 31 bảng / 362 cột / 81 FK.
 
 > **Word và hình minh họa — 17/11/2026:** [bản báo cáo bổ sung trích dẫn, hướng dẫn sửa theo form riêng và ảnh minh họa](docs/tai-lieu-ban-giao-2026-11-17/README.md). Sơ đồ trong bộ cũ chỉ dùng đối chiếu lịch sử; dùng bộ 17 hình ở liên kết trên để lấy ERD đã hợp nhất.
 
@@ -270,7 +270,7 @@ Dừng backend cũ rồi đặt `$env:DB_NAME = "chung_cu_nghiem_thu"` trong ter
 
 ## Hồ sơ thiết kế và kiểm tra file khi chép tay
 
-[Bộ tài liệu báo cáo](docs/bao-cao/README.md) có Use Case/đặc tả, Activity/Sequence, Class Diagram và ma trận nghiệm thu theo đề cương. [ERD hiện hành](docs/so-do-theo-mau-2026-11-17/README.md) vẽ một hình 18 bảng trọng tâm, đủ 218 thuộc tính theo từng cột oval dọc và 46 khóa ngoại giữa các bảng đó. Lược 13 bảng phụ khỏi hình; schema vẫn giữ nguyên 31 bảng / 362 cột / 81 FK, từ điển vẫn đủ toàn bộ cột. [Hướng dẫn VS Code](docs/cap-nhat-nghiem-thu-vscode.md) có code từng file mới.
+[Bộ tài liệu báo cáo](docs/bao-cao/README.md) có Use Case/đặc tả, Activity/Sequence, Class Diagram và ma trận nghiệm thu theo đề cương. [ERD hiện hành](docs/so-do-theo-mau-2026-11-17/README.md) vẽ một hình logic rút gọn với 12 bảng, 56 thuộc tính và 12 quan hệ được chọn. Bảng/cột hỗ trợ được lược khỏi hình; schema vẫn giữ nguyên 31 bảng / 362 cột / 81 FK, từ điển vẫn đủ toàn bộ cột. [Hướng dẫn VS Code](docs/cap-nhat-nghiem-thu-vscode.md) có code từng file mới.
 
 Để chỉnh sửa hoặc chèn Word, dùng [ERD hợp nhất duy nhất](docs/so-do-theo-mau-2026-11-17/drawio/02-15-erd-hop-nhat.drawio) và [bảng đối chiếu 81 FK](docs/so-do-theo-mau-2026-11-17/DOI-CHIEU-KHOA-NGOAI.md). Các bộ ERD rút gọn/phân hệ 38 bảng trước đây là tài liệu lịch sử.
 

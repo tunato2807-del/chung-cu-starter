@@ -13,7 +13,7 @@ OUT=args.out.resolve()
 for name in ['drawio','xml','png','svg','nguon']: (OUT/name).mkdir(parents=True,exist_ok=True)
 OLD=REPO/'docs/bao-cao/quyen-bao-cao-2026'
 MANIFEST=json.loads((REPO/'docs/tai-lieu-ban-giao-2026-11-17/bao-cao-drawio/danh-muc-hinh.json').read_text())
-MANIFEST[14].update(figure='2.15',caption='Hình 2.15. ERD 18 bảng nghiệp vụ trọng tâm — đầy đủ thuộc tính',filename='02-15-erd-hop-nhat')
+MANIFEST[14].update(figure='2.15',caption='Hình 2.15. ERD logic rút gọn — 12 bảng nghiệp vụ chính',filename='02-15-erd-hop-nhat')
 MANIFEST[19].update(figure='2.16',caption='Hình 2.16. Kiến trúc ba tầng của hệ thống',filename='02-16-kien-truc')
 MANIFEST[20].update(figure='2.17',caption='Hình 2.17. Luồng dữ liệu phản ánh từ QR đến nghiệm thu',filename='02-17-luong-du-lieu')
 SQL=(REPO/'database/thesis-mysql/001_thesis_schema.sql').read_text()
@@ -333,21 +333,21 @@ def segment_hits_box(a,b,r):
 
 def make_straight_layout(selection,sizes,foreign_keys):
     """Place complete vertical attribute columns on three rows, like the sample."""
-    objects=[];lookup={};y=80;left=140;column_gap=360
+    objects=[];lookup={};y=80;left=140;column_gap=280
     for row in selection['layout_rows']:
         row_height=max(sizes[t][1] for t in row)
         for col,name in enumerate(row):
             w,h=sizes[name];x=left+col*(320+column_gap)
             obj={'_gvid':len(objects),'name':name,'pos':f'{x+w/2},{y+h/2}','width':w/72,'height':h/72,'screen_box':[x,y,w,h]}
             objects.append(obj);lookup[name]=obj
-        y+=row_height+500
+        y+=row_height+200
     width=left*2+len(selection['layout_rows'][0])*320+(len(selection['layout_rows'][0])-1)*column_gap
-    height=y-500+100
+    height=y-200+100
     occupied=[(o['screen_box'][0]-24,o['screen_box'][1]-24,o['screen_box'][0]+o['screen_box'][2]+24,o['screen_box'][1]+o['screen_box'][3]+24) for o in objects]
     def free(x,y):
         box=(x-90,y-60,x+90,y+60)
         return not any(box[0]<r[2] and box[2]>r[0] and box[1]<r[3] and box[3]>r[1] for r in occupied)
-    candidates=[(x,y) for x in range(140,int(width)-130,90) for y in range(100,int(height)-90,90) if free(x,y)]
+    candidates=[(x,y) for x in range(140,int(width)-130,40) for y in range(100,int(height)-90,40) if free(x,y)]
     for fk in foreign_keys:
         a=lookup[fk['parent']]['screen_box'];b=lookup[fk['child']]['screen_box']
         ah=(a[0]+160,a[1]+27);bh=(b[0]+160,b[1]+27)
@@ -396,12 +396,12 @@ def route_axis_aligned(a,b,rectangles,track):
 
 
 def erd_hop_nhat():
-    """One logical ERD of the 18 thesis entities, with no hidden tables."""
+    """One reduced logical ERD of the selected business fields, with no hidden tables."""
     import subprocess
     selection=json.loads(Path(__file__).with_name('lua-chon-thuoc-tinh.json').read_text())
     included=selection['included_tables']
     selected_fks=[f for f in FKS if f['name'] in selection['shown_foreign_keys']]
-    assert len(included)==18 and len(selected_fks)==46
+    assert len(included)==12 and len(selected_fks)==12
     assert all(f['parent'] in included and f['child'] in included for f in selected_fks)
     labels={
         'khoi':'thuộc khối','tang':'thuộc tầng','loai_phi':'loại phí',
@@ -514,7 +514,7 @@ def erd_hop_nhat():
             if role=='parent':er_marker(d,entity,points[0],points[1],card,tag,f['name'],role)
             else:er_marker(d,entity,points[-1],points[-2],card,tag,f['name'],role)
     d.relations=[dict(f,relationship_cell_id=relationships[f['id']],arm_cells=arms[f['id']]) for f in selected_fks]
-    d.note='ERD 18 bảng trọng tâm: liệt kê đủ 218 thuộc tính và 46 khóa ngoại giữa các bảng được giữ; mỗi bảng một cột oval dọc, chữ thường, đường nối vuông góc, quan hệ hình thoi trống, bội số một/nhiều bằng vạch/chân quạ. Khóa chính gạch liền, khóa ngoại gạch đứt; không có mã FK/R. Schema vẫn 31 bảng, 362 cột, 81 FK.'
+    d.note='ERD logic rút gọn: 12 bảng, 56 thuộc tính và 12 quan hệ được chọn cho ba luồng nhà ở/cư trú, QR/phản ánh và hóa đơn. Giữ oval một cột dọc, chữ thường, khóa chính gạch liền và khóa ngoại gạch đứt. Lược bảng/thuộc tính chỉ trên hình; schema vẫn 31 bảng, 362 cột, 81 FK.'
     save(d)
 
 
@@ -651,8 +651,8 @@ def main():
         summary.append(entry)
     E.indent(master,space='  ')
     (OUT/'Tat-ca-17-so-do-ERD-hop-nhat.drawio').write_bytes(E.tostring(master,encoding='utf-8',xml_declaration=True))
-    (OUT/'nguon/mo-hinh-va-doi-chieu.json').write_text(json.dumps({'source_commit':'cceb904','schema_sha256':hashlib.sha256(SQL.encode()).hexdigest(),'tables':SCHEMA,'foreign_keys':FKS,'erd_pages':1,'presentation':{'kind':'logical subset','shown_tables':18,'schema_tables':31,'selected_columns':218,'total_columns':362,'shown_relationships':46,'schema_foreign_keys':81,'attribute_style':'ellipse, single vertical column per table','all_attributes_of_included_tables':True,'orthogonal_relationships':True,'bold_attributes':False,'relationship_diamonds':'blank','cardinality_notation':'one bar, many crowfoot, optional circle','primary_key_notation':'solid underline','foreign_key_notation':'dashed underline','hidden_layers':False,'selection':json.loads(Path(__file__).with_name('lua-chon-thuoc-tinh.json').read_text())},'reference_style':'6 example images supplied by user; housing domain retained','diagrams':summary},ensure_ascii=False,indent=2))
+    (OUT/'nguon/mo-hinh-va-doi-chieu.json').write_text(json.dumps({'source_commit':'cceb904','schema_sha256':hashlib.sha256(SQL.encode()).hexdigest(),'tables':SCHEMA,'foreign_keys':FKS,'erd_pages':1,'presentation':{'kind':'logical subset','shown_tables':12,'schema_tables':31,'selected_columns':56,'total_columns':362,'shown_relationships':12,'schema_foreign_keys':81,'attribute_style':'ellipse, single vertical column per table','all_attributes_of_included_tables':False,'orthogonal_relationships':True,'bold_attributes':False,'relationship_diamonds':'blank','cardinality_notation':'one bar, many crowfoot, optional circle','primary_key_notation':'solid underline','foreign_key_notation':'dashed underline','hidden_layers':False,'selection':json.loads(Path(__file__).with_name('lua-chon-thuoc-tinh.json').read_text())},'reference_style':'6 example images supplied by user; housing domain retained','diagrams':summary},ensure_ascii=False,indent=2))
     (OUT/'danh-muc.json').write_text(json.dumps([{k:v for k,v in e.items() if k not in ['fields','relations']} for e in summary],ensure_ascii=False,indent=2))
-    print('Generated 17 diagrams: one logical ERD with 18 tables, 218 complete attributes, 46 relationships; native dashed FK underlines.')
+    print('Generated 17 diagrams: one reduced logical ERD with 12 tables, 56 attributes, 12 relationships; native dashed FK underlines.')
 
 if __name__=='__main__':main()

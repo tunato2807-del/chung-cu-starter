@@ -141,13 +141,13 @@
   },
   {
     "figure": "2.15",
-    "caption": "Hình 2.15. ERD 18 bảng nghiệp vụ trọng tâm — đầy đủ thuộc tính",
+    "caption": "Hình 2.15. ERD logic rút gọn — 12 bảng nghiệp vụ chính",
     "filename": "02-15-erd-hop-nhat",
-    "vertices": 370,
-    "edges": 531,
-    "width": 4000,
-    "height": 5536,
-    "note": "ERD 18 bảng trọng tâm: liệt kê đủ 218 thuộc tính và 46 khóa ngoại giữa các bảng được giữ; mỗi bảng một cột oval dọc, chữ thường, đường nối vuông góc, quan hệ hình thoi trống, bội số một/nhiều bằng vạch/chân quạ. Khóa chính gạch liền, khóa ngoại gạch đứt; không có mã FK/R. Schema vẫn 31 bảng, 362 cột, 81 FK."
+    "vertices": 110,
+    "edges": 138,
+    "width": 2400,
+    "height": 2056,
+    "note": "ERD logic rút gọn: 12 bảng, 56 thuộc tính và 12 quan hệ được chọn cho ba luồng nhà ở/cư trú, QR/phản ánh và hóa đơn. Giữ oval một cột dọc, chữ thường, khóa chính gạch liền và khóa ngoại gạch đứt. Lược bảng/thuộc tính chỉ trên hình; schema vẫn 31 bảng, 362 cột, 81 FK."
   },
   {
     "figure": "2.16",

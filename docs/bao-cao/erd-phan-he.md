@@ -1,6 +1,6 @@
 # ERD vật lý theo phân hệ
 
-> **Bản lưu để đối chiếu, đã được thay thế trong bộ hình báo cáo:** dùng [một ERD của 18 bảng trọng tâm, đầy đủ thuộc tính theo mẫu](../so-do-theo-mau-2026-11-17/README.md). Schema vẫn 31 bảng. Các nhóm bên dưới không phải những ERD độc lập thỏa điều kiện không có liên kết PK/FK xuyên nhóm.
+> **ERD hiện hành đã rút gọn:** [12 bảng, 56 thuộc tính và 12 quan hệ — draw.io, Word/PDF và hình](../so-do-theo-mau-2026-11-17/README.md). Tập trung vào nhà ở/cư trú, QR/phản ánh và hóa đơn; giữ oval dọc, chữ không in đậm, khóa chính liền và khóa ngoại đứt. Chỉ lược trên hình, database vẫn 31 bảng / 362 cột / 81 FK.
 
 Tự sinh từ cùng metadata với [từ điển dữ liệu](tu-dien-du-lieu.md). Cột trong hình rút gọn còn PK/FK; tên cột, kiểu đầy đủ, CHECK và UNIQUE xem từ điển. Bảng cha ngoài nhóm được thêm làm điểm nối. FK ghép được vẽ một quan hệ. UNIQUE ghép/sinh cần đọc thêm biểu thức trong từ điển.
 

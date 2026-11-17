@@ -1,6 +1,6 @@
 # 21 sơ đồ draw.io chỉnh sửa riêng
 
-> **Bản hiện hành theo mẫu:** [17 sơ đồ cùng Word/PDF/PNG/SVG](../../so-do-theo-mau-2026-11-17/README.md), một ERD của 18 bảng trọng tâm với đủ thuộc tính xếp dọc, khóa chính liền và khóa ngoại đứt. Schema vẫn 31 bảng. Thư mục này lưu bộ cũ để đối chiếu.
+> **ERD hiện hành đã rút gọn:** [12 bảng, 56 thuộc tính và 12 quan hệ — draw.io, Word/PDF và hình](../../so-do-theo-mau-2026-11-17/README.md). Tập trung vào nhà ở/cư trú, QR/phản ánh và hóa đơn; giữ oval dọc, chữ không in đậm, khóa chính liền và khóa ngoại đứt. Chỉ lược trên hình, database vẫn 31 bảng / 362 cột / 81 FK.
 
 Các hình khớp số Hình 2.1–2.21 trong báo cáo Tô Hoàng Tuấn, MSSV 1250080221.
 Nguồn là các sơ đồ của chính bản DOCX đã gửi, đối chiếu với DOT/JSON đi kèm báo cáo trong repository. Đây là các đối tượng vector gốc: chữ, hình, ô thuộc tính và đường nối đều sửa được. Không dùng một ảnh PNG đặt vào draw.io làm “file chỉnh sửa”.
