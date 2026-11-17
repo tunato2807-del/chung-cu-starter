@@ -1,6 +1,6 @@
 {
-  "parser": "mxGraph",
-  "scope": "Native objects decoded and rendered; no embedded image wrappers",
+  "parser": "mxGraph 4.2.2 in Chromium",
+  "scope": "All 17 native pages decoded and rendered, exactly one ERD; no image wrappers",
   "diagrams": [
     {
       "figure": "2.1",
@@ -158,63 +158,19 @@
     },
     {
       "figure": "2.15",
-      "caption": "Hình 2.15. ERD logic nhà ở, cư trú và phương tiện",
-      "filename": "02-15-erd-cu-tru",
-      "vertices": 48,
-      "edges": 34,
-      "width": 1345,
-      "height": 1475,
-      "note": "",
+      "caption": "Hình 2.15. ERD hợp nhất toàn bộ 31 bảng và 81 khóa ngoại",
+      "filename": "02-15-erd-hop-nhat",
+      "vertices": 675,
+      "edges": 586,
+      "width": 10058,
+      "height": 7148,
+      "note": "ERD duy nhất: đầy đủ 31 bảng, 362 cột, 81 FK (gồm 14 FK inline của nhat_ky_nghiep_vu); 29 bảng cùng thành phần liên thông, 2 bảng kỹ thuật không có FK cùng canvas.",
       "images": 0
     },
     {
       "figure": "2.16",
-      "caption": "Hình 2.16. ERD logic QR, phản ánh và ảnh",
-      "filename": "02-16-erd-phan-anh",
-      "vertices": 49,
-      "edges": 36,
-      "width": 1505,
-      "height": 1615,
-      "note": "",
-      "images": 0
-    },
-    {
-      "figure": "2.17",
-      "caption": "Hình 2.17. ERD logic phí, chỉ số, hóa đơn và thông báo",
-      "filename": "02-17-erd-hoa-don",
-      "vertices": 68,
-      "edges": 50,
-      "width": 1445,
-      "height": 2045,
-      "note": "",
-      "images": 0
-    },
-    {
-      "figure": "2.18",
-      "caption": "Hình 2.18. ERD vật lý rút gọn của luồng phản ánh và ảnh",
-      "filename": "02-18-erd-vat-ly-phan-anh",
-      "vertices": 24,
-      "edges": 17,
-      "width": 1365,
-      "height": 1065,
-      "note": "",
-      "images": 0
-    },
-    {
-      "figure": "2.19",
-      "caption": "Hình 2.19. ERD vật lý rút gọn của luồng hóa đơn",
-      "filename": "02-19-erd-vat-ly-hoa-don",
-      "vertices": 33,
-      "edges": 24,
-      "width": 1365,
-      "height": 1685,
-      "note": "",
-      "images": 0
-    },
-    {
-      "figure": "2.20",
-      "caption": "Hình 2.20. Kiến trúc ba tầng và kho ảnh",
-      "filename": "02-20-kien-truc",
+      "caption": "Hình 2.16. Kiến trúc ba tầng của hệ thống",
+      "filename": "02-16-kien-truc",
       "vertices": 17,
       "edges": 4,
       "width": 1215,
@@ -223,9 +179,9 @@
       "images": 0
     },
     {
-      "figure": "2.21",
-      "caption": "Hình 2.21. Luồng dữ liệu từ QR đến theo dõi kết quả",
-      "filename": "02-21-luong-du-lieu",
+      "figure": "2.17",
+      "caption": "Hình 2.17. Luồng dữ liệu phản ánh từ QR đến nghiệm thu",
+      "filename": "02-17-luong-du-lieu",
       "vertices": 11,
       "edges": 9,
       "width": 1295,
@@ -233,5 +189,6 @@
       "note": "",
       "images": 0
     }
-  ]
+  ],
+  "png_note": "Figures 2.1–2.14 retain the PNG files from 1e01cf7 at original 1.5x resolution; their native XML/SVG are unchanged and were decoded/rendered again. New or renumbered figures use new PNG exports."
 }

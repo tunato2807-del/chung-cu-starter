@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "schema_sha256": "57d700e4983eb494829a0f32de155bb8657d5abfe1f9511b2e8ac70562e17226",
+  "erd_pages": 1,
+  "master_pages": 17,
+  "tables": 31,
+  "columns": 362,
+  "foreign_key_constraints": 81,
+  "foreign_key_arms": 162,
+  "inline_history_foreign_keys": 14,
+  "isolated_tables_on_same_canvas": [
+    "gioi_han_gui",
+    "schema_migrations"
+  ],
+  "missing_foreign_keys": [],
+  "invented_foreign_keys": [],
+  "foreign_key_paths_through_entity_attribute_groups": [],
+  "primary_keys_underlined": true,
+  "native_editable_objects": true,
+  "fk_endpoints_match_sql": true
+}

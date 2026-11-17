@@ -1,5 +1,7 @@
 # Cơ sở dữ liệu theo đồ án chuyên ngành
 
+> **ERD hiện hành:** [một ERD hợp nhất đủ 31 bảng, 362 cột và 81 FK](../so-do-theo-mau-2026-11-17/README.md), kèm draw.io/XML, SVG/PNG, Word/PDF và đối chiếu ràng buộc. Phân nhóm bảng trong tài liệu này chỉ để giải thích nghiệp vụ; không tách chúng thành các ERD độc lập.
+
 Nguồn đối chiếu: Word `1250080221_To_Hoang_Tuan.docx`, đặc biệt Phạm vi chức năng chính, mục 2.4 Thiết kế CSDL và 3.2.1 Hiện thực CSDL. Người dùng đã xác nhận **quay về MySQL và giữ đầy đủ nghiệp vụ**, trong đó trọng tâm là đề tài “Xây dựng hệ thống quản lý vận hành chung cư và tiếp nhận phản ánh cư dân”.
 
 Đề cương không ấn định số bảng. Thiết kế mới có **31 bảng vật lý**, cùng **8 view đọc lịch sử**. Tám bảng nhật ký cũ dùng chung một nơi lưu, giữ actor, sự kiện, thời điểm, FK tới đối tượng, mã lịch sử gốc và payload có JSON Schema. Dữ liệu cư trú, hóa đơn, chỉ số, phương tiện và ảnh vẫn được lưu trong các bảng nghiệp vụ có kiểu/ràng buộc riêng.

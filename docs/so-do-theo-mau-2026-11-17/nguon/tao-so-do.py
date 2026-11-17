@@ -3,24 +3,70 @@ import xml.etree.ElementTree as E
 import html, json, re, math, copy, hashlib
 from PIL import ImageFont
 
-REPO=Path(__file__).resolve().parents[3]
-OUT=Path(__file__).resolve().parents[1]
+import argparse
+parser=argparse.ArgumentParser(description='Tái sinh 17 sơ đồ, gồm đúng một ERD hợp nhất đầy đủ.')
+parser.add_argument('--repo',type=Path,default=Path(__file__).resolve().parents[3])
+parser.add_argument('--out',type=Path,default=Path(__file__).resolve().parent.parent)
+args=parser.parse_args()
+REPO=args.repo.resolve()
+OUT=args.out.resolve()
 for name in ['drawio','xml','png','svg','nguon']: (OUT/name).mkdir(parents=True,exist_ok=True)
 OLD=REPO/'docs/bao-cao/quyen-bao-cao-2026'
 MANIFEST=json.loads((REPO/'docs/tai-lieu-ban-giao-2026-11-17/bao-cao-drawio/danh-muc-hinh.json').read_text())
+MANIFEST[14].update(figure='2.15',caption='Hình 2.15. ERD hợp nhất toàn bộ 31 bảng và 81 khóa ngoại',filename='02-15-erd-hop-nhat')
+MANIFEST[19].update(figure='2.16',caption='Hình 2.16. Kiến trúc ba tầng của hệ thống',filename='02-16-kien-truc')
+MANIFEST[20].update(figure='2.17',caption='Hình 2.17. Luồng dữ liệu phản ánh từ QR đến nghiệm thu',filename='02-17-luong-du-lieu')
 SQL=(REPO/'database/thesis-mysql/001_thesis_schema.sql').read_text()
-SCHEMA={}
-for table,body in re.findall(r'CREATE TABLE (?:IF NOT EXISTS )?`([^`]+)` \((.*?)\n\) ENGINE',SQL,re.S):
-    cols={}
-    for col,rest in re.findall(r'^  `([^`]+)` (.+)',body,re.M):
-        typ=re.split(r' NOT NULL| DEFAULT | GENERATED | AUTO_INCREMENT| CHARACTER SET | COLLATE ',rest.rstrip(','),1)[0]
-        cols[col]={'type':typ,'nullable':'NOT NULL' not in rest}
-    primary=re.search(r'PRIMARY KEY \((.*?)\)',body)
-    pks=re.findall(r'`([^`]+)`',primary.group(1)) if primary else []
-    SCHEMA[table]={'columns':cols,'pk':pks}
-FKS=[]
-for child,cols,parent,refcols in re.findall(r'ALTER TABLE `([^`]+)` ADD CONSTRAINT `[^`]+` FOREIGN KEY \(([^)]+)\) REFERENCES `([^`]+)` \(([^)]+)\)',SQL):
-    FKS.append({'child':child,'columns':re.findall(r'`([^`]+)`',cols),'parent':parent,'references':re.findall(r'`([^`]+)`',refcols)})
+def parse_full_schema(sql):
+    """Read every physical table and both inline / ALTER TABLE FK constraints."""
+    tables = {}
+    for m in re.finditer(r'CREATE TABLE\s+(?:IF NOT EXISTS\s+)?`?([a-z_][a-z0-9_]*)`?\s*\((.*?)\n\) ENGINE', sql, re.I | re.S):
+        name, body = m.groups()
+        columns, primary, unique = {}, [], []
+        for line in body.splitlines():
+            c = re.match(r'\s*(?:`([^`]+)`|([a-z_][a-z0-9_]*))\s+(.+)', line, re.I)
+            if not c:
+                continue
+            col, rest = c[1] or c[2], c[3].rstrip(',')
+            if col.upper() in {'PRIMARY', 'UNIQUE', 'KEY', 'CONSTRAINT', 'CHECK', 'FOREIGN', 'INDEX'}:
+                continue
+            typ = re.split(r'\s+(?:NOT NULL|NULL|DEFAULT|GENERATED|AUTO_INCREMENT|CHARACTER SET|COLLATE|PRIMARY KEY)\b', rest, 1, flags=re.I)[0]
+            columns[col] = {'type': typ, 'nullable': not bool(re.search(r'\bNOT NULL\b|PRIMARY KEY', rest, re.I))}
+            if re.search(r'\bPRIMARY KEY\b', rest, re.I):
+                primary.append(col)
+            if re.search(r'\bUNIQUE\b', rest, re.I):
+                unique.append([col])
+        pm = re.search(r'^\s*PRIMARY KEY\s*\(([^)]+)\)', body, re.M | re.I)
+        if pm:
+            primary = [x.strip(' `') for x in pm[1].split(',')]
+        for um in re.finditer(r'^\s*UNIQUE KEY\s+`?\w+`?\s*\(([^)]+)\)', body, re.M | re.I):
+            if '(' not in um[1]:
+                unique.append([x.strip(' `') for x in um[1].split(',')])
+        assert primary, (name, 'missing primary key')
+        assert set(primary) <= columns.keys()
+        tables[name] = {'columns': columns, 'pk': primary, 'unique': unique}
+    fks = []
+    for statement in sql.split(';'):
+        child = re.search(r'(?:ALTER TABLE|CREATE TABLE)\s+(?:IF NOT EXISTS\s+)?`?([a-z_][a-z0-9_]*)`?', statement, re.I)
+        if not child:
+            continue
+        for m in re.finditer(r'CONSTRAINT\s+`?([a-z_][a-z0-9_]*)`?\s+FOREIGN KEY\s*\(([^)]+)\)\s+REFERENCES\s+`?([a-z_][a-z0-9_]*)`?\s*\(([^)]+)\)', statement, re.I):
+            name, cols, parent, refs = m.groups()
+            cols, refs = ([x.strip(' `') for x in values.split(',')] for values in (cols, refs))
+            assert set(cols) <= tables[child[1]]['columns'].keys()
+            assert refs == tables[parent]['pk'], (name, 'reference must match declared PK')
+            fks.append({'id': f'R{len(fks)+1:02d}', 'name': name, 'child': child[1], 'columns': cols, 'parent': parent, 'references': refs})
+    assert len({f['name'] for f in fks}) == len(fks)
+    for fk in fks:
+        child = tables[fk['child']]
+        fk['parent_cardinality'] = '0..1' if any(child['columns'][c]['nullable'] for c in fk['columns']) else '1'
+        fk['child_cardinality'] = '0..1' if any(set(u) <= set(fk['columns']) for u in [child['pk']] + child['unique']) else '0..N'
+    assert len(tables) == 31 and sum(len(t['columns']) for t in tables.values()) == 362
+    assert len(fks) == 81, 'Do not omit the 14 inline audit-history foreign keys'
+    return tables, fks
+
+
+SCHEMA,FKS=parse_full_schema(SQL)
 
 def N(x):return f'{float(x):.2f}'.rstrip('0').rstrip('.')
 def safe(s):return html.escape(str(s),quote=True)
@@ -146,7 +192,7 @@ def save(d):
     E.indent(d.model,space='  ')
     (OUT/'xml'/f'{f}.xml.txt').write_text(E.tostring(d.model,encoding='unicode'))
     root=E.Element('mxfile',host='app.diagrams.net',version='24.7.17',type='device',compressed='false')
-    page=E.SubElement(root,'diagram',id=f'hinh-2-{d.index}',name=MANIFEST[d.index-1]['caption']);page.append(copy.deepcopy(d.model));E.indent(root,space='  ')
+    page=E.SubElement(root,'diagram',id='hinh-'+MANIFEST[d.index-1]['figure'].replace('.','-'),name=MANIFEST[d.index-1]['caption']);page.append(copy.deepcopy(d.model));E.indent(root,space='  ')
     (OUT/'drawio'/f'{f}.drawio').write_bytes(E.tostring(root,encoding='utf-8',xml_declaration=True))
     (OUT/'svg'/f'{f}.svg').write_text(d.svg())
     DIAGRAMS.append(d)
@@ -225,95 +271,156 @@ def activities():
     flow(d,qq,retry,'L','R',label='Không',lp=(540,1170));flow(d,retry,a,'L','L',[(80,1250),(80,280)]);flow(d,qq,ok,label='Có',lp=(s+35,1180));flow(d,ok,send);flow(d,send,sent);flow(d,sent,check);flow(d,check,paid)
     flow(d,paid,wait,'R','L',label='Chưa',lp=(530,1870));flow(d,wait,check,'R','R',[(1210,1950),(1210,1670)]);flow(d,paid,done,'B','L',[(b,2090)],label='Có',lp=(b+35,1960));flow(d,done,end);save(d)
 
-def erd_entity(d,table,x,y,attrs,physical=False):
-    assert table in SCHEMA
-    e=d.box(x,y,250,54,table.upper(),fs=19,bold=False)
-    y0=y+100;step=84 if physical else 68;hh=66 if physical else 48
-    for i,col in enumerate(attrs):
-        assert col in SCHEMA[table]['columns'],(table,col)
-        info=SCHEMA[table]['columns'][col];ispk=col in SCHEMA[table]['pk'];isfk=any(f['child']==table and col in f['columns'] for f in FKS)
-        typ=info['type'];typ='ENUM' if typ.startswith('enum(') else typ
-        label=col+(' (FK)' if isfk and not ispk else '')
-        if physical:label+='\n'+typ
-        a=d.box(x+30,y0+i*step,220,hh,label,shape='ellipse',fs=17 if physical else 18,underline=ispk)
-        d.connect(e,a,'L','L',[(x,y0+i*step+hh/2)])
-        d.fields.append({'table':table,'field':col,'type':info['type'],'primary':ispk,'foreign':isfk})
-    return e
-
-def relation(d,parent,child,nodes,label,field,pos=None,viaA=None,viaB=None,sides=('R','L')):
-    fk=next((f for f in FKS if f['parent']==parent and f['child']==child and f['columns']==field),None)
-    assert fk,(parent,child,field)
-    aa,bb=nodes[parent],nodes[child]
-    start=d.anchor(aa,sides[0]);end=d.anchor(bb,sides[1]);cx,cy=pos or ((start[0]+end[0])/2,(start[1]+end[1])/2)
-    diamond=d.box(cx-56,cy-36,112,72,label,shape='diamond',fs=17)
-    # The relationship endpoints follow their relative geometry, not arrows.
-    def nearest_side(point):
-        dx,dy=point[0]-cx,point[1]-cy
-        return ('L' if dx<0 else 'R') if abs(dx)>abs(dy) else ('T' if dy<0 else 'B')
-    side1=nearest_side(viaA[-1] if viaA else start)
-    side2=nearest_side(viaB[0] if viaB else end)
-    d.connect(aa,diamond,sides[0],side1,viaA)
-    d.connect(diamond,bb,side2,sides[1],viaB)
-    source_count='0..1' if any(SCHEMA[child]['columns'][c]['nullable'] for c in field) else '1'
-    # Cardinalities sit on their own relationship arms, avoiding collisions
-    # when multiple foreign keys share the same entity border.
-    def card(pt,side,value):
-        x,y=pt;dx={'L':-62,'R':10,'T':15,'B':15}[side];dy=-32 if side in ['L','R'] else -30 if side=='T' else 4
-        d.text(x+dx,y+dy,52,28,value,fs=16)
-    ax,ay=d.anchor(diamond,side1);bx,by=d.anchor(diamond,side2)
-    card((ax-12 if side1=='L' else ax,ay),side1,source_count)
-    card((bx-12 if side2=='L' else bx,by),side2,'0..*')
-    d.relations.append({'parent':parent,'child':child,'foreign_key':field,'references':fk['references'],'parent_cardinality':source_count,'child_cardinality':'0..*','label':label})
-
-def erds():
-    # Columns intentionally leave corridors for orthogonal relationship paths.
-    d=Diagram(15,1320,1450);nodes={}
-    defs=[('khoi_toa_nha',80,130,['khoi']),('tang_toa_nha',510,130,['khoi','tang']),('can_ho',940,130,['ma_can_ho','khoi','tang','so_can_ho','dien_tich_m2']),('cu_dan',80,780,['ma_cu_dan','ho_va_ten','so_dien_thoai']),('lich_su_cu_tru',510,780,['ma_lich_su_cu_tru','ma_cu_dan','ma_can_ho','tu_ngay','den_ngay','quan_he']),('phuong_tien',940,780,['ma_phuong_tien','ma_lich_su_cu_tru','ma_can_ho','loai_xe','bien_so'])]
-    for t,x,y,a in defs:nodes[t]=erd_entity(d,t,x,y,a)
-    relation(d,'khoi_toa_nha','tang_toa_nha',nodes,'có',['khoi'])
-    relation(d,'tang_toa_nha','can_ho',nodes,'bố trí',['khoi','tang'])
-    relation(d,'cu_dan','lich_su_cu_tru',nodes,'có đợt ở',['ma_cu_dan'])
-    relation(d,'lich_su_cu_tru','phuong_tien',nodes,'gắn đợt',['ma_lich_su_cu_tru'])
-    relation(d,'can_ho','lich_su_cu_tru',nodes,'tiếp nhận',['ma_can_ho'],pos=(1120,650),viaA=[(1250,157),(1250,650)],viaB=[(1120,705),(635,705)],sides=('R','T'))
-    relation(d,'can_ho','phuong_tien',nodes,'chịu phí',['ma_can_ho'],pos=(865,580),viaA=[(925,157),(925,500),(865,500)],viaB=[(865,807)],sides=('L','L'))
+def erd_hop_nhat():
+    """ONE Chen ERD, every table, every column, every declared foreign key."""
+    import subprocess
+    labels = {
+        'khoi': 'thuộc khối', 'tang': 'thuộc tầng', 'loai_phi': 'loại phí',
+        'ma_can_ho': 'thuộc căn', 'ma_can_ho_thanh_toan': 'căn trả phí',
+        'ma_cau_hinh_phi': 'áp giá', 'ma_chi_so_dich_vu': 'chỉ số',
+        'ma_cu_dan': 'cư dân', 'ma_cu_dan_nguoi_gui': 'cư dân gửi',
+        'ma_cu_dan_phu_trach': 'phụ trách', 'ma_dang_ky_truoc': 'đăng ký cũ',
+        'ma_dat_lich': 'đặt lịch', 'ma_hoa_don': 'hóa đơn',
+        'ma_hoa_don_thay_the_cho': 'thay thế HĐ', 'ma_ky_thuat_vien': 'giao KTV',
+        'ma_ky_thuat_vien_cu': 'KTV cũ', 'ma_ky_thuat_vien_moi': 'KTV mới',
+        'ma_lich_su_cu_tru': 'đợt cư trú', 'ma_nguoi_dat': 'người đặt',
+        'ma_nguoi_dung': 'tài khoản', 'ma_nguoi_duyet': 'người duyệt',
+        'ma_nguoi_ghi': 'người ghi', 'ma_nguoi_ghi_nhan': 'ghi nhận',
+        'ma_nguoi_gui': 'người gửi', 'ma_nguoi_huy': 'người hủy',
+        'ma_nguoi_ket_thuc': 'kết thúc', 'ma_nguoi_lap': 'người lập',
+        'ma_nguoi_nghiem_thu': 'nghiệm thu', 'ma_nguoi_nhap': 'người nhập',
+        'ma_nguoi_tai': 'người tải', 'ma_nguoi_tai_len': 'tải lên',
+        'ma_nguoi_tao': 'tạo bởi', 'ma_nguoi_thu_hoi': 'thu hồi',
+        'ma_nguoi_thuc_hien': 'thực hiện', 'ma_nguoi_xac_nhan': 'xác nhận',
+        'ma_phan_anh': 'phản ánh', 'ma_phan_anh_goc': 'bản gốc',
+        'ma_phieu': 'thuộc phiếu', 'ma_phieu_bao_tri': 'phiếu BT',
+        'ma_phieu_goc': 'phiếu gốc', 'ma_quy': 'thuộc quỹ',
+        'ma_thiet_bi': 'thiết bị', 'ma_thiet_bi_cu': 'thiết bị cũ',
+        'ma_thiet_bi_moi': 'thiết bị mới', 'ma_thong_bao': 'thông báo',
+        'ma_tien_ich': 'tiện ích', 'ma_vi_tri_qr': 'vị trí QR',
+    }
+    # Graphviz sees each entity plus its attribute ovals as a solid obstacle.
+    # All relation arms enter the entity at its north port, above the attributes.
+    dot = ['graph erd {',
+           'graph [overlap=prism, splines=polyline, sep="+65", esep="+28", outputorder=edgesfirst, start=42];',
+           'node [shape=box, fixedsize=true, label="", margin=0];',
+           'edge [len=3.4];']
+    sizes = {}
+    for name, table in SCHEMA.items():
+        w, h = 650, 120 + math.ceil(len(table['columns']) / 2) * 60
+        sizes[name] = (w, h)
+        dot.append(f'"{name}" [width={w/72},height={h/72}];')
+    for fk in FKS:
+        rid = fk['id']
+        dot.extend([f'{rid} [shape=diamond,width=2.5,height=1.45];',
+                    f'"{fk["parent"]}" -- {rid} [id="{rid}-parent",tailport=n];',
+                    f'{rid} -- "{fk["child"]}" [id="{rid}-child",headport=n];'])
+    dot.append('}')
+    source = '\n'.join(dot)
+    (OUT/'nguon/bo-cuc-erd.dot').write_text(source)
+    layout = json.loads(subprocess.run(['dot', '-Tjson'], input=source, text=True, capture_output=True, check=True).stdout)
+    (OUT/'nguon/bo-cuc-erd.json').write_text(json.dumps(layout, ensure_ascii=False, indent=2))
+    _, _, gw, gh = map(float, layout['bb'].split(','))
+    margin, top = 100, 270
+    d = Diagram(15, math.ceil(gw)+2*margin, math.ceil(gh)+top+160)
+    d.text(70,30,d.width-140,80,'ERD HỢP NHẤT — HỆ THỐNG QUẢN LÝ VẬN HÀNH CHUNG CƯ',fs=40,bold=True)
+    d.text(70,115,d.width-140,48,'31 bảng • 362 thuộc tính • 81 khóa ngoại • một trang vẽ duy nhất',fs=26)
+    d.text(70,170,d.width-140,44,'PK gạch chân; FK ghi mã R01–R81; mỗi hình thoi biểu diễn đúng một ràng buộc khóa ngoại.',fs=22)
+    d.text(70,215,d.width-140,40,'Hai bảng kỹ thuật gioi_han_gui và schema_migrations không có FK khai báo: giữ trên cùng trang, không tạo liên kết giả.',fs=21)
+    def transform(x,y):
+        return float(x)+margin, gh-float(y)+top
+    objects = {o['_gvid']:o for o in layout['objects']}
+    entity_ids, relationship_ids = {}, {}
+    cell_by_id = {}
+    def tag(node, **attrs):
+        if not cell_by_id:
+            cell_by_id.update({c.get('id'):c for c in d.root.findall('mxCell')})
+        c = cell_by_id.get(node)
+        if c is None:
+            c = next(c for c in d.root.findall('mxCell') if c.get('id')==node)
+            cell_by_id[node]=c
+        for key,value in attrs.items():
+            c.set(key,str(value))
+    fk_by_column = {}
+    for fk in FKS:
+        for col in fk['columns']:
+            fk_by_column.setdefault((fk['child'],col),[]).append(fk['id'])
+    for obj in layout['objects']:
+        name = obj['name']
+        if name not in SCHEMA:
+            continue
+        table = SCHEMA[name]
+        cx,cy=transform(*obj['pos'].split(','));w,h=sizes[name];x,y=cx-w/2,cy-h/2
+        group=d.box(x,y,w,h,'',shape='group')
+        tag(group,erdKind='table-group',tableName=name)
+        # The entity rectangle is located exactly on the layout obstacle's top.
+        entity=d.box(155,0,340,58,name.upper(),fs=19,bold=True,parent=group)
+        tag(entity,erdKind='entity',tableName=name)
+        entity_ids[name]=entity
+        nrows=math.ceil(len(table['columns'])/2)
+        leftlast=min(nrows,len(table['columns']))-1
+        rightlast=len(table['columns'])-nrows-1
+        for side,last in [('L',leftlast),('R',rightlast)]:
+            if last<0:
+                continue
+            edge_x=x+5 if side=='L' else x+645
+            entity_x=x+155 if side=='L' else x+495
+            d.line([(entity_x,y+29),(edge_x,y+29),(edge_x,y+117+last*60)],source=entity,parent=group)
+        for k,(col,info) in enumerate(table['columns'].items()):
+            right=k>=nrows;row=k-nrows if right else k
+            ox,oy=(340 if right else 15),93+row*60
+            key=col in table['pk'];fk_ids=fk_by_column.get((name,col),[])
+            lab=col + ('\nFK '+', '.join(fk_ids) if fk_ids else '')
+            font_size=min(16, max(11,math.floor(268/ImageFont.truetype(FONT_PATH,16).getlength(col)*16)))
+            attr=d.box(ox,oy,295,48,lab,shape='ellipse',fs=font_size,underline=key,parent=group)
+            tag(attr,erdKind='attribute',tableName=name,columnName=col,isPrimary=int(key),foreignKeys=','.join(fk_ids))
+            ax=x+635 if right else x+15;bus=x+645 if right else x+5
+            d.line([(bus,y+oy+24),(ax,y+oy+24)],target=attr,parent=group)
+            d.fields.append({'table':name,'field':col,'type':info['type'],'nullable':info['nullable'],'primary':key,'foreign_keys':fk_ids,'cell_id':attr})
+        if not any(f['parent']==name or f['child']==name for f in FKS):
+            d.text(30,h-50,590,36,'Bảng kỹ thuật — không có khóa ngoại khai báo',fs=17,italic=True,parent=group)
+    for obj in layout['objects']:
+        rid=obj['name']
+        if not rid.startswith('R'):
+            continue
+        fk=next(f for f in FKS if f['id']==rid)
+        cx,cy=transform(*obj['pos'].split(','))
+        diamond=d.box(cx-90,cy-52.2,180,104.4,rid+'\n'+labels[fk['columns'][-1]],shape='diamond',fs=14)
+        tag(diamond,erdKind='relationship',fkId=rid,fkName=fk['name'],childTable=fk['child'],parentTable=fk['parent'])
+        relationship_ids[rid]=diamond
+    arms={}
+    def distance_from(points,amount,from_end=False):
+        points=list(reversed(points)) if from_end else points
+        for a,b in zip(points,points[1:]):
+            length=math.dist(a,b)
+            if length>amount:
+                return (a[0]+(b[0]-a[0])*amount/length,a[1]+(b[1]-a[1])*amount/length)
+            amount-=length
+        return points[-1]
+    for edge in layout['edges']:
+        rid,role=edge['id'].split('-');fk=next(f for f in FKS if f['id']==rid)
+        src=entity_ids[fk['parent']] if role=='parent' else relationship_ids[rid]
+        dst=relationship_ids[rid] if role=='parent' else entity_ids[fk['child']]
+        draw=next(o for o in edge['_draw_'] if o['op']=='b')
+        # Polyline mode returns collinear cubic handles; retain them as editable
+        # waypoints. No edge passes through another entity/attribute obstacle.
+        points=[transform(*p) for p in draw['points']]
+        points=[p for i,p in enumerate(points) if i==0 or math.dist(p,points[i-1])>.05]
+        if role=='parent':points[0]=d.anchor(src,'T')
+        else:points[-1]=d.anchor(dst,'T')
+        native=d.line(points,source=src,target=dst)
+        tag(native,erdKind='foreign-key-arm',fkId=rid,fkName=fk['name'],armRole=role)
+        arms.setdefault(rid,{})[role]=native
+        card=fk['parent_cardinality'] if role=='parent' else fk['child_cardinality']
+        lx,ly=distance_from(points,52,from_end=(role=='parent'))
+        label=d.box(lx-30,ly-13,60,26,card,fs=14,fill='#ffffff',stroke='none')
+        tag(label,erdKind='cardinality',fkId=rid,armRole=role)
+    for fk in FKS:
+        d.relations.append(dict(fk,relationship_cell_id=relationship_ids[fk['id']],arm_cells=arms[fk['id']]))
+    d.note='ERD duy nhất: đầy đủ 31 bảng, 362 cột, 81 FK (gồm 14 FK inline của nhat_ky_nghiep_vu); 29 bảng cùng thành phần liên thông, 2 bảng kỹ thuật không có FK cùng canvas.'
+    d.schema=SCHEMA
     save(d)
 
-    d=Diagram(16,1480,1590);nodes={}
-    defs=[('thiet_bi',80,130,['ma_thiet_bi','ma_tai_san','ten_thiet_bi','trang_thai']),('vi_tri_qr',590,130,['ma_vi_tri_qr','ma_thiet_bi','token_qr','dang_hoat_dong']),('nguoi_dung',80,790,['ma_nguoi_dung','ho_va_ten','vai_tro']),('phan_anh',590,790,['ma_phan_anh','ma_vi_tri_qr','ma_nguoi_gui','ma_ky_thuat_vien','ma_thiet_bi','trang_thai','luot_xu_ly','ten_thiet_bi_luc_gui']),('hinh_anh_phan_anh',1100,790,['ma_hinh_anh_phan_anh','ma_phan_anh','loai','luot_xu_ly','duong_dan_tep'])]
-    for t,x,y,a in defs:nodes[t]=erd_entity(d,t,x,y,a)
-    relation(d,'thiet_bi','vi_tri_qr',nodes,'liên kết',['ma_thiet_bi'])
-    relation(d,'vi_tri_qr','phan_anh',nodes,'tiếp nhận',['ma_vi_tri_qr'],pos=(930,490),viaA=[(930,157)],viaB=[(930,690),(715,690)],sides=('R','T'))
-    relation(d,'thiet_bi','phan_anh',nodes,'lúc gửi',['ma_thiet_bi'],pos=(450,555),viaA=[(365,157),(365,480),(450,480)],viaB=[(450,715),(690,715)],sides=('R','T'))
-    relation(d,'nguoi_dung','phan_anh',nodes,'người gửi',['ma_nguoi_gui'],pos=(460,710),viaA=[(365,817),(365,710)],viaB=[(555,710),(555,817)],sides=('R','L'))
-    relation(d,'nguoi_dung','phan_anh',nodes,'được giao',['ma_ky_thuat_vien'],pos=(460,960),viaA=[(365,817),(365,960)],viaB=[(555,960),(555,817)],sides=('R','L'))
-    relation(d,'phan_anh','hinh_anh_phan_anh',nodes,'có ảnh',['ma_phan_anh'])
-    save(d)
-
-    d=Diagram(17,1420,2020);nodes={}
-    defs=[('can_ho',100,130,['ma_can_ho','so_can_ho','dien_tich_m2']),('loai_phi',540,130,['loai_phi','ten_phi']),('cau_hinh_phi',980,130,['ma_cau_hinh_phi','loai_phi','don_gia','tu_ngay']),('chi_so_dich_vu',100,750,['ma_chi_so_dich_vu','ma_can_ho','ky_thanh_toan','chi_so_cu','chi_so_moi']),('hoa_don',540,750,['ma_hoa_don','ma_can_ho','ky_thanh_toan','tong_tien','trang_thai']),('chi_tiet_hoa_don',980,750,['ma_chi_tiet_hoa_don','ma_hoa_don','ma_cau_hinh_phi','ma_chi_so_dich_vu','so_luong','don_gia','thanh_tien']),('thong_bao',540,1390,['ma_thong_bao','ma_hoa_don','tieu_de','trang_thai']),('thong_bao_da_doc',980,1390,['ma_thong_bao','ma_nguoi_dung','nguoi_tiep_nhan','ngay_doc'])]
-    for t,x,y,a in defs:nodes[t]=erd_entity(d,t,x,y,a)
-    relation(d,'loai_phi','cau_hinh_phi',nodes,'có giá',['loai_phi'])
-    relation(d,'can_ho','chi_so_dich_vu',nodes,'ghi chỉ số',['ma_can_ho'],pos=(60,535),viaA=[(60,157)],viaB=[(60,777)],sides=('L','L'))
-    relation(d,'can_ho','hoa_don',nodes,'nhận',['ma_can_ho'],pos=(420,555),viaA=[(420,157)],viaB=[(420,690),(665,690)],sides=('R','T'))
-    relation(d,'hoa_don','chi_tiet_hoa_don',nodes,'gồm',['ma_hoa_don'])
-    relation(d,'cau_hinh_phi','chi_tiet_hoa_don',nodes,'áp giá',['ma_cau_hinh_phi'],pos=(1320,540),viaA=[(1320,157)],viaB=[(1320,777)],sides=('R','R'))
-    relation(d,'chi_so_dich_vu','chi_tiet_hoa_don',nodes,'nguồn tính',['ma_chi_so_dich_vu'],pos=(915,1320),viaA=[(410,777),(410,1320)],viaB=[(1245,1320),(1245,777)],sides=('R','R'))
-    relation(d,'hoa_don','thong_bao',nodes,'nhắc phí',['ma_hoa_don'],pos=(475,1240),viaA=[(475,777)],viaB=[(475,1417)],sides=('L','L'))
-    relation(d,'thong_bao','thong_bao_da_doc',nodes,'đã đọc',['ma_thong_bao'])
-    save(d)
-
-    d=Diagram(18,1340,1040);nodes={}
-    defs=[('vi_tri_qr',80,130,['ma_vi_tri_qr','token_qr','ma_thiet_bi','phien_ban']),('phan_anh',525,130,['ma_phan_anh','ma_vi_tri_qr','ma_ky_thuat_vien','trang_thai','luot_xu_ly']),('hinh_anh_phan_anh',970,130,['ma_hinh_anh_phan_anh','ma_phan_anh','duong_dan_tep','luot_xu_ly'])]
-    for t,x,y,a in defs:nodes[t]=erd_entity(d,t,x,y,a,True)
-    relation(d,'vi_tri_qr','phan_anh',nodes,'tiếp nhận',['ma_vi_tri_qr'])
-    relation(d,'phan_anh','hinh_anh_phan_anh',nodes,'có ảnh',['ma_phan_anh']);save(d)
-
-    d=Diagram(19,1340,1660);nodes={}
-    defs=[('can_ho',80,130,['ma_can_ho','so_can_ho','dien_tich_m2']),('hoa_don',525,130,['ma_hoa_don','ma_can_ho','ky_thanh_toan','tong_tien','trang_thai']),('cau_hinh_phi',970,130,['ma_cau_hinh_phi','loai_phi','don_gia','tu_ngay']),('chi_tiet_hoa_don',525,940,['ma_chi_tiet_hoa_don','ma_hoa_don','ma_cau_hinh_phi','so_luong','don_gia','thanh_tien'])]
-    for t,x,y,a in defs:nodes[t]=erd_entity(d,t,x,y,a,True)
-    relation(d,'can_ho','hoa_don',nodes,'nhận',['ma_can_ho'])
-    relation(d,'hoa_don','chi_tiet_hoa_don',nodes,'gồm',['ma_hoa_don'],pos=(455,760),viaA=[(500,157),(500,650),(455,650)],viaB=[(455,967)],sides=('L','L'))
-    relation(d,'cau_hinh_phi','chi_tiet_hoa_don',nodes,'áp giá',['ma_cau_hinh_phi'],pos=(865,760),viaA=[(865,157)],viaB=[(865,967)],sides=('L','R'));save(d)
 
 def classes():
     d=Diagram(14,1290,2340);nodes={}
@@ -438,18 +545,18 @@ def main():
     usecase(2,[('auth','Đăng nhập / quản lý phiên'),('records','Quản lý hồ sơ và cư trú'),('qr','Tạo / quản lý QR vị trí'),('send','Gửi / tra cứu phản ánh'),('assign','Tiếp nhận / phân công / nghiệm thu'),('work','Xử lý việc được giao'),('bill','Lập / duyệt / xác nhận thu hóa đơn'),('read','Xem hóa đơn và thông báo'),('manage','Điều hành bảo trì, tiện ích và quỹ'),('maintain','Thực hiện bảo trì được giao'),('book','Đặt lịch tiện ích')],[('Ban quản lý',125,380,['auth','records','qr','assign','bill','manage']),('Kỹ thuật viên',125,1110,['auth','work','maintain']),('Cư dân',1120,850,['auth','send','read','book']),('Người gửi\ncông khai',1120,350,['send'])])
     usecase(3,[('a','Khối / tầng / căn hộ'),('b','Cư dân / cư trú / phương tiện'),('c','Tài khoản căn / bàn giao chủ hộ'),('d','Vị trí / thiết bị / in QR'),('e','Tiếp nhận / phân công phản ánh'),('f','Nghiệm thu / trả lại kết quả'),('g','Đơn giá / chỉ số / hóa đơn'),('h','Thu phí / công nợ / quỹ'),('i','Thông báo / tiện ích / báo cáo')],[('Ban quản lý',125,540,list('abcdefghi'))])
     usecase(4,[('send','Gửi phản ánh tại vị trí'),('lookup','Tra cứu bằng mã riêng'),('my','Xem phản ánh của mình'),('bill','Xem hóa đơn / VietQR'),('notice','Đọc thông báo / đặt tiện ích'),('work','Xử lý việc được giao'),('maintain','Thực hiện bảo trì được giao')],[('Cư dân',125,240,['send','lookup','my','bill','notice']),('Người gửi\ncông khai',125,650,['send','lookup']),('Kỹ thuật viên',1120,650,['work','maintain'])])
-    activities();sequences();statechart();classes();erds();architecture();dataflow()
-    assert sorted(d.index for d in DIAGRAMS)==list(range(1,22))
+    activities();sequences();statechart();classes();erd_hop_nhat();architecture();dataflow()
+    assert sorted(d.index for d in DIAGRAMS)==list(range(1,16))+[20,21]
     master=E.Element('mxfile',host='app.diagrams.net',version='24.7.17',type='device',compressed='false')
     summary=[]
     for d in sorted(DIAGRAMS,key=lambda d:d.index):
-        entry=copy.deepcopy(MANIFEST[d.index-1]);page=E.SubElement(master,'diagram',id=f'hinh-2-{d.index}',name=entry['caption']);page.append(copy.deepcopy(d.model))
+        entry=copy.deepcopy(MANIFEST[d.index-1]);page=E.SubElement(master,'diagram',id='hinh-'+entry['figure'].replace('.','-'),name=entry['caption']);page.append(copy.deepcopy(d.model))
         cells=d.model.findall('.//mxCell');entry.update(width=d.width,height=d.height,vertices=sum(c.get('vertex')=='1' for c in cells),edges=sum(c.get('edge')=='1' for c in cells),note=d.note,fields=d.fields,relations=d.relations)
         summary.append(entry)
     E.indent(master,space='  ')
-    (OUT/'Tat-ca-21-so-do-theo-mau.drawio').write_bytes(E.tostring(master,encoding='utf-8',xml_declaration=True))
-    (OUT/'nguon/mo-hinh-va-doi-chieu.json').write_text(json.dumps({'source_commit':'cceb904','schema_sha256':hashlib.sha256(SQL.encode()).hexdigest(),'reference_style':'6 example images supplied by user; housing domain retained','diagrams':summary},ensure_ascii=False,indent=2))
+    (OUT/'Tat-ca-17-so-do-ERD-hop-nhat.drawio').write_bytes(E.tostring(master,encoding='utf-8',xml_declaration=True))
+    (OUT/'nguon/mo-hinh-va-doi-chieu.json').write_text(json.dumps({'source_commit':'cceb904','schema_sha256':hashlib.sha256(SQL.encode()).hexdigest(),'tables':SCHEMA,'foreign_keys':FKS,'erd_pages':1,'reference_style':'6 example images supplied by user; housing domain retained','diagrams':summary},ensure_ascii=False,indent=2))
     (OUT/'danh-muc.json').write_text(json.dumps([{k:v for k,v in e.items() if k not in ['fields','relations']} for e in summary],ensure_ascii=False,indent=2))
-    print('Generated 21 native draw.io diagrams, 21 raw XML and 21 standalone SVG files.')
+    print('Generated 17 diagrams: ONE ERD with 31 tables, 362 columns, 81 foreign keys.')
 
 if __name__=='__main__':main()

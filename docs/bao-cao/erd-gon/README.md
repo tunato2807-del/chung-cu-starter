@@ -1,8 +1,10 @@
 # ERD rút gọn cho báo cáo đồ án
 
+> **Bản lưu lịch sử, đã được thay thế:** theo yêu cầu không tách ERD, dùng [ERD hợp nhất duy nhất, đủ 31 bảng / 81 FK](../../so-do-theo-mau-2026-11-17/README.md). Các số 38 bảng và hình phân hệ dưới đây thuộc bản thiết kế cũ, không phải hiện trạng.
+
 > **CSDL hiện tại (05/11/2026):** [MySQL31 bảng thật, 8 view, giữ đủ nghiệp vụ và18 bảng trọng tâm](../../csdl-do-an/README.md). Các hình/kiểm tra schema38 bảng ở bản cũ là lịch sử; ERD vật lý và từ điển đã sinh lại theo baseline mới.
 
-**Database giữ nguyên 38 bảng; bản này rút gọn phần trình bày theo yêu cầu của người dùng.** Hình tổng quan chọn **12 bảng**, kèm **6 sơ đồ phân hệ**, mỗi hình 4–7 bảng. Các bảng/cột/quan hệ được đối chiếu với metadata MySQL sau migration `018_equipment_qr.sql`, ngày 21/10/2026. Không có migration hoặc thay đổi code nghiệp vụ.
+**Bản lưu này được tạo khi database còn 38 bảng, ngày 21/10/2026.** Hình tổng quan cũ chọn **12 bảng**, kèm **6 sơ đồ phân hệ**, mỗi hình 4–7 bảng. Các bảng/cột/quan hệ khi đó đối chiếu với metadata sau migration `018_equipment_qr.sql`. Bộ hiện hành đã hợp nhất theo liên kết trên.
 
 ## Mở ngay
 

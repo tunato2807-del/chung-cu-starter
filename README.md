@@ -1,8 +1,8 @@
 # Quản lý chung cư · Phản ánh QR
 
-> **Sơ đồ vẽ lại theo mẫu — 17/11/2026:** [21 hình Use Case, ERD, Class, Activity, Sequence cùng Word/PDF/PNG/SVG và draw.io chỉnh sửa](docs/so-do-theo-mau-2026-11-17/README.md).
+> **Sơ đồ hiện hành — ERD đã gộp, 17/11/2026:** [17 hình Use Case, Class, Activity, Sequence và một ERD đầy đủ 31 bảng / 81 FK, cùng Word/PDF/PNG/SVG và draw.io chỉnh sửa](docs/so-do-theo-mau-2026-11-17/README.md).
 
-> **Word, draw.io và hình minh họa — 17/11/2026:** [mở mục lục đầy đủ để xem/tải từng file](docs/tai-lieu-ban-giao-2026-11-17/README.md). Có Word bổ sung trích dẫn, hướng dẫn sửa theo form riêng, 21 sơ đồ chỉnh sửa được và ảnh minh họa.
+> **Word và hình minh họa — 17/11/2026:** [bản báo cáo bổ sung trích dẫn, hướng dẫn sửa theo form riêng và ảnh minh họa](docs/tai-lieu-ban-giao-2026-11-17/README.md). Sơ đồ trong bộ cũ chỉ dùng đối chiếu lịch sử; dùng bộ 17 hình ở liên kết trên để lấy ERD đã hợp nhất.
 
 > **Cửa sổ thao tác mới — nhánh `main`:** [cách cập nhật bằng một lệnh trong VS Code](docs/cua-so-thao-tac-vscode.md). Thêm/sửa, chi tiết, lịch sử, hóa đơn, đặt lịch và phân công/nghiệm thu mở thành cửa sổ có thể đóng bằng ×, Đóng hoặc Esc. Giữ API, MySQL và dữ liệu hiện có; không cần migration cho lần sửa giao diện này.
 
@@ -270,9 +270,9 @@ Dừng backend cũ rồi đặt `$env:DB_NAME = "chung_cu_nghiem_thu"` trong ter
 
 ## Hồ sơ thiết kế và kiểm tra file khi chép tay
 
-[Bộ tài liệu báo cáo](docs/bao-cao/README.md) có Use Case/đặc tả, Activity/Sequence, Class Diagram, ERD logic/vật lý, từ điển 38 bảng và ma trận nghiệm thu theo đề cương. [Hướng dẫn VS Code](docs/cap-nhat-nghiem-thu-vscode.md) có đầy đủ code từng file mới, không cần tải ZIP. Chưa có migration hoặc dependency ứng dụng mới trong bản này.
+[Bộ tài liệu báo cáo](docs/bao-cao/README.md) có Use Case/đặc tả, Activity/Sequence, Class Diagram và ma trận nghiệm thu theo đề cương. [ERD hiện hành](docs/so-do-theo-mau-2026-11-17/README.md) hợp nhất đủ 31 bảng, 362 cột và 81 khóa ngoại trên một trang, kèm từ điển cột và nguồn chỉnh sửa. [Hướng dẫn VS Code](docs/cap-nhat-nghiem-thu-vscode.md) có code từng file mới.
 
-Để vẽ gọn và chèn Word: [ERD tổng quan 12 bảng và 6 sơ đồ phân hệ](docs/bao-cao/erd-gon/README.md), kèm PNG/SVG, PDF A4 ngang và file draw.io chỉnh sửa được. Database giữ nguyên 38 bảng; các bảng lịch sử/kỹ thuật có bảng đối chiếu và phần phụ lục riêng.
+Để chỉnh sửa hoặc chèn Word, dùng [ERD hợp nhất duy nhất](docs/so-do-theo-mau-2026-11-17/drawio/02-15-erd-hop-nhat.drawio) và [bảng đối chiếu 81 FK](docs/so-do-theo-mau-2026-11-17/DOI-CHIEU-KHOA-NGOAI.md). Các bộ ERD rút gọn/phân hệ 38 bảng trước đây là tài liệu lịch sử.
 
 ```powershell
 # Bắt lỗi thiếu service, sai đuôi .js.txt, thiếu dependency/file migration:

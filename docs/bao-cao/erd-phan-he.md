@@ -1,5 +1,7 @@
 # ERD vật lý theo phân hệ
 
+> **Bản lưu để đối chiếu, đã được thay thế trong bộ hình báo cáo:** dùng [ERD hợp nhất một trang, đủ 31 bảng / 81 FK](../so-do-theo-mau-2026-11-17/README.md). Các nhóm bên dưới không phải những ERD độc lập thỏa điều kiện không có liên kết PK/FK xuyên nhóm.
+
 Tự sinh từ cùng metadata với [từ điển dữ liệu](tu-dien-du-lieu.md). Cột trong hình rút gọn còn PK/FK; tên cột, kiểu đầy đủ, CHECK và UNIQUE xem từ điển. Bảng cha ngoài nhóm được thêm làm điểm nối. FK ghép được vẽ một quan hệ. UNIQUE ghép/sinh cần đọc thêm biểu thức trong từ điển.
 
 Ký hiệu: `||` đúng một; `o|` không hoặc một; `o{` không hoặc nhiều. Cột FK nullable cho phép không có cha. Đây là quan hệ vật lý; quy tắc một đợt cư trú đang mở hay một chủ hộ hiện tại còn phụ thuộc UNIQUE sinh và transaction service.

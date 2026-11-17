@@ -1,6 +1,6 @@
 # Báo cáo Word, sơ đồ draw.io và hình minh họa
 
-> **Bản vẽ lại mới theo mẫu bạn gửi:** [mở bộ 21 sơ đồ mới, tập hình Word/PDF và nguồn draw.io](../so-do-theo-mau-2026-11-17/README.md). Các file bên dưới giữ nguyên để đối chiếu với bản trước.
+> **Bộ hiện hành — ERD đã hợp nhất:** [17 sơ đồ, tập hình Word/PDF và nguồn draw.io](../so-do-theo-mau-2026-11-17/README.md). Chỉ một ERD đủ 31 bảng / 81 FK. Các sơ đồ và báo cáo toàn văn bên dưới lưu để đối chiếu bản trước; không dùng các ERD phân hệ cũ làm bản hiện hành.
 
 **Tô Hoàng Tuấn — MSSV 1250080221 · Bộ bàn giao ngày 17/11/2026**
 

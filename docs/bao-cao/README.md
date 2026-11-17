@@ -1,8 +1,8 @@
 # Hồ sơ phân tích thiết kế và nghiệm thu
 
-> **Bộ sơ đồ mới theo mẫu người dùng:** [mở 21 hình vẽ lại, file Word/PDF xem nhanh và nguồn draw.io](../so-do-theo-mau-2026-11-17/README.md). ERD có thuộc tính oval; Class có thuộc tính/phương thức; Activity phân làn; Sequence có thanh kích hoạt.
+> **Bộ sơ đồ hiện hành:** [17 hình cùng Word/PDF và draw.io — ERD đã hợp nhất](../so-do-theo-mau-2026-11-17/README.md). Chỉ một ERD, đủ 31 bảng / 362 cột / 81 FK; thực thể chữ nhật, thuộc tính oval và quan hệ hình thoi theo mẫu.
 
-> **Bộ tài liệu bàn giao 17/11/2026:** [Word mới, 21 file draw.io riêng, XML để copy và hình minh họa](../tai-lieu-ban-giao-2026-11-17/README.md). Có bảng đối chiếu từng mục Word với giao diện cửa sổ trên `main`.
+> **Bộ tài liệu bàn giao 17/11/2026:** [Word báo cáo, hướng dẫn sửa theo giao diện cửa sổ và hình minh họa](../tai-lieu-ban-giao-2026-11-17/README.md). Các ERD phân hệ trong bộ cũ đã được thay bằng ERD hợp nhất ở liên kết trên.
 
 > **Quyển báo cáo mới theo hướng dẫn khoa/GVHD:** [Word, PDF xem trước và hướng dẫn hoàn thiện](quyen-bao-cao-2026/README.md). Đối chiếu mã nguồn `56ebfe8`, dùng schema **31 bảng + 8 view**, có 25 hình và 32 ca nghiệm thu. Những hình 38 bảng bên dưới thuộc hồ sơ lịch sử, không thay hiện trạng trong quyển mới.
 
@@ -12,7 +12,7 @@ Bộ tài liệu bổ sung cho đề cương `1250080221_To_Hoang_Tuan.docx` c�
 
 Các nghiệp vụ chính đã có. Phần làm tiếp lần này là hoàn thiện hồ sơ chương 2 và chuẩn bị nghiệm thu chương 3, thay vì thêm phân hệ không có trong phạm vi đề tài.
 
-**Để vẽ/chèn Word gọn:** dùng [bộ ERD rút gọn](erd-gon/README.md), có tổng quan **12 bảng được chọn**, 6 hình phân hệ 4–7 bảng, PDF A4 ngang, SVG/PNG và file draw.io chỉnh sửa được. [Ánh xạ 38 bảng](erd-gon/doi-chieu-38-bang.md) giữ rõ phạm vi đầy đủ; database hiện tại vẫn 38 bảng. Chọn bản rút gọn cho nội dung chính và bản vật lý đầy đủ cho phụ lục.
+**ERD dùng cho Word:** [một ERD hợp nhất toàn bộ 31 bảng](../so-do-theo-mau-2026-11-17/README.md), giữ đủ liên kết PK/FK giữa các nghiệp vụ; không tách thành các ERD phân hệ. Bộ rút gọn 38 bảng trước đây chỉ lưu để đối chiếu lịch sử.
 
 | Mục đề cương | Tài liệu dùng cho báo cáo |
 |---|---|
@@ -20,13 +20,13 @@ Các nghiệp vụ chính đã có. Phần làm tiếp lần này là hoàn thi�
 | 2.2 Use Case tổng thể, BQL/cư dân, 5 đặc tả | [Use Case và đặc tả](use-case.md) |
 | 2.3 Bốn Activity và bốn Sequence | [Quy trình và trình tự](quy-trinh.md) |
 | 2.4 Class Diagram, ERD logic | [Mô hình phân tích](kien-truc-va-mo-hinh.md) |
-| 2.4 ERD vật lý và từ điển toàn bộ bảng | [ERD rút gọn để chèn Word](erd-gon/README.md); [ERD vật lý theo phân hệ](erd-phan-he.md), [ERD toàn bộ](erd-vat-ly.mmd), [từ điển dữ liệu](tu-dien-du-lieu.md) cho phần chi tiết/phụ lục |
+| 2.4 ERD vật lý và từ điển toàn bộ bảng | [ERD hợp nhất một trang](../so-do-theo-mau-2026-11-17/drawio/02-15-erd-hop-nhat.drawio), [đối chiếu 81 FK](../so-do-theo-mau-2026-11-17/DOI-CHIEU-KHOA-NGOAI.md), [từ điển 362 cột](../so-do-theo-mau-2026-11-17/TU-DIEN-362-COT.md) |
 | 3.3 Minh chứng demo; 3.4 Test Case và thực nghiệm | [Ma trận nghiệm thu và kế hoạch chụp hình](nghiem-thu.md) |
 | Cập nhật bản Windows không bị thiếu file | [Hướng dẫn VS Code với code từng file](../cap-nhat-nghiem-thu-vscode.md) |
 
 Sơ đồ Mermaid hiển thị ngay trên GitHub trong các tệp Markdown. Trong VS Code, dùng trình xem Markdown hỗ trợ Mermaid hoặc mở mã sơ đồ trong công cụ Mermaid tương thích. Sơ đồ Use Case dùng hình ellipse và actor qua `flowchart` để mô phỏng ký pháp, **không phải cú pháp UML Use Case nguyên bản**. Nếu GVHD yêu cầu chuẩn UML chặt chẽ, dùng đặc tả này để dựng lại trong StarUML/draw.io. Class Diagram là mô hình phân tích; dự án thực thi bằng hàm/module JavaScript, không dùng ORM entity classes.
 
-Đưa hình vào Word theo từng phân hệ, kèm chú thích “Nguồn: thiết kế theo mã nguồn dự án, schema 018”. Không thu nhỏ toàn bộ ERD 38 bảng vào một trang. Ưu tiên ERD logic ở nội dung chính và từ điển/ERD vật lý ở phụ lục.
+Trong Word thay năm ERD cũ (2.15–2.19) bằng **Hình 2.15 — ERD hợp nhất**, đổi kiến trúc 2.20 thành 2.16 và luồng dữ liệu 2.21 thành 2.17. ERD là một hình khổ lớn; có thể đặt nguyên hình ở phụ lục, dùng SVG/PDF vector để phóng to. Chú thích nguồn: `database/thesis-mysql/001_thesis_schema.sql`, 31 bảng, 81 FK.
 
 Để tái sinh **ba tệp vật lý** sau khi schema đã được migrate đầy đủ, chạy tại thư mục gốc:
 
