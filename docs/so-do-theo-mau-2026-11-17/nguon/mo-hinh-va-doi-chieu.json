@@ -2983,6 +2983,47 @@
     }
   ],
   "erd_pages": 1,
+  "presentation": {
+    "selected_columns": 185,
+    "total_columns": 362,
+    "default_visible_fk": 39,
+    "optional_fk": 42,
+    "optional_layer": "fk-kiem-soat",
+    "attribute_style": "ellipse",
+    "purposes": {
+      "can_ho": "Lưu căn hộ và diện tích tính phí",
+      "cau_hinh_phi": "Thiết lập đơn giá và kỳ áp dụng",
+      "chi_so_dich_vu": "Ghi chỉ số điện, nước theo kỳ",
+      "chi_tiet_hoa_don": "Lưu các khoản phí của hóa đơn",
+      "chung_tu_thu_chi": "Lưu tệp chứng từ của phiếu",
+      "cu_dan": "Quản lý hồ sơ và liên hệ cư dân",
+      "dat_lich_tien_ich": "Đặt và theo dõi lịch tiện ích",
+      "dot_lap_hoa_don": "Theo dõi đợt lập hóa đơn",
+      "dot_nhap_du_lieu": "Theo dõi lần nhập dữ liệu",
+      "dot_xu_ly_hoa_don": "Lưu kết quả xử lý hóa đơn",
+      "gioi_han_gui": "Giới hạn tần suất gửi yêu cầu",
+      "hinh_anh_phan_anh": "Lưu ảnh gửi và ảnh xử lý",
+      "hoa_don": "Lập và theo dõi hóa đơn theo kỳ",
+      "khoi_toa_nha": "Quản lý các khối tòa nhà",
+      "lich_su_cu_tru": "Ghi nhận các đợt cư trú",
+      "loai_phi": "Danh mục các loại phí",
+      "nguoi_dung": "Quản lý tài khoản và vai trò",
+      "phan_anh": "Tiếp nhận và theo dõi phản ánh",
+      "phieu_bao_tri": "Lập và theo dõi việc bảo trì",
+      "phieu_thu_chi": "Ghi nhận thu, chi của quỹ",
+      "phuong_tien": "Quản lý đăng ký xe cư dân",
+      "quy_tai_chinh": "Quản lý danh mục quỹ",
+      "schema_migrations": "Theo dõi phiên bản CSDL",
+      "tang_toa_nha": "Quản lý tầng trong mỗi khối",
+      "thiet_bi": "Quản lý tài sản và vị trí thiết bị",
+      "thong_bao": "Gửi và theo dõi thông báo",
+      "thong_bao_da_doc": "Theo dõi người đã đọc thông báo",
+      "tien_ich": "Quản lý tiện ích và sức chứa",
+      "vi_tri_qr": "Gắn QR với vị trí hoặc thiết bị",
+      "yeu_cau_gui": "Chống gửi phản ánh trùng lặp",
+      "nhat_ky_nghiep_vu": "Lưu vết thay đổi nghiệp vụ"
+    }
+  },
   "reference_style": "6 example images supplied by user; housing domain retained",
   "diagrams": [
     {
@@ -3155,13 +3196,13 @@
     },
     {
       "figure": "2.15",
-      "caption": "Hình 2.15. ERD hợp nhất toàn bộ 31 bảng và 81 khóa ngoại",
+      "caption": "Hình 2.15. ERD hợp nhất — thuộc tính và nghiệp vụ chính",
       "filename": "02-15-erd-hop-nhat",
-      "vertices": 675,
-      "edges": 586,
-      "width": 10033,
-      "height": 7123,
-      "note": "ERD duy nhất: đầy đủ 31 bảng, 362 cột, 81 FK (gồm 14 FK inline của nhat_ky_nghiep_vu); 29 bảng cùng thành phần liên thông, 2 bảng kỹ thuật không có FK cùng canvas.",
+      "vertices": 529,
+      "edges": 409,
+      "width": 5886,
+      "height": 4742,
+      "note": "Một ERD có 31 bảng, 185 thuộc tính chọn từ 362 (giữ mọi cột PK/FK), 39 liên kết nghiệp vụ mặc định; 42 FK kiểm soát cùng trang trong lớp bật/tắt. Tổng file: 81 FK.",
       "fields": [
         {
           "table": "can_ho",
@@ -3170,7 +3211,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-10"
+          "cell_id": "d15-11"
         },
         {
           "table": "can_ho",
@@ -3179,7 +3220,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-12"
+          "cell_id": "d15-13"
         },
         {
           "table": "can_ho",
@@ -3190,7 +3231,7 @@
           "foreign_keys": [
             "R01"
           ],
-          "cell_id": "d15-14"
+          "cell_id": "d15-15"
         },
         {
           "table": "can_ho",
@@ -3201,7 +3242,7 @@
           "foreign_keys": [
             "R01"
           ],
-          "cell_id": "d15-16"
+          "cell_id": "d15-17"
         },
         {
           "table": "can_ho",
@@ -3210,34 +3251,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-18"
-        },
-        {
-          "table": "can_ho",
-          "field": "tinh_phi_dich_vu",
-          "type": "tinyint(1)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-20"
-        },
-        {
-          "table": "can_ho",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-22"
-        },
-        {
-          "table": "can_ho",
-          "field": "ngay_tao",
-          "type": "datetime",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-24"
+          "cell_id": "d15-19"
         },
         {
           "table": "cau_hinh_phi",
@@ -3246,7 +3260,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-30"
+          "cell_id": "d15-26"
         },
         {
           "table": "cau_hinh_phi",
@@ -3257,7 +3271,7 @@
           "foreign_keys": [
             "R02"
           ],
-          "cell_id": "d15-32"
+          "cell_id": "d15-28"
         },
         {
           "table": "cau_hinh_phi",
@@ -3266,7 +3280,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-34"
+          "cell_id": "d15-30"
         },
         {
           "table": "cau_hinh_phi",
@@ -3275,16 +3289,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-36"
-        },
-        {
-          "table": "cau_hinh_phi",
-          "field": "den_ngay",
-          "type": "date",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-38"
+          "cell_id": "d15-32"
         },
         {
           "table": "cau_hinh_phi",
@@ -3295,16 +3300,7 @@
           "foreign_keys": [
             "R03"
           ],
-          "cell_id": "d15-40"
-        },
-        {
-          "table": "cau_hinh_phi",
-          "field": "ngay_tao",
-          "type": "datetime",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-42"
+          "cell_id": "d15-34"
         },
         {
           "table": "cau_hinh_phi",
@@ -3313,25 +3309,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-44"
-        },
-        {
-          "table": "cau_hinh_phi",
-          "field": "thue_gtgt",
-          "type": "decimal(5,2)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-46"
-        },
-        {
-          "table": "cau_hinh_phi",
-          "field": "bac_dien",
-          "type": "json",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-48"
+          "cell_id": "d15-36"
         },
         {
           "table": "chi_so_dich_vu",
@@ -3340,7 +3318,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-54"
+          "cell_id": "d15-43"
         },
         {
           "table": "chi_so_dich_vu",
@@ -3351,7 +3329,7 @@
           "foreign_keys": [
             "R04"
           ],
-          "cell_id": "d15-56"
+          "cell_id": "d15-45"
         },
         {
           "table": "chi_so_dich_vu",
@@ -3360,7 +3338,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-58"
+          "cell_id": "d15-47"
         },
         {
           "table": "chi_so_dich_vu",
@@ -3369,7 +3347,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-60"
+          "cell_id": "d15-49"
         },
         {
           "table": "chi_so_dich_vu",
@@ -3378,7 +3356,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-62"
+          "cell_id": "d15-51"
         },
         {
           "table": "chi_so_dich_vu",
@@ -3387,25 +3365,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-64"
-        },
-        {
-          "table": "chi_so_dich_vu",
-          "field": "ngay_chot",
-          "type": "date",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-66"
-        },
-        {
-          "table": "chi_so_dich_vu",
-          "field": "ghi_chu",
-          "type": "varchar(255)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-68"
+          "cell_id": "d15-53"
         },
         {
           "table": "chi_so_dich_vu",
@@ -3416,25 +3376,7 @@
           "foreign_keys": [
             "R05"
           ],
-          "cell_id": "d15-70"
-        },
-        {
-          "table": "chi_so_dich_vu",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-72"
-        },
-        {
-          "table": "chi_so_dich_vu",
-          "field": "ngay_ghi",
-          "type": "datetime",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-74"
+          "cell_id": "d15-55"
         },
         {
           "table": "chi_tiet_hoa_don",
@@ -3443,7 +3385,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-80"
+          "cell_id": "d15-62"
         },
         {
           "table": "chi_tiet_hoa_don",
@@ -3454,7 +3396,7 @@
           "foreign_keys": [
             "R06"
           ],
-          "cell_id": "d15-82"
+          "cell_id": "d15-64"
         },
         {
           "table": "chi_tiet_hoa_don",
@@ -3465,7 +3407,7 @@
           "foreign_keys": [
             "R07"
           ],
-          "cell_id": "d15-84"
+          "cell_id": "d15-66"
         },
         {
           "table": "chi_tiet_hoa_don",
@@ -3476,34 +3418,7 @@
           "foreign_keys": [
             "R08"
           ],
-          "cell_id": "d15-86"
-        },
-        {
-          "table": "chi_tiet_hoa_don",
-          "field": "loai_phi",
-          "type": "varchar(30)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-88"
-        },
-        {
-          "table": "chi_tiet_hoa_don",
-          "field": "dien_giai",
-          "type": "varchar(255)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-90"
-        },
-        {
-          "table": "chi_tiet_hoa_don",
-          "field": "don_vi_tinh",
-          "type": "varchar(20)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-92"
+          "cell_id": "d15-68"
         },
         {
           "table": "chi_tiet_hoa_don",
@@ -3512,7 +3427,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-94"
+          "cell_id": "d15-70"
         },
         {
           "table": "chi_tiet_hoa_don",
@@ -3521,7 +3436,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-96"
+          "cell_id": "d15-72"
         },
         {
           "table": "chi_tiet_hoa_don",
@@ -3530,16 +3445,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-98"
-        },
-        {
-          "table": "chi_tiet_hoa_don",
-          "field": "du_lieu_nguon",
-          "type": "json",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-100"
+          "cell_id": "d15-74"
         },
         {
           "table": "chung_tu_thu_chi",
@@ -3548,7 +3454,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-106"
+          "cell_id": "d15-81"
         },
         {
           "table": "chung_tu_thu_chi",
@@ -3559,7 +3465,7 @@
           "foreign_keys": [
             "R09"
           ],
-          "cell_id": "d15-108"
+          "cell_id": "d15-83"
         },
         {
           "table": "chung_tu_thu_chi",
@@ -3568,7 +3474,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-110"
+          "cell_id": "d15-85"
         },
         {
           "table": "chung_tu_thu_chi",
@@ -3577,34 +3483,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-112"
-        },
-        {
-          "table": "chung_tu_thu_chi",
-          "field": "kich_thuoc",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-114"
-        },
-        {
-          "table": "chung_tu_thu_chi",
-          "field": "bam_sha256",
-          "type": "char(64)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-116"
-        },
-        {
-          "table": "chung_tu_thu_chi",
-          "field": "noi_dung",
-          "type": "mediumblob",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-118"
+          "cell_id": "d15-87"
         },
         {
           "table": "chung_tu_thu_chi",
@@ -3615,16 +3494,7 @@
           "foreign_keys": [
             "R10"
           ],
-          "cell_id": "d15-120"
-        },
-        {
-          "table": "chung_tu_thu_chi",
-          "field": "ngay_tao",
-          "type": "datetime(6)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-122"
+          "cell_id": "d15-89"
         },
         {
           "table": "cu_dan",
@@ -3633,7 +3503,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-128"
+          "cell_id": "d15-96"
         },
         {
           "table": "cu_dan",
@@ -3642,7 +3512,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-130"
+          "cell_id": "d15-98"
         },
         {
           "table": "cu_dan",
@@ -3651,7 +3521,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-132"
+          "cell_id": "d15-100"
         },
         {
           "table": "cu_dan",
@@ -3662,25 +3532,7 @@
           "foreign_keys": [
             "R11"
           ],
-          "cell_id": "d15-134"
-        },
-        {
-          "table": "cu_dan",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-136"
-        },
-        {
-          "table": "cu_dan",
-          "field": "ngay_tao",
-          "type": "datetime",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-138"
+          "cell_id": "d15-102"
         },
         {
           "table": "dat_lich_tien_ich",
@@ -3689,7 +3541,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-144"
+          "cell_id": "d15-109"
         },
         {
           "table": "dat_lich_tien_ich",
@@ -3700,7 +3552,7 @@
           "foreign_keys": [
             "R12"
           ],
-          "cell_id": "d15-146"
+          "cell_id": "d15-111"
         },
         {
           "table": "dat_lich_tien_ich",
@@ -3711,7 +3563,7 @@
           "foreign_keys": [
             "R13"
           ],
-          "cell_id": "d15-148"
+          "cell_id": "d15-113"
         },
         {
           "table": "dat_lich_tien_ich",
@@ -3722,7 +3574,7 @@
           "foreign_keys": [
             "R14"
           ],
-          "cell_id": "d15-150"
+          "cell_id": "d15-115"
         },
         {
           "table": "dat_lich_tien_ich",
@@ -3733,7 +3585,7 @@
           "foreign_keys": [
             "R15"
           ],
-          "cell_id": "d15-152"
+          "cell_id": "d15-117"
         },
         {
           "table": "dat_lich_tien_ich",
@@ -3744,34 +3596,7 @@
           "foreign_keys": [
             "R16"
           ],
-          "cell_id": "d15-154"
-        },
-        {
-          "table": "dat_lich_tien_ich",
-          "field": "ten_tien_ich",
-          "type": "varchar(120)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-156"
-        },
-        {
-          "table": "dat_lich_tien_ich",
-          "field": "vi_tri",
-          "type": "varchar(160)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-158"
-        },
-        {
-          "table": "dat_lich_tien_ich",
-          "field": "ten_nguoi_dat",
-          "type": "varchar(100)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-160"
+          "cell_id": "d15-119"
         },
         {
           "table": "dat_lich_tien_ich",
@@ -3780,7 +3605,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-162"
+          "cell_id": "d15-121"
         },
         {
           "table": "dat_lich_tien_ich",
@@ -3789,25 +3614,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-164"
-        },
-        {
-          "table": "dat_lich_tien_ich",
-          "field": "so_nguoi",
-          "type": "smallint unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-166"
-        },
-        {
-          "table": "dat_lich_tien_ich",
-          "field": "ghi_chu",
-          "type": "varchar(1000)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-168"
+          "cell_id": "d15-123"
         },
         {
           "table": "dat_lich_tien_ich",
@@ -3816,43 +3623,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-170"
-        },
-        {
-          "table": "dat_lich_tien_ich",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-172"
-        },
-        {
-          "table": "dat_lich_tien_ich",
-          "field": "khoa_yeu_cau",
-          "type": "char(36)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-174"
-        },
-        {
-          "table": "dat_lich_tien_ich",
-          "field": "van_tay",
-          "type": "char(64)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-176"
-        },
-        {
-          "table": "dat_lich_tien_ich",
-          "field": "ngay_tao",
-          "type": "datetime(6)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-178"
+          "cell_id": "d15-125"
         },
         {
           "table": "dot_lap_hoa_don",
@@ -3861,7 +3632,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-184"
+          "cell_id": "d15-132"
         },
         {
           "table": "dot_lap_hoa_don",
@@ -3872,25 +3643,7 @@
           "foreign_keys": [
             "R17"
           ],
-          "cell_id": "d15-186"
-        },
-        {
-          "table": "dot_lap_hoa_don",
-          "field": "khoa_yeu_cau",
-          "type": "char(36)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-188"
-        },
-        {
-          "table": "dot_lap_hoa_don",
-          "field": "dau_vao_sha256",
-          "type": "char(64)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-190"
+          "cell_id": "d15-134"
         },
         {
           "table": "dot_lap_hoa_don",
@@ -3899,7 +3652,7 @@
           "nullable": true,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-192"
+          "cell_id": "d15-136"
         },
         {
           "table": "dot_lap_hoa_don",
@@ -3908,7 +3661,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-194"
+          "cell_id": "d15-138"
         },
         {
           "table": "dot_nhap_du_lieu",
@@ -3917,7 +3670,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-200"
+          "cell_id": "d15-145"
         },
         {
           "table": "dot_nhap_du_lieu",
@@ -3928,16 +3681,7 @@
           "foreign_keys": [
             "R18"
           ],
-          "cell_id": "d15-202"
-        },
-        {
-          "table": "dot_nhap_du_lieu",
-          "field": "khoa_yeu_cau",
-          "type": "char(36)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-204"
+          "cell_id": "d15-147"
         },
         {
           "table": "dot_nhap_du_lieu",
@@ -3946,16 +3690,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-206"
-        },
-        {
-          "table": "dot_nhap_du_lieu",
-          "field": "sha256",
-          "type": "char(64)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-208"
+          "cell_id": "d15-149"
         },
         {
           "table": "dot_nhap_du_lieu",
@@ -3964,25 +3699,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-210"
-        },
-        {
-          "table": "dot_nhap_du_lieu",
-          "field": "ket_qua",
-          "type": "json",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-212"
-        },
-        {
-          "table": "dot_nhap_du_lieu",
-          "field": "ngay_tao",
-          "type": "datetime(6)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-214"
+          "cell_id": "d15-151"
         },
         {
           "table": "dot_xu_ly_hoa_don",
@@ -3991,7 +3708,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-220"
+          "cell_id": "d15-158"
         },
         {
           "table": "dot_xu_ly_hoa_don",
@@ -4002,16 +3719,7 @@
           "foreign_keys": [
             "R19"
           ],
-          "cell_id": "d15-222"
-        },
-        {
-          "table": "dot_xu_ly_hoa_don",
-          "field": "khoa_yeu_cau",
-          "type": "char(36)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-224"
+          "cell_id": "d15-160"
         },
         {
           "table": "dot_xu_ly_hoa_don",
@@ -4020,16 +3728,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-226"
-        },
-        {
-          "table": "dot_xu_ly_hoa_don",
-          "field": "dau_vao_sha256",
-          "type": "char(64)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-228"
+          "cell_id": "d15-162"
         },
         {
           "table": "dot_xu_ly_hoa_don",
@@ -4038,16 +3737,7 @@
           "nullable": true,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-230"
-        },
-        {
-          "table": "dot_xu_ly_hoa_don",
-          "field": "ngay_tao",
-          "type": "datetime(6)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-232"
+          "cell_id": "d15-164"
         },
         {
           "table": "gioi_han_gui",
@@ -4056,7 +3746,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-238"
+          "cell_id": "d15-171"
         },
         {
           "table": "gioi_han_gui",
@@ -4065,7 +3755,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-240"
+          "cell_id": "d15-173"
         },
         {
           "table": "hinh_anh_phan_anh",
@@ -4074,7 +3764,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-247"
+          "cell_id": "d15-181"
         },
         {
           "table": "hinh_anh_phan_anh",
@@ -4085,7 +3775,7 @@
           "foreign_keys": [
             "R20"
           ],
-          "cell_id": "d15-249"
+          "cell_id": "d15-183"
         },
         {
           "table": "hinh_anh_phan_anh",
@@ -4094,7 +3784,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-251"
+          "cell_id": "d15-185"
         },
         {
           "table": "hinh_anh_phan_anh",
@@ -4103,7 +3793,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-253"
+          "cell_id": "d15-187"
         },
         {
           "table": "hinh_anh_phan_anh",
@@ -4112,7 +3802,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-255"
+          "cell_id": "d15-189"
         },
         {
           "table": "hinh_anh_phan_anh",
@@ -4123,16 +3813,7 @@
           "foreign_keys": [
             "R21"
           ],
-          "cell_id": "d15-257"
-        },
-        {
-          "table": "hinh_anh_phan_anh",
-          "field": "ngay_tai_len",
-          "type": "datetime",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-259"
+          "cell_id": "d15-191"
         },
         {
           "table": "hoa_don",
@@ -4141,16 +3822,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-265"
-        },
-        {
-          "table": "hoa_don",
-          "field": "so_hoa_don",
-          "type": "varchar(25)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-267"
+          "cell_id": "d15-198"
         },
         {
           "table": "hoa_don",
@@ -4161,7 +3833,7 @@
           "foreign_keys": [
             "R22"
           ],
-          "cell_id": "d15-269"
+          "cell_id": "d15-200"
         },
         {
           "table": "hoa_don",
@@ -4170,34 +3842,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-271"
-        },
-        {
-          "table": "hoa_don",
-          "field": "ngay_chot_phi",
-          "type": "date",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-273"
-        },
-        {
-          "table": "hoa_don",
-          "field": "lan_lap",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-275"
-        },
-        {
-          "table": "hoa_don",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-277"
+          "cell_id": "d15-202"
         },
         {
           "table": "hoa_don",
@@ -4206,34 +3851,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-279"
-        },
-        {
-          "table": "hoa_don",
-          "field": "tinh_nuoc",
-          "type": "tinyint(1)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-281"
-        },
-        {
-          "table": "hoa_don",
-          "field": "tinh_dien",
-          "type": "tinyint(1)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-283"
-        },
-        {
-          "table": "hoa_don",
-          "field": "tinh_xe",
-          "type": "tinyint(1)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-285"
+          "cell_id": "d15-204"
         },
         {
           "table": "hoa_don",
@@ -4242,61 +3860,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-287"
-        },
-        {
-          "table": "hoa_don",
-          "field": "loi_du_lieu",
-          "type": "json",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-289"
-        },
-        {
-          "table": "hoa_don",
-          "field": "dau_van_tay",
-          "type": "char(64)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-291"
-        },
-        {
-          "table": "hoa_don",
-          "field": "han_thanh_toan",
-          "type": "date",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-293"
-        },
-        {
-          "table": "hoa_don",
-          "field": "ma_ngan_hang",
-          "type": "char(6)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-295"
-        },
-        {
-          "table": "hoa_don",
-          "field": "so_tai_khoan",
-          "type": "varchar(30)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-297"
-        },
-        {
-          "table": "hoa_don",
-          "field": "ten_nguoi_nhan",
-          "type": "varchar(100)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-299"
+          "cell_id": "d15-206"
         },
         {
           "table": "hoa_don",
@@ -4307,7 +3871,7 @@
           "foreign_keys": [
             "R23"
           ],
-          "cell_id": "d15-301"
+          "cell_id": "d15-208"
         },
         {
           "table": "hoa_don",
@@ -4318,7 +3882,7 @@
           "foreign_keys": [
             "R24"
           ],
-          "cell_id": "d15-303"
+          "cell_id": "d15-210"
         },
         {
           "table": "hoa_don",
@@ -4329,7 +3893,7 @@
           "foreign_keys": [
             "R25"
           ],
-          "cell_id": "d15-305"
+          "cell_id": "d15-212"
         },
         {
           "table": "hoa_don",
@@ -4340,7 +3904,7 @@
           "foreign_keys": [
             "R26"
           ],
-          "cell_id": "d15-307"
+          "cell_id": "d15-214"
         },
         {
           "table": "hoa_don",
@@ -4351,7 +3915,7 @@
           "foreign_keys": [
             "R27"
           ],
-          "cell_id": "d15-309"
+          "cell_id": "d15-216"
         },
         {
           "table": "hoa_don",
@@ -4362,88 +3926,7 @@
           "foreign_keys": [
             "R28"
           ],
-          "cell_id": "d15-311"
-        },
-        {
-          "table": "hoa_don",
-          "field": "ngay_tao",
-          "type": "datetime",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-313"
-        },
-        {
-          "table": "hoa_don",
-          "field": "ngay_duyet",
-          "type": "datetime",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-315"
-        },
-        {
-          "table": "hoa_don",
-          "field": "ngay_gui",
-          "type": "datetime",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-317"
-        },
-        {
-          "table": "hoa_don",
-          "field": "ngay_huy",
-          "type": "datetime",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-319"
-        },
-        {
-          "table": "hoa_don",
-          "field": "ngay_thanh_toan",
-          "type": "datetime",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-321"
-        },
-        {
-          "table": "hoa_don",
-          "field": "ly_do_huy",
-          "type": "varchar(255)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-323"
-        },
-        {
-          "table": "hoa_don",
-          "field": "so_tien_da_thu",
-          "type": "decimal(14,0)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-325"
-        },
-        {
-          "table": "hoa_don",
-          "field": "ma_tham_chieu",
-          "type": "varchar(100)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-327"
-        },
-        {
-          "table": "hoa_don",
-          "field": "hieu_luc",
-          "type": "tinyint",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-329"
+          "cell_id": "d15-218"
         },
         {
           "table": "khoi_toa_nha",
@@ -4452,7 +3935,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-335"
+          "cell_id": "d15-225"
         },
         {
           "table": "khoi_toa_nha",
@@ -4461,43 +3944,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-337"
-        },
-        {
-          "table": "khoi_toa_nha",
-          "field": "mo_ta",
-          "type": "varchar(255)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-339"
-        },
-        {
-          "table": "khoi_toa_nha",
-          "field": "giu_khi_trong",
-          "type": "tinyint(1)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-341"
-        },
-        {
-          "table": "khoi_toa_nha",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-343"
-        },
-        {
-          "table": "khoi_toa_nha",
-          "field": "ngay_tao",
-          "type": "datetime",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-345"
+          "cell_id": "d15-227"
         },
         {
           "table": "lich_su_cu_tru",
@@ -4506,7 +3953,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-351"
+          "cell_id": "d15-234"
         },
         {
           "table": "lich_su_cu_tru",
@@ -4517,7 +3964,7 @@
           "foreign_keys": [
             "R29"
           ],
-          "cell_id": "d15-353"
+          "cell_id": "d15-236"
         },
         {
           "table": "lich_su_cu_tru",
@@ -4528,7 +3975,7 @@
           "foreign_keys": [
             "R30"
           ],
-          "cell_id": "d15-355"
+          "cell_id": "d15-238"
         },
         {
           "table": "lich_su_cu_tru",
@@ -4537,7 +3984,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-357"
+          "cell_id": "d15-240"
         },
         {
           "table": "lich_su_cu_tru",
@@ -4546,7 +3993,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-359"
+          "cell_id": "d15-242"
         },
         {
           "table": "lich_su_cu_tru",
@@ -4555,7 +4002,7 @@
           "nullable": true,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-361"
+          "cell_id": "d15-244"
         },
         {
           "table": "lich_su_cu_tru",
@@ -4566,25 +4013,7 @@
           "foreign_keys": [
             "R31"
           ],
-          "cell_id": "d15-363"
-        },
-        {
-          "table": "lich_su_cu_tru",
-          "field": "ngay_tao",
-          "type": "datetime",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-365"
-        },
-        {
-          "table": "lich_su_cu_tru",
-          "field": "cu_dan_dang_o",
-          "type": "int unsigned",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-367"
+          "cell_id": "d15-246"
         },
         {
           "table": "loai_phi",
@@ -4593,7 +4022,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-373"
+          "cell_id": "d15-253"
         },
         {
           "table": "loai_phi",
@@ -4602,7 +4031,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-375"
+          "cell_id": "d15-255"
         },
         {
           "table": "loai_phi",
@@ -4611,7 +4040,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-377"
+          "cell_id": "d15-257"
         },
         {
           "table": "nguoi_dung",
@@ -4620,7 +4049,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-383"
+          "cell_id": "d15-264"
         },
         {
           "table": "nguoi_dung",
@@ -4629,25 +4058,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-385"
-        },
-        {
-          "table": "nguoi_dung",
-          "field": "so_dien_thoai",
-          "type": "varchar(15)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-387"
-        },
-        {
-          "table": "nguoi_dung",
-          "field": "mat_khau_ma_hoa",
-          "type": "varchar(255)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-389"
+          "cell_id": "d15-266"
         },
         {
           "table": "nguoi_dung",
@@ -4656,70 +4067,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-391"
-        },
-        {
-          "table": "nguoi_dung",
-          "field": "chuyen_mon",
-          "type": "varchar(100)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-393"
-        },
-        {
-          "table": "nguoi_dung",
-          "field": "dang_hoat_dong",
-          "type": "tinyint(1)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-395"
-        },
-        {
-          "table": "nguoi_dung",
-          "field": "phien_ban_token",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-397"
-        },
-        {
-          "table": "nguoi_dung",
-          "field": "so_lan_dang_nhap_sai",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-399"
-        },
-        {
-          "table": "nguoi_dung",
-          "field": "khoa_den_luc",
-          "type": "datetime",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-401"
-        },
-        {
-          "table": "nguoi_dung",
-          "field": "ngay_tao",
-          "type": "datetime",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-403"
-        },
-        {
-          "table": "nguoi_dung",
-          "field": "ten_dang_nhap",
-          "type": "varchar(30)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-405"
+          "cell_id": "d15-268"
         },
         {
           "table": "nguoi_dung",
@@ -4730,7 +4078,7 @@
           "foreign_keys": [
             "R32"
           ],
-          "cell_id": "d15-407"
+          "cell_id": "d15-270"
         },
         {
           "table": "nguoi_dung",
@@ -4741,16 +4089,7 @@
           "foreign_keys": [
             "R33"
           ],
-          "cell_id": "d15-409"
-        },
-        {
-          "table": "nguoi_dung",
-          "field": "phien_ban_ban_giao",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-411"
+          "cell_id": "d15-272"
         },
         {
           "table": "phan_anh",
@@ -4759,25 +4098,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-417"
-        },
-        {
-          "table": "phan_anh",
-          "field": "ma_tra_cuu",
-          "type": "char(64)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-419"
-        },
-        {
-          "table": "phan_anh",
-          "field": "khoa_yeu_cau",
-          "type": "char(36)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-421"
+          "cell_id": "d15-279"
         },
         {
           "table": "phan_anh",
@@ -4788,7 +4109,7 @@
           "foreign_keys": [
             "R36"
           ],
-          "cell_id": "d15-423"
+          "cell_id": "d15-281"
         },
         {
           "table": "phan_anh",
@@ -4799,34 +4120,7 @@
           "foreign_keys": [
             "R37"
           ],
-          "cell_id": "d15-425"
-        },
-        {
-          "table": "phan_anh",
-          "field": "ten_nguoi_gui",
-          "type": "varchar(100)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-427"
-        },
-        {
-          "table": "phan_anh",
-          "field": "so_dien_thoai_nguoi_gui",
-          "type": "varchar(15)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-429"
-        },
-        {
-          "table": "phan_anh",
-          "field": "can_ho_khai_bao",
-          "type": "varchar(40)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-431"
+          "cell_id": "d15-283"
         },
         {
           "table": "phan_anh",
@@ -4835,7 +4129,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-433"
+          "cell_id": "d15-285"
         },
         {
           "table": "phan_anh",
@@ -4844,25 +4138,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-435"
-        },
-        {
-          "table": "phan_anh",
-          "field": "loai_su_co",
-          "type": "enum('DIEN','NUOC','THANG_MAY','VE_SINH','AN_NINH','KHAC')",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-437"
-        },
-        {
-          "table": "phan_anh",
-          "field": "do_uu_tien",
-          "type": "enum('THAP','TRUNG_BINH','CAO','KHAN_CAP')",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-439"
+          "cell_id": "d15-287"
         },
         {
           "table": "phan_anh",
@@ -4871,7 +4147,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-441"
+          "cell_id": "d15-289"
         },
         {
           "table": "phan_anh",
@@ -4882,7 +4158,7 @@
           "foreign_keys": [
             "R38"
           ],
-          "cell_id": "d15-443"
+          "cell_id": "d15-291"
         },
         {
           "table": "phan_anh",
@@ -4893,43 +4169,7 @@
           "foreign_keys": [
             "R39"
           ],
-          "cell_id": "d15-445"
-        },
-        {
-          "table": "phan_anh",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-447"
-        },
-        {
-          "table": "phan_anh",
-          "field": "luot_xu_ly",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-449"
-        },
-        {
-          "table": "phan_anh",
-          "field": "ngay_tao",
-          "type": "datetime",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-451"
-        },
-        {
-          "table": "phan_anh",
-          "field": "ngay_dong",
-          "type": "datetime",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-453"
+          "cell_id": "d15-293"
         },
         {
           "table": "phan_anh",
@@ -4940,34 +4180,7 @@
           "foreign_keys": [
             "R34"
           ],
-          "cell_id": "d15-455"
-        },
-        {
-          "table": "phan_anh",
-          "field": "ma_tai_san_luc_gui",
-          "type": "varchar(30)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-457"
-        },
-        {
-          "table": "phan_anh",
-          "field": "ten_thiet_bi_luc_gui",
-          "type": "varchar(150)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-459"
-        },
-        {
-          "table": "phan_anh",
-          "field": "vi_tri_thiet_bi_luc_gui",
-          "type": "varchar(160)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-461"
+          "cell_id": "d15-295"
         },
         {
           "table": "phan_anh",
@@ -4978,16 +4191,7 @@
           "foreign_keys": [
             "R35"
           ],
-          "cell_id": "d15-463"
-        },
-        {
-          "table": "phan_anh",
-          "field": "gui_tu_tai_khoan_can_ho",
-          "type": "tinyint(1)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-465"
+          "cell_id": "d15-297"
         },
         {
           "table": "phieu_bao_tri",
@@ -4996,7 +4200,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-471"
+          "cell_id": "d15-304"
         },
         {
           "table": "phieu_bao_tri",
@@ -5007,16 +4211,7 @@
           "foreign_keys": [
             "R40"
           ],
-          "cell_id": "d15-473"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "loai",
-          "type": "enum('DINH_KY','DOT_XUAT')",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-475"
+          "cell_id": "d15-306"
         },
         {
           "table": "phieu_bao_tri",
@@ -5025,43 +4220,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-477"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "noi_dung",
-          "type": "varchar(2000)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-479"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "ten_thiet_bi_luc_lap",
-          "type": "varchar(150)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-481"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "vi_tri_luc_lap",
-          "type": "varchar(160)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-483"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "ngay_lap",
-          "type": "date",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-485"
+          "cell_id": "d15-308"
         },
         {
           "table": "phieu_bao_tri",
@@ -5070,25 +4229,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-487"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "chu_ky_ngay",
-          "type": "smallint unsigned",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-489"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "do_uu_tien",
-          "type": "enum('THUONG','CAO','KHAN_CAP')",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-491"
+          "cell_id": "d15-310"
         },
         {
           "table": "phieu_bao_tri",
@@ -5097,7 +4238,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-493"
+          "cell_id": "d15-312"
         },
         {
           "table": "phieu_bao_tri",
@@ -5108,7 +4249,7 @@
           "foreign_keys": [
             "R41"
           ],
-          "cell_id": "d15-495"
+          "cell_id": "d15-314"
         },
         {
           "table": "phieu_bao_tri",
@@ -5119,7 +4260,7 @@
           "foreign_keys": [
             "R42"
           ],
-          "cell_id": "d15-497"
+          "cell_id": "d15-316"
         },
         {
           "table": "phieu_bao_tri",
@@ -5130,7 +4271,7 @@
           "foreign_keys": [
             "R43"
           ],
-          "cell_id": "d15-499"
+          "cell_id": "d15-318"
         },
         {
           "table": "phieu_bao_tri",
@@ -5141,133 +4282,7 @@
           "foreign_keys": [
             "R44"
           ],
-          "cell_id": "d15-501"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-503"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "luot_thuc_hien",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-505"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "ngay_thuc_hien",
-          "type": "date",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-507"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "ket_qua",
-          "type": "text",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-509"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "nhan_xet_nghiem_thu",
-          "type": "varchar(1000)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-511"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "ly_do_huy",
-          "type": "varchar(500)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-513"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "ngay_tao",
-          "type": "datetime(6)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-515"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "ngay_bat_dau",
-          "type": "datetime(6)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-517"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "ngay_bao_cao",
-          "type": "datetime(6)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-519"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "ngay_nghiem_thu",
-          "type": "datetime(6)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-521"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "ngay_huy",
-          "type": "datetime(6)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-523"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "khoa_yeu_cau",
-          "type": "char(36)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-525"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "van_tay",
-          "type": "char(64)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-527"
-        },
-        {
-          "table": "phieu_bao_tri",
-          "field": "dinh_ky_dang_mo",
-          "type": "int unsigned",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-529"
+          "cell_id": "d15-320"
         },
         {
           "table": "phieu_thu_chi",
@@ -5276,7 +4291,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-535"
+          "cell_id": "d15-327"
         },
         {
           "table": "phieu_thu_chi",
@@ -5287,7 +4302,7 @@
           "foreign_keys": [
             "R45"
           ],
-          "cell_id": "d15-537"
+          "cell_id": "d15-329"
         },
         {
           "table": "phieu_thu_chi",
@@ -5296,25 +4311,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-539"
-        },
-        {
-          "table": "phieu_thu_chi",
-          "field": "nhom",
-          "type": "varchar(30)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-541"
-        },
-        {
-          "table": "phieu_thu_chi",
-          "field": "ngay_hach_toan",
-          "type": "date",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-543"
+          "cell_id": "d15-331"
         },
         {
           "table": "phieu_thu_chi",
@@ -5323,25 +4320,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-545"
-        },
-        {
-          "table": "phieu_thu_chi",
-          "field": "doi_tac",
-          "type": "varchar(150)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-547"
-        },
-        {
-          "table": "phieu_thu_chi",
-          "field": "dien_giai",
-          "type": "varchar(1000)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-549"
+          "cell_id": "d15-333"
         },
         {
           "table": "phieu_thu_chi",
@@ -5350,16 +4329,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-551"
-        },
-        {
-          "table": "phieu_thu_chi",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-553"
+          "cell_id": "d15-335"
         },
         {
           "table": "phieu_thu_chi",
@@ -5370,7 +4340,7 @@
           "foreign_keys": [
             "R46"
           ],
-          "cell_id": "d15-555"
+          "cell_id": "d15-337"
         },
         {
           "table": "phieu_thu_chi",
@@ -5381,25 +4351,7 @@
           "foreign_keys": [
             "R47"
           ],
-          "cell_id": "d15-557"
-        },
-        {
-          "table": "phieu_thu_chi",
-          "field": "ngay_duyet",
-          "type": "datetime(6)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-559"
-        },
-        {
-          "table": "phieu_thu_chi",
-          "field": "ngay_tao",
-          "type": "datetime(6)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-561"
+          "cell_id": "d15-339"
         },
         {
           "table": "phieu_thu_chi",
@@ -5410,25 +4362,7 @@
           "foreign_keys": [
             "R48"
           ],
-          "cell_id": "d15-563"
-        },
-        {
-          "table": "phieu_thu_chi",
-          "field": "khoa_yeu_cau",
-          "type": "char(36)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-565"
-        },
-        {
-          "table": "phieu_thu_chi",
-          "field": "van_tay",
-          "type": "char(64)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-567"
+          "cell_id": "d15-341"
         },
         {
           "table": "phuong_tien",
@@ -5437,16 +4371,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-573"
-        },
-        {
-          "table": "phuong_tien",
-          "field": "ma_dang_ky",
-          "type": "varchar(20)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-575"
+          "cell_id": "d15-348"
         },
         {
           "table": "phuong_tien",
@@ -5457,7 +4382,7 @@
           "foreign_keys": [
             "R49"
           ],
-          "cell_id": "d15-577"
+          "cell_id": "d15-350"
         },
         {
           "table": "phuong_tien",
@@ -5468,7 +4393,7 @@
           "foreign_keys": [
             "R50"
           ],
-          "cell_id": "d15-579"
+          "cell_id": "d15-352"
         },
         {
           "table": "phuong_tien",
@@ -5479,7 +4404,7 @@
           "foreign_keys": [
             "R51"
           ],
-          "cell_id": "d15-581"
+          "cell_id": "d15-354"
         },
         {
           "table": "phuong_tien",
@@ -5490,7 +4415,7 @@
           "foreign_keys": [
             "R52"
           ],
-          "cell_id": "d15-583"
+          "cell_id": "d15-356"
         },
         {
           "table": "phuong_tien",
@@ -5499,7 +4424,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-585"
+          "cell_id": "d15-358"
         },
         {
           "table": "phuong_tien",
@@ -5508,52 +4433,7 @@
           "nullable": true,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-587"
-        },
-        {
-          "table": "phuong_tien",
-          "field": "hang_xe",
-          "type": "varchar(50)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-589"
-        },
-        {
-          "table": "phuong_tien",
-          "field": "mau_sac",
-          "type": "varchar(50)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-591"
-        },
-        {
-          "table": "phuong_tien",
-          "field": "ngay_dang_ky",
-          "type": "date",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-593"
-        },
-        {
-          "table": "phuong_tien",
-          "field": "ngay_ket_thuc",
-          "type": "date",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-595"
-        },
-        {
-          "table": "phuong_tien",
-          "field": "ly_do_ket_thuc",
-          "type": "varchar(255)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-597"
+          "cell_id": "d15-360"
         },
         {
           "table": "phuong_tien",
@@ -5564,7 +4444,7 @@
           "foreign_keys": [
             "R53"
           ],
-          "cell_id": "d15-599"
+          "cell_id": "d15-362"
         },
         {
           "table": "phuong_tien",
@@ -5575,34 +4455,7 @@
           "foreign_keys": [
             "R54"
           ],
-          "cell_id": "d15-601"
-        },
-        {
-          "table": "phuong_tien",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-603"
-        },
-        {
-          "table": "phuong_tien",
-          "field": "ngay_tao",
-          "type": "datetime(6)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-605"
-        },
-        {
-          "table": "phuong_tien",
-          "field": "bien_so_dang_hoat_dong",
-          "type": "varchar(15)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-607"
+          "cell_id": "d15-364"
         },
         {
           "table": "quy_tai_chinh",
@@ -5611,7 +4464,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-613"
+          "cell_id": "d15-371"
         },
         {
           "table": "quy_tai_chinh",
@@ -5620,16 +4473,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-615"
-        },
-        {
-          "table": "quy_tai_chinh",
-          "field": "mo_ta",
-          "type": "varchar(1000)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-617"
+          "cell_id": "d15-373"
         },
         {
           "table": "quy_tai_chinh",
@@ -5638,43 +4482,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-619"
-        },
-        {
-          "table": "quy_tai_chinh",
-          "field": "nhan_thu_hoa_don",
-          "type": "tinyint(1)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-621"
-        },
-        {
-          "table": "quy_tai_chinh",
-          "field": "quy_hoa_don",
-          "type": "tinyint",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-623"
-        },
-        {
-          "table": "quy_tai_chinh",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-625"
-        },
-        {
-          "table": "quy_tai_chinh",
-          "field": "ngay_tao",
-          "type": "datetime(6)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-627"
+          "cell_id": "d15-375"
         },
         {
           "table": "schema_migrations",
@@ -5683,7 +4491,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-633"
+          "cell_id": "d15-382"
         },
         {
           "table": "schema_migrations",
@@ -5692,7 +4500,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-635"
+          "cell_id": "d15-384"
         },
         {
           "table": "tang_toa_nha",
@@ -5703,7 +4511,7 @@
           "foreign_keys": [
             "R55"
           ],
-          "cell_id": "d15-642"
+          "cell_id": "d15-392"
         },
         {
           "table": "tang_toa_nha",
@@ -5712,7 +4520,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-644"
+          "cell_id": "d15-394"
         },
         {
           "table": "tang_toa_nha",
@@ -5721,43 +4529,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-646"
-        },
-        {
-          "table": "tang_toa_nha",
-          "field": "mo_ta",
-          "type": "varchar(255)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-648"
-        },
-        {
-          "table": "tang_toa_nha",
-          "field": "giu_khi_trong",
-          "type": "tinyint(1)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-650"
-        },
-        {
-          "table": "tang_toa_nha",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-652"
-        },
-        {
-          "table": "tang_toa_nha",
-          "field": "ngay_tao",
-          "type": "datetime",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-654"
+          "cell_id": "d15-396"
         },
         {
           "table": "thiet_bi",
@@ -5766,16 +4538,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-660"
-        },
-        {
-          "table": "thiet_bi",
-          "field": "ma_tai_san",
-          "type": "varchar(30)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-662"
+          "cell_id": "d15-403"
         },
         {
           "table": "thiet_bi",
@@ -5784,16 +4547,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-664"
-        },
-        {
-          "table": "thiet_bi",
-          "field": "loai",
-          "type": "enum('THANG_MAY','MAY_BOM','PCCC','DIEN','NUOC','CAMERA','KHAC')",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-666"
+          "cell_id": "d15-405"
         },
         {
           "table": "thiet_bi",
@@ -5802,34 +4556,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-668"
-        },
-        {
-          "table": "thiet_bi",
-          "field": "so_serial",
-          "type": "varchar(100)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-670"
-        },
-        {
-          "table": "thiet_bi",
-          "field": "ngay_lap_dat",
-          "type": "date",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-672"
-        },
-        {
-          "table": "thiet_bi",
-          "field": "ghi_chu",
-          "type": "varchar(1000)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-674"
+          "cell_id": "d15-407"
         },
         {
           "table": "thiet_bi",
@@ -5838,43 +4565,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-676"
-        },
-        {
-          "table": "thiet_bi",
-          "field": "chu_ky_ngay",
-          "type": "smallint unsigned",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-678"
-        },
-        {
-          "table": "thiet_bi",
-          "field": "ngay_bao_tri_tiep_theo",
-          "type": "date",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-680"
-        },
-        {
-          "table": "thiet_bi",
-          "field": "nhac_truoc_ngay",
-          "type": "tinyint unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-682"
-        },
-        {
-          "table": "thiet_bi",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-684"
+          "cell_id": "d15-409"
         },
         {
           "table": "thiet_bi",
@@ -5885,25 +4576,7 @@
           "foreign_keys": [
             "R56"
           ],
-          "cell_id": "d15-686"
-        },
-        {
-          "table": "thiet_bi",
-          "field": "ngay_tao",
-          "type": "datetime(6)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-688"
-        },
-        {
-          "table": "thiet_bi",
-          "field": "ngay_cap_nhat",
-          "type": "datetime(6)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-690"
+          "cell_id": "d15-411"
         },
         {
           "table": "thong_bao",
@@ -5912,16 +4585,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-696"
-        },
-        {
-          "table": "thong_bao",
-          "field": "loai",
-          "type": "enum('THONG_BAO','NHAC_PHI')",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-698"
+          "cell_id": "d15-418"
         },
         {
           "table": "thong_bao",
@@ -5930,16 +4594,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-700"
-        },
-        {
-          "table": "thong_bao",
-          "field": "noi_dung",
-          "type": "text",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-702"
+          "cell_id": "d15-420"
         },
         {
           "table": "thong_bao",
@@ -5948,16 +4603,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-704"
-        },
-        {
-          "table": "thong_bao",
-          "field": "khoi",
-          "type": "varchar(10)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-706"
+          "cell_id": "d15-422"
         },
         {
           "table": "thong_bao",
@@ -5968,16 +4614,7 @@
           "foreign_keys": [
             "R57"
           ],
-          "cell_id": "d15-708"
-        },
-        {
-          "table": "thong_bao",
-          "field": "muc_do",
-          "type": "enum('THUONG','QUAN_TRONG')",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-710"
+          "cell_id": "d15-424"
         },
         {
           "table": "thong_bao",
@@ -5986,16 +4623,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-712"
-        },
-        {
-          "table": "thong_bao",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-714"
+          "cell_id": "d15-426"
         },
         {
           "table": "thong_bao",
@@ -6006,16 +4634,7 @@
           "foreign_keys": [
             "R58"
           ],
-          "cell_id": "d15-716"
-        },
-        {
-          "table": "thong_bao",
-          "field": "ngay_nhac",
-          "type": "date",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-718"
+          "cell_id": "d15-428"
         },
         {
           "table": "thong_bao",
@@ -6026,7 +4645,7 @@
           "foreign_keys": [
             "R59"
           ],
-          "cell_id": "d15-720"
+          "cell_id": "d15-430"
         },
         {
           "table": "thong_bao",
@@ -6037,7 +4656,7 @@
           "foreign_keys": [
             "R60"
           ],
-          "cell_id": "d15-722"
+          "cell_id": "d15-432"
         },
         {
           "table": "thong_bao",
@@ -6048,43 +4667,7 @@
           "foreign_keys": [
             "R61"
           ],
-          "cell_id": "d15-724"
-        },
-        {
-          "table": "thong_bao",
-          "field": "ngay_tao",
-          "type": "datetime(6)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-726"
-        },
-        {
-          "table": "thong_bao",
-          "field": "ngay_gui",
-          "type": "datetime(6)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-728"
-        },
-        {
-          "table": "thong_bao",
-          "field": "ngay_thu_hoi",
-          "type": "datetime(6)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-730"
-        },
-        {
-          "table": "thong_bao",
-          "field": "ly_do_thu_hoi",
-          "type": "varchar(255)",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-732"
+          "cell_id": "d15-434"
         },
         {
           "table": "thong_bao_da_doc",
@@ -6095,7 +4678,7 @@
           "foreign_keys": [
             "R62"
           ],
-          "cell_id": "d15-738"
+          "cell_id": "d15-441"
         },
         {
           "table": "thong_bao_da_doc",
@@ -6106,7 +4689,7 @@
           "foreign_keys": [
             "R63"
           ],
-          "cell_id": "d15-740"
+          "cell_id": "d15-443"
         },
         {
           "table": "thong_bao_da_doc",
@@ -6115,7 +4698,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-742"
+          "cell_id": "d15-445"
         },
         {
           "table": "thong_bao_da_doc",
@@ -6124,7 +4707,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-744"
+          "cell_id": "d15-447"
         },
         {
           "table": "tien_ich",
@@ -6133,7 +4716,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-750"
+          "cell_id": "d15-454"
         },
         {
           "table": "tien_ich",
@@ -6142,25 +4725,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-752"
-        },
-        {
-          "table": "tien_ich",
-          "field": "vi_tri",
-          "type": "varchar(160)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-754"
-        },
-        {
-          "table": "tien_ich",
-          "field": "mo_ta",
-          "type": "text",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-756"
+          "cell_id": "d15-456"
         },
         {
           "table": "tien_ich",
@@ -6169,43 +4734,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-758"
-        },
-        {
-          "table": "tien_ich",
-          "field": "gio_mo",
-          "type": "time",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-760"
-        },
-        {
-          "table": "tien_ich",
-          "field": "gio_dong",
-          "type": "time",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-762"
-        },
-        {
-          "table": "tien_ich",
-          "field": "toi_da_phut",
-          "type": "smallint unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-764"
-        },
-        {
-          "table": "tien_ich",
-          "field": "dat_truoc_ngay",
-          "type": "smallint unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-766"
+          "cell_id": "d15-458"
         },
         {
           "table": "tien_ich",
@@ -6214,16 +4743,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-768"
-        },
-        {
-          "table": "tien_ich",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-770"
+          "cell_id": "d15-460"
         },
         {
           "table": "tien_ich",
@@ -6234,16 +4754,7 @@
           "foreign_keys": [
             "R64"
           ],
-          "cell_id": "d15-772"
-        },
-        {
-          "table": "tien_ich",
-          "field": "ngay_tao",
-          "type": "datetime(6)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-774"
+          "cell_id": "d15-462"
         },
         {
           "table": "vi_tri_qr",
@@ -6252,7 +4763,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-780"
+          "cell_id": "d15-469"
         },
         {
           "table": "vi_tri_qr",
@@ -6261,25 +4772,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-782"
-        },
-        {
-          "table": "vi_tri_qr",
-          "field": "loai",
-          "type": "enum('KHU_VUC','THIET_BI')",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-784"
-        },
-        {
-          "table": "vi_tri_qr",
-          "field": "mo_ta",
-          "type": "varchar(255)",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-786"
+          "cell_id": "d15-471"
         },
         {
           "table": "vi_tri_qr",
@@ -6288,7 +4781,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-788"
+          "cell_id": "d15-473"
         },
         {
           "table": "vi_tri_qr",
@@ -6297,7 +4790,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-790"
+          "cell_id": "d15-475"
         },
         {
           "table": "vi_tri_qr",
@@ -6308,16 +4801,7 @@
           "foreign_keys": [
             "R66"
           ],
-          "cell_id": "d15-792"
-        },
-        {
-          "table": "vi_tri_qr",
-          "field": "ngay_tao",
-          "type": "datetime",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-794"
+          "cell_id": "d15-477"
         },
         {
           "table": "vi_tri_qr",
@@ -6328,16 +4812,7 @@
           "foreign_keys": [
             "R65"
           ],
-          "cell_id": "d15-796"
-        },
-        {
-          "table": "vi_tri_qr",
-          "field": "phien_ban",
-          "type": "int unsigned",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-798"
+          "cell_id": "d15-479"
         },
         {
           "table": "yeu_cau_gui",
@@ -6346,7 +4821,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-804"
+          "cell_id": "d15-486"
         },
         {
           "table": "yeu_cau_gui",
@@ -6355,7 +4830,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-806"
+          "cell_id": "d15-488"
         },
         {
           "table": "yeu_cau_gui",
@@ -6366,7 +4841,7 @@
           "foreign_keys": [
             "R67"
           ],
-          "cell_id": "d15-808"
+          "cell_id": "d15-490"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6375,7 +4850,7 @@
           "nullable": false,
           "primary": true,
           "foreign_keys": [],
-          "cell_id": "d15-814"
+          "cell_id": "d15-497"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6384,16 +4859,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-816"
-        },
-        {
-          "table": "nhat_ky_nghiep_vu",
-          "field": "ma_goc",
-          "type": "INT UNSIGNED",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-818"
+          "cell_id": "d15-499"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6404,7 +4870,7 @@
           "foreign_keys": [
             "R68"
           ],
-          "cell_id": "d15-820"
+          "cell_id": "d15-501"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6413,25 +4879,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-822"
-        },
-        {
-          "table": "nhat_ky_nghiep_vu",
-          "field": "ghi_chu",
-          "type": "TEXT",
-          "nullable": true,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-824"
-        },
-        {
-          "table": "nhat_ky_nghiep_vu",
-          "field": "chi_tiet",
-          "type": "JSON",
-          "nullable": false,
-          "primary": false,
-          "foreign_keys": [],
-          "cell_id": "d15-826"
+          "cell_id": "d15-503"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6440,7 +4888,7 @@
           "nullable": false,
           "primary": false,
           "foreign_keys": [],
-          "cell_id": "d15-828"
+          "cell_id": "d15-505"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6451,7 +4899,7 @@
           "foreign_keys": [
             "R69"
           ],
-          "cell_id": "d15-830"
+          "cell_id": "d15-507"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6462,7 +4910,7 @@
           "foreign_keys": [
             "R70"
           ],
-          "cell_id": "d15-832"
+          "cell_id": "d15-509"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6473,7 +4921,7 @@
           "foreign_keys": [
             "R71"
           ],
-          "cell_id": "d15-834"
+          "cell_id": "d15-511"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6484,7 +4932,7 @@
           "foreign_keys": [
             "R72"
           ],
-          "cell_id": "d15-836"
+          "cell_id": "d15-513"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6495,7 +4943,7 @@
           "foreign_keys": [
             "R73"
           ],
-          "cell_id": "d15-838"
+          "cell_id": "d15-515"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6506,7 +4954,7 @@
           "foreign_keys": [
             "R74"
           ],
-          "cell_id": "d15-840"
+          "cell_id": "d15-517"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6517,7 +4965,7 @@
           "foreign_keys": [
             "R75"
           ],
-          "cell_id": "d15-842"
+          "cell_id": "d15-519"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6528,7 +4976,7 @@
           "foreign_keys": [
             "R76"
           ],
-          "cell_id": "d15-844"
+          "cell_id": "d15-521"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6539,7 +4987,7 @@
           "foreign_keys": [
             "R77"
           ],
-          "cell_id": "d15-846"
+          "cell_id": "d15-523"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6550,7 +4998,7 @@
           "foreign_keys": [
             "R78"
           ],
-          "cell_id": "d15-848"
+          "cell_id": "d15-525"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6561,7 +5009,7 @@
           "foreign_keys": [
             "R79"
           ],
-          "cell_id": "d15-850"
+          "cell_id": "d15-527"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6572,7 +5020,7 @@
           "foreign_keys": [
             "R80"
           ],
-          "cell_id": "d15-852"
+          "cell_id": "d15-529"
         },
         {
           "table": "nhat_ky_nghiep_vu",
@@ -6583,7 +5031,7 @@
           "foreign_keys": [
             "R81"
           ],
-          "cell_id": "d15-854"
+          "cell_id": "d15-531"
         }
       ],
       "relations": [
@@ -6602,11 +5050,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-856",
+          "relationship_cell_id": "d15-533",
           "arm_cells": {
-            "parent": "d15-1075",
-            "child": "d15-1099"
-          }
+            "parent": "d15-678",
+            "child": "d15-692"
+          },
+          "default_visible": true
         },
         {
           "id": "R02",
@@ -6621,11 +5070,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-857",
+          "relationship_cell_id": "d15-534",
           "arm_cells": {
-            "parent": "d15-983",
-            "child": "d15-1101"
-          }
+            "parent": "d15-654",
+            "child": "d15-694"
+          },
+          "default_visible": true
         },
         {
           "id": "R03",
@@ -6640,11 +5090,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-858",
+          "relationship_cell_id": "d15-572",
           "arm_cells": {
-            "parent": "d15-985",
-            "child": "d15-1103"
-          }
+            "parent": "d15-776",
+            "child": "d15-854"
+          },
+          "default_visible": false
         },
         {
           "id": "R04",
@@ -6659,11 +5110,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-859",
+          "relationship_cell_id": "d15-535",
           "arm_cells": {
-            "parent": "d15-937",
-            "child": "d15-1105"
-          }
+            "parent": "d15-614",
+            "child": "d15-696"
+          },
+          "default_visible": true
         },
         {
           "id": "R05",
@@ -6678,11 +5130,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-860",
+          "relationship_cell_id": "d15-573",
           "arm_cells": {
-            "parent": "d15-987",
-            "child": "d15-1107"
-          }
+            "parent": "d15-778",
+            "child": "d15-856"
+          },
+          "default_visible": false
         },
         {
           "id": "R06",
@@ -6697,11 +5150,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-861",
+          "relationship_cell_id": "d15-536",
           "arm_cells": {
-            "parent": "d15-969",
-            "child": "d15-1109"
-          }
+            "parent": "d15-642",
+            "child": "d15-698"
+          },
+          "default_visible": true
         },
         {
           "id": "R07",
@@ -6716,11 +5170,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-862",
+          "relationship_cell_id": "d15-537",
           "arm_cells": {
-            "parent": "d15-953",
-            "child": "d15-1111"
-          }
+            "parent": "d15-628",
+            "child": "d15-700"
+          },
+          "default_visible": true
         },
         {
           "id": "R08",
@@ -6735,11 +5190,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-863",
+          "relationship_cell_id": "d15-538",
           "arm_cells": {
-            "parent": "d15-955",
-            "child": "d15-1113"
-          }
+            "parent": "d15-630",
+            "child": "d15-702"
+          },
+          "default_visible": true
         },
         {
           "id": "R09",
@@ -6754,11 +5210,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-864",
+          "relationship_cell_id": "d15-539",
           "arm_cells": {
-            "parent": "d15-1065",
-            "child": "d15-1115"
-          }
+            "parent": "d15-670",
+            "child": "d15-704"
+          },
+          "default_visible": true
         },
         {
           "id": "R10",
@@ -6773,11 +5230,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-865",
+          "relationship_cell_id": "d15-574",
           "arm_cells": {
-            "parent": "d15-989",
-            "child": "d15-1117"
-          }
+            "parent": "d15-780",
+            "child": "d15-858"
+          },
+          "default_visible": false
         },
         {
           "id": "R11",
@@ -6792,11 +5250,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..1",
-          "relationship_cell_id": "d15-866",
+          "relationship_cell_id": "d15-540",
           "arm_cells": {
-            "parent": "d15-991",
-            "child": "d15-1119"
-          }
+            "parent": "d15-656",
+            "child": "d15-706"
+          },
+          "default_visible": true
         },
         {
           "id": "R12",
@@ -6811,11 +5270,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-867",
+          "relationship_cell_id": "d15-541",
           "arm_cells": {
-            "parent": "d15-1093",
-            "child": "d15-1121"
-          }
+            "parent": "d15-688",
+            "child": "d15-708"
+          },
+          "default_visible": true
         },
         {
           "id": "R13",
@@ -6830,11 +5290,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-868",
+          "relationship_cell_id": "d15-542",
           "arm_cells": {
-            "parent": "d15-939",
-            "child": "d15-1123"
-          }
+            "parent": "d15-616",
+            "child": "d15-710"
+          },
+          "default_visible": true
         },
         {
           "id": "R14",
@@ -6849,11 +5310,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-869",
+          "relationship_cell_id": "d15-575",
           "arm_cells": {
-            "parent": "d15-993",
-            "child": "d15-1125"
-          }
+            "parent": "d15-782",
+            "child": "d15-860"
+          },
+          "default_visible": false
         },
         {
           "id": "R15",
@@ -6868,11 +5330,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-870",
+          "relationship_cell_id": "d15-543",
           "arm_cells": {
-            "parent": "d15-957",
-            "child": "d15-1127"
-          }
+            "parent": "d15-632",
+            "child": "d15-712"
+          },
+          "default_visible": true
         },
         {
           "id": "R16",
@@ -6887,11 +5350,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-871",
+          "relationship_cell_id": "d15-544",
           "arm_cells": {
-            "parent": "d15-979",
-            "child": "d15-1129"
-          }
+            "parent": "d15-650",
+            "child": "d15-714"
+          },
+          "default_visible": true
         },
         {
           "id": "R17",
@@ -6906,11 +5370,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-872",
+          "relationship_cell_id": "d15-576",
           "arm_cells": {
-            "parent": "d15-995",
-            "child": "d15-1131"
-          }
+            "parent": "d15-784",
+            "child": "d15-862"
+          },
+          "default_visible": false
         },
         {
           "id": "R18",
@@ -6925,11 +5390,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-873",
+          "relationship_cell_id": "d15-577",
           "arm_cells": {
-            "parent": "d15-997",
-            "child": "d15-1133"
-          }
+            "parent": "d15-786",
+            "child": "d15-864"
+          },
+          "default_visible": false
         },
         {
           "id": "R19",
@@ -6944,11 +5410,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-874",
+          "relationship_cell_id": "d15-578",
           "arm_cells": {
-            "parent": "d15-999",
-            "child": "d15-1135"
-          }
+            "parent": "d15-788",
+            "child": "d15-866"
+          },
+          "default_visible": false
         },
         {
           "id": "R20",
@@ -6963,11 +5430,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-875",
+          "relationship_cell_id": "d15-545",
           "arm_cells": {
-            "parent": "d15-1055",
-            "child": "d15-1137"
-          }
+            "parent": "d15-664",
+            "child": "d15-716"
+          },
+          "default_visible": true
         },
         {
           "id": "R21",
@@ -6982,11 +5450,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-876",
+          "relationship_cell_id": "d15-579",
           "arm_cells": {
-            "parent": "d15-1001",
-            "child": "d15-1139"
-          }
+            "parent": "d15-790",
+            "child": "d15-868"
+          },
+          "default_visible": false
         },
         {
           "id": "R22",
@@ -7001,11 +5470,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-877",
+          "relationship_cell_id": "d15-546",
           "arm_cells": {
-            "parent": "d15-941",
-            "child": "d15-1141"
-          }
+            "parent": "d15-618",
+            "child": "d15-718"
+          },
+          "default_visible": true
         },
         {
           "id": "R23",
@@ -7020,11 +5490,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..1",
-          "relationship_cell_id": "d15-878",
+          "relationship_cell_id": "d15-547",
           "arm_cells": {
-            "parent": "d15-971",
-            "child": "d15-1143"
-          }
+            "parent": "d15-644",
+            "child": "d15-720"
+          },
+          "default_visible": true
         },
         {
           "id": "R24",
@@ -7039,11 +5510,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-879",
+          "relationship_cell_id": "d15-580",
           "arm_cells": {
-            "parent": "d15-1003",
-            "child": "d15-1145"
-          }
+            "parent": "d15-792",
+            "child": "d15-870"
+          },
+          "default_visible": false
         },
         {
           "id": "R25",
@@ -7058,11 +5530,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-880",
+          "relationship_cell_id": "d15-581",
           "arm_cells": {
-            "parent": "d15-1005",
-            "child": "d15-1147"
-          }
+            "parent": "d15-794",
+            "child": "d15-872"
+          },
+          "default_visible": false
         },
         {
           "id": "R26",
@@ -7077,11 +5550,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-881",
+          "relationship_cell_id": "d15-582",
           "arm_cells": {
-            "parent": "d15-1007",
-            "child": "d15-1149"
-          }
+            "parent": "d15-796",
+            "child": "d15-874"
+          },
+          "default_visible": false
         },
         {
           "id": "R27",
@@ -7096,11 +5570,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-882",
+          "relationship_cell_id": "d15-583",
           "arm_cells": {
-            "parent": "d15-1009",
-            "child": "d15-1151"
-          }
+            "parent": "d15-798",
+            "child": "d15-876"
+          },
+          "default_visible": false
         },
         {
           "id": "R28",
@@ -7115,11 +5590,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-883",
+          "relationship_cell_id": "d15-584",
           "arm_cells": {
-            "parent": "d15-1011",
-            "child": "d15-1153"
-          }
+            "parent": "d15-800",
+            "child": "d15-878"
+          },
+          "default_visible": false
         },
         {
           "id": "R29",
@@ -7134,11 +5610,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-884",
+          "relationship_cell_id": "d15-548",
           "arm_cells": {
-            "parent": "d15-959",
-            "child": "d15-1155"
-          }
+            "parent": "d15-634",
+            "child": "d15-722"
+          },
+          "default_visible": true
         },
         {
           "id": "R30",
@@ -7153,11 +5630,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-885",
+          "relationship_cell_id": "d15-549",
           "arm_cells": {
-            "parent": "d15-943",
-            "child": "d15-1157"
-          }
+            "parent": "d15-620",
+            "child": "d15-724"
+          },
+          "default_visible": true
         },
         {
           "id": "R31",
@@ -7172,11 +5650,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-886",
+          "relationship_cell_id": "d15-585",
           "arm_cells": {
-            "parent": "d15-1013",
-            "child": "d15-1159"
-          }
+            "parent": "d15-802",
+            "child": "d15-880"
+          },
+          "default_visible": false
         },
         {
           "id": "R32",
@@ -7191,11 +5670,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..1",
-          "relationship_cell_id": "d15-887",
+          "relationship_cell_id": "d15-550",
           "arm_cells": {
-            "parent": "d15-945",
-            "child": "d15-1161"
-          }
+            "parent": "d15-622",
+            "child": "d15-726"
+          },
+          "default_visible": true
         },
         {
           "id": "R33",
@@ -7210,11 +5690,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..1",
-          "relationship_cell_id": "d15-888",
+          "relationship_cell_id": "d15-551",
           "arm_cells": {
-            "parent": "d15-961",
-            "child": "d15-1163"
-          }
+            "parent": "d15-636",
+            "child": "d15-728"
+          },
+          "default_visible": true
         },
         {
           "id": "R34",
@@ -7229,11 +5710,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-889",
+          "relationship_cell_id": "d15-552",
           "arm_cells": {
-            "parent": "d15-1077",
-            "child": "d15-1165"
-          }
+            "parent": "d15-680",
+            "child": "d15-730"
+          },
+          "default_visible": true
         },
         {
           "id": "R35",
@@ -7248,11 +5730,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-890",
+          "relationship_cell_id": "d15-553",
           "arm_cells": {
-            "parent": "d15-963",
-            "child": "d15-1167"
-          }
+            "parent": "d15-638",
+            "child": "d15-732"
+          },
+          "default_visible": true
         },
         {
           "id": "R36",
@@ -7267,11 +5750,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-891",
+          "relationship_cell_id": "d15-554",
           "arm_cells": {
-            "parent": "d15-1095",
-            "child": "d15-1169"
-          }
+            "parent": "d15-690",
+            "child": "d15-734"
+          },
+          "default_visible": true
         },
         {
           "id": "R37",
@@ -7286,11 +5770,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-892",
+          "relationship_cell_id": "d15-586",
           "arm_cells": {
-            "parent": "d15-1015",
-            "child": "d15-1171"
-          }
+            "parent": "d15-804",
+            "child": "d15-882"
+          },
+          "default_visible": false
         },
         {
           "id": "R38",
@@ -7305,11 +5790,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-893",
+          "relationship_cell_id": "d15-555",
           "arm_cells": {
-            "parent": "d15-1017",
-            "child": "d15-1173"
-          }
+            "parent": "d15-658",
+            "child": "d15-736"
+          },
+          "default_visible": true
         },
         {
           "id": "R39",
@@ -7324,11 +5810,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-894",
+          "relationship_cell_id": "d15-556",
           "arm_cells": {
-            "parent": "d15-1057",
-            "child": "d15-1175"
-          }
+            "parent": "d15-666",
+            "child": "d15-738"
+          },
+          "default_visible": true
         },
         {
           "id": "R40",
@@ -7343,11 +5830,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-895",
+          "relationship_cell_id": "d15-557",
           "arm_cells": {
-            "parent": "d15-1079",
-            "child": "d15-1177"
-          }
+            "parent": "d15-682",
+            "child": "d15-740"
+          },
+          "default_visible": true
         },
         {
           "id": "R41",
@@ -7362,11 +5850,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-896",
+          "relationship_cell_id": "d15-558",
           "arm_cells": {
-            "parent": "d15-1019",
-            "child": "d15-1179"
-          }
+            "parent": "d15-660",
+            "child": "d15-742"
+          },
+          "default_visible": true
         },
         {
           "id": "R42",
@@ -7381,11 +5870,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-897",
+          "relationship_cell_id": "d15-587",
           "arm_cells": {
-            "parent": "d15-1021",
-            "child": "d15-1181"
-          }
+            "parent": "d15-806",
+            "child": "d15-884"
+          },
+          "default_visible": false
         },
         {
           "id": "R43",
@@ -7400,11 +5890,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-898",
+          "relationship_cell_id": "d15-588",
           "arm_cells": {
-            "parent": "d15-1023",
-            "child": "d15-1183"
-          }
+            "parent": "d15-808",
+            "child": "d15-886"
+          },
+          "default_visible": false
         },
         {
           "id": "R44",
@@ -7419,11 +5910,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-899",
+          "relationship_cell_id": "d15-589",
           "arm_cells": {
-            "parent": "d15-1025",
-            "child": "d15-1185"
-          }
+            "parent": "d15-810",
+            "child": "d15-888"
+          },
+          "default_visible": false
         },
         {
           "id": "R45",
@@ -7438,11 +5930,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-900",
+          "relationship_cell_id": "d15-559",
           "arm_cells": {
-            "parent": "d15-1073",
-            "child": "d15-1187"
-          }
+            "parent": "d15-676",
+            "child": "d15-744"
+          },
+          "default_visible": true
         },
         {
           "id": "R46",
@@ -7457,11 +5950,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-901",
+          "relationship_cell_id": "d15-590",
           "arm_cells": {
-            "parent": "d15-1027",
-            "child": "d15-1189"
-          }
+            "parent": "d15-812",
+            "child": "d15-890"
+          },
+          "default_visible": false
         },
         {
           "id": "R47",
@@ -7476,11 +5970,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-902",
+          "relationship_cell_id": "d15-591",
           "arm_cells": {
-            "parent": "d15-1029",
-            "child": "d15-1191"
-          }
+            "parent": "d15-814",
+            "child": "d15-892"
+          },
+          "default_visible": false
         },
         {
           "id": "R48",
@@ -7495,11 +5990,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..1",
-          "relationship_cell_id": "d15-903",
+          "relationship_cell_id": "d15-560",
           "arm_cells": {
-            "parent": "d15-1067",
-            "child": "d15-1193"
-          }
+            "parent": "d15-672",
+            "child": "d15-746"
+          },
+          "default_visible": true
         },
         {
           "id": "R49",
@@ -7514,11 +6010,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-904",
+          "relationship_cell_id": "d15-561",
           "arm_cells": {
-            "parent": "d15-965",
-            "child": "d15-1195"
-          }
+            "parent": "d15-640",
+            "child": "d15-748"
+          },
+          "default_visible": true
         },
         {
           "id": "R50",
@@ -7533,11 +6030,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-905",
+          "relationship_cell_id": "d15-562",
           "arm_cells": {
-            "parent": "d15-947",
-            "child": "d15-1197"
-          }
+            "parent": "d15-624",
+            "child": "d15-750"
+          },
+          "default_visible": true
         },
         {
           "id": "R51",
@@ -7552,11 +6050,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-906",
+          "relationship_cell_id": "d15-563",
           "arm_cells": {
-            "parent": "d15-981",
-            "child": "d15-1199"
-          }
+            "parent": "d15-652",
+            "child": "d15-752"
+          },
+          "default_visible": true
         },
         {
           "id": "R52",
@@ -7571,11 +6070,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..1",
-          "relationship_cell_id": "d15-907",
+          "relationship_cell_id": "d15-564",
           "arm_cells": {
-            "parent": "d15-1071",
-            "child": "d15-1201"
-          }
+            "parent": "d15-674",
+            "child": "d15-754"
+          },
+          "default_visible": true
         },
         {
           "id": "R53",
@@ -7590,11 +6090,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-908",
+          "relationship_cell_id": "d15-592",
           "arm_cells": {
-            "parent": "d15-1031",
-            "child": "d15-1203"
-          }
+            "parent": "d15-816",
+            "child": "d15-894"
+          },
+          "default_visible": false
         },
         {
           "id": "R54",
@@ -7609,11 +6110,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-909",
+          "relationship_cell_id": "d15-593",
           "arm_cells": {
-            "parent": "d15-1033",
-            "child": "d15-1205"
-          }
+            "parent": "d15-818",
+            "child": "d15-896"
+          },
+          "default_visible": false
         },
         {
           "id": "R55",
@@ -7628,11 +6130,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-910",
+          "relationship_cell_id": "d15-565",
           "arm_cells": {
-            "parent": "d15-977",
-            "child": "d15-1207"
-          }
+            "parent": "d15-648",
+            "child": "d15-756"
+          },
+          "default_visible": true
         },
         {
           "id": "R56",
@@ -7647,11 +6150,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-911",
+          "relationship_cell_id": "d15-594",
           "arm_cells": {
-            "parent": "d15-1035",
-            "child": "d15-1209"
-          }
+            "parent": "d15-820",
+            "child": "d15-898"
+          },
+          "default_visible": false
         },
         {
           "id": "R57",
@@ -7666,11 +6170,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-912",
+          "relationship_cell_id": "d15-566",
           "arm_cells": {
-            "parent": "d15-949",
-            "child": "d15-1211"
-          }
+            "parent": "d15-626",
+            "child": "d15-758"
+          },
+          "default_visible": true
         },
         {
           "id": "R58",
@@ -7685,11 +6190,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-913",
+          "relationship_cell_id": "d15-567",
           "arm_cells": {
-            "parent": "d15-973",
-            "child": "d15-1213"
-          }
+            "parent": "d15-646",
+            "child": "d15-760"
+          },
+          "default_visible": true
         },
         {
           "id": "R59",
@@ -7704,11 +6210,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-914",
+          "relationship_cell_id": "d15-595",
           "arm_cells": {
-            "parent": "d15-1037",
-            "child": "d15-1215"
-          }
+            "parent": "d15-822",
+            "child": "d15-900"
+          },
+          "default_visible": false
         },
         {
           "id": "R60",
@@ -7723,11 +6230,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-915",
+          "relationship_cell_id": "d15-596",
           "arm_cells": {
-            "parent": "d15-1039",
-            "child": "d15-1217"
-          }
+            "parent": "d15-824",
+            "child": "d15-902"
+          },
+          "default_visible": false
         },
         {
           "id": "R61",
@@ -7742,11 +6250,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-916",
+          "relationship_cell_id": "d15-597",
           "arm_cells": {
-            "parent": "d15-1041",
-            "child": "d15-1219"
-          }
+            "parent": "d15-826",
+            "child": "d15-904"
+          },
+          "default_visible": false
         },
         {
           "id": "R62",
@@ -7761,11 +6270,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-917",
+          "relationship_cell_id": "d15-568",
           "arm_cells": {
-            "parent": "d15-1089",
-            "child": "d15-1221"
-          }
+            "parent": "d15-686",
+            "child": "d15-762"
+          },
+          "default_visible": true
         },
         {
           "id": "R63",
@@ -7780,11 +6290,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-918",
+          "relationship_cell_id": "d15-569",
           "arm_cells": {
-            "parent": "d15-1043",
-            "child": "d15-1223"
-          }
+            "parent": "d15-662",
+            "child": "d15-764"
+          },
+          "default_visible": true
         },
         {
           "id": "R64",
@@ -7799,11 +6310,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-919",
+          "relationship_cell_id": "d15-598",
           "arm_cells": {
-            "parent": "d15-1045",
-            "child": "d15-1225"
-          }
+            "parent": "d15-828",
+            "child": "d15-906"
+          },
+          "default_visible": false
         },
         {
           "id": "R65",
@@ -7818,11 +6330,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-920",
+          "relationship_cell_id": "d15-570",
           "arm_cells": {
-            "parent": "d15-1081",
-            "child": "d15-1227"
-          }
+            "parent": "d15-684",
+            "child": "d15-766"
+          },
+          "default_visible": true
         },
         {
           "id": "R66",
@@ -7837,11 +6350,12 @@
           ],
           "parent_cardinality": "1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-921",
+          "relationship_cell_id": "d15-599",
           "arm_cells": {
-            "parent": "d15-1047",
-            "child": "d15-1229"
-          }
+            "parent": "d15-830",
+            "child": "d15-908"
+          },
+          "default_visible": false
         },
         {
           "id": "R67",
@@ -7856,11 +6370,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-922",
+          "relationship_cell_id": "d15-571",
           "arm_cells": {
-            "parent": "d15-1059",
-            "child": "d15-1231"
-          }
+            "parent": "d15-668",
+            "child": "d15-768"
+          },
+          "default_visible": true
         },
         {
           "id": "R68",
@@ -7875,11 +6390,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-923",
+          "relationship_cell_id": "d15-600",
           "arm_cells": {
-            "parent": "d15-1049",
-            "child": "d15-1233"
-          }
+            "parent": "d15-832",
+            "child": "d15-910"
+          },
+          "default_visible": false
         },
         {
           "id": "R69",
@@ -7894,11 +6410,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-924",
+          "relationship_cell_id": "d15-601",
           "arm_cells": {
-            "parent": "d15-1061",
-            "child": "d15-1235"
-          }
+            "parent": "d15-838",
+            "child": "d15-912"
+          },
+          "default_visible": false
         },
         {
           "id": "R70",
@@ -7913,11 +6430,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-925",
+          "relationship_cell_id": "d15-602",
           "arm_cells": {
-            "parent": "d15-975",
-            "child": "d15-1237"
-          }
+            "parent": "d15-774",
+            "child": "d15-914"
+          },
+          "default_visible": false
         },
         {
           "id": "R71",
@@ -7932,11 +6450,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-926",
+          "relationship_cell_id": "d15-603",
           "arm_cells": {
-            "parent": "d15-951",
-            "child": "d15-1239"
-          }
+            "parent": "d15-770",
+            "child": "d15-916"
+          },
+          "default_visible": false
         },
         {
           "id": "R72",
@@ -7951,11 +6470,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-927",
+          "relationship_cell_id": "d15-604",
           "arm_cells": {
-            "parent": "d15-1091",
-            "child": "d15-1241"
-          }
+            "parent": "d15-850",
+            "child": "d15-918"
+          },
+          "default_visible": false
         },
         {
           "id": "R73",
@@ -7970,11 +6490,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-928",
+          "relationship_cell_id": "d15-605",
           "arm_cells": {
-            "parent": "d15-1083",
-            "child": "d15-1243"
-          }
+            "parent": "d15-844",
+            "child": "d15-920"
+          },
+          "default_visible": false
         },
         {
           "id": "R74",
@@ -7989,11 +6510,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-929",
+          "relationship_cell_id": "d15-606",
           "arm_cells": {
-            "parent": "d15-1063",
-            "child": "d15-1245"
-          }
+            "parent": "d15-840",
+            "child": "d15-922"
+          },
+          "default_visible": false
         },
         {
           "id": "R75",
@@ -8008,11 +6530,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-930",
+          "relationship_cell_id": "d15-607",
           "arm_cells": {
-            "parent": "d15-967",
-            "child": "d15-1247"
-          }
+            "parent": "d15-772",
+            "child": "d15-924"
+          },
+          "default_visible": false
         },
         {
           "id": "R76",
@@ -8027,11 +6550,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-931",
+          "relationship_cell_id": "d15-608",
           "arm_cells": {
-            "parent": "d15-1069",
-            "child": "d15-1249"
-          }
+            "parent": "d15-842",
+            "child": "d15-926"
+          },
+          "default_visible": false
         },
         {
           "id": "R77",
@@ -8046,11 +6570,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-932",
+          "relationship_cell_id": "d15-609",
           "arm_cells": {
-            "parent": "d15-1097",
-            "child": "d15-1251"
-          }
+            "parent": "d15-852",
+            "child": "d15-928"
+          },
+          "default_visible": false
         },
         {
           "id": "R78",
@@ -8065,11 +6590,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-933",
+          "relationship_cell_id": "d15-610",
           "arm_cells": {
-            "parent": "d15-1051",
-            "child": "d15-1253"
-          }
+            "parent": "d15-834",
+            "child": "d15-930"
+          },
+          "default_visible": false
         },
         {
           "id": "R79",
@@ -8084,11 +6610,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-934",
+          "relationship_cell_id": "d15-611",
           "arm_cells": {
-            "parent": "d15-1053",
-            "child": "d15-1255"
-          }
+            "parent": "d15-836",
+            "child": "d15-932"
+          },
+          "default_visible": false
         },
         {
           "id": "R80",
@@ -8103,11 +6630,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-935",
+          "relationship_cell_id": "d15-612",
           "arm_cells": {
-            "parent": "d15-1085",
-            "child": "d15-1257"
-          }
+            "parent": "d15-846",
+            "child": "d15-934"
+          },
+          "default_visible": false
         },
         {
           "id": "R81",
@@ -8122,11 +6650,12 @@
           ],
           "parent_cardinality": "0..1",
           "child_cardinality": "0..N",
-          "relationship_cell_id": "d15-936",
+          "relationship_cell_id": "d15-613",
           "arm_cells": {
-            "parent": "d15-1087",
-            "child": "d15-1259"
-          }
+            "parent": "d15-848",
+            "child": "d15-936"
+          },
+          "default_visible": false
         }
       ]
     },

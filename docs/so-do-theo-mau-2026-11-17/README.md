@@ -1,39 +1,41 @@
-# Bộ sơ đồ hiện hành — một ERD hợp nhất
+# ERD gọn — giữ thuộc tính oval và vai trò chính từng bảng
 
 **Quản lý vận hành chung cư và tiếp nhận phản ánh · Tô Hoàng Tuấn — 1250080221**
 
-Đã thay năm ERD cũ bằng **một ERD duy nhất**, đủ **31 bảng, 362 cột và 81 khóa ngoại** trên **một trang draw.io**. Toàn bộ liên kết giữa các nghiệp vụ vẫn nối trực tiếp. Hai bảng kỹ thuật không có FK cũng nằm trên cùng trang. Các sơ đồ tiếp tục dùng cách trình bày trong ảnh mẫu bạn gửi.
+Đã làm gọn ERD theo yêu cầu: **31 bảng trên một trang**, chọn **185/362 thuộc tính** gồm mọi cột PK/FK và các trường nghiệp vụ quan trọng. Mỗi bảng có một dòng giải thích vai trò. Giữ cách vẽ **thực thể chữ nhật, thuộc tính oval, PK gạch chân, quan hệ hình thoi** như mẫu bạn chọn. Thuộc tính nghiệp vụ được in đậm; FK kiểm soát dùng màu xám.
 
-## Mở ERD đã gộp
+## Mở bản gọn
 
-- **[ERD hợp nhất — draw.io chỉnh sửa được](drawio/02-15-erd-hop-nhat.drawio)**
-- **[ERD hợp nhất — PDF một trang, giữ vector](ERD-hop-nhat-31-bang.pdf)**
-- [SVG phóng to / chèn Word](svg/02-15-erd-hop-nhat.svg) · [PNG xem trước](png/02-15-erd-hop-nhat.png) · [XML để copy vào draw.io](xml/02-15-erd-hop-nhat.xml.txt)
-- [Đối chiếu đủ 31 bảng và 81 FK](DOI-CHIEU-KHOA-NGOAI.md) · [Từ điển 362 cột](TU-DIEN-362-COT.md)
+- **[draw.io chỉnh sửa được — một trang, có lớp bật/tắt](drawio/02-15-erd-hop-nhat.drawio)**
+- **[PDF ERD một trang — xem/phóng to](ERD-hop-nhat-31-bang.pdf)**
+- [PNG xem ngay](png/02-15-erd-hop-nhat.png) · [SVG chèn Word](svg/02-15-erd-hop-nhat.svg) · [XML để copy vào draw.io](xml/02-15-erd-hop-nhat.xml.txt)
+- **[Vai trò và thuộc tính đã chọn cho từng bảng](VAI-TRO-VA-THUOC-TINH-CHINH.md)**
 
-ERD giữ ký pháp theo mẫu: thực thể chữ nhật, thuộc tính oval, PK gạch chân, quan hệ hình thoi. Mã R01–R81 trên hình thoi khớp mã ở cột FK và bảng đối chiếu. Quan hệ tự tham chiếu, FK ghép và 14 FK của bảng nhật ký được giữ đầy đủ.
+## Các quan hệ vẫn được giữ thế nào?
+
+| Lớp trong cùng ERD | Số FK | Cách xem |
+|---|---:|---|
+| **01 Nghiệp vụ chính** | **39** | Hiện mặc định, dùng cho PNG/SVG/PDF/Word. |
+| **02 FK người thao tác và nhật ký** | **42** | Trong draw.io chọn **View → Layers**, bật biểu tượng con mắt của lớp 02. |
+| **Tổng trong file gốc** | **81** | Bật cả hai lớp để xem mọi FK của schema. |
+
+42 FK ở lớp 02 gồm các liên kết người tạo/lập/duyệt/gửi và nhật ký. Chúng được ẩn trong bản xem chính để tập trung vào nghiệp vụ. **PNG/SVG/PDF/Word không phải hình hiển thị đầy đủ 81 FK**; [bảng đối chiếu](DOI-CHIEU-KHOA-NGOAI.md) ghi rõ lớp của từng FK. Không xóa ràng buộc trong mô hình hoặc sửa database.
+
+**Không tách ERD:** cả 31 bảng nằm trên cùng một canvas; hai lớp chỉ điều khiển hiển thị đường nối. Các bảng kỹ thuật và nhật ký vẫn hiện trên trang, không dựng liên kết giả. FK ghép, tự tham chiếu và các vai trò khác nhau được giữ đúng trong file gốc.
 
 ## Tải cả bộ 17 sơ đồ
 
-- **[draw.io tổng hợp — 17 trang, chỉ một trang ERD](Tat-ca-17-so-do-ERD-hop-nhat.drawio)**
-- **[Tập hình Word — ERD đã gộp](Tap-hinh-17-so-do-ERD-hop-nhat.docx)**
-- **[PDF 17 hình](Xem-truoc-17-so-do-ERD-hop-nhat.pdf)**
-- **[ZIP trọn bộ](So-do-theo-mau-tron-bo.zip)** — nguồn draw.io/XML, PNG/SVG, Word/PDF, từ điển và đối chiếu FK.
+- **[Word tập hình — đã dùng ERD gọn](Tap-hinh-17-so-do-ERD-hop-nhat.docx)**
+- **[draw.io tổng hợp 17 trang — chỉ một trang ERD](Tat-ca-17-so-do-ERD-hop-nhat.drawio)**
+- [PDF 17 hình](Xem-truoc-17-so-do-ERD-hop-nhat.pdf) · [ZIP trọn bộ](So-do-theo-mau-tron-bo.zip)
 
-GitHub có thể không preview `.drawio` hoặc `.docx`: mở file rồi chọn **Download raw file** để tải. Đây là tập hình để đưa vào báo cáo; bản báo cáo toàn văn cũ vẫn là tài liệu lịch sử cần cập nhật hình và số mục.
+GitHub có thể không preview DOCX/draw.io: mở file rồi chọn **Download raw file**. Đây là Word tập hợp hình để copy/chèn; báo cáo toàn văn cũ vẫn cần thay hình và cập nhật các câu mô tả tương ứng.
 
-## Đổi số hình trong Word
+## Nội dung đã lược
 
-| Hình cũ | Hình hiện hành | Cần làm trong Word |
-|---|---|---|
-| 2.1–2.14 | 2.1–2.14 | Giữ số và nội dung các sơ đồ này. |
-| Năm ERD 2.15–2.19 | **2.15 — ERD hợp nhất** | Thay bằng một hình duy nhất; sửa các câu tham chiếu tới năm ERD cũ về Hình 2.15; bỏ bốn caption thừa. |
-| 2.20 — Kiến trúc | 2.16 | Cập nhật caption và tham chiếu trong nội dung. |
-| 2.21 — Luồng dữ liệu | 2.17 | Cập nhật caption và tham chiếu trong nội dung. |
+Chỉ lược khỏi hình các thuộc tính không phải khóa và không cần giải thích nghiệp vụ chính, như phiên bản khóa đồng thời, dấu vân tay chống lặp, checksum dữ liệu, payload JSON, BLOB và phần lớn dấu thời gian kỹ thuật. [Từ điển đầy đủ](TU-DIEN-362-COT.md) vẫn liệt kê cả 362 cột. [Bảng chọn thuộc tính](VAI-TRO-VA-THUOC-TINH-CHINH.md) cho biết từng bảng giữ gì.
 
-Trong Word dùng **Update Field** cho caption/tham chiếu và cập nhật lại danh mục hình. Nếu caption được gõ tay, cần sửa các số theo bảng trên.
-
-## Danh mục từng hình
+## Danh mục 17 sơ đồ
 
 | Hình | Nội dung | PNG | SVG | draw.io | XML để copy |
 |---|---|---|---|---|---|
@@ -51,26 +53,31 @@ Trong Word dùng **Update Field** cho caption/tham chiếu và cập nhật lạ
 | 2.12 | Tuần tự tra cứu hóa đơn và hiển thị VietQR | [PNG](png/02-12-sequence-vietqr.png) | [SVG](svg/02-12-sequence-vietqr.svg) | [draw.io](drawio/02-12-sequence-vietqr.drawio) | [XML](xml/02-12-sequence-vietqr.xml.txt) |
 | 2.13 | Vòng đời phản ánh | [PNG](png/02-13-trang-thai-phan-anh.png) | [SVG](svg/02-13-trang-thai-phan-anh.svg) | [draw.io](drawio/02-13-trang-thai-phan-anh.drawio) | [XML](xml/02-13-trang-thai-phan-anh.xml.txt) |
 | 2.14 | Sơ đồ lớp phân tích các khái niệm trọng tâm | [PNG](png/02-14-lop-phan-tich.png) | [SVG](svg/02-14-lop-phan-tich.svg) | [draw.io](drawio/02-14-lop-phan-tich.drawio) | [XML](xml/02-14-lop-phan-tich.xml.txt) |
-| 2.15 | ERD hợp nhất toàn bộ 31 bảng và 81 khóa ngoại | [PNG](png/02-15-erd-hop-nhat.png) | [SVG](svg/02-15-erd-hop-nhat.svg) | [draw.io](drawio/02-15-erd-hop-nhat.drawio) | [XML](xml/02-15-erd-hop-nhat.xml.txt) |
+| 2.15 | ERD hợp nhất — thuộc tính và nghiệp vụ chính | [PNG](png/02-15-erd-hop-nhat.png) | [SVG](svg/02-15-erd-hop-nhat.svg) | [draw.io](drawio/02-15-erd-hop-nhat.drawio) | [XML](xml/02-15-erd-hop-nhat.xml.txt) |
 | 2.16 | Kiến trúc ba tầng của hệ thống | [PNG](png/02-16-kien-truc.png) | [SVG](svg/02-16-kien-truc.svg) | [draw.io](drawio/02-16-kien-truc.drawio) | [XML](xml/02-16-kien-truc.xml.txt) |
 | 2.17 | Luồng dữ liệu phản ánh từ QR đến nghiệm thu | [PNG](png/02-17-luong-du-lieu.png) | [SVG](svg/02-17-luong-du-lieu.svg) | [draw.io](drawio/02-17-luong-du-lieu.drawio) | [XML](xml/02-17-luong-du-lieu.xml.txt) |
 
-## Xem trước ERD duy nhất
+## Xem trước
 
-![ERD hợp nhất toàn bộ 31 bảng và 81 khóa ngoại](png/02-15-erd-hop-nhat.png)
+![ERD một trang với 185 thuộc tính chọn lọc, giữ oval, mặc định hiện 39 FK nghiệp vụ](png/02-15-erd-hop-nhat.png)
 
-## Mở, chỉnh sửa và chèn Word
+## Mở và chỉnh sửa
 
-1. Tải `.drawio` → diagrams.net / draw.io Desktop → **File → Open From → Device**. Chọn tab **Hình 2.15** nếu mở file tổng hợp. Có thể sửa từng ô, kéo nhóm thực thể/thuộc tính và chỉnh điểm nối.
-2. Để copy XML: mở `.xml.txt` → **Raw** → copy toàn bộ `<mxGraphModel>...</mxGraphModel>` → **Extras → Edit Diagram** trong trang draw.io trống → dán thay trang đó.
-3. Khi xuất PDF trong draw.io, chọn **Crop** hoặc **Fit to 1 × 1 page** để giữ một ERD trên một trang; không xuất dạng nhiều trang ghép.
-4. Trong Word ưu tiên chèn SVG để phóng to vẫn rõ. ERD đủ 31 bảng và 362 thuộc tính là hình khổ lớn; tập hình dùng A3 để xem tổng quan và kèm SVG vector cùng PNG dự phòng. Có thể đặt ERD ở phụ lục khổ lớn; việc đặt ở phụ lục không làm tách sơ đồ.
+1. Tải `.drawio` → diagrams.net/draw.io Desktop → **File → Open From → Device**. Trong file tổng hợp chọn tab **Hình 2.15**.
+2. Nhấp đúp để sửa chữ, kéo nhóm thực thể/thuộc tính và điểm nối. Thuộc tính và đường nối là đối tượng gốc, không phải ảnh đặt vào file draw.io.
+3. Muốn hiện đủ FK: **View → Layers** → bật lớp **02 FK người thao tác và nhật ký**. Khi muốn xuất hình gọn, ẩn lớp đó trước khi export.
+4. Muốn copy XML: mở `.xml.txt` → **Raw** → copy toàn bộ `<mxGraphModel>...</mxGraphModel>` → **Extras → Edit Diagram** trên trang draw.io trống → dán thay trang đó.
+5. Khi xuất PDF, chọn **Crop** hoặc **Fit to 1 × 1 page**. Trong Word ưu tiên SVG; bản tập hình dùng A3 cho ERD và kèm SVG vector cùng PNG dự phòng.
+
+## Sửa Word theo bản hiện hành
+
+Thay năm ERD cũ (Hình 2.15–2.19) bằng **Hình 2.15 — ERD hợp nhất, thuộc tính và nghiệp vụ chính**. Đổi kiến trúc cũ 2.20 thành 2.16 và luồng dữ liệu cũ 2.21 thành 2.17; Hình 2.1–2.14 giữ nguyên. Cập nhật caption, câu tham chiếu và danh mục hình. Mô tả dưới ERD cần nêu: hình chọn 185 thuộc tính, chỉ hiển thị 39 quan hệ chính; 81 FK đầy đủ nằm trong file gốc/bảng đối chiếu.
 
 ## Nguồn và kiểm chứng
 
-- Schema: [`database/thesis-mysql/001_thesis_schema.sql`](../../database/thesis-mysql/001_thesis_schema.sql). 31 bảng vật lý và 8 view lịch sử; view không được dựng thành bảng mới trên ERD.
-- [Mô hình đối chiếu](nguon/mo-hinh-va-doi-chieu.json): tất cả bảng/cột/FK và ID các đối tượng gốc trong draw.io.
-- [Kết quả kiểm tra đầy đủ FK](nguon/kiem-tra-erd-hop-nhat.json) · [Kiểm tra kết xuất bằng mxGraph](nguon/kiem-tra-ket-xuat.json) · [Kiểm tra Word/PDF](nguon/kiem-tra-tap-hinh.json).
-- [Mã tái sinh sơ đồ](nguon/tao-so-do.py): Python 3, Pillow và Graphviz (`dot`). Chạy `python docs/so-do-theo-mau-2026-11-17/nguon/tao-so-do.py` từ repository để tái sinh draw.io/XML/SVG và mô hình, luôn chỉ một ERD. Bố cục tự động nằm trong `nguon/bo-cuc-erd.dot` và JSON tương ứng.
+- Schema: [`database/thesis-mysql/001_thesis_schema.sql`](../../database/thesis-mysql/001_thesis_schema.sql), 31 bảng / 362 cột / 81 FK và 8 view lịch sử.
+- [Mô hình đối chiếu](nguon/mo-hinh-va-doi-chieu.json) · [185 thuộc tính được chọn](nguon/lua-chon-thuoc-tinh.json) · [Đối chiếu 81 FK](DOI-CHIEU-KHOA-NGOAI.md).
+- [Kiểm tra khóa và lựa chọn thuộc tính](nguon/kiem-tra-erd-hop-nhat.json) · [Mở và bật/tắt lớp bằng mxGraph](nguon/kiem-tra-ket-xuat.json) · [Kiểm tra Word/PDF](nguon/kiem-tra-tap-hinh.json).
+- [Mã tái sinh](nguon/tao-so-do.py): Python 3, Pillow và Graphviz. Chạy `python docs/so-do-theo-mau-2026-11-17/nguon/tao-so-do.py` để tái sinh draw.io/XML/SVG; file lựa chọn thuộc tính phải nằm cùng thư mục với script.
 
-Các bộ cũ trong `docs/tai-lieu-ban-giao-2026-11-17/` và báo cáo toàn văn trước đây chỉ dùng đối chiếu lịch sử. Bộ hiện hành ở thư mục này đã bỏ năm ERD phân hệ cũ khỏi draw.io tổng hợp, Word, PDF, ZIP và danh mục tải.
+Các bộ ERD cũ trong thư mục bàn giao trước và báo cáo toàn văn là bản lưu lịch sử. Bộ hiện hành chỉ có một ERD và giữ liên kết đầy đủ trong hai lớp của trang đó.

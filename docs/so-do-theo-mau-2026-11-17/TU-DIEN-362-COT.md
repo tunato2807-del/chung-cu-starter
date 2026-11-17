@@ -1,6 +1,6 @@
 # Từ điển thuộc tính của ERD hợp nhất
 
-Đủ 362 cột của 31 bảng trên một ERD. Kiểu dữ liệu, PK và tính NULL đọc từ schema SQL. Đây là tài liệu tra cứu thuộc tính, không phải sơ đồ phân hệ tách riêng.
+Từ điển đầy đủ 362 cột của 31 bảng trong schema SQL. ERD hiện hành chỉ chọn 185 cột để dễ đọc, gồm mọi PK/FK và thuộc tính nghiệp vụ chính. Tài liệu này vẫn giữ đủ kiểu dữ liệu và tính NULL cho cả các cột đã lược khỏi hình; không tách thành ERD phân hệ.
 
 ## can_ho
 

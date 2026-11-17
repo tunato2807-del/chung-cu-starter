@@ -4,7 +4,11 @@
   "erd_pages": 1,
   "master_pages": 17,
   "tables": 31,
-  "columns": 362,
+  "selected_columns": 185,
+  "total_schema_columns": 362,
+  "omitted_nonkey_columns": 177,
+  "all_pk_fk_columns_preserved": true,
+  "attribute_shape": "ellipse",
   "foreign_key_constraints": 81,
   "foreign_key_arms": 162,
   "inline_history_foreign_keys": 14,
@@ -17,5 +21,9 @@
   "foreign_key_paths_through_entity_attribute_groups": [],
   "primary_keys_underlined": true,
   "native_editable_objects": true,
+  "default_visible_relationships": 39,
+  "optional_relationships_on_same_page": 42,
+  "purposes_shown": 31,
+  "layer_toggle_verified_in_mxgraph": true,
   "fk_endpoints_match_sql": true
 }

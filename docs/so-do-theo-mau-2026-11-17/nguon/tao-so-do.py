@@ -4,7 +4,7 @@ import html, json, re, math, copy, hashlib
 from PIL import ImageFont
 
 import argparse
-parser=argparse.ArgumentParser(description='Tái sinh 17 sơ đồ, gồm đúng một ERD hợp nhất đầy đủ.')
+parser=argparse.ArgumentParser(description='Tái sinh 17 sơ đồ; ERD chọn thuộc tính chính, giữ oval và đủ 81 FK trong một trang có lớp bật/tắt.')
 parser.add_argument('--repo',type=Path,default=Path(__file__).resolve().parents[3])
 parser.add_argument('--out',type=Path,default=Path(__file__).resolve().parent.parent)
 args=parser.parse_args()
@@ -13,7 +13,7 @@ OUT=args.out.resolve()
 for name in ['drawio','xml','png','svg','nguon']: (OUT/name).mkdir(parents=True,exist_ok=True)
 OLD=REPO/'docs/bao-cao/quyen-bao-cao-2026'
 MANIFEST=json.loads((REPO/'docs/tai-lieu-ban-giao-2026-11-17/bao-cao-drawio/danh-muc-hinh.json').read_text())
-MANIFEST[14].update(figure='2.15',caption='Hình 2.15. ERD hợp nhất toàn bộ 31 bảng và 81 khóa ngoại',filename='02-15-erd-hop-nhat')
+MANIFEST[14].update(figure='2.15',caption='Hình 2.15. ERD hợp nhất — thuộc tính và nghiệp vụ chính',filename='02-15-erd-hop-nhat')
 MANIFEST[19].update(figure='2.16',caption='Hình 2.16. Kiến trúc ba tầng của hệ thống',filename='02-16-kien-truc')
 MANIFEST[20].update(figure='2.17',caption='Hình 2.17. Luồng dữ liệu phản ánh từ QR đến nghiệm thu',filename='02-17-luong-du-lieu')
 SQL=(REPO/'database/thesis-mysql/001_thesis_schema.sql').read_text()
@@ -153,6 +153,7 @@ class Diagram:
     def svg(self):
         a=[f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}" viewBox="0 0 {self.width} {self.height}"><rect width="100%" height="100%" fill="white"/>']
         for o in self.svgitems:
+            if o.get('hidden'):continue
             if o['kind']=='line':
                 pts=o['points'];dash=' stroke-dasharray="7 5"' if o['dashed'] else ''
                 a.append('<polyline points="'+' '.join(f'{N(x)},{N(y)}' for x,y in pts)+f'" fill="none" stroke="#222222" stroke-width="1.3"{dash}/>')
@@ -173,7 +174,7 @@ class Diagram:
             if lines:
                 anchor='start' if o['align']=='left' else 'middle';tx=x+8 if anchor=='start' else x+w/2
                 first=y+h/2-(len(lines)-1)*fs*1.2/2+fs*.35
-                style=f'font-family="{o["family"]}" font-size="{fs}" fill="#111111" text-anchor="{anchor}"'
+                style=f'font-family="{o["family"]}" font-size="{fs}" fill="{o.get('fontcolor','#111111')}" text-anchor="{anchor}"'
                 if o['bold']:style+=' font-weight="bold"'
                 if o['italic']:style+=' font-style="italic"'
                 for k,line in enumerate(lines):
@@ -271,8 +272,133 @@ def activities():
     flow(d,qq,retry,'L','R',label='Không',lp=(540,1170));flow(d,retry,a,'L','L',[(80,1250),(80,280)]);flow(d,qq,ok,label='Có',lp=(s+35,1180));flow(d,ok,send);flow(d,send,sent);flow(d,sent,check);flow(d,check,paid)
     flow(d,paid,wait,'R','L',label='Chưa',lp=(530,1870));flow(d,wait,check,'R','R',[(1210,1950),(1210,1670)]);flow(d,paid,done,'B','L',[(b,2090)],label='Có',lp=(b+35,1960));flow(d,done,end);save(d)
 
+def main_relationship(fk):
+    if fk['child']=='nhat_ky_nghiep_vu':
+        return False
+    if fk['parent']=='nguoi_dung':
+        return fk['child'] in {'cu_dan','thong_bao_da_doc'} or (fk['child'] in {'phan_anh','phieu_bao_tri'} and fk['columns']==['ma_ky_thuat_vien'])
+    return True
+
+
+def add_optional_layout(layout, sizes, foreign_keys):
+    """Keep the business layout fixed; route optional FK objects in free space."""
+    import subprocess
+    _,_,gw,gh=map(float,layout['bb'].split(','))
+    objects={o['name']:o for o in layout['objects']}
+    obstacles=[]
+    for obj in objects.values():
+        cx,cy=map(float,obj['pos'].split(','))
+        w,h=(sizes[obj['name']] if obj['name'] in sizes else (180,104.4))
+        obstacles.append((cx-w/2-24,cy-h/2-24,cx+w/2+24,cy+h/2+24))
+    def free(x,y):
+        box=(x-108,y-70,x+108,y+70)
+        return not any(box[0]<r[2] and box[2]>r[0] and box[1]<r[3] and box[3]>r[1] for r in obstacles)
+    candidates=[(x,y) for x in range(130,int(gw)-100,90) for y in range(100,int(gh)-80,80) if free(x,y)]
+    optional=[f for f in foreign_keys if not main_relationship(f)]
+    for fk in optional:
+        a=tuple(map(float,objects[fk['parent']]['pos'].split(',')))
+        b=tuple(map(float,objects[fk['child']]['pos'].split(',')))
+        pool=[p for p in candidates if free(*p)]
+        if not pool:
+            p=(gw+140,150+len(objects)*130)
+        else:
+            p=min(pool,key=lambda p:math.dist(a,p)+math.dist(b,p)+.08*math.dist(p,b))
+        obj={'_gvid':len(objects),'name':fk['id'],'pos':f'{p[0]},{p[1]}','width':'2.5','height':'1.45','shape':'diamond'}
+        objects[fk['id']]=obj
+        obstacles.append((p[0]-114,p[1]-76,p[0]+114,p[1]+76))
+    # All nodes, including business relationship diamonds, are routing obstacles.
+    dot=['graph optional {','graph [splines=polyline,notranslate=true,overlap=true];','node [label="",fixedsize=true];']
+    for name,obj in objects.items():
+        w,h=sizes.get(name,(180,104.4));shape='box' if name in sizes else 'diamond'
+        dot.append(f'"{name}" [pos="{obj["pos"]}!",width={w/72},height={h/72},shape={shape}];')
+    for fk in optional:
+        rid=fk['id']
+        dot.append(f'"{fk["parent"]}" -- {rid} [id="{rid}-parent",tailport=n];')
+        dot.append(f'{rid} -- "{fk["child"]}" [id="{rid}-child",headport=n];')
+    dot.append('}')
+    source='\n'.join(dot)
+    (OUT/'nguon/bo-cuc-fk-kiem-soat.dot').write_text(source)
+    extra=json.loads(subprocess.run(['neato','-n2','-Tjson'],input=source,text=True,capture_output=True,check=True).stdout)
+    original=next(iter(objects.values()));new=next(o for o in extra['objects'] if o['name']==original['name'])
+    ox,oy=map(float,original['pos'].split(','));nx,ny=map(float,new['pos'].split(','));dx,dy=nx-ox,ny-oy
+    for edge in extra['edges']:
+        for draw in edge.get('_draw_',[]):
+            if 'points' in draw:draw['points']=[[x-dx,y-dy] for x,y in draw['points']]
+    layout['objects']=list(objects.values())
+    layout['edges'].extend(extra['edges'])
+    layout['optional_relationships']=[f['id'] for f in optional]
+    return layout
+
+
+def segment_hits_box(a,b,r):
+    x,y,w,h=r
+    eps=.2;x+=eps;y+=eps;w-=eps*2;h-=eps*2
+    dx,dy=b[0]-a[0],b[1]-a[1];lo,hi=0,1
+    for pi,qi in [(-dx,a[0]-x),(dx,x+w-a[0]),(-dy,a[1]-y),(dy,y+h-a[1])]:
+        if pi==0:
+            if qi<0:return False
+        elif pi<0:lo=max(lo,qi/pi)
+        else:hi=min(hi,qi/pi)
+        if lo>hi:return False
+    return True
+
+
+def route_optional(points,rectangles):
+    """Replace a crossing optional arm with a short orthogonal obstacle route."""
+    if not any(segment_hits_box(a,b,r) for a,b in zip(points,points[1:]) for r in rectangles):
+        return points
+    import heapq
+    a,b=points[0],points[-1]
+    xs=sorted({a[0],b[0]}|{v for x,y,w,h in rectangles for v in (x-18,x+w+18)})
+    ys=sorted({a[1],b[1]}|{v for x,y,w,h in rectangles for v in (y-18,y+h+18)})
+    start=(xs.index(a[0]),ys.index(a[1]),0)
+    goal=(xs.index(b[0]),ys.index(b[1]))
+    heap=[(math.dist(a,b),0,start)];cost={start:0};parents={};cache={}
+    while heap:
+        _,g,state=heapq.heappop(heap)
+        if g!=cost.get(state):continue
+        ix,iy,heading=state
+        if (ix,iy)==goal:
+            path=[]
+            while True:
+                path.append((xs[state[0]],ys[state[1]]))
+                if state==start:break
+                state=parents[state]
+            path.reverse()
+            result=[]
+            for p in path:
+                if len(result)>1 and ((result[-2][0]==result[-1][0]==p[0]) or (result[-2][1]==result[-1][1]==p[1])):
+                    result[-1]=p
+                else:result.append(p)
+            return result
+        for dx,dy,direction in [(-1,0,1),(1,0,1),(0,-1,2),(0,1,2)]:
+            jx,jy=ix+dx,iy+dy
+            if not (0<=jx<len(xs) and 0<=jy<len(ys)):continue
+            key=(min(ix,jx),min(iy,jy),direction)
+            if key not in cache:
+                cache[key]=not any(segment_hits_box((xs[ix],ys[iy]),(xs[jx],ys[jy]),r) for r in rectangles)
+            if not cache[key]:continue
+            new=(jx,jy,direction)
+            distance=abs(xs[ix]-xs[jx])+abs(ys[iy]-ys[jy])
+            next_cost=g+distance+(22 if heading and heading!=direction else 0)
+            if next_cost<cost.get(new,float('inf')):
+                cost[new]=next_cost;parents[new]=state
+                heuristic=abs(xs[jx]-b[0])+abs(ys[jy]-b[1])
+                heapq.heappush(heap,(next_cost+heuristic,next_cost,new))
+    raise RuntimeError('No collision-free optional FK route')
+
+
 def erd_hop_nhat():
-    """ONE Chen ERD, every table, every column, every declared foreign key."""
+    """One Chen ERD: all PK/FK columns plus selected business attributes."""
+    choices=json.loads(Path(__file__).with_name('lua-chon-thuoc-tinh.json').read_text())
+    selected={}
+    for name,table in SCHEMA.items():
+        keys=set(table['pk']) | {c for f in FKS if f['child']==name for c in f['columns']}
+        columns=keys|set(choices[name]['business'])
+        assert columns <= table['columns'].keys()
+        selected[name]={c:v for c,v in table['columns'].items() if c in columns}
+    selected_count=sum(len(v) for v in selected.values())
+    main_fks=[f for f in FKS if main_relationship(f)]
     import subprocess
     labels = {
         'khoi': 'thuộc khối', 'tang': 'thuộc tầng', 'loai_phi': 'loại phí',
@@ -302,15 +428,15 @@ def erd_hop_nhat():
     # Graphviz sees each entity plus its attribute ovals as a solid obstacle.
     # All relation arms enter the entity at its north port, above the attributes.
     dot = ['graph erd {',
-           'graph [overlap=prism, splines=polyline, sep="+65", esep="+28", outputorder=edgesfirst, start=42];',
+           'graph [rankdir=TB, pack=true, packmode="node", ranksep=0.65, nodesep=0.6, splines=polyline, outputorder=edgesfirst];',
            'node [shape=box, fixedsize=true, label="", margin=0];',
            'edge [len=3.4];']
     sizes = {}
     for name, table in SCHEMA.items():
-        w, h = 650, 120 + math.ceil(len(table['columns']) / 2) * 60
+        w, h = 650, 160 + math.ceil(len(selected[name]) / 2) * 60
         sizes[name] = (w, h)
         dot.append(f'"{name}" [width={w/72},height={h/72}];')
-    for fk in FKS:
+    for fk in main_fks:
         rid = fk['id']
         dot.extend([f'{rid} [shape=diamond,width=2.5,height=1.45];',
                     f'"{fk["parent"]}" -- {rid} [id="{rid}-parent",tailport=n];',
@@ -319,14 +445,19 @@ def erd_hop_nhat():
     source = '\n'.join(dot)
     (OUT/'nguon/bo-cuc-erd.dot').write_text(source)
     layout = json.loads(subprocess.run(['dot', '-Tjson'], input=source, text=True, capture_output=True, check=True).stdout)
+    layout=add_optional_layout(layout,sizes,FKS)
     (OUT/'nguon/bo-cuc-erd.json').write_text(json.dumps(layout, ensure_ascii=False, indent=2))
     _, _, gw, gh = map(float, layout['bb'].split(','))
     margin, top = 100, 270
     d = Diagram(15, math.ceil(gw)+2*margin, math.ceil(gh)+top+160)
-    d.text(70,30,d.width-140,80,'ERD HỢP NHẤT — HỆ THỐNG QUẢN LÝ VẬN HÀNH CHUNG CƯ',fs=40,bold=True)
-    d.text(70,115,d.width-140,48,'31 bảng • 362 thuộc tính • 81 khóa ngoại • một trang vẽ duy nhất',fs=26)
-    d.text(70,170,d.width-140,44,'PK gạch chân; FK ghi mã R01–R81; mỗi hình thoi biểu diễn đúng một ràng buộc khóa ngoại.',fs=22)
-    d.text(70,215,d.width-140,40,'Hai bảng kỹ thuật gioi_han_gui và schema_migrations không có FK khai báo: giữ trên cùng trang, không tạo liên kết giả.',fs=21)
+    d.root.find("mxCell[@id='1']").set('value','01 Nghiệp vụ chính (luôn hiện)')
+    optional_layer='fk-kiem-soat'
+    E.SubElement(d.root,'mxCell',id=optional_layer,parent='0',value='02 FK người thao tác và nhật ký (bật khi cần)',visible='0')
+    d.bounds[optional_layer]=(0,0,d.width,d.height)
+    d.text(70,30,d.width-140,80,'ERD HỢP NHẤT — THUỘC TÍNH VÀ NGHIỆP VỤ CHÍNH',fs=36,bold=True)
+    d.text(70,115,d.width-140,48,f'31 bảng • {selected_count}/362 thuộc tính • PK/FK được giữ • một trang vẽ duy nhất',fs=26)
+    d.text(70,170,d.width-140,44,'Hiện 39 liên kết nghiệp vụ; 42 FK người thao tác / nhật ký có thể bật trong View → Layers của draw.io.',fs=22)
+    d.text(70,215,d.width-140,40,'Thuộc tính nghiệp vụ in đậm • PK gạch chân • FK kiểm soát màu xám • đủ 81 FK trong file gốc.',fs=21)
     def transform(x,y):
         return float(x)+margin, gh-float(y)+top
     objects = {o['_gvid']:o for o in layout['objects']}
@@ -357,22 +488,27 @@ def erd_hop_nhat():
         entity=d.box(155,0,340,58,name.upper(),fs=19,bold=True,parent=group)
         tag(entity,erdKind='entity',tableName=name)
         entity_ids[name]=entity
-        nrows=math.ceil(len(table['columns'])/2)
-        leftlast=min(nrows,len(table['columns']))-1
-        rightlast=len(table['columns'])-nrows-1
+        d.text(15,61,620,47,choices[name]['purpose'],fs=18,italic=True,parent=group)
+        nrows=math.ceil(len(selected[name])/2)
+        leftlast=min(nrows,len(selected[name]))-1
+        rightlast=len(selected[name])-nrows-1
         for side,last in [('L',leftlast),('R',rightlast)]:
             if last<0:
                 continue
             edge_x=x+5 if side=='L' else x+645
             entity_x=x+155 if side=='L' else x+495
-            d.line([(entity_x,y+29),(edge_x,y+29),(edge_x,y+117+last*60)],source=entity,parent=group)
-        for k,(col,info) in enumerate(table['columns'].items()):
+            d.line([(entity_x,y+29),(edge_x,y+29),(edge_x,y+153+last*60)],source=entity,parent=group)
+        for k,(col,info) in enumerate(selected[name].items()):
             right=k>=nrows;row=k-nrows if right else k
-            ox,oy=(340 if right else 15),93+row*60
+            ox,oy=(340 if right else 15),129+row*60
             key=col in table['pk'];fk_ids=fk_by_column.get((name,col),[])
             lab=col + ('\nFK '+', '.join(fk_ids) if fk_ids else '')
             font_size=min(16, max(11,math.floor(268/ImageFont.truetype(FONT_PATH,16).getlength(col)*16)))
-            attr=d.box(ox,oy,295,48,lab,shape='ellipse',fs=font_size,underline=key,parent=group)
+            business=col in choices[name]['business']
+            support_only=bool(fk_ids) and not any(main_relationship(f) for f in FKS if f['child']==name and col in f['columns'])
+            ink='#777777' if support_only else '#111111'
+            attr=d.box(ox,oy,295,48,lab,shape='ellipse',fs=font_size,underline=key,bold=business,fill='#f5f5f5' if business else '#ffffff',stroke='#aaaaaa' if support_only else '#222222',extra=f'fontColor={ink};',parent=group)
+            d.svgitems[-1]['fontcolor']=ink
             tag(attr,erdKind='attribute',tableName=name,columnName=col,isPrimary=int(key),foreignKeys=','.join(fk_ids))
             ax=x+635 if right else x+15;bus=x+645 if right else x+5
             d.line([(bus,y+oy+24),(ax,y+oy+24)],target=attr,parent=group)
@@ -385,9 +521,17 @@ def erd_hop_nhat():
             continue
         fk=next(f for f in FKS if f['id']==rid)
         cx,cy=transform(*obj['pos'].split(','))
-        diamond=d.box(cx-90,cy-52.2,180,104.4,rid+'\n'+labels[fk['columns'][-1]],shape='diamond',fs=14)
+        is_optional=not main_relationship(fk)
+        parent=optional_layer if is_optional else '1'
+        diamond=d.box(cx-90,cy-52.2,180,104.4,rid+'\n'+labels[fk['columns'][-1]],shape='diamond',fs=14,parent=parent)
+        if is_optional:d.svgitems[-1]['hidden']=True
         tag(diamond,erdKind='relationship',fkId=rid,fkName=fk['name'],childTable=fk['child'],parentTable=fk['parent'])
         relationship_ids[rid]=diamond
+    group_rectangles=[]
+    for obj in layout['objects']:
+        if obj['name'] in SCHEMA:
+            cx,cy=transform(*obj['pos'].split(','));w,h=sizes[obj['name']]
+            group_rectangles.append((cx-w/2,cy-h/2,w,h))
     arms={}
     def distance_from(points,amount,from_end=False):
         points=list(reversed(points)) if from_end else points
@@ -408,16 +552,21 @@ def erd_hop_nhat():
         points=[p for i,p in enumerate(points) if i==0 or math.dist(p,points[i-1])>.05]
         if role=='parent':points[0]=d.anchor(src,'T')
         else:points[-1]=d.anchor(dst,'T')
-        native=d.line(points,source=src,target=dst)
+        is_optional=not main_relationship(fk)
+        if is_optional:points=route_optional(points,group_rectangles)
+        parent=optional_layer if is_optional else '1'
+        native=d.line(points,source=src,target=dst,parent=parent)
+        if is_optional:d.svgitems[-1]['hidden']=True
         tag(native,erdKind='foreign-key-arm',fkId=rid,fkName=fk['name'],armRole=role)
         arms.setdefault(rid,{})[role]=native
         card=fk['parent_cardinality'] if role=='parent' else fk['child_cardinality']
         lx,ly=distance_from(points,52,from_end=(role=='parent'))
-        label=d.box(lx-30,ly-13,60,26,card,fs=14,fill='#ffffff',stroke='none')
+        label=d.box(lx-30,ly-13,60,26,card,fs=14,fill='#ffffff',stroke='none',parent=parent)
+        if is_optional:d.svgitems[-1]['hidden']=True
         tag(label,erdKind='cardinality',fkId=rid,armRole=role)
     for fk in FKS:
-        d.relations.append(dict(fk,relationship_cell_id=relationship_ids[fk['id']],arm_cells=arms[fk['id']]))
-    d.note='ERD duy nhất: đầy đủ 31 bảng, 362 cột, 81 FK (gồm 14 FK inline của nhat_ky_nghiep_vu); 29 bảng cùng thành phần liên thông, 2 bảng kỹ thuật không có FK cùng canvas.'
+        d.relations.append(dict(fk,relationship_cell_id=relationship_ids[fk['id']],arm_cells=arms[fk['id']],default_visible=main_relationship(fk)))
+    d.note=f'Một ERD có 31 bảng, {selected_count} thuộc tính chọn từ 362 (giữ mọi cột PK/FK), 39 liên kết nghiệp vụ mặc định; 42 FK kiểm soát cùng trang trong lớp bật/tắt. Tổng file: 81 FK.'
     d.schema=SCHEMA
     save(d)
 
@@ -555,8 +704,8 @@ def main():
         summary.append(entry)
     E.indent(master,space='  ')
     (OUT/'Tat-ca-17-so-do-ERD-hop-nhat.drawio').write_bytes(E.tostring(master,encoding='utf-8',xml_declaration=True))
-    (OUT/'nguon/mo-hinh-va-doi-chieu.json').write_text(json.dumps({'source_commit':'cceb904','schema_sha256':hashlib.sha256(SQL.encode()).hexdigest(),'tables':SCHEMA,'foreign_keys':FKS,'erd_pages':1,'reference_style':'6 example images supplied by user; housing domain retained','diagrams':summary},ensure_ascii=False,indent=2))
+    (OUT/'nguon/mo-hinh-va-doi-chieu.json').write_text(json.dumps({'source_commit':'cceb904','schema_sha256':hashlib.sha256(SQL.encode()).hexdigest(),'tables':SCHEMA,'foreign_keys':FKS,'erd_pages':1,'presentation':{'selected_columns':185,'total_columns':362,'default_visible_fk':39,'optional_fk':42,'optional_layer':'fk-kiem-soat','attribute_style':'ellipse','purposes':{k:v['purpose'] for k,v in json.loads(Path(__file__).with_name('lua-chon-thuoc-tinh.json').read_text()).items()}},'reference_style':'6 example images supplied by user; housing domain retained','diagrams':summary},ensure_ascii=False,indent=2))
     (OUT/'danh-muc.json').write_text(json.dumps([{k:v for k,v in e.items() if k not in ['fields','relations']} for e in summary],ensure_ascii=False,indent=2))
-    print('Generated 17 diagrams: ONE ERD with 31 tables, 362 columns, 81 foreign keys.')
+    print('Generated 17 diagrams: one ERD, 31 tables, 185 selected columns, 39 visible + 42 optional FK.')
 
 if __name__=='__main__':main()

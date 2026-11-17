@@ -1,6 +1,6 @@
 {
   "parser": "mxGraph 4.2.2 in Chromium",
-  "scope": "All 17 native pages decoded and rendered, exactly one ERD; no image wrappers",
+  "scope": "17 native pages, one ERD with 31 tables and 185 selected attributes. ERD decoded/rendered again; 16 other diagrams unchanged.",
   "diagrams": [
     {
       "figure": "2.1",
@@ -158,14 +158,22 @@
     },
     {
       "figure": "2.15",
-      "caption": "Hình 2.15. ERD hợp nhất toàn bộ 31 bảng và 81 khóa ngoại",
+      "caption": "Hình 2.15. ERD hợp nhất — thuộc tính và nghiệp vụ chính",
       "filename": "02-15-erd-hop-nhat",
-      "vertices": 675,
-      "edges": 586,
-      "width": 10058,
-      "height": 7148,
-      "note": "ERD duy nhất: đầy đủ 31 bảng, 362 cột, 81 FK (gồm 14 FK inline của nhat_ky_nghiep_vu); 29 bảng cùng thành phần liên thông, 2 bảng kỹ thuật không có FK cùng canvas.",
-      "images": 0
+      "vertices": 529,
+      "edges": 409,
+      "width": 5911,
+      "height": 4767,
+      "note": "Một ERD có 31 bảng, 185 thuộc tính chọn từ 362 (giữ mọi cột PK/FK), 39 liên kết nghiệp vụ mặc định; 42 FK kiểm soát cùng trang trong lớp bật/tắt. Tổng file: 81 FK.",
+      "images": 0,
+      "defaults": {
+        "visibleRelationshipCount": 39,
+        "optionalLayerVisible": false
+      },
+      "expanded": {
+        "visibleRelationshipCount": 81,
+        "optionalLayerVisible": true
+      }
     },
     {
       "figure": "2.16",
@@ -190,5 +198,5 @@
       "images": 0
     }
   ],
-  "png_note": "Figures 2.1–2.14 retain the PNG files from 1e01cf7 at original 1.5x resolution; their native XML/SVG are unchanged and were decoded/rendered again. New or renumbered figures use new PNG exports."
+  "png_note": "16 unchanged diagram PNG files retained. New ERD screenshot rendered at 1.5x with the optional FK layer initially hidden."
 }

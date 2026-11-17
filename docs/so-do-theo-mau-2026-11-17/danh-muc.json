@@ -141,13 +141,13 @@
   },
   {
     "figure": "2.15",
-    "caption": "Hình 2.15. ERD hợp nhất toàn bộ 31 bảng và 81 khóa ngoại",
+    "caption": "Hình 2.15. ERD hợp nhất — thuộc tính và nghiệp vụ chính",
     "filename": "02-15-erd-hop-nhat",
-    "vertices": 675,
-    "edges": 586,
-    "width": 10033,
-    "height": 7123,
-    "note": "ERD duy nhất: đầy đủ 31 bảng, 362 cột, 81 FK (gồm 14 FK inline của nhat_ky_nghiep_vu); 29 bảng cùng thành phần liên thông, 2 bảng kỹ thuật không có FK cùng canvas."
+    "vertices": 529,
+    "edges": 409,
+    "width": 5886,
+    "height": 4742,
+    "note": "Một ERD có 31 bảng, 185 thuộc tính chọn từ 362 (giữ mọi cột PK/FK), 39 liên kết nghiệp vụ mặc định; 42 FK kiểm soát cùng trang trong lớp bật/tắt. Tổng file: 81 FK."
   },
   {
     "figure": "2.16",
