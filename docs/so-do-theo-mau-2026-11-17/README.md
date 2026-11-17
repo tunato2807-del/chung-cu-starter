@@ -12,7 +12,7 @@ Giữ lại đúng 18 bảng và toàn bộ 218 thuộc tính như bản đầy 
 - **[Word tập hình đã cập nhật](Tap-hinh-17-so-do-ERD-hop-nhat.docx)** · [PDF 17 hình](Xem-truoc-17-so-do-ERD-hop-nhat.pdf)
 - [draw.io tổng hợp 17 hình](Tat-ca-17-so-do-ERD-hop-nhat.drawio) · [ZIP trọn bộ](So-do-theo-mau-tron-bo.zip)
 
-Trong GitHub, mở `.drawio`/`.docx` rồi chọn **Download raw file** để tải. Word này là tập hình để copy/chèn; bản báo cáo toàn văn cũ vẫn cần thay hình và cập nhật mô tả. Trang ERD trong Word dùng A3 dọc; SVG/PDF giữ vector để phóng to.
+Trong GitHub, mở `.drawio`/`.docx` rồi chọn **Download raw file** để tải. Word này là tập hình để copy/chèn. [Quyển báo cáo mới viết lại từ đầu](../bao-cao/bao-cao-viet-lai-2026-11-17/README.md) đã chèn đủ bộ 17 sơ đồ hiện hành và cập nhật mô tả. Trang ERD trong Word dùng A3 dọc; SVG/PDF giữ vector để phóng to.
 
 ## Ký pháp và bố cục
 

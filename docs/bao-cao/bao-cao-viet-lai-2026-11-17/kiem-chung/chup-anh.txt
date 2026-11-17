@@ -1,0 +1,1 @@
+Captured 4 UI illustrations; no page errors or real DB requests.

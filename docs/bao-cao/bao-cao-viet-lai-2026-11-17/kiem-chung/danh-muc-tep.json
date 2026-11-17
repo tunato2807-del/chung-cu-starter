@@ -1,0 +1,202 @@
+[
+  {
+    "file": "Ban-xem-truoc_Bao-cao-viet-lai.pdf",
+    "bytes": 4992714,
+    "sha256": "f61f044e487f2022e3cd6301a3483cdedba77350bf304e9f9ed5aefaf4b77224"
+  },
+  {
+    "file": "Bao-cao-DACN_To-Hoang-Tuan_Viet-lai.docx",
+    "bytes": 4266819,
+    "sha256": "09242cca5d25d692eca73f74555a6fe51819f6fae0f934570f8481c48993ed18"
+  },
+  {
+    "file": "Bao-cao-moi-va-so-do-chinh-sua.zip",
+    "bytes": 12331204,
+    "sha256": "220169fbb2f892bcab16a0a3e1db0adfc14ae9a8685dc036ef655f803aaf31aa"
+  },
+  {
+    "file": "DOI-CHIEU-YEU-CAU.md",
+    "bytes": 6425,
+    "sha256": "4e3a66922651597ec33702f27af4c6832a9242169273a55e5051b0c7d3eda60b"
+  },
+  {
+    "file": "Noi-dung-bao-cao.md",
+    "bytes": 128270,
+    "sha256": "ce059761d20480150d1ee65949226461e77debe70b32f4f90cc188014a67d7d1"
+  },
+  {
+    "file": "README.md",
+    "bytes": 6655,
+    "sha256": "0e97d6d365a1c06f928f6767059ce56314bfd6fdbf78c0d383973abca9038b7b"
+  },
+  {
+    "file": "hinh/giao-dien-cu-dan.png",
+    "bytes": 18329,
+    "sha256": "0999a5933736785941d9151d700091fd09c4420c9702203481246eb52a301c8d"
+  },
+  {
+    "file": "hinh/giao-dien-dang-nhap.png",
+    "bytes": 30345,
+    "sha256": "91631562b0f722680cf106c81df96ff1c64420c2752427a31341d0b85f730f9c"
+  },
+  {
+    "file": "hinh/giao-dien-phan-anh.png",
+    "bytes": 43769,
+    "sha256": "e82b77d85bba338a85b71f9dd184c65aed2ec782b0108e09ee538e2a7cc245b6"
+  },
+  {
+    "file": "hinh/giao-dien-qr.png",
+    "bytes": 28915,
+    "sha256": "a69768770f29d14af4ebd952f25ec6d81764c43bfc78540f0a4e4c9108cff529"
+  },
+  {
+    "file": "hinh/giao-dien-them-can-desktop.png",
+    "bytes": 87828,
+    "sha256": "9c8d6cf64be960f480ab36c4f52bad302961de1c8857f294bc4e10adcd799c67"
+  },
+  {
+    "file": "hinh/giao-dien-them-can-mobile.png",
+    "bytes": 30092,
+    "sha256": "5a54fcd034821fddd82892a376062a1ab86dc300d29bda98aa101ee2759aef0b"
+  },
+  {
+    "file": "hinh/giao-dien-tong-quan.png",
+    "bytes": 124079,
+    "sha256": "8ebdaa16ce376f26d32592f8c740794ac91071f17f999ce08f0e4937b076ca93"
+  },
+  {
+    "file": "hinh/giao-dien-vietqr.png",
+    "bytes": 42323,
+    "sha256": "dc27c5ceea69b1fe947ac66b1571f2f8d7f32ab7066ac4a79137c94881c65c19"
+  },
+  {
+    "file": "hinh/giao-dien-xu-ly.png",
+    "bytes": 99618,
+    "sha256": "e222b71d22ecf9206f6763ce5971a5bef64fdb827716fff38559608bdbdebbf8"
+  },
+  {
+    "file": "hinh/logo-truong.png",
+    "bytes": 61880,
+    "sha256": "b8df6c5cd754400a794e0fece51a13d6d1dc194eb00f3cfa6621f5ef53427e3b"
+  },
+  {
+    "file": "kiem-chung/backend-tests.txt",
+    "bytes": 26600,
+    "sha256": "51255839885cd4d23b38eea439f9c4ad86cad0bb4f4094174e75ab08f687e2e0"
+  },
+  {
+    "file": "kiem-chung/build.txt",
+    "bytes": 1650,
+    "sha256": "6511ff98d810ccad1a2334e08de0d5f3dfac6b146d2c40542ccdbf3a44a1c9b6"
+  },
+  {
+    "file": "kiem-chung/chup-anh.txt",
+    "bytes": 65,
+    "sha256": "4b927b4f9b54cd559b81b6ac5e1ba88360babefc5309ab92c9c27b54c3d665d4"
+  },
+  {
+    "file": "kiem-chung/dau-vao.json",
+    "bytes": 1070,
+    "sha256": "a29729e1aa2ba5ce0aab2ba024a7f3d7e2d5a3092ec04569faaf11d5990d22c0"
+  },
+  {
+    "file": "kiem-chung/e2e-tests.txt",
+    "bytes": 16958,
+    "sha256": "fbe741017af5a8fbcdf77342a9e3291e871ace3e7bba06b123d7d52c9b35139b"
+  },
+  {
+    "file": "kiem-chung/e2e-xuat-tep-rieng.txt",
+    "bytes": 1250,
+    "sha256": "39990d76040bd727c37a8aaf9ddbfbe0a52c6ffab21d01da6b95de5a951938eb"
+  },
+  {
+    "file": "kiem-chung/giao-dien.json",
+    "bytes": 1226,
+    "sha256": "9a2212113f362753f0985a52923611f3745bac263e58c772dfa7e4459368f032"
+  },
+  {
+    "file": "kiem-chung/kiem-tra-noi-dung.json",
+    "bytes": 1747,
+    "sha256": "5104e9ca3078946068314869d1fed8d83048d9a5c40c0b210055303a705812ab"
+  },
+  {
+    "file": "kiem-chung/kiem-tra-trinh-bay.json",
+    "bytes": 1443,
+    "sha256": "ac8a1008bc31e608b24b953fa60b4d4064dfb4240ab55bc137087f64a16ca3b1"
+  },
+  {
+    "file": "kiem-chung/nguon-tham-khao.json",
+    "bytes": 5573,
+    "sha256": "78764566b07482da4da3ecb18e44e3fe7e4c765d4800b0cc6e98e247c18d282a"
+  },
+  {
+    "file": "kiem-chung/so-trang.json",
+    "bytes": 2345,
+    "sha256": "d4d8618a7b7c5df5bd5bd6cf920ea55f248bcabad669f6c2d4248af9316bdea7"
+  },
+  {
+    "file": "kiem-chung/test-ui.txt",
+    "bytes": 6927,
+    "sha256": "b84da3b0af931764f4ce7d309464811ad2cc759df733813ba4186f75648f7f45"
+  },
+  {
+    "file": "nguon/.gitignore",
+    "bytes": 13,
+    "sha256": "32dae3052f331ee34d628ef535709b301259a45df7c7522c4d35dcf49873f00b"
+  },
+  {
+    "file": "nguon/anh-minh-hoa.json",
+    "bytes": 2101,
+    "sha256": "69ce8165a32058b913ee0953d10d16d0ded2c276581e231aa38c00b05710c53f"
+  },
+  {
+    "file": "nguon/chup-bao-cao-moi.mjs",
+    "bytes": 6934,
+    "sha256": "becc056eb20ceed54201994aee32c101147b75ecc787116026719144f1cb9b07"
+  },
+  {
+    "file": "nguon/dong-goi.py",
+    "bytes": 2155,
+    "sha256": "a6717beadfc88b22bb21f45f6b7557c5d656ea7421c4d2e01f13bb7d0a0bc8d3"
+  },
+  {
+    "file": "nguon/ket-xuat.py",
+    "bytes": 1027,
+    "sha256": "b637825b3825efa9018cfbfbd458f2b8d1ac9c2f324d127047f5d6edd670884a"
+  },
+  {
+    "file": "nguon/kich-ban-chup-workflow.spec.js.txt",
+    "bytes": 9961,
+    "sha256": "288cfd4793ab9ae810fbcfcfd12bf6bbcb395342e04ad375f74f0f7e599dcc08"
+  },
+  {
+    "file": "nguon/kiem-tra-va-phan-trang.py",
+    "bytes": 4683,
+    "sha256": "85c301d4f142909eae42c80d11fd34f838631dedc7e65568ebf29373ab144f5e"
+  },
+  {
+    "file": "nguon/muc-luc-va-chu-thich.json",
+    "bytes": 31282,
+    "sha256": "4b4ca88cd9af6b3e406efe3af5a3c035b03e1a499019b9df0ccf0837355166af"
+  },
+  {
+    "file": "nguon/noi-dung.json",
+    "bytes": 174107,
+    "sha256": "6de6fbbd33478bbd219d463b6bc58b3fefb0c8a77a735332a555902a75f36f1a"
+  },
+  {
+    "file": "nguon/tao-word-moi.py",
+    "bytes": 25895,
+    "sha256": "3128686862d5f985cdcf9f75845f51b79cadc0aea581732c0d9bb70d554ef5ef"
+  },
+  {
+    "file": "nguon/viet-chuong-3.py",
+    "bytes": 42130,
+    "sha256": "5099e9fdd751c6aa4fdb671e07a265c28c262d55214ccfa1ba8066b5fc51a0e3"
+  },
+  {
+    "file": "nguon/viet-noi-dung.py",
+    "bytes": 56213,
+    "sha256": "317ffefa2d7ae3098ca5592d8ddadbc1b5ac7fcaa54a8d71454a7de812ff76cd"
+  }
+]

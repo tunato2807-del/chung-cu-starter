@@ -1,0 +1,147 @@
+[
+  {
+    "key": "buildingcare",
+    "url": "https://buildingcare.biz/",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "key": "cyhome",
+    "url": "https://cyhome.vn/",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "key": "express",
+    "url": "https://expressjs.com/en/guide/routing.html",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "key": "html5qrcode",
+    "url": "https://raw.githubusercontent.com/mebjas/html5-qrcode/master/README.md",
+    "final_url": "https://raw.githubusercontent.com/mebjas/html5-qrcode/master/README.md",
+    "status": 200,
+    "chars": 23551,
+    "sha256": "c7838ec968b4679d73668f4ed2c23b45ca82c87f033bd231b580355194049396"
+  },
+  {
+    "key": "react",
+    "url": "https://react.dev/learn",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "key": "playwright",
+    "url": "https://playwright.dev/docs/emulation",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "key": "mdn",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "key": "node",
+    "url": "https://nodejs.org/en/learn/getting-started/introduction-to-nodejs",
+    "final_url": "https://nodejs.org/learn/getting-started/introduction-to-nodejs",
+    "status": 200,
+    "chars": 10292,
+    "sha256": "b1dc84c5e5ab4315f027ef6a6e293cd771aaac11d6e7e685aaa35970a85f0a53"
+  },
+  {
+    "key": "uml",
+    "url": "https://www.omg.org/spec/UML/2.5.1/About-UML",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "key": "mysql",
+    "url": "https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "key": "owasp",
+    "url": "https://raw.githubusercontent.com/OWASP/CheatSheetSeries/master/cheatsheets/Authorization_Cheat_Sheet.md",
+    "final_url": "https://raw.githubusercontent.com/OWASP/CheatSheetSeries/master/cheatsheets/Authorization_Cheat_Sheet.md",
+    "status": 200,
+    "chars": 31021,
+    "sha256": "fb8b6e5c60ed783025beefb5049142fd9da02d01f5c95de18a19d26479737975"
+  },
+  {
+    "key": "qrcode",
+    "url": "https://raw.githubusercontent.com/soldair/node-qrcode/master/README.md",
+    "final_url": "https://raw.githubusercontent.com/soldair/node-qrcode/master/README.md",
+    "status": 200,
+    "chars": 22368,
+    "sha256": "2c562622aa4a285617dbf412fa51ae73b6f00a73c8423c295103c4bbbae72035"
+  },
+  {
+    "key": "vite",
+    "url": "https://vite.dev/guide/",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "key": "express",
+    "url": "https://raw.githubusercontent.com/expressjs/express/master/Readme.md",
+    "final_url": "https://raw.githubusercontent.com/expressjs/express/master/Readme.md",
+    "status": 200,
+    "chars": 10372,
+    "sha256": "3cf5f3e224dbb9b5e2bc0ac255871de453762ae7a277f868da5f4a69d6ff2509"
+  },
+  {
+    "key": "react",
+    "url": "https://raw.githubusercontent.com/reactjs/react.dev/main/src/content/learn/index.md",
+    "final_url": "https://raw.githubusercontent.com/reactjs/react.dev/main/src/content/learn/index.md",
+    "status": 200,
+    "chars": 15830,
+    "sha256": "3665e1762ae53254292239d9df89537144e3ca8dd1ff557f2882b19844362a74"
+  },
+  {
+    "key": "playwright",
+    "url": "https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/emulation.md",
+    "final_url": "https://raw.githubusercontent.com/microsoft/playwright/main/docs/src/emulation.md",
+    "status": 200,
+    "chars": 23926,
+    "sha256": "4f11506ace8b4d64a27de4ef6993d7a3dd8dbb2e462d0f3ef8dad5194ab5e5b6"
+  },
+  {
+    "key": "mdn",
+    "url": "https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/api/mediadevices/getusermedia/index.md",
+    "final_url": "https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/api/mediadevices/getusermedia/index.md",
+    "status": 200,
+    "chars": 17911,
+    "sha256": "2a52033721c615d7b869d1fc044797dfbc453f20d9fb72cfaabade6d8a88a2ed"
+  },
+  {
+    "key": "mysql",
+    "url": "https://raw.githubusercontent.com/mysql/mysql-server/8.4/mysql-test/t/foreign_key.test",
+    "final_url": "https://raw.githubusercontent.com/mysql/mysql-server/8.4/mysql-test/t/foreign_key.test",
+    "status": 200,
+    "chars": 184387,
+    "sha256": "8ac77b866eb6e1e632894225d10e8255bc36bfe410a58f3676de3e2c32b665c8"
+  },
+  {
+    "key": "vite",
+    "url": "https://raw.githubusercontent.com/vitejs/vite/main/docs/guide/index.md",
+    "final_url": "https://raw.githubusercontent.com/vitejs/vite/main/docs/guide/index.md",
+    "status": 200,
+    "chars": 11551,
+    "sha256": "6a66574988783e1057b1d73ee4ed23a02e5f0e67b041ac4105fb930b5431194a"
+  },
+  {
+    "key": "erpnext",
+    "url": "https://raw.githubusercontent.com/frappe/erpnext/develop/README.md",
+    "final_url": "https://raw.githubusercontent.com/frappe/erpnext/develop/README.md",
+    "status": 200,
+    "chars": 7438,
+    "sha256": "c7d12496fddc6771a44d9c84dcaa6868eea52ef32aca5a6a68d5b59d88a7022b"
+  },
+  {
+    "key": "uml",
+    "url": "https://www.omg.org/spec/UML/2.5.1/PDF",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "key": "vite7",
+    "url": "https://raw.githubusercontent.com/vitejs/vite/v7.0.0/docs/guide/index.md",
+    "status": 200,
+    "bytes": 10737,
+    "sha256": "8ef86a1de8bbbda75d6c60e4eba8e45dab4bdda8f2bc8fe361124e4e768fdf7c"
+  }
+]

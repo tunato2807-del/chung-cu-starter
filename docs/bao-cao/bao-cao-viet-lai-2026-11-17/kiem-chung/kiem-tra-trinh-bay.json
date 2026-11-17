@@ -1,0 +1,63 @@
+{
+  "pdf_pages": 126,
+  "front_pages": 17,
+  "main_pages": 66,
+  "appendix_pages": 41,
+  "references_pages": 2,
+  "headings": 100,
+  "figures": 26,
+  "tables": 53,
+  "references": 11,
+  "toc_fields": 3,
+  "pageref_fields": 179,
+  "citation_ref_fields": 39,
+  "embedded_svg": 0,
+  "sections": [
+    {
+      "page_cm": [
+        21.00086111111111,
+        29.70036111111111
+      ],
+      "margins_cm": [
+        2.00025,
+        2.00025,
+        3.000375,
+        2.00025
+      ]
+    },
+    {
+      "page_cm": [
+        21.00086111111111,
+        29.70036111111111
+      ],
+      "margins_cm": [
+        2.00025,
+        2.00025,
+        3.000375,
+        2.00025
+      ]
+    },
+    {
+      "page_cm": [
+        21.00086111111111,
+        29.70036111111111
+      ],
+      "margins_cm": [
+        2.00025,
+        2.00025,
+        3.000375,
+        2.00025
+      ]
+    }
+  ],
+  "missing_captions": [],
+  "text_outside_page": [],
+  "blank_pages": [],
+  "page_number_issues": [],
+  "body_text_outside_margins": [],
+  "unresolved_bookmarks": [],
+  "cache_stable": true,
+  "preview_font": "PDF uses installed Liberation Serif where Times New Roman is unavailable. DOCX explicitly specifies Times New Roman. Update fields and review pagination in Microsoft Word before printing.",
+  "docx_sha256": "09242cca5d25d692eca73f74555a6fe51819f6fae0f934570f8481c48993ed18",
+  "pdf_sha256": "f61f044e487f2022e3cd6301a3483cdedba77350bf304e9f9ed5aefaf4b77224"
+}

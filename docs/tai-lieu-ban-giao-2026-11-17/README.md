@@ -1,5 +1,7 @@
 # Báo cáo Word, sơ đồ draw.io và hình minh họa
 
+> **Word toàn văn mới nhất:** [báo cáo viết lại từ đầu theo đề cương và cả hai hướng dẫn, kèm PDF và draw.io](../bao-cao/bao-cao-viet-lai-2026-11-17/README.md). Các Word trong bộ bàn giao này giữ để đối chiếu lần bổ sung trước.
+
 > **ERD hiện hành — giữ 18 bảng, sắp xếp lại dây:** [đủ 218 thuộc tính và 46 quan hệ, bố cục đầu nối chia cạnh và dấu cầu vượt; kèm draw.io/Word/PDF/hình](../so-do-theo-mau-2026-11-17/README.md). Không còn đoạn dây trùng nhau hoặc khối chồng nhau; vẫn giữ oval một cột, chữ thường, khóa chính liền và khóa ngoại đứt. Schema vẫn 31 bảng / 362 cột / 81 FK.
 
 **Tô Hoàng Tuấn — MSSV 1250080221 · Bộ bàn giao ngày 17/11/2026**

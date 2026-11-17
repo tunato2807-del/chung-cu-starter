@@ -1,5 +1,7 @@
 # Hồ sơ phân tích thiết kế và nghiệm thu
 
+> **Bản viết lại hiện hành — 17/11/2026:** [Word toàn văn, PDF 126 trang, 26 hình, 53 bảng và ZIP kèm draw.io](bao-cao-viet-lai-2026-11-17/README.md). Đọc cả ba tài liệu đầu vào mới; các quyển dưới đây giữ để đối chiếu lịch sử.
+
 > **ERD hiện hành — giữ 18 bảng, sắp xếp lại dây:** [đủ 218 thuộc tính và 46 quan hệ, bố cục đầu nối chia cạnh và dấu cầu vượt; kèm draw.io/Word/PDF/hình](../so-do-theo-mau-2026-11-17/README.md). Không còn đoạn dây trùng nhau hoặc khối chồng nhau; vẫn giữ oval một cột, chữ thường, khóa chính liền và khóa ngoại đứt. Schema vẫn 31 bảng / 362 cột / 81 FK.
 
 > **Bộ tài liệu bàn giao 17/11/2026:** [Word báo cáo, hướng dẫn sửa theo giao diện cửa sổ và hình minh họa](../tai-lieu-ban-giao-2026-11-17/README.md). Các ERD phân hệ trong bộ cũ đã được thay bằng ERD hợp nhất ở liên kết trên.

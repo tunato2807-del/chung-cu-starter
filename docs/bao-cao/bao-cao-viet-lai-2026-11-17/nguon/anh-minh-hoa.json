@@ -1,0 +1,70 @@
+{
+  "dang-nhap": {
+    "file": "hinh/giao-dien-dang-nhap.png",
+    "source": "Tác giả chụp biểu mẫu từ mã nguồn hiện tại với API giả lập ngày 17/11/2026; không thử đăng nhập tài khoản thật.",
+    "pixels": [
+      539,
+      703
+    ]
+  },
+  "phan-anh": {
+    "file": "hinh/giao-dien-phan-anh.png",
+    "source": "Tác giả chụp mã nguồn hiện tại, vị trí giả lập và viewport 375 px; không dùng camera vật lý.",
+    "pixels": [
+      375,
+      950
+    ]
+  },
+  "qr": {
+    "file": "hinh/giao-dien-qr.png",
+    "source": "Tác giả chụp mã nguồn hiện tại với vị trí giả lập; QR dùng origin thử tạm thời.",
+    "pixels": [
+      820,
+      440
+    ]
+  },
+  "cu-dan": {
+    "file": "hinh/giao-dien-cu-dan.png",
+    "source": "Tác giả chụp mã nguồn hiện tại với danh sách cư dân giả lập.",
+    "pixels": [
+      916,
+      234
+    ]
+  },
+  "tong-quan": {
+    "file": "hinh/giao-dien-tong-quan.png",
+    "source": "Ảnh lần chạy E2E workflow ngày 17/11/2026; database chung_cu_test, dữ liệu mô phỏng.",
+    "pixels": [
+      1440,
+      1121
+    ]
+  },
+  "them-can-desktop": {
+    "file": "hinh/giao-dien-them-can-desktop.png",
+    "source": "Ảnh kiểm thử UI cửa sổ ở viewport 1440 px, API giả lập, ngày 17/11/2026.",
+    "pixels": [
+      1440,
+      900
+    ]
+  },
+  "them-can-mobile": {
+    "file": "hinh/giao-dien-them-can-mobile.png",
+    "source": "Ảnh kiểm thử UI cửa sổ ở viewport 320 px, API giả lập, ngày 17/11/2026.",
+    "pixels": [
+      320,
+      900
+    ]
+  },
+  "vietqr": {
+    "file": "hinh/giao-dien-vietqr.png",
+    "source": "Ảnh kiểm thử E2E billing ngày 17/11/2026, thông tin nhận tiền giả lập; không dùng để chuyển tiền.",
+    "pixels": [
+      359,
+      984
+    ]
+  },
+  "xu-ly": {
+    "file": "hinh/giao-dien-xu-ly.png",
+    "source": "Tác giả chụp luồng E2E workflow trên database chung_cu_test ngày 17/11/2026; dữ liệu và ảnh sự cố được tạo riêng cho kiểm thử."
+  }
+}

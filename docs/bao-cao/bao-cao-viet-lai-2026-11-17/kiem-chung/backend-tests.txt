@@ -1,0 +1,350 @@
+
+> test
+> node --env-file-if-exists=.env scripts/test-local.js
+
+MySQL thesis schema current: 001_thesis_schema.sql (31 tables, 8 history views)
+▶ amenity reservations: isolation, same-time races, custody and policy consistency
+  ✔ roles, CSRF, linked residence and strict input validation (118.016776ms)
+  ✔ idempotent concurrent retries create one reservation with server-derived apartment (57.813047ms)
+  ✔ overlap, containment and adjacency: pending requests reserve the entire amenity (58.175653ms)
+  ✔ simultaneous new requests from different apartments have exactly one winner (20.231495ms)
+  ✔ calendar exposes only aggregate occupancy, details stay private (29.904147ms)
+  ✔ versioned approval, resident cancellation and rejection release the slot (84.853913ms)
+  ✔ policy changes protect existing bookings; pausing preserves holds and immutable labels (45.438591ms)
+  ✔ fixed account books on behalf of current owner and manages household reservations (55.392199ms)
+  ✔ concurrent approval and cancellation mutate one version once (26.354518ms)
+  ✔ past reservations are immutable and local calendar boundaries are exact (48.104555ms)
+{
+  request_id: '24245fc0-ddd1-4ed1-b176-71bd4422e513',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+{
+  request_id: '277aa577-9ece-437f-a8e2-9fa2c4177f74',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+  ✔ failed audit rolls back both creation and a booking decision (66.094424ms)
+  ✔ personal move-out and return retain read-only history, new stay cannot cancel old booking (74.970539ms)
+  ✔ householder replacement revokes old sessions and new custodian inherits apartment schedule (905.116399ms)
+  ✔ a session revoked after middleware cannot perform a transactional write (11.780887ms)
+  ✔ a policy edit racing a new booking cannot invalidate a committed reservation (26.970878ms)
+  ✔ stable filters and pagination cover more than twenty amenities and bookings (333.267709ms)
+✔ amenity reservations: isolation, same-time races, custody and policy consistency (5235.674636ms)
+▶ announcements, current audiences, scoped receipts and bill reminders
+  ✔ role/CSRF protection and input validation (18.158341ms)
+  ✔ draft edit/version/publish and exact all/block/apartment audiences (102.93901ms)
+  ✔ GET has no read side effect; POST receipts are idempotent and counted (32.384062ms)
+  ✔ bill reminder is private, one per local day, concurrent-safe and version checked (53.125695ms)
+  ✔ new custodian has unread scope; former custodian loses reminder access (367.484351ms)
+  ✔ personal reminders obey bill period access while fixed account retains apartment history (20.134434ms)
+  ✔ payment resolves unread reminders; canceled invoices disappear (269.882927ms)
+  ✔ withdrawal is audited, removes visibility and needs reason/version (20.634861ms)
+  ✔ moving out revokes the previous home inbox including direct ID access (8.102873ms)
+{
+  request_id: 'deeb3164-8139-4d11-9c52-5d6d7d7d9ad0',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+{
+  request_id: '824de0b1-5fce-4da1-88e3-c0a01d410a6c',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+  ✔ failed audit rolls back draft publication and reminder creation (58.420239ms)
+✔ announcements, current audiences, scoped receipts and bill reminders (3449.963546ms)
+▶ apartment accounts: automatic creation, owner handover, isolated invoices, revocation, races and rollback
+  ✔ new apartments receive unique working usernames and one-time passwords, never readable in GET (1461.325068ms)
+  ✔ fixed account sees sent invoices for its apartment, including earlier periods, and no other apartment (184.204546ms)
+  ✔ householder is automatically bound and old sessions/passwords are revoked; member profiles do not take ownership (1037.141015ms)
+  ✔ replacement owner requires explicit handover, leaves old profile intact and rotates account credentials (1137.906107ms)
+  ✔ explicit handover validates current householder and requires confirmation (965.861593ms)
+  ✔ simultaneous reset requests yield exactly one new password and reject stale handover state (758.864756ms)
+{
+  request_id: 'c2cdf32e-6d0b-40dd-bd0b-8a2dccfa3332',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+{
+  request_id: '2044373f-913c-4f37-a195-84307b9bb1ec',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+  ✔ failed handover audit rolls back the new resident, owner binding, password and token changes (1067.681142ms)
+  ✔ moving the responsible owner disables the old apartment account and binds a separate account at the new apartment (1114.18204ms)
+  ✔ householder can change their password; all existing sessions then expire (1317.028614ms)
+  ✔ a password reset racing departure cannot leave a former owner's account enabled (772.768006ms)
+✔ apartment accounts: automatic creation, owner handover, isolated invoices, revocation, races and rollback (10108.504227ms)
+▶ current householder phone login, dedicated directory, personal-account collisions and phone changes
+  ✔ phone and +84 aliases authenticate the bound apartment; account code still works (1477.539689ms)
+  ✔ directory is management-only, searchable by owner/contact/code and never returns passwords (43.384245ms)
+  ✔ directory pagination includes every matching account and status filters work (136.802105ms)
+  ✔ personal and apartment accounts sharing a phone are never silently merged or guessed (1783.26721ms)
+  ✔ editing the responsible resident phone immediately changes the alias and expires prior sessions (712.658044ms)
+  ✔ handover removes the old householder phone even when using the new password (1867.918044ms)
+✔ current householder phone login, dedicated directory, personal-account collisions and phone changes (7415.682204ms)
+▶ batch approve/publish: source checks, atomic transitions, common payment and replay
+  ✔ BQL/CSRF and strict action, ID/version, size and bank validation (82.809576ms)
+  ✔ approve preview is read-only and shows missing source, wrong version/state per bill (47.57935ms)
+  ✔ source changes and stored detail tampering block all approvals (67.817052ms)
+{
+  request_id: 'ede738a4-9814-42ad-8b11-2f83e04a1758',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+  ✔ approval failure at the second audit rolls back versions and every state (72.441455ms)
+  ✔ concurrent approval retries process once and do not publish resident bills (51.525749ms)
+{
+  request_id: 'c20b0606-c3f9-4ac1-a88e-368814519ab8',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+  ✔ publish validates a current due date and binds common bank details and actor to preview (70.197767ms)
+  ✔ overlapping publish requests update all bills once with approved frozen totals and common bank (45.01568ms)
+  ✔ replay returns the original receipt after later payment and does not downgrade or repeat audit (30.401163ms)
+✔ batch approve/publish: source checks, atomic transitions, common payment and replay (1058.131461ms)
+▶ batch bills: preview, source fingerprints, atomic drafts and durable idempotency
+  ✔ management authorization, CSRF, bounds and strict options (121.693812ms)
+  ✔ preview returns full fee details but writes no bills, ledger or audit (22.493055ms)
+  ✔ missing meter and already billed/canceled apartments produce row errors and no confirmation token (53.49052ms)
+  ✔ confirmation is bound to actor, options and a fresh source quote (51.28877ms)
+{
+  request_id: 'a4cdb797-d39e-45d3-8b30-6cafe9a52f86',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+  ✔ failure on the second audit rolls back every draft, detail and batch row (62.052811ms)
+  ✔ concurrent retries create exactly one atomic batch and recover IDs even with an expired token (65.737788ms)
+  ✔ separate request keys racing for overlapping apartments cannot duplicate invoices (43.269592ms)
+  ✔ revoked management session cannot write through the service (19.618864ms)
+✔ batch bills: preview, source fingerprints, atomic drafts and durable idempotency (1100.432211ms)
+▶ PostgreSQL billing: exact totals, snapshots, source locks, resident access, payment and replacement
+  ✔ admin-only source data, private resident views and exact rounding (24.111091ms)
+  ✔ incomplete drafts report missing data and cannot approve or appear to residents (63.362654ms)
+  ✔ effective prices, meter continuity, recalculation and stale source protection (128.371203ms)
+  ✔ approved invoices lock meters, historical vehicle changes and price intervals (43.666191ms)
+  ✔ send snapshots bank details, local VietQR payload and private read-only access (31.217824ms)
+  ✔ payment requires exact funds and retries do not record a second collection (60.366973ms)
+  ✔ cancel and replace preserve old lines and enforce one active bill per apartment/month (143.83503ms)
+  ✔ moving residents immediately revokes old apartment invoice access (787.277479ms)
+  ✔ meter sequences require the immediate previous month and preserve approved history (30.242519ms)
+{
+  request_id: '2e7ae5a4-8bc4-411e-b521-009d9671f470',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+  ✔ failed audit insert rolls back the complete draft transaction (35.919164ms)
+✔ PostgreSQL billing: exact totals, snapshots, source locks, resident access, payment and replacement (3406.401242ms)
+▶ MySQL: building hierarchy, occupancy, filters and live changes
+  ✔ hierarchy and apartment directory reject other roles and guests (17.491141ms)
+  ✔ counts apartments once, excludes ended stays and includes every floor (7.348729ms)
+  ✔ floor/status filters are exact, paginated and validated (36.375497ms)
+  ✔ transfers change occupancy without rewriting history (45.655887ms)
+  ✔ editing a room updates the derived structure without a second source (443.878734ms)
+✔ MySQL: building hierarchy, occupancy, filters and live changes (1065.118854ms)
+▶ building catalog: empty parents, production provisioning, safe rename/delete and stale forms
+  ✔ all catalog actions are management-only and writes require CSRF header (48.5137ms)
+  ✔ configured blocks and floors exist with no apartments; duplicates and invalid numbers are rejected (78.759436ms)
+  ✔ existing mixed-case block text resolves to its catalog option (9.756292ms)
+  ✔ legacy API provisions parents atomically WITHOUT test fixture triggers (374.468916ms)
+  ✔ selected floors must still exist at the selected version; no orphan on failure (374.364082ms)
+  ✔ used floors/blocks cannot be deleted through API or foreign keys (15.04583ms)
+  ✔ renumber and rename cascade while keeping account, stay, invoice IDs and history (30.830342ms)
+  ✔ conflicts do not merge structures and concurrent edits have one winner (26.674127ms)
+  ✔ empty floors and blocks may be deleted with current versions (34.349857ms)
+✔ building catalog: empty parents, production provisioning, safe rename/delete and stale forms (1506.26857ms)
+✔ dashboard calendar ranges cover leap days, Monday weeks, quarters and years without timezone drift (18.507738ms)
+▶ operations dashboard: exact money, Vietnam dates, queues, authorization and one read-only snapshot
+  ✔ dashboard only permits BQL and returns explicit uncached zero-safe aggregates (70.992045ms)
+  ✔ debt excludes drafts, approved and canceled bills; due today/null are not overdue; large totals stay exact (75.281779ms)
+  ✔ receipts follow Vietnam collection day rather than invoice month, including exact midnight boundaries (36.539725ms)
+  ✔ open incident counts and drill-down exclude closed/rejected records, retain account scope and cap queues (33.520575ms)
+  ✔ maintenance dates match existing equipment/job filters and exclude canceled jobs or retired assets (45.237266ms)
+  ✔ amenities keep past pending counts but omit expired/rejected/canceled bookings from upcoming queue (33.276085ms)
+  ✔ statistics API is BQL-only, validates filters and zero fills empty periods (30.884565ms)
+  ✔ statistics preserve exact money and Vietnam hourly boundaries; DATE debt has no invented hour (86.94476ms)
+  ✔ statistics separate creation and completion dates and do not shift Vietnam booking wall-clock time (36.222366ms)
+  ✔ a concurrent write between financial and incident reads appears only in the next snapshot (32.307634ms)
+  ✔ refresh GETs never alter domain states or create audit records (31.71879ms)
+✔ operations dashboard: exact money, Vietnam dates, queues, authorization and one read-only snapshot (942.554664ms)
+▶ data exchange: bounded real files, preview rollback, atomic imports, domain guards and filtered exports
+  ✔ all endpoints restrict personal data to BQL (103.14456ms)
+  ✔ templates have blank Nhap and a separate example sheet; PDF requests are rejected (238.076909ms)
+  ✔ preview performs no durable writes and returns each invalid row (1200.933859ms)
+  ✔ valid batch creates apartments and accounts once; file-bound preview and replay (2590.137713ms)
+  ✔ resident, current householder, vehicles and meter continuity reuse domain validation (4069.001214ms)
+  ✔ stale preview fails the whole commit, including earlier valid rows and history (769.314673ms)
+  ✔ resident Excel imports four Unicode profiles in the correct module (882.440799ms)
+  ✔ malformed, oversized, formula cells and excessive rows cannot be applied (968.573715ms)
+  ✔ eight module exports produce real Excel, preserve leading zeroes and ignore page (1220.565897ms)
+✔ data exchange: bounded real files, preview rollback, atomic imports, domain guards and filtered exports (12630.052876ms)
+✔ progressive electricity thresholds, fractional kWh and tax rounding (14.390235ms)
+✔ reject malformed tiers, negative prices, incomplete ranges and invalid VAT (1.445274ms)
+✔ PostgreSQL electricity: legacy flat drafts, tier snapshots, effective dates, resident details and source protection (1327.068424ms)
+▶ equipment QR: versioned links, immutable incident snapshots and private equipment scope
+  ✔ list/detail/link reject guests, other roles and missing CSRF (23.848161ms)
+  ✔ creation validates equipment/type and public QR exposes only display fields (37.27043ms)
+  ✔ stale forms are rejected; submitted device identity comes only from the locked QR (26.303952ms)
+  ✔ unlink preserves snapshots and idempotent receipts, never retroactively links old tickets (35.392362ms)
+  ✔ equipment filters preserve ticket permissions and public lookup stays private after renaming (46.117469ms)
+{
+  request_id: '022fb04b-b8a0-4ddb-8fcf-597157fa7745',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+  ✔ failed link audit rolls back target and version atomically (34.401297ms)
+  ✔ concurrent changes have one winner and old report identities remain unchanged (24.385412ms)
+  ✔ location search and pagination include all matching records without leaking device internals (213.537516ms)
+✔ equipment QR: versioned links, immutable incident snapshots and private equipment scope (1046.161087ms)
+▶ financial reports: current debt, receipt dates, precision, snapshots and BQL isolation
+  ✔ BQL-only APIs deny guests, residents and technicians including filter metadata (29.972375ms)
+  ✔ only sent/paid bills count; canceled replacement is excluded and all co-owners do not multiply amounts (11.26244ms)
+  ✔ period, block, apartment/search filters reconcile across views and zero results remain valid (35.550773ms)
+  ✔ due today is not overdue, null due remains unpaid and overdue-only view does not change totals (16.419088ms)
+  ✔ receipt windows use Vietnam midnight, inclusive final day, independent of invoice periods (21.323839ms)
+  ✔ bad periods/date ranges/views and pages fail without SQL injection or disclosure (39.721938ms)
+  ✔ large aggregate totals remain exact decimal strings and pagination never truncates summary (201.060483ms)
+  ✔ a payment updates both reports exactly once and report GETs never write financial data (46.675853ms)
+✔ financial reports: current debt, receipt dates, precision, snapshots and BQL isolation (1140.528151ms)
+✔ shipped Excel files parse and wrong module names both categories (3298.187514ms)
+✔ every downloadable template gives actionable empty-sheet feedback and parses saved input (3132.092702ms)
+✔ PDF is rejected; missing Nhap/report files cannot be mistaken for imports; >100 rows are never truncated (689.607402ms)
+✔ import parser rejects a small ZIP whose Excel string expands beyond the entry budget (261.542035ms)
+✔ import parser preserves text phone/code and converts an Excel date without accepting formulas (406.134729ms)
+▶ MySQL: household handover inherits bills, never the previous person's reports or photos
+  ✔ real row-lock wait: revoked collector cannot confirm payment or append audit (22.105545ms)
+✔ MySQL: household handover inherits bills, never the previous person's reports or photos (3363.819563ms)
+▶ equipment and maintenance: assignment privacy, periodic lifecycle, races and audit rollback
+  ✔ equipment APIs require BQL, jobs require staff and writes require CSRF header (23.972714ms)
+  ✔ asset validation, database plan checks, optimistic editing and human-readable history (71.076959ms)
+  ✔ periodic creation is idempotent under concurrent retries; one open periodic job per asset (76.289239ms)
+  ✔ open periodic work blocks plan changes/retirement but preserves original name and location (31.821473ms)
+  ✔ only active technicians can be assigned and unrelated technicians cannot see/claim a job (143.401466ms)
+  ✔ reassignment while in progress resets start state and immediately revokes previous technician (61.070668ms)
+  ✔ results require an actual valid work date and acceptance; return clears current result but preserves history (108.358062ms)
+  ✔ concurrent acceptance advances the next date once, from actual work day, and does not auto-create another job (31.269454ms)
+  ✔ one-off completion does not change the periodic plan (65.082018ms)
+  ✔ rescheduling a pending periodic job updates its plan; cancel keeps date, unlocks the slot, and permits safe retirement (80.301451ms)
+  ✔ cancel racing technician start has one winner and no overwritten state (28.222462ms)
+{
+  request_id: '11768526-d395-4a28-b50d-d2d9ee626679',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+{
+  request_id: '86c2eda0-906c-485f-9d2a-a192f0c5d3d9',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+{
+  request_id: 'f18a1d82-50ad-4f84-9ea0-cf53db68ffa4',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+  ✔ audit failure rolls back equipment creation, job creation and accepted schedule changes (105.18157ms)
+  ✔ reminder window includes today and its final notice day, and excludes retired equipment (49.151459ms)
+  ✔ equipment and active technician directories paginate without losing records (341.430968ms)
+  ✔ equipment due filters and job pagination preserve every matching record (227.767496ms)
+✔ equipment and maintenance: assignment privacy, periodic lifecycle, races and audit rollback (2054.949823ms)
+▶ report exports: complete snapshot, real XLSX/PDF, exact money, filters and permissions
+  ✔ exports are management-only and validate format/date/scope (79.258465ms)
+  ✔ Excel exports every matching row across pages, retains codes/phones and neutralizes formulas (147.504102ms)
+  ✔ all financial views keep exactly their JSON filters and summaries (340.096766ms)
+  ✔ real PDF embeds Vietnamese, exact text and repeated headers across pages (986.754282ms)
+  ✔ amounts above Excel precision remain exact text and PDF never rounds them (227.033587ms)
+  ✔ empty exports still have proper headers, summary and selected filters (74.506054ms)
+  ✔ limits are checked before detail selection, never silently truncated; JSON remains paginated (572.126099ms)
+  ✔ summary/count/all rows use one consistent read-only snapshot during a concurrent posting (34.456041ms)
+  ✔ export concurrency is bounded and release is reliable (45.042139ms)
+✔ report exports: complete snapshot, real XLSX/PDF, exact money, filters and permissions (3556.138614ms)
+▶ MySQL: apartments, accounts, residency dates, concurrent transfer and rollback
+  ✔ private directory rejects guests, residents and technicians (30.213289ms)
+  ✔ apartment validation, unique number and stale edit (1159.185783ms)
+  ✔ profile linking, invalid dates, unique account and occupancy (58.012523ms)
+  ✔ apartment pagination preserves all matching records (40.840947ms)
+  ✔ two transfers race: exactly one succeeds, one active stay remains (38.578621ms)
+{
+  request_id: 'b533b6cb-8b2a-4fdd-81fc-47538e878789',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+  ✔ SQL failure after closing old stay rolls back the complete transfer (26.594631ms)
+  ✔ move out, return and locked linked account preserve history (373.288639ms)
+  ✔ same-day arrival, repeated transfers, departure and return preserve every stay (73.114459ms)
+✔ MySQL: apartments, accounts, residency dates, concurrent transfer and rollback (2266.027713ms)
+✔ handover isolates personal reports, while the same person keeps access after reset or moving (0.937142ms)
+✔ VAT fits DECIMAL(12,2), including rounding at the boundary (14.572863ms)
+✔ every single-invoice action and generation revalidate the actor after waiting for apartment locks (2.572955ms)
+✔ sender snapshot revalidates the person and session after image processing (1.157868ms)
+▶ Thesis MySQL: 31 physical tables, complete history views, typed payloads and original IDs
+  ✔ physical count is real; history projections are views (18.62004ms)
+  ✔ anonymous QR history preserves SQL null, literal null text and public notes (8.105249ms)
+  ✔ different original history tables may share an ID without collision or losing their identity (8.271839ms)
+  ✔ foreign keys, target category and JSON shape are enforced by MySQL (5.05142ms)
+✔ Thesis MySQL: 31 physical tables, complete history views, typed payloads and original IDs (61.840393ms)
+▶ treasury: exact ledger, proof isolation, concurrent spending, reversal and invoice integration
+  ✔ management-only routes, CSRF and strict monetary/date/category validation (96.130775ms)
+  ✔ concurrent create retries return one draft without changing balance (54.365468ms)
+  ✔ draft edit, immutable fund/type and versioned one-time posting (115.469465ms)
+  ✔ proof uploads validate content, re-encode images, deduplicate retries and isolate downloads (213.168683ms)
+  ✔ expenses require evidence; approval locks proofs and changes the ledger only once (74.706578ms)
+  ✔ fund mutex prevents two simultaneous expenses from overspending (109.669832ms)
+  ✔ reversal preserves the original, is one-time and idempotent, and cannot overdraw income (136.580681ms)
+  ✔ canceled drafts never affect balance; closed funds block new posting but keep history (71.99237ms)
+  ✔ opening, period totals, monthly reports and detail filters use exact dates and money (1733.594922ms)
+  ✔ confirmed invoices appear once automatically, by Vietnam confirmation date, and remain isolated to operating fund (47.961945ms)
+  ✔ a report is a consistent nonlocking snapshot while another request posts (44.528751ms)
+{
+  request_id: '843841bd-e831-4201-a002-e1eeab6d399c',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+{
+  request_id: '3b0bf9ea-5c6f-4c8c-ba2e-6b7d8f7c60eb',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+{
+  request_id: 'bb3a092c-23ff-4159-90e9-69d05c528646',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+{
+  request_id: '07d004f3-5752-4467-908f-89ddf44e3d94',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+  ✔ failed audit rolls back draft, approval, proof and reversal atomically (101.828353ms)
+  ✔ pagination covers every matching fund, voucher and ledger row (540.639006ms)
+  ✔ transactions reject an account revoked after middleware authentication (5.448037ms)
+✔ treasury: exact ledger, proof isolation, concurrent spending, reversal and invoice integration (4219.276438ms)
+▶ MySQL: vehicle registration, plates, residency transfers and rollback
+  ✔ directory and mutations are management-only (20.377747ms)
+  ✔ validate dates, owner stay, type and plate; allow unplated bicycles (51.752512ms)
+  ✔ normalize plates, prevent duplicates and reject overlapping historical registrations (57.623574ms)
+  ✔ concurrent plate registrations create exactly one active registration (19.933077ms)
+  ✔ transfer closes old apartment registrations and optionally carries new registrations in the same day (94.708554ms)
+  ✔ backdating residency cannot cut across vehicle history; departure closes all active vehicles (95.434519ms)
+{
+  request_id: '6f303359-640a-4df8-815a-74dd50b659d7',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+  ✔ failure creating a carried registration rolls back residency and all vehicle changes (60.756225ms)
+  ✔ registration racing a departure leaves no active vehicle on a closed stay (26.108613ms)
+  ✔ bicycle registrations have stable pagination (175.519841ms)
+✔ MySQL: vehicle registration, plates, residency transfers and rollback (1136.118183ms)
+▶ MySQL integration: authentication, QR and incident lifecycle
+  ✔ cookie flags, login errors, server roles and CSRF (213.896709ms)
+  ✔ five failed passwords temporarily lock account (690.728095ms)
+  ✔ new QR resolves; rotation and disabling reject old QR (87.519066ms)
+  ✔ reject missing title and forged image without partial data (8.554813ms)
+  ✔ file count and size limits reject oversized uploads (37.738273ms)
+  ✔ resident submission, private images and server-owned fields (172.929593ms)
+  ✔ same request key concurrently creates one report and mismatched reuse fails (25.787235ms)
+  ✔ similar report warning reveals no incident or sender information (6.67118ms)
+  ✔ public lookup returns only progress, never contents or contact (11.64073ms)
+  ✔ assignment, optimistic version and reassignment revoke old technician (57.656818ms)
+  ✔ completion requires new evidence each review round; closing is admin only (87.4873ms)
+  ✔ merge validation prevents self and chains; public duplicate follows original (57.737881ms)
+{
+  request_id: 'cab83ccd-e954-4418-ab07-036612f48c0b',
+  code: 'ER_SIGNAL_EXCEPTION'
+}
+  ✔ a failed history insert rolls back state and cleans newly prepared images (79.287889ms)
+  ✔ five submissions per phone and IP within an hour, replay is not charged (69.242943ms)
+  ✔ locked account, changed password and logout invalidate old sessions (899.569799ms)
+✔ MySQL integration: authentication, QR and incident lifecycle (3334.596311ms)
+ℹ tests 227
+ℹ suites 0
+ℹ pass 227
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 93490.886021
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice

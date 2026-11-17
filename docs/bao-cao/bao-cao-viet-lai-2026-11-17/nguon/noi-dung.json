@@ -1,0 +1,5102 @@
+[
+  {
+    "kind": "heading",
+    "level": 1,
+    "text": "MỞ ĐẦU"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quản lý vận hành chung cư đòi hỏi thông tin về căn hộ, cư dân, thiết bị và các khoản phí được cập nhật nhất quán. Khi phản ánh được tiếp nhận riêng qua điện thoại hoặc nhóm trò chuyện, thông tin về địa điểm, người phụ trách và kết quả xử lý có thể nằm ở nhiều nơi. Bài toán đặt ra trong đề tài là tổ chức một đầu mối tiếp nhận và theo dõi, đồng thời gắn phản ánh với vị trí cụ thể trong tòa nhà. Đây là bối cảnh nghiệp vụ được xác định trong đề cương, không phải kết quả khảo sát định lượng một chung cư đã triển khai."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Đề tài “Xây dựng hệ thống quản lý vận hành chung cư và tiếp nhận phản ánh cư dân” chọn ứng dụng Web làm phương tiện truy cập chung. Ban quản lý (BQL) làm việc trên máy tính; cư dân có thể mở liên kết bằng trình duyệt điện thoại. Mã phản hồi nhanh (Quick Response – QR) tại khu vực hoặc thiết bị dẫn đến biểu mẫu phản ánh đã nhận diện vị trí. Cư dân gửi nội dung và ảnh mà không bắt buộc đăng nhập; các chức năng xem hóa đơn và hộp thông báo yêu cầu tài khoản phù hợp. Việc tách hai phạm vi này giúp tiếp nhận thuận tiện mà vẫn giới hạn dữ liệu riêng tư."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Mục tiêu tổng quát là xây dựng một luồng khép kín từ xác định vị trí, tiếp nhận phản ánh, phân công kỹ thuật viên (KTV), cập nhật kết quả đến nghiệm thu. Các mục tiêu hỗ trợ gồm quản lý khối, tầng, căn hộ và hồ sơ cư trú; quản lý thiết bị và QR; cấu hình phí, ghi chỉ số, lập hóa đơn; công bố thông báo. Hệ thống sử dụng React, Node.js/Express và MySQL. Quét QR trên Web được thực hiện bằng html5-qrcode, còn ảnh QR được dựng bằng thư viện qrcode [3], [10]."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Đối tượng nghiên cứu gồm quy trình tiếp nhận sự cố, quan hệ cư trú, quyền truy cập dữ liệu và các kỹ thuật tương tác camera trong trình duyệt. Phạm vi ứng dụng là một chung cư có thể gồm nhiều khối, không phải hệ thống cung cấp dịch vụ cho nhiều chung cư độc lập. Đề tài không xây dựng ứng dụng di động native và không kết nối cổng thanh toán hoặc API ngân hàng để tự xác nhận tiền. VietQR chỉ hỗ trợ điền thông tin chuyển khoản; BQL xác nhận thu sau đối soát."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Phương pháp thực hiện kết hợp đọc tài liệu kỹ thuật, phân tích yêu cầu, mô hình hóa hệ thống, cài đặt theo mô-đun và kiểm thử theo tình huống. Biểu đồ ca sử dụng, hoạt động và tuần tự mô tả tương tác; mô hình thực thể và ràng buộc MySQL mô tả dữ liệu; kiểm thử tự động kiểm tra các điều kiện nghiệp vụ và giao diện. Việc mô phỏng kích thước màn hình trong Playwright được phân biệt với thử camera trên điện thoại thật [5]."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Đề tài được thực hiện theo hình thức sinh viên tự nghiên cứu, không ghi nhận một doanh nghiệp đặt hàng hoặc một chung cư đã nghiệm thu sản phẩm. Khoảng thời gian trong đề cương là từ 24/08/2026 đến 04/12/2026. Bản báo cáo này đối chiếu mã nguồn ứng dụng tại commit cceb904 và bằng chứng kiểm thử ngày 17/11/2026; những nội dung chưa có dữ liệu thực nghiệm được nêu rõ trong chương đánh giá."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Báo cáo gồm ba chương. Chương 1 tổng hợp các cách giải quyết liên quan, cơ sở lý thuyết và công nghệ. Chương 2 trình bày yêu cầu, ca sử dụng, mô hình hoạt động, thiết kế dữ liệu, kiến trúc và thuật toán. Chương 3 mô tả môi trường, hiện thực, giao diện, kiểm thử và mức độ đáp ứng mục tiêu. Sau đó là kết luận, phụ lục hướng dẫn sử dụng, từ điển dữ liệu và danh mục tài liệu tham khảo."
+  },
+  {
+    "kind": "heading",
+    "level": 1,
+    "text": "CHƯƠNG 1. TỔNG QUAN TÀI LIỆU"
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "1.1. CÁC CÔNG VIỆC VÀ DỰ ÁN LIÊN QUAN"
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "1.1.1. Các cách tổ chức quản lý và tiếp nhận phản ánh"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Trong phạm vi bài toán, có thể tổ chức thông tin theo ba hướng: dùng bảng tính và nhóm trò chuyện; sử dụng phần mềm quản lý tòa nhà chuyên dụng; hoặc cấu hình một nền tảng quản trị có nhiều phân hệ. Cách thứ nhất dễ bắt đầu nhưng việc tìm lại một sự cố, xác định người đang xử lý và kiểm tra ảnh nghiệm thu phụ thuộc vào quy ước thao tác của người sử dụng. Nhận xét này mô tả rủi ro của quy trình, không đại diện cho tỷ lệ sai sót đo tại một đơn vị cụ thể."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Đề cương nêu CyHome và Building Care là những ví dụ cần tham khảo trong nhóm sản phẩm quản lý tòa nhà. Trong lần biên soạn này chưa thu thập được tài liệu tính năng chính thức hoặc tài khoản dùng thử của hai sản phẩm. Vì vậy, báo cáo không gán cho các sản phẩm đó một tính năng cụ thể, không kết luận rằng chúng bắt buộc cài ứng dụng, không có QR hoặc kém hiệu quả hơn đề tài. Các tiêu chí so sánh được xác định ở cấp phương án tổ chức; khảo sát sản phẩm thương mại chi tiết vẫn cần bổ sung bằng nguồn truy cập được."
+  },
+  {
+    "kind": "paragraph",
+    "text": "ERPNext là một dự án mã nguồn mở có phạm vi quản trị doanh nghiệp rộng, với các nhóm chức năng như kế toán, quản lý tài sản và hỗ trợ khách hàng được giới thiệu trong kho chính thức [2]. Đây là một dự án liên quan về tổ chức dữ liệu và quy trình hỗ trợ, không phải một sản phẩm chung cư được đề tài cài đặt để đối chứng. Đề tài kế thừa cách nghĩ tách trách nhiệm theo mô-đun, nhưng tự xây dựng quan hệ căn hộ, đợt cư trú, vị trí QR và vòng đời phản ánh để phục vụ bài toán đã chọn."
+  },
+  {
+    "kind": "table",
+    "title": "So sánh các phương án giải quyết bài toán",
+    "headers": [
+      "Tiêu chí",
+      "Bảng tính / nhóm trò chuyện",
+      "Nền tảng quản trị tổng quát",
+      "Giải pháp của đề tài"
+    ],
+    "rows": [
+      [
+        "Tổ chức dữ liệu",
+        "Nhiều tệp và luồng trao đổi",
+        "Có nhiều phân hệ dùng chung",
+        "MySQL với khóa và quan hệ nghiệp vụ"
+      ],
+      [
+        "Định danh vị trí",
+        "Nhập hoặc mô tả thủ công",
+        "Cần cấu hình theo bài toán",
+        "Liên kết /r/{token} và tra vị trí tại máy chủ"
+      ],
+      [
+        "Tiến độ sự cố",
+        "Theo dõi bằng quy ước",
+        "Có thể tùy biến quy trình",
+        "Trạng thái, người được giao và nghiệm thu"
+      ],
+      [
+        "Phạm vi triển khai",
+        "Công cụ sẵn có",
+        "Quản trị doanh nghiệp rộng",
+        "Một chung cư; giao diện Web theo vai trò"
+      ],
+      [
+        "Giới hạn bằng chứng",
+        "Không có khảo sát định lượng",
+        "Tham khảo README ERPNext",
+        "Đối chiếu mã nguồn và kiểm thử được lưu"
+      ]
+    ],
+    "source": "Nguồn: tác giả phân tích theo bài toán; phạm vi ERPNext tham khảo [2]. Không phải bảng đánh giá thực nghiệm các sản phẩm thương mại."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "1.1.2. Sự khác biệt và giá trị của đề tài"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Sự khác biệt của đề tài nằm ở việc nối các bước của cùng một nghiệp vụ. QR mang một liên kết định danh vị trí; máy chủ kiểm tra token còn hoạt động rồi cấp dữ liệu tối thiểu cho biểu mẫu. Khi gửi thành công, phản ánh có vị trí, ảnh và mã tra cứu; BQL phân công KTV; KTV cập nhật kết quả; BQL nghiệm thu hoặc yêu cầu xử lý lại. Dữ liệu lịch sử được lưu cùng lần chuyển trạng thái, nhờ đó có cơ sở xác định ai làm gì và vào thời điểm nào."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Ứng dụng Web giảm một bước cài phần mềm trong luồng gửi phản ánh. Tuy nhiên, thuận tiện truy cập không đồng nghĩa camera luôn dùng được: trình duyệt cần ngữ cảnh bảo mật và sự cho phép của người dùng [6]. Vì vậy thiết kế có hai đường vào: quét trong trang Web hoặc dùng camera hệ điều hành để mở liên kết. Báo cáo xem đây là một lựa chọn phù hợp phạm vi, không khẳng định là phát minh mới hoặc ưu thế đã được đo trên toàn bộ thị trường."
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "1.2. CƠ SỞ LÝ THUYẾT VÀ NGHIỆP VỤ"
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "1.2.1. Quy trình vận hành và quản lý yêu cầu"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Đơn vị cơ bản của quy trình tiếp nhận là một phản ánh có nội dung, địa điểm, người gửi và trạng thái. Việc “đã xử lý” do KTV báo cáo khác với “đã đóng” sau nghiệm thu của BQL. Tách hai thời điểm giúp giữ một bước kiểm tra kết quả và cho phép trả lại xử lý nếu ảnh hoặc nội dung chưa đáp ứng. Các nhánh từ chối và gộp được giới hạn ở phản ánh mới; hệ thống không tự gộp chỉ vì hai nội dung trông giống nhau."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Hồ sơ cư dân và quan hệ cư trú cũng cần tách biệt. Một người có thể chuyển căn hoặc kết thúc đợt ở; sửa trực tiếp mã căn trong hồ sơ hiện tại sẽ làm mất khoảng thời gian liên quan. Bảng lịch sử cư trú ghi người, căn, quan hệ, ngày bắt đầu và ngày kết thúc. Quyền xem hóa đơn của tài khoản cá nhân được xác định từ đợt hiện tại; tài khoản thanh toán cố định của căn phục vụ trách nhiệm thanh toán chung và được quản lý bằng quy trình bàn giao riêng."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Với phí dịch vụ, chứng từ hóa đơn cần giữ dữ liệu tại thời điểm lập và duyệt. Nếu đơn giá thay đổi về sau, hóa đơn đã gửi không được tự đổi tổng tiền. Vì vậy thiết kế lưu các dòng chi tiết cùng thông tin nguồn, đồng thời dùng trạng thái để kiểm soát lập nháp, duyệt, gửi, thu và hủy. Ngày xác nhận thu tại phần mềm là thời điểm BQL nhập quyết định sau đối soát, không tự suy ra từ thao tác quét QR."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "1.2.2. Phân tích hướng đối tượng và các mô hình thiết kế"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Ngôn ngữ mô hình hóa thống nhất (Unified Modeling Language – UML) được dùng để mô tả góc nhìn chức năng, tương tác và trạng thái. Ca sử dụng xác định tác nhân cùng mục tiêu; sơ đồ hoạt động biểu diễn các bước và nhánh kiểm tra; sơ đồ tuần tự biểu diễn thông điệp theo thời gian; sơ đồ lớp phân tích tập trung vào khái niệm nghiệp vụ. Một hành động xuất hiện trên giao diện không tự chứng minh rằng người dùng có quyền thực hiện hành động đó; điều kiện phải được kiểm tra tại giao diện lập trình ứng dụng (Application Programming Interface – API)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Sơ đồ quan hệ thực thể (Entity Relationship Diagram – ERD) thể hiện thực thể, thuộc tính và các quan hệ. Trong báo cáo, hình chữ nhật là thực thể, oval là thuộc tính, hình thoi là quan hệ; khóa chính gạch dưới nét liền, khóa ngoại gạch dưới nét đứt. Một thuộc tính đồng thời mang hai vai trò có cả hai dấu. Sơ đồ là một phép chiếu của thiết kế dữ liệu, còn ràng buộc thực thi phải được đối chiếu từ SQL và từ điển dữ liệu."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Sơ đồ lớp trong đề tài là mô hình phân tích, không phải bản mô tả các lớp ánh xạ đối tượng–quan hệ (Object-Relational Mapping – ORM) đang tồn tại. Phần mềm thực tế sử dụng các mô-đun JavaScript và truy vấn mysql2. Giữ rõ hai mức mô hình giúp tránh trình bày các phương thức như thể đã được sinh tự động thành lớp hoặc bộ ánh xạ đối tượng trong chương trình."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "1.2.3. Dữ liệu quan hệ, giao dịch và tính nhất quán"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Khóa chính phân biệt các bản ghi; khóa ngoại liên kết bản ghi con với bản ghi cha. Một quan hệ ghép có thể gồm nhiều cột, như cặp khối và tầng của căn hộ. UNIQUE ngăn trùng theo tổ hợp có ý nghĩa nghiệp vụ, còn CHECK giới hạn các giá trị hợp lệ. Trong MySQL cần chú ý giá trị NULL và điều kiện kiểm tra; một quy tắc nghiệp vụ phức tạp còn cần kiểm tra trong service. Bộ kiểm thử chính thức của MySQL có nhiều trường hợp cho cú pháp và hành vi ràng buộc khóa ngoại [8]."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Giao dịch gom các thay đổi liên quan thành một lần thành công hoặc thất bại. Chẳng hạn, phân công phản ánh phải cập nhật người phụ trách, phiên bản và nhật ký trong cùng giao dịch. Nếu ghi lịch sử thất bại mà trạng thái vẫn được lưu, hệ thống sẽ thiếu căn cứ giải thích thay đổi. Khóa hàng xử lý các yêu cầu đồng thời tại máy chủ; phiên bản bản ghi giúp phát hiện người dùng đang gửi một biểu mẫu đã cũ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Gửi lại yêu cầu sau lỗi mạng là tình huống bình thường của ứng dụng Web. Hệ thống dùng khóa yêu cầu và dấu vân tay nội dung để nhận ra một lần thao tác đã hoàn thành. Cùng khóa và cùng nội dung trả biên nhận trước; cùng khóa nhưng nội dung khác bị từ chối. Cơ chế này bổ sung cho ràng buộc dữ liệu, không thay thế bước xác thực và kiểm tra quyền."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "1.2.4. Phân quyền và bảo vệ dữ liệu"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quyền truy cập được xác định bằng cả vai trò lẫn quan hệ với bản ghi. BQL quản lý vận hành; KTV chỉ truy cập công việc hiện được giao; cư dân dùng tài khoản chỉ xem dữ liệu trong phạm vi cho phép. Người gửi công khai không được đọc hồ sơ phản ánh của người khác. Nguyên tắc quyền tối thiểu, mặc định từ chối và kiểm tra ở mọi yêu cầu được khuyến nghị trong tài liệu OWASP [9]."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Ảnh phản ánh, số điện thoại, ghi chú nội bộ và thông tin tài khoản có mức nhạy cảm khác nhau. Vì vậy API công khai chỉ trả danh sách trường được phép; ảnh nghiệp vụ phải đi qua endpoint kiểm tra quyền. Mã QR vị trí là đường dẫn công khai, không phải mật khẩu cho toàn bộ lịch sử. Mã tra cứu riêng được phát cho một phản ánh và không đặt trong URL của API để giảm nguy cơ lưu vào nhật ký địa chỉ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Ảnh tải lên cần được giải mã và kiểm tra ở máy chủ, không chỉ kiểm phần mở rộng hoặc MIME do trình duyệt khai báo. Quy trình hiện tại dùng Sharp để tạo ảnh JPEG đã loại metadata. Các giới hạn số lượng, kích thước và số điểm ảnh giúp thu hẹp đầu vào; chúng không đủ để kết luận rằng sản phẩm đã được kiểm định an toàn toàn diện."
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "1.3. CÔNG NGHỆ VÀ CÔNG CỤ SỬ DỤNG"
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "1.3.1. React, giao diện thích ứng và Vite"
+  },
+  {
+    "kind": "paragraph",
+    "text": "React tổ chức giao diện thành các component có logic và cách hiển thị riêng, đồng thời cung cấp cơ chế phản hồi sự kiện và chia sẻ trạng thái [4]. Đề tài dùng cách tổ chức theo nghiệp vụ: phản ánh, QR, cư trú, hóa đơn và thông báo. Các thành phần dùng chung xử lý phiên đăng nhập, lỗi API và cửa sổ thao tác. Mỗi cửa sổ cho phép người dùng hoàn thành một nhiệm vụ rồi quay về danh sách với bộ lọc hiện có."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Vite phục vụ môi trường phát triển và tạo bản dựng để triển khai; đây là hai mục đích khác nhau [11]. Trong bản hiện tại React 19 đi cùng Vite 7 và React Router. Giao diện dùng stylesheet CSS của dự án, không dùng TailwindCSS hoặc Bootstrap như những phương án được nêu trong đề cương. Việc đổi lựa chọn này không làm thay đổi mục tiêu giao diện thích ứng nhưng phải được phản ánh đúng trong báo cáo."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "1.3.2. Node.js, Express và MySQL"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Node.js là môi trường thực thi JavaScript ngoài trình duyệt và cung cấp các thao tác vào/ra bất đồng bộ [7]. Express là framework Web tối giản có routing và middleware [1]. Đề tài dùng Express 5 để phân tách tuyến API, bước xác thực, kiểm tra vai trò và xử lý nghiệp vụ. Không quy đổi đặc tính bất đồng bộ thành một cam kết “API nhanh hơn” khi chưa có phép đo tải."
+  },
+  {
+    "kind": "paragraph",
+    "text": "MySQL lưu dữ liệu quan hệ bằng InnoDB. mysql2 thực hiện truy vấn có tham số, còn service quyết định thứ tự khóa, giao dịch và kiểm tra quy tắc. Baseline hiện tại có 31 bảng vật lý, 362 cột, 81 ràng buộc khóa ngoại và 8 view lịch sử. Những con số này mô tả schema đang dùng; không đồng nhất chúng với 18 bảng trọng tâm trên ERD rút gọn phạm vi bảng."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "1.3.3. html5-qrcode, qrcode và camera trình duyệt"
+  },
+  {
+    "kind": "paragraph",
+    "text": "html5-qrcode cung cấp API quét từ camera và một số nguồn ảnh, cho phép ứng dụng tự xây dựng giao diện điều khiển [3]. Trong chương trình, Html5Qrcode được tải khi người dùng yêu cầu mở camera, ưu tiên camera sau và dừng luồng khi rời màn hình. qrcode đảm nhiệm chiều ngược lại: dựng ảnh từ một chuỗi URL hoặc payload thanh toán [10]. Hai thư viện có vai trò riêng, không phải một thuật toán mã hóa bảo mật nội dung."
+  },
+  {
+    "kind": "paragraph",
+    "text": "getUserMedia yêu cầu người dùng cấp quyền và phụ thuộc ngữ cảnh bảo mật; lỗi có thể do từ chối quyền, không có thiết bị hoặc ngữ cảnh không an toàn [6]. Vì vậy một địa chỉ HTTP qua IP mạng nội bộ có thể mở được Web nhưng không đủ điều kiện dùng camera trong trang. Báo cáo cần ghi riêng điều kiện HTTPS, quyền camera và thiết bị; ảnh chụp giao diện không chứng minh các điều kiện này đã được thử trên máy thật."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "1.3.4. Công cụ phát triển và kiểm thử"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Git và GitHub lưu phiên bản mã nguồn, tài liệu và lịch sử thay đổi. Visual Studio Code hỗ trợ đọc, sửa và chạy các lệnh dự án. Đề cương dự kiến Figma cho thiết kế giao diện và Postman cho thử API; trong bộ bằng chứng hiện có chưa có tệp Figma hoặc collection Postman để xác nhận các sản phẩm thiết kế đó. Báo cáo sử dụng giao diện thực tế được chụp từ mã nguồn, không gọi chúng là mockup Figma."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Playwright tự động hóa thao tác trình duyệt và có khả năng mô phỏng viewport, thiết bị, quyền hoặc một số đặc tính môi trường [5]. Trong chương 3, kiểm thử giao diện với API giả lập được ghi rõ là kiểm thử giao diện; kiểm thử nghiệp vụ dùng cơ sở dữ liệu thử riêng. Thử nhận diện QR vật lý trên Chrome, Edge hoặc Cốc Cốc Android vẫn cần thí nghiệm trực tiếp, không suy ra từ tên cấu hình thiết bị trong công cụ."
+  },
+  {
+    "kind": "heading",
+    "level": 1,
+    "text": "CHƯƠNG 2. PHƯƠNG PHÁP THỰC HIỆN"
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "2.1. XÁC ĐỊNH YÊU CẦU VÀ PHÂN RÃ CHỨC NĂNG"
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.1.1. Tác nhân, phạm vi và yêu cầu chức năng"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Các yêu cầu được rút ra từ đề cương và đối chiếu với các mô-đun đang có. Ba vai trò tài khoản là QUAN_TRI_VIEN, KY_THUAT_VIEN và CU_DAN. Người gửi công khai là một tác nhân ngoài phạm vi đăng nhập; hệ thống không tạo một vai trò KHACH trong bảng người dùng chỉ để tiếp nhận phản ánh. Thông tin vị trí được xác định từ QR, không lấy tên vị trí tùy ý do trình duyệt gửi lên."
+  },
+  {
+    "kind": "table",
+    "title": "Danh sách yêu cầu chức năng chính",
+    "headers": [
+      "Mã",
+      "Yêu cầu",
+      "Tác nhân",
+      "Điều kiện nghiệm thu"
+    ],
+    "rows": [
+      [
+        "CN01",
+        "Đăng nhập, đăng xuất, đổi mật khẩu, khóa tài khoản",
+        "BQL/KTV/Cư dân",
+        "Phiên bị thu hồi không tiếp tục đọc hoặc ghi"
+      ],
+      [
+        "CN02",
+        "Quản lý khối, tầng, căn hộ, sơ đồ tòa nhà",
+        "BQL",
+        "Khối/tầng rỗng vẫn xuất hiện; căn tham chiếu hợp lệ"
+      ],
+      [
+        "CN03",
+        "Hồ sơ, đợt cư trú và tài khoản căn",
+        "BQL",
+        "Giữ lịch sử chuyển đi; bàn giao thu hồi phiên cũ"
+      ],
+      [
+        "CN04",
+        "Đăng ký và kết thúc phương tiện",
+        "BQL",
+        "Gắn đúng cư dân/đợt/căn; không sửa dữ liệu đã chốt phí"
+      ],
+      [
+        "CN05",
+        "Quản lý thiết bị, vị trí và QR",
+        "BQL",
+        "Tạo/xem/tải/in QR; vô hiệu hoặc đổi token có kiểm tra"
+      ],
+      [
+        "CN06",
+        "Gửi phản ánh kèm ảnh theo QR",
+        "Công khai/Cư dân",
+        "Vị trí còn hiệu lực; tối đa 5 ảnh hợp lệ; có biên nhận"
+      ],
+      [
+        "CN07",
+        "Tiếp nhận, phân công, xử lý, nghiệm thu",
+        "BQL/KTV",
+        "Đúng vai trò, người được giao, trạng thái và phiên bản"
+      ],
+      [
+        "CN08",
+        "Tra cứu tiến độ phản ánh",
+        "Người gửi/Cư dân",
+        "Công khai dùng mã riêng và SĐT; không lộ dữ liệu nội bộ"
+      ],
+      [
+        "CN09",
+        "Cấu hình phí, ghi chỉ số, lập/duyệt/gửi hóa đơn",
+        "BQL",
+        "Tiền tính chính xác; tránh bản còn hiệu lực trùng căn/kỳ"
+      ],
+      [
+        "CN10",
+        "Tra cứu hóa đơn và hiển thị VietQR",
+        "Cư dân",
+        "Đúng phạm vi căn/đợt; chỉ hóa đơn được phép"
+      ],
+      [
+        "CN11",
+        "Xác nhận thu và báo cáo công nợ/thu phí",
+        "BQL",
+        "Đủ số tiền, mã tham chiếu; báo cáo không nhân bản tổng"
+      ],
+      [
+        "CN12",
+        "Phát hành và đọc thông báo trên Web",
+        "BQL/Cư dân",
+        "Đúng đối tượng; đánh dấu đọc có thao tác riêng"
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Bảo trì, tiện ích, quỹ và trao đổi Excel/PDF là các mô-đun đã có trong mã nguồn, hỗ trợ phạm vi vận hành. Chúng được trình bày là phần mở rộng của sản phẩm; kết quả chính vẫn tập trung vào chuỗi cư trú – QR – phản ánh – hóa đơn – thông báo. Không đưa khả năng nhiều chung cư, ứng dụng native hoặc tự đối soát ngân hàng vào danh sách đã hoàn thành."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.1.2. Yêu cầu phi chức năng và tiêu chí đánh giá"
+  },
+  {
+    "kind": "table",
+    "title": "Yêu cầu phi chức năng và cách kiểm tra",
+    "headers": [
+      "Mã",
+      "Yêu cầu",
+      "Cách kiểm tra / giới hạn"
+    ],
+    "rows": [
+      [
+        "PC01",
+        "Phân quyền theo vai trò và từng bản ghi",
+        "Gọi API ngoài phạm vi; kiểm tra KTV cũ, cư dân đã chuyển đi"
+      ],
+      [
+        "PC02",
+        "Bảo toàn dữ liệu và lịch sử",
+        "Gây lỗi ghi nhật ký; xác nhận rollback cả dữ liệu nghiệp vụ"
+      ],
+      [
+        "PC03",
+        "Chống thao tác lặp và xung đột",
+        "Gửi cùng khóa yêu cầu; gửi phiên bản cũ; kiểm tra mã 409"
+      ],
+      [
+        "PC04",
+        "Giao diện máy tính và điện thoại",
+        "Viewport 1440/375 px; kiểm tra tràn ngang, focus và cửa sổ"
+      ],
+      [
+        "PC05",
+        "Tải ảnh có giới hạn",
+        "Thử tệp sai định dạng, quá số lượng/dung lượng và đang giải mã"
+      ],
+      [
+        "PC06",
+        "Camera có điều kiện hoạt động rõ",
+        "HTTPS tin cậy + cấp quyền; kiểm tra riêng trên thiết bị thật"
+      ],
+      [
+        "PC07",
+        "Bảo trì mã nguồn và vận hành",
+        "Mô-đun theo nghiệp vụ, cấu hình riêng, migration có checksum"
+      ],
+      [
+        "PC08",
+        "Hiệu năng có thể đo lại",
+        "Chưa đặt số SLA khi chưa có phép đo tải và máy chuẩn hóa"
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Các tiêu chí bảo mật bám nguyên tắc kiểm tra quyền trên mọi yêu cầu, không chỉ ẩn nút trên giao diện [9]. Đối với hiệu năng, phân trang và giới hạn lô là biện pháp thiết kế; chúng không thay thế kết quả đo độ trễ. Bản báo cáo không đặt số lượng người dùng đồng thời hoặc tỷ lệ sẵn sàng mà chưa có thí nghiệm tương ứng."
+  },
+  {
+    "kind": "figure",
+    "number": 1,
+    "title": "Phân rã chức năng của hệ thống",
+    "description": "Nhánh chức năng được tổ chức theo quản lý dữ liệu nền, tiếp nhận QR, điều phối xử lý, phí/hóa đơn và truyền thông. Các phần mở rộng bảo trì, tiện ích và quỹ không thay đổi đường đi cốt lõi của phản ánh. Mỗi nhánh được ánh xạ đến màn hình và API cùng nghiệp vụ, tránh việc một biểu mẫu chứa toàn bộ chức năng của phân hệ."
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "2.2. PHÂN TÍCH HỆ THỐNG VỚI SƠ ĐỒ USE CASE"
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.2.1. Use Case tổng thể và phân rã theo tác nhân"
+  },
+  {
+    "kind": "figure",
+    "number": 2,
+    "title": "Use Case tổng thể",
+    "description": "Tác nhân BQL quản lý vận hành; KTV xử lý phần việc được giao; cư dân sử dụng chức năng tài khoản; người gửi công khai mở biểu mẫu theo QR. Các quan hệ trong hình mô tả mục tiêu sử dụng; điều kiện về quyền và trạng thái được chi tiết trong đặc tả. Mở QR công khai không cấp quyền quản trị thiết bị hay xem ảnh của phản ánh khác."
+  },
+  {
+    "kind": "figure",
+    "number": 3,
+    "title": "Use Case phân rã Ban quản lý",
+    "description": "BQL duy trì dữ liệu căn hộ/cư dân, vị trí và thiết bị, phát hành QR, điều phối phản ánh, lập hóa đơn và thông báo. Các bước duyệt, gửi và xác nhận thu là các quyết định độc lập. Chức năng xem báo cáo chỉ đọc, không phát sinh xác nhận thanh toán khi người dùng mở trang."
+  },
+  {
+    "kind": "figure",
+    "number": 4,
+    "title": "Use Case cư dân, người gửi công khai và kỹ thuật viên",
+    "description": "Người gửi không đăng nhập có thể phản ánh và tra cứu bằng thông tin riêng được cấp. Cư dân có tài khoản được xem hóa đơn, thông báo và phản ánh trong phạm vi quyền. KTV nhận việc, bắt đầu, nộp kết quả và ảnh; BQL mới quyết định nghiệm thu. Mô hình không gộp mọi tác nhân vào một người dùng có cùng quyền."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.2.2. Đặc tả năm Use Case cốt lõi"
+  },
+  {
+    "kind": "table",
+    "title": "UC01 – Đăng nhập và phân quyền",
+    "headers": [
+      "Thành phần",
+      "Đặc tả"
+    ],
+    "rows": [
+      [
+        "Tác nhân / mục tiêu",
+        "BQL, KTV, cư dân; tạo phiên truy cập đúng vai trò."
+      ],
+      [
+        "Tiền điều kiện",
+        "Tài khoản đã được cấp, còn hoạt động; trình duyệt cho phép cookie."
+      ],
+      [
+        "Đầu vào",
+        "Định danh đăng nhập, mật khẩu và lựa chọn tài khoản nếu có nhiều ứng viên."
+      ],
+      [
+        "Luồng chính",
+        "1. Nhập dữ liệu. 2. Kiểm tra giới hạn đăng nhập. 3. Xác minh mật khẩu và trạng thái. 4. Phát cookie phiên. 5. Gọi API danh tính và mở workspace phù hợp."
+      ],
+      [
+        "Ngoại lệ",
+        "Sai thông tin: báo lỗi chung; sai nhiều lần: khóa tạm; phiên cũ/đã thu hồi: 401. Không cho tự chọn vai trò bằng dữ liệu gửi từ client."
+      ],
+      [
+        "Hậu điều kiện",
+        "Các API sau kiểm tra lại trạng thái, vai trò và phiên bản tài khoản; đăng xuất tăng phiên bản."
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "table",
+    "title": "UC02 – Sinh và xuất mã QR vị trí",
+    "headers": [
+      "Thành phần",
+      "Đặc tả"
+    ],
+    "rows": [
+      [
+        "Tác nhân / mục tiêu",
+        "BQL; tạo liên kết mở nhanh biểu mẫu tại vị trí hoặc thiết bị."
+      ],
+      [
+        "Tiền điều kiện",
+        "Đã đăng nhập BQL; origin dùng cho điện thoại phải truy cập được."
+      ],
+      [
+        "Đầu vào",
+        "Tên, loại, mô tả vị trí; thiết bị hợp lệ nếu liên kết."
+      ],
+      [
+        "Luồng chính",
+        "1. Mở cửa sổ tạo. 2. Kiểm tra dữ liệu. 3. Lưu vị trí và token. 4. Dựng URL /r/{token}. 5. Xem/tải/in ảnh QR."
+      ],
+      [
+        "Ngoại lệ",
+        "Thiết bị ngừng sử dụng hoặc loại không phù hợp: từ chối; dữ liệu cũ: 409; muốn thay mã phải xác nhận sinh lại."
+      ],
+      [
+        "Hậu điều kiện",
+        "QR mới nhận diện một vị trí; sinh lại thu hồi token cũ; đổi liên kết không sửa phản ánh đã gửi."
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "table",
+    "title": "UC03 – Quét QR và gửi phản ánh",
+    "headers": [
+      "Thành phần",
+      "Đặc tả"
+    ],
+    "rows": [
+      [
+        "Tác nhân / mục tiêu",
+        "Cư dân hoặc người gửi công khai; gửi nội dung và ảnh đúng địa điểm."
+      ],
+      [
+        "Tiền điều kiện",
+        "Token hợp lệ, vị trí đang tiếp nhận; nếu quét trong Web cần HTTPS/quyền camera."
+      ],
+      [
+        "Đầu vào",
+        "Nội dung, họ tên/SĐT theo biểu mẫu, tối đa 5 ảnh, phiên bản QR, khóa yêu cầu."
+      ],
+      [
+        "Luồng chính",
+        "1. Quét hoặc mở liên kết. 2. Máy chủ trả vị trí. 3. Nhập nội dung/chọn ảnh. 4. Chuẩn hóa và kiểm tra. 5. Lưu phản ánh, ảnh, lịch sử và biên nhận cùng giao dịch. 6. Hiển thị mã tra cứu."
+      ],
+      [
+        "Ngoại lệ",
+        "Token hết hiệu lực; QR đã đổi phiên bản; ảnh sai; đạt giới hạn gửi; lỗi mạng. Gửi lại cùng yêu cầu trả biên nhận cũ khi đã thành công."
+      ],
+      [
+        "Hậu điều kiện",
+        "Có một phản ánh mới và snapshot thiết bị tại lúc gửi; không tự công khai toàn bộ dữ liệu."
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "table",
+    "title": "UC04 – Phân công và xử lý phản ánh",
+    "headers": [
+      "Thành phần",
+      "Đặc tả"
+    ],
+    "rows": [
+      [
+        "Tác nhân / mục tiêu",
+        "BQL và KTV được giao; hoàn tất xử lý có nghiệm thu."
+      ],
+      [
+        "Tiền điều kiện",
+        "Phản ánh ở trạng thái cho phép; phiên bản hiện tại; KTV còn hoạt động."
+      ],
+      [
+        "Đầu vào",
+        "KTV, ưu tiên; trạng thái đích; ghi chú; ảnh mới khi hoàn thành; phiên bản."
+      ],
+      [
+        "Luồng chính",
+        "1. BQL phân công. 2. KTV bắt đầu. 3. KTV nộp kết quả và ảnh. 4. BQL kiểm tra. 5. Nghiệm thu đạt để đóng hoặc trả lại kèm lý do."
+      ],
+      [
+        "Ngoại lệ",
+        "KTV khác truy cập: từ chối; người được giao đã đổi: mất quyền; thiếu ảnh/lý do: 422; phiên bản cũ: 409."
+      ],
+      [
+        "Hậu điều kiện",
+        "Trạng thái, phân công, ảnh và lịch sử nhất quán; lượt xử lý mới cần ảnh mới."
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "table",
+    "title": "UC05 – Lập và phát hành hóa đơn dịch vụ",
+    "headers": [
+      "Thành phần",
+      "Đặc tả"
+    ],
+    "rows": [
+      [
+        "Tác nhân / mục tiêu",
+        "BQL; tạo hóa đơn đúng căn/kỳ và cho cư dân tra cứu."
+      ],
+      [
+        "Tiền điều kiện",
+        "Căn hợp lệ; phí và chỉ số phù hợp kỳ; chưa có hóa đơn còn hiệu lực trùng."
+      ],
+      [
+        "Đầu vào",
+        "Căn, kỳ, ngày chốt; đơn giá/chỉ số/xe; khi gửi có hạn và thông tin nhận tiền."
+      ],
+      [
+        "Luồng chính",
+        "1. Chuẩn bị dữ liệu. 2. Lập nháp và các dòng snapshot. 3. Duyệt sau kiểm tra nguồn. 4. Gửi và lưu thông tin chuyển khoản. 5. Cư dân xem hóa đơn/VietQR."
+      ],
+      [
+        "Ngoại lệ",
+        "Thiếu giá/chỉ số: chưa đủ điều kiện duyệt; nguồn đổi: cần tính lại; bản cũ: 409; lô có lỗi: rollback toàn lô."
+      ],
+      [
+        "Hậu điều kiện",
+        "Hóa đơn DA_GUI có thể được xem theo quyền; quét QR không tự đổi DA_THANH_TOAN."
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Năm ca sử dụng trên làm rõ ranh giới giữa thao tác trên giao diện và điều kiện chấp nhận tại máy chủ. Kiểm thử phải kiểm cả nhánh thành công lẫn nhánh dữ liệu cũ, ngoài phạm vi hoặc gửi lại. Mã lỗi là kết quả kỹ thuật; thông báo cho người dùng cần chỉ rõ cách tiếp tục, ví dụ tải lại dữ liệu trước khi phân công lần nữa."
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "2.3. MÔ HÌNH HÓA HOẠT ĐỘNG VÀ TƯƠNG TÁC"
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.3.1. Sơ đồ hoạt động của bốn quy trình chính"
+  },
+  {
+    "kind": "figure",
+    "number": 5,
+    "title": "Hoạt động tạo và xuất mã QR vị trí",
+    "description": "BQL nhập vị trí, chọn liên kết thiết bị khi cần và xác nhận tạo. Máy chủ kiểm tra quyền, loại vị trí và thiết bị trước khi lưu. Ảnh QR được sinh từ URL của vị trí đã tồn tại; xem, tải và in không phải ba lần tạo dữ liệu. Khi thay origin triển khai, cần in lại URL phù hợp hoặc giữ tên miền ổn định."
+  },
+  {
+    "kind": "figure",
+    "number": 6,
+    "title": "Hoạt động quét QR và gửi phản ánh",
+    "description": "Người dùng có thể dùng camera hệ điều hành hoặc máy quét trong trang. Token được tra lại khi mở và khi gửi; biểu mẫu hiển thị vị trí do máy chủ trả về. Ảnh được chuẩn bị ở trình duyệt rồi kiểm lại tại backend. Lỗi nhập giữ nội dung để sửa; yêu cầu thành công trả mã tra cứu cần lưu riêng."
+  },
+  {
+    "kind": "figure",
+    "number": 7,
+    "title": "Hoạt động phân công, xử lý và nghiệm thu",
+    "description": "Quy trình chia trách nhiệm giữa BQL và KTV. KTV không tự nghiệm thu công việc của mình. Nhánh trả lại tăng lượt xử lý và yêu cầu minh chứng mới ở lần nộp tiếp theo. Việc phân công lại được ghi lịch sử; quyền của KTV cũ được kiểm tra lại khi truy cập tiếp."
+  },
+  {
+    "kind": "figure",
+    "number": 8,
+    "title": "Hoạt động lập, duyệt và gửi hóa đơn",
+    "description": "Các bước lập nháp, duyệt, gửi và xác nhận thu có điều kiện riêng. Nháp dùng nguồn phí/chỉ số/xe; duyệt kiểm tra nguồn còn phù hợp; gửi giữ snapshot đã duyệt và thêm thông tin nhận tiền. BQL chỉ xác nhận thu sau đối soát. Khi xử lý theo lô, một hóa đơn không hợp lệ làm thất bại cả lần xác nhận thay vì bỏ qua âm thầm."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.3.2. Sơ đồ tuần tự của các luồng nghiệp vụ"
+  },
+  {
+    "kind": "figure",
+    "number": 9,
+    "title": "Tuần tự tạo mã QR vị trí",
+    "description": "Giao diện gửi thông tin vị trí đến API BQL; middleware xác thực trước service. Service lưu dữ liệu và thông tin liên kết trong giao dịch rồi trả vị trí/token. Frontend dựng ảnh QR từ URL bằng thư viện qrcode [10]. Không có một dịch vụ ảnh QR bên ngoài nhận dữ liệu vị trí trong luồng này."
+  },
+  {
+    "kind": "figure",
+    "number": 10,
+    "title": "Tuần tự quét QR và gửi phản ánh",
+    "description": "Trình duyệt lấy thông tin công khai bằng token, sau đó gửi multipart chứa nội dung, ảnh và khóa yêu cầu. Backend kiểm tra phiên bản QR, chuẩn hóa ảnh và lưu snapshot thiết bị. Biên nhận thành công được trả sau khi giao dịch commit; lần gửi lại hợp lệ trả biên nhận trước. Thứ tự này tránh thông báo thành công khi dữ liệu chưa được lưu bền vững."
+  },
+  {
+    "kind": "figure",
+    "number": 11,
+    "title": "Tuần tự điều phối và chuyển trạng thái phản ánh",
+    "description": "API kiểm tra danh tính và vai trò trước khi service khóa bản ghi, so phiên bản và xác minh người đang được giao. Thay đổi trạng thái cùng sự kiện lịch sử được ghi trong một giao dịch. Nếu có xung đột, API trả lỗi và giao diện yêu cầu tải lại, giữ phân biệt giữa một quyết định bị từ chối và lỗi kết nối."
+  },
+  {
+    "kind": "figure",
+    "number": 12,
+    "title": "Tuần tự tra cứu hóa đơn và hiển thị VietQR",
+    "description": "Cư dân yêu cầu chi tiết hóa đơn; máy chủ kiểm tra quyền căn/đợt cư trú hoặc tài khoản thanh toán căn. Chỉ dữ liệu cho phép và payload của hóa đơn DA_GUI được trả về. Frontend dựng ảnh QR cục bộ. Luồng không gọi API ngân hàng, không nhận webhook và không phát sinh trạng thái thanh toán chỉ vì ảnh đã được hiển thị."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.3.3. Mô hình trạng thái phản ánh"
+  },
+  {
+    "kind": "figure",
+    "number": 13,
+    "title": "Vòng đời và điều kiện chuyển trạng thái phản ánh",
+    "description": "Luồng chính là MOI → DA_PHAN_CONG → DANG_XU_LY → DA_XU_LY → DA_DONG. DA_XU_LY có thể bị trả lại DANG_XU_LY với lý do. TU_CHOI và TRUNG_LAP là nhánh xử lý phản ánh mới. Trạng thái thể hiện tiến độ, còn phân công hiện tại là dữ liệu riêng; đổi KTV không nhất thiết khởi động lại toàn bộ vòng đời."
+  },
+  {
+    "kind": "table",
+    "title": "Quy tắc chuyển trạng thái phản ánh",
+    "headers": [
+      "Chuyển trạng thái",
+      "Người thực hiện",
+      "Điều kiện chính"
+    ],
+    "rows": [
+      [
+        "MOI → DA_PHAN_CONG",
+        "BQL",
+        "KTV hợp lệ, phiên bản hiện tại"
+      ],
+      [
+        "DA_PHAN_CONG → DANG_XU_LY",
+        "KTV hiện được giao",
+        "Đúng phạm vi công việc"
+      ],
+      [
+        "DANG_XU_LY → DA_XU_LY",
+        "KTV hiện được giao",
+        "Có kết quả và ảnh mới của lượt xử lý"
+      ],
+      [
+        "DA_XU_LY → DA_DONG",
+        "BQL",
+        "Nghiệm thu đạt"
+      ],
+      [
+        "DA_XU_LY → DANG_XU_LY",
+        "BQL",
+        "Có lý do trả lại, tăng lượt xử lý"
+      ],
+      [
+        "MOI → TU_CHOI / TRUNG_LAP",
+        "BQL",
+        "Có lý do; gộp đúng vị trí/thiết bị, không tạo vòng"
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "2.4. THIẾT KẾ CẤU TRÚC TĨNH VÀ CƠ SỞ DỮ LIỆU"
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.4.1. Sơ đồ lớp phân tích và ánh xạ mô-đun"
+  },
+  {
+    "kind": "figure",
+    "number": 14,
+    "title": "Sơ đồ lớp phân tích các khái niệm trọng tâm",
+    "description": "Sơ đồ biểu diễn các khái niệm người dùng, căn hộ, cư dân, vị trí QR, thiết bị, phản ánh và hóa đơn cùng các trách nhiệm nghiệp vụ. Trong hiện thực, các trách nhiệm được phân bổ cho service/repository và các component React, không sử dụng ORM. Tên phương thức ở mức phân tích mô tả hành vi, không thay thế bảng API ở chương 3."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.4.2. ERD thống nhất và phạm vi mô hình dữ liệu"
+  },
+  {
+    "kind": "figure",
+    "number": 15,
+    "title": "ERD thống nhất 18 bảng trọng tâm, 218 thuộc tính và 46 quan hệ",
+    "description": "ERD giữ các bảng trọng tâm trên cùng một bản vẽ, không tách thành những phân hệ được cho là độc lập. Toàn bộ 218 thuộc tính của 18 bảng được liệt kê thành cột oval thẳng đứng; các quan hệ khóa ngoại giữa chúng vẫn đủ 46. Đây là hình thu nhỏ tổng quan để đặt trong quyển A4; tệp draw.io, SVG và PDF vector một trang được bàn giao riêng để đọc/phóng to. Cơ sở dữ liệu triển khai có 31 bảng và 81 FK; 13 bảng không xuất hiện trên hình vẫn được mô tả trong phụ lục dữ liệu."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Mô hình giữ các nhóm quan hệ xuyên suốt: khối – tầng – căn; cư dân – lịch sử cư trú – căn; thiết bị – vị trí QR – phản ánh; căn – hóa đơn – dòng hóa đơn; người dùng – thông báo – biên nhận đọc. Người dùng là điểm tham chiếu của nhiều hành động tạo, giao và xác nhận, vì vậy các nhóm có liên hệ khóa ngoại và không thể gọi là những cơ sở dữ liệu độc lập."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Ở mức logic, lịch sử nghiệp vụ được nhìn theo từng loại sự kiện. Ở mức vật lý, tám loại lịch sử dùng chung bảng nhat_ky_nghiep_vu, còn các tên lịch sử là view. Mỗi sự kiện giữ đối tượng liên quan, người thao tác, thời điểm và payload có kiểm tra. Thiết kế giảm số bảng lịch sử nhưng vẫn cần ràng buộc về đúng loại đối tượng và schema JSON; không chỉ gom mọi nội dung vào một chuỗi tùy ý."
+  },
+  {
+    "kind": "table",
+    "title": "Nhóm bảng và vai trò trong thiết kế dữ liệu",
+    "headers": [
+      "Nhóm",
+      "Các bảng tiêu biểu",
+      "Vai trò / chú ý"
+    ],
+    "rows": [
+      [
+        "Cấu trúc và cư trú",
+        "khoi_toa_nha, tang_toa_nha, can_ho, cu_dan, lich_su_cu_tru, phuong_tien",
+        "Căn thuộc khối/tầng; quan hệ cư trú có khoảng thời gian"
+      ],
+      [
+        "Danh tính và QR",
+        "nguoi_dung, thiet_bi, vi_tri_qr",
+        "Tách tài khoản cá nhân/căn; QR liên kết thiết bị tùy chọn"
+      ],
+      [
+        "Phản ánh",
+        "phan_anh, hinh_anh_phan_anh",
+        "Snapshot thiết bị, phiên bản, ảnh theo lượt xử lý"
+      ],
+      [
+        "Phí và hóa đơn",
+        "loai_phi, cau_hinh_phi, chi_so_dich_vu, hoa_don, chi_tiet_hoa_don",
+        "Lưu giá và tiền tại thời điểm chốt, chống hóa đơn trùng"
+      ],
+      [
+        "Thông báo",
+        "thong_bao, thong_bao_da_doc",
+        "Phạm vi phát hành và biên nhận đọc riêng"
+      ],
+      [
+        "Mở rộng nghiệp vụ",
+        "phieu_bao_tri, tien_ich, dat_lich_tien_ich, quy_tai_chinh, phieu_thu_chi, chung_tu_thu_chi",
+        "Có trong schema đầy đủ, không thêm vào hình ERD 18 bảng"
+      ],
+      [
+        "Kỹ thuật và nhật ký",
+        "nhat_ky_nghiep_vu, yeu_cau_gui, gioi_han_gui, dot_nhap_du_lieu, dot_lap_hoa_don, dot_xu_ly_hoa_don, schema_migrations",
+        "Nhật ký, chống lặp, giới hạn và theo dõi migration"
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.4.3. Thiết kế chi tiết bảng và ràng buộc"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Phụ lục 2 mô tả đủ 31 bảng và 362 cột, ghi kiểu MySQL, khả năng NULL, vai trò khóa và đích tham chiếu. Bảng khóa ngoại ghép được giữ theo tổ hợp, không tách mỗi cột thành một quan hệ độc lập. Các chỉ mục UNIQUE và CHECK đầy đủ được giữ trong baseline SQL và từ điển kỹ thuật đi kèm; dữ liệu nghiệp vụ không bị thay đổi khi dựng báo cáo."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Ba quyết định cần chú ý là khóa ghép tầng theo khối, cột sinh để giới hạn một bản còn hiệu lực, và các cột phiên bản để kiểm tra cập nhật cũ. Khóa ngoại bảo vệ sự tồn tại của cha/con, nhưng không tự diễn giải được quyền của KTV hoặc điều kiện ảnh nghiệm thu. Các quy tắc này được service kiểm tra dưới khóa và được thử bằng các tình huống đồng thời. Tài liệu kiểm thử khóa ngoại của MySQL cho thấy hành vi ràng buộc cần được kiểm chứng tại hệ quản trị thay vì chỉ nhìn đường nối trên hình [8]."
+  },
+  {
+    "kind": "table",
+    "title": "Các ràng buộc dữ liệu trọng tâm",
+    "headers": [
+      "Đối tượng",
+      "Ràng buộc / quy tắc",
+      "Ý nghĩa"
+    ],
+    "rows": [
+      [
+        "Căn hộ",
+        "(khoi, tang) → tang_toa_nha",
+        "Không có căn thuộc một tầng chưa khai báo"
+      ],
+      [
+        "Cư trú",
+        "Cư dân, căn và khoảng tu_ngay/den_ngay",
+        "Giữ lịch sử và xác định quyền theo đợt"
+      ],
+      [
+        "QR",
+        "Token duy nhất; phien_ban; thiết bị tùy chọn",
+        "Thu hồi mã, phát hiện form cũ và liên kết hợp lệ"
+      ],
+      [
+        "Phản ánh",
+        "Các FK vị trí/người; snapshot; phiên bản",
+        "Truy vết nơi gửi và chống ghi đè"
+      ],
+      [
+        "Ảnh",
+        "FK phản ánh; loại ảnh và lượt xử lý",
+        "Kiểm soát minh chứng của mỗi lần nộp"
+      ],
+      [
+        "Hóa đơn",
+        "UNIQUE căn/kỳ còn hiệu lực; chi tiết snapshot",
+        "Không trùng bản hiệu lực và không tính lại ngầm"
+      ],
+      [
+        "Nhật ký",
+        "FK theo đối tượng; CHECK và JSON schema",
+        "Ghi đúng sự kiện trong cùng giao dịch"
+      ],
+      [
+        "Lô thao tác",
+        "Khóa yêu cầu duy nhất theo người thao tác",
+        "Thử lại an toàn sau lỗi mạng"
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "2.5. KIẾN TRÚC HỆ THỐNG VÀ LỰA CHỌN CÔNG NGHỆ"
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.5.1. Kiến trúc ba tầng và dữ liệu vào – ra"
+  },
+  {
+    "kind": "figure",
+    "number": 16,
+    "title": "Kiến trúc ba tầng React – Express – MySQL",
+    "description": "Tầng trình bày React gửi HTTP đến Express qua API cùng nguồn; Express kiểm tra danh tính, quyền và nghiệp vụ trước khi truy vấn MySQL. Ảnh chuẩn hóa nằm trong storage được truy cập qua endpoint có kiểm tra quyền. QR được dựng cục bộ từ dữ liệu trả về. Khi phát triển, Vite proxy /api đến backend; khi triển khai cần cấu hình reverse proxy/HTTPS phù hợp."
+  },
+  {
+    "kind": "figure",
+    "number": 17,
+    "title": "Luồng dữ liệu phản ánh từ QR đến nghiệm thu",
+    "description": "Dữ liệu đầu vào gồm token vị trí, nội dung, ảnh, khóa yêu cầu và phiên bản. Hệ thống tạo phản ánh và lịch sử, đưa công việc đến BQL/KTV và trả tiến độ theo quyền người đọc. Phản hồi công khai chỉ gồm tập trường cho phép; log nội bộ và tệp ảnh không theo cùng đường xuất công khai. Hình thể hiện cả dữ liệu nghiệp vụ lẫn điểm kiểm tra tại ranh giới máy chủ."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.5.2. Lý do lựa chọn và các phương án thay thế"
+  },
+  {
+    "kind": "table",
+    "title": "Lựa chọn thiết kế và công nghệ",
+    "headers": [
+      "Lựa chọn",
+      "Lý do trong phạm vi đề tài",
+      "Đánh đổi"
+    ],
+    "rows": [
+      [
+        "Web thích ứng",
+        "Một địa chỉ cho BQL và cư dân; mở liên kết QR trực tiếp",
+        "Phụ thuộc mạng, trình duyệt, HTTPS và quyền camera"
+      ],
+      [
+        "React + Router",
+        "Tổ chức theo component/nghiệp vụ, giữ ngữ cảnh danh sách",
+        "Cần xử lý dữ liệu cũ, request hủy và trạng thái lỗi"
+      ],
+      [
+        "Node.js + Express",
+        "Cùng JavaScript; route/middleware rõ",
+        "Không tự bảo đảm nhanh hoặc an toàn nếu thiếu đo/kiểm tra"
+      ],
+      [
+        "MySQL + mysql2",
+        "Quan hệ, giao dịch, khóa và ràng buộc phù hợp",
+        "Cần kiểm soát thứ tự khóa và migration"
+      ],
+      [
+        "CSS riêng",
+        "Tận dụng thiết kế và component sẵn có",
+        "Cần tự duy trì responsive, focus và tính nhất quán"
+      ],
+      [
+        "QR cục bộ",
+        "Không gửi dữ liệu hóa đơn sang dịch vụ tạo ảnh ngoài",
+        "Cần kiểm thử payload và khả năng đọc trên ứng dụng thực tế"
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "paragraph",
+    "text": "React, Express, Node.js và Vite được chọn theo vai trò cụ thể trong chuỗi triển khai, phù hợp các khả năng được mô tả trong tài liệu chính thức [1], [4], [7], [11]. Phương án ứng dụng native có thể kiểm soát một số khả năng thiết bị tốt hơn nhưng làm phát sinh thêm nền tảng và bước cài đặt. Phương án nhiều dịch vụ nhỏ làm tăng yêu cầu vận hành trong khi quy mô đề tài chưa cần; kiến trúc mô-đun trong một backend thuận lợi hơn cho giao dịch xuyên nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Sự khác biệt với đề cương được công khai: stylesheet riêng thay cho lựa chọn Tailwind/Bootstrap; thư viện jose thay cho jsonwebtoken; Node.js 24 làm phiên bản chạy chuẩn theo .nvmrc. Các thay đổi không làm mất những mục tiêu chính, nhưng cần được kiểm chứng bằng kết quả phần mềm thay vì tiếp tục liệt kê thư viện chưa cài đặt."
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "2.6. THÁCH THỨC KỸ THUẬT VÀ THUẬT TOÁN XỬ LÝ"
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.6.1. Quét camera và kiểm tra URL QR"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Điều kiện đầu tiên của máy quét trong Web là ngữ cảnh bảo mật. Sau khi người dùng bấm mở camera, chương trình kiểm window.isSecureContext, tải html5-qrcode, chọn facingMode là environment và bắt đầu nhận diện. Khi giải mã được một chuỗi, chương trình không điều hướng ngay đến mọi địa chỉ mà gọi bộ kiểm tra URL. Điều kiện quyền và lỗi thiết bị được xử lý phù hợp với tài liệu getUserMedia [6]."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Bộ kiểm tra chỉ chấp nhận http/https, đường dẫn /r/{UUID}, không có username/password, query hoặc fragment. URL cùng nguồn được chấp nhận; một số hostname/IP mạng nội bộ cũ được chuẩn hóa về đường dẫn ở nguồn đang mở. Trình duyệt không truy cập origin cũ trong bước này. Máy chủ hiện tại tiếp tục kiểm tra token và trạng thái; chuẩn hóa URL không tự làm một QR đã thu hồi trở nên hợp lệ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Thuật toán tạo QR có đầu vào là URL định danh và đầu ra là ảnh để in. Token UUID v4 được sinh ngẫu nhiên, không phải mã căn hộ chứa dữ liệu cá nhân. Tạo lại QR đổi token; đổi liên kết thiết bị giữ token nhưng tăng phiên bản. qrcode là thư viện mã hóa ký hiệu QR, còn html5-qrcode giải mã ký hiệu về chuỗi [3], [10]. Nội dung URL không được gọi là mã hóa mật mã."
+  },
+  {
+    "kind": "code",
+    "title": "Giả mã kiểm tra và mở liên kết QR",
+    "text": "Nhận chuỗi đã giải mã và origin đang mở.\nPhân tích URL, từ chối chuỗi rỗng hoặc vượt giới hạn.\nKiểm tra giao thức, định dạng /r/{UUID} và nguồn cho phép.\nTừ chối query, fragment và thông tin đăng nhập trong URL.\nĐiều hướng đến pathname trên origin hiện tại.\nGọi API tra token; chỉ mở form khi vị trí còn hoạt động."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.6.2. Xử lý ảnh và thử lại khi lỗi mạng"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Ở trình duyệt, ảnh thư viện được kiểm tra định dạng rồi giải mã tuần tự để tránh giữ nhiều ảnh lớn đồng thời. Canvas tạo JPEG với cạnh dài tối đa 1600 px và chất lượng 0,85. Bộ tệp đã xử lý được dùng cho cả xem trước và FormData; thao tác gửi bị chặn khi còn giải mã. Tại máy chủ, giới hạn nghiệp vụ là tối đa 5 ảnh, 5 MB mỗi ảnh và 25 triệu điểm ảnh mỗi tệp."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Giao dịch tạo phản ánh lưu cả khóa yêu cầu, dấu vân tay và biên nhận. Khi mạng đứt sau commit, người dùng gửi lại cùng khóa để nhận đúng kết quả đã có. Khi giao dịch thất bại, ảnh đã chuẩn bị được dọn theo nhánh lỗi. Một giới hạn còn lại là chưa có tác vụ định kỳ dọn ảnh mồ côi nếu tiến trình bị dừng bất thường; đây là công việc vận hành cần bổ sung."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.6.3. Trạng thái, đồng thời và lịch sử"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Mỗi lần phân công hoặc chuyển trạng thái đọc bản ghi trong giao dịch, so phien_ban, kiểm người thao tác và điều kiện trạng thái đích. Nếu hợp lệ, service cập nhật dữ liệu, tăng phiên bản và ghi nhật ký. Nếu bản ghi đã đổi, API trả 409 để người dùng đọc lại. Khóa ngăn hai giao dịch cùng sửa một thời điểm; phiên bản còn giúp phát hiện một biểu mẫu được mở từ trước."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Thứ tự khóa cần nhất quán giữa các nghiệp vụ có chung đối tượng. Các luồng tài chính khóa căn trước hóa đơn và các dữ liệu liên quan; các luồng QR kiểm tra vị trí trước thiết bị theo thiết kế service. Không dùng việc “khóa mọi bảng” để né xung đột, vì cách đó làm tăng cạnh tranh và không giải quyết được quyền truy cập. Kiểm thử cố ý tạo lỗi audit để xác nhận trạng thái và lịch sử cùng rollback."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.6.4. Tính tiền, chốt nguồn và VietQR"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Các số tiền trong MySQL dùng DECIMAL và được trao đổi dưới dạng chuỗi; JavaScript xử lý phép tính bằng BigInt đã nhân hệ số thập phân. Với đơn giá thông thường, thành tiền là số lượng nhân đơn giá rồi làm tròn theo quy tắc của service. Với điện bậc thang, sản lượng được phân bổ theo các ngưỡng tăng dần, bậc cuối không giới hạn; thuế là một dòng được tính theo cấu hình. Không dùng giá minh họa trong báo cáo để khẳng định đó là biểu giá pháp lý đang áp dụng."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Ví dụ tính toán để giải thích thuật toán: chỉ số cũ 120, chỉ số mới 135 tạo sản lượng 15. Nếu đơn giá giả định 10.000 đồng/đơn vị và không có thuế, dòng tiền bằng 150.000 đồng. Ví dụ này không lấy từ hóa đơn thật và không thay thế kiểm thử các bậc điện. Khi duyệt, hệ thống kiểm dấu vân tay nguồn; nếu giá/chỉ số/dữ liệu xe đã đổi, yêu cầu tính lại thay vì duyệt tổng tiền cũ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "VietQR được dựng từ dữ liệu nhận tiền đã lưu khi gửi hóa đơn. Hàm backend ghép các trường độ dài–giá trị, thêm số tiền, số hóa đơn và CRC16; frontend dựng ảnh cục bộ bằng qrcode [10]. CRC kiểm tra toàn vẹn chuỗi không chứng minh giao dịch đã xảy ra. Chỉ API xác nhận thanh toán có quyền BQL, đủ tiền và mã tham chiếu mới cập nhật trạng thái đã thu."
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "2.7. THIẾT KẾ GIAO DIỆN NGƯỜI DÙNG"
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.7.1. Giao diện Ban quản lý"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Workspace BQL chia nhóm dữ liệu nền, phản ánh, tài chính và các nghiệp vụ vận hành. Danh sách có tìm kiếm, bộ lọc và phân trang; thao tác thêm/sửa, chi tiết, lịch sử và xác nhận mở trong cửa sổ riêng. Cửa sổ có nhãn, nút đóng và quản lý focus; khi đang ghi dữ liệu, đóng hoặc gửi lặp bị chặn theo trạng thái chờ. Sau thao tác thành công danh sách được tải lại theo ngữ cảnh hiện tại."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổng quan cung cấp số liệu công nợ, thu phí, phản ánh và công việc đang mở. Các thẻ chỉ điều hướng đến nghiệp vụ; mở tổng quan không tự xác nhận thu hay phát hành thông báo. Bộ biểu đồ có thể thu gọn và có bảng số gốc, giúp tránh phụ thuộc hoàn toàn vào hình vẽ. Đây là thiết kế từ giao diện thực thi của sản phẩm; chưa có tệp mockup Figma độc lập để làm bằng chứng."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "2.7.2. Giao diện cư dân và kỹ thuật viên"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Luồng công khai ưu tiên xác nhận địa điểm, nội dung, thông tin liên hệ và ảnh. Vị trí được hiển thị rõ, không yêu cầu người gửi chọn lại căn hoặc tòa nhà trong một danh mục dài. Sau thành công, mã tra cứu phải được lưu. Màn tra cứu dùng mã riêng và SĐT; khi đăng nhập, các chức năng hóa đơn và thông báo được đặt trong workspace cư dân."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Giao diện KTV tập trung công việc được giao, kết quả và ảnh nghiệm thu. Nút chuyển trạng thái chỉ xuất hiện khi phù hợp, nhưng service vẫn kiểm tra lại. Trên màn hình hẹp, nội dung và nút được xếp theo cột; bảng dài cuộn trong vùng bảng. Trình tự focus, nút Esc và dữ liệu sau khi đóng cửa sổ được kiểm tra bằng tự động hóa, tách biệt với đánh giá khả dụng của người dùng thực tế [5]."
+  },
+  {
+    "kind": "heading",
+    "level": 1,
+    "text": "CHƯƠNG 3. CÀI ĐẶT THỬ NGHIỆM, KẾT QUẢ VÀ ĐÁNH GIÁ"
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "3.1. MÔI TRƯỜNG PHÁT TRIỂN VÀ CÔNG CỤ CÀI ĐẶT"
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "3.1.1. Môi trường và phiên bản được kiểm chứng"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Đề cương dự kiến phát triển trên Windows 11 với Visual Studio Code. Bộ bằng chứng được dùng trong báo cáo này được chạy lại trên môi trường Linux x86_64 ngày 17/11/2026; đây không phải số đo cấu hình máy cá nhân của sinh viên. Các phiên bản thư viện lấy từ package-lock.json, phiên bản Node lấy từ tiến trình thực thi và phiên bản MySQL lấy từ SELECT VERSION(). Không suy ra hiệu năng hệ thống từ các thông tin này khi chưa cố định cấu hình CPU/RAM và tải thử."
+  },
+  {
+    "kind": "table",
+    "title": "Môi trường dùng cho lần kiểm chứng báo cáo",
+    "headers": [
+      "Thành phần",
+      "Phiên bản / thông tin",
+      "Vai trò"
+    ],
+    "rows": [
+      [
+        "Hệ điều hành",
+        "Linux x86_64",
+        "Môi trường kiểm chứng đám mây"
+      ],
+      [
+        "Node.js / npm",
+        "24.22.1 / theo môi trường cài đặt",
+        "Chạy backend, build và test"
+      ],
+      [
+        "MySQL",
+        "8.4.13; InnoDB",
+        "Database kiểm thử riêng chung_cu_test"
+      ],
+      [
+        "React / Vite",
+        "19.3.1 / 7.3.7",
+        "Giao diện và bản dựng"
+      ],
+      [
+        "Express / mysql2",
+        "5.3.0 / 3.24.6",
+        "API và truy vấn MySQL"
+      ],
+      [
+        "html5-qrcode / qrcode",
+        "2.3.8 / 1.5.4",
+        "Quét và dựng ảnh QR"
+      ],
+      [
+        "jose / multer / sharp",
+        "6.2.12 / 2.5.0 / 0.35.5",
+        "JWT, multipart và chuẩn hóa ảnh"
+      ],
+      [
+        "Playwright",
+        "1.64.1",
+        "Kiểm thử trình duyệt tự động"
+      ]
+    ],
+    "source": "Nguồn: package-lock.json, Node.js đang chạy và truy vấn phiên bản MySQL ngày 17/11/2026."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "3.1.2. Cài đặt và cấu hình chạy thử"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Dự án sử dụng npm workspaces cho frontend và backend. Từ thư mục gốc, npm ci --include=dev cài đúng khóa phụ thuộc; npm run init:local tạo cấu hình nếu chưa có; các bước MySQL thực hiện theo README. Với máy đã có dữ liệu, cần tạo database đích mới và làm đúng hướng dẫn chuyển dữ liệu, không chạy seed để thay nội dung cũ. Báo cáo không ghi mật khẩu, JWT secret hoặc tệp cấu hình thật."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Backend chạy bằng npm run dev:backend, mặc định cổng 3000; frontend chạy bằng npm run dev:frontend, thường dùng cổng 5173. Vite chuyển /api đến backend. /api/health là kiểm tra tiến trình sống và không kiểm tra database; /api/ready mới kiểm tra kết nối cùng baseline schema. Hai kết quả có mục đích khác nhau: “Web mở được” không đồng nghĩa schema đã sẵn sàng."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Khi dùng điện thoại thật, origin phải là địa chỉ điện thoại truy cập được. Để dùng camera trong trang cần HTTPS được thiết bị tin cậy và quyền camera [6]. localhost của điện thoại là chính điện thoại, không phải máy tính đang chạy server. QR đã in bằng một IP cũ không phải bằng chứng rằng đường mạng mới còn đúng; cần đối chiếu origin và token ở máy chủ hiện tại."
+  },
+  {
+    "kind": "code",
+    "title": "Các lệnh chính trên một môi trường mới",
+    "text": "npm ci --include=dev\nnpm run init:local\nnpm run db:up\nnpm run db:migrate\nnpm run setup:admin\nnpm run dev:backend\n# Terminal thứ hai:\nnpm run dev:frontend"
+  },
+  {
+    "kind": "paragraph",
+    "text": "db:up chỉ áp dụng khi dùng Docker Compose theo README; máy đã có dịch vụ MySQL dùng cấu hình kết nối tương ứng. setup:admin cấp tài khoản quản trị ban đầu cho database mới và lưu thông tin bàn giao ở storage cục bộ. Không đưa tệp bàn giao chứa thông tin đăng nhập vào báo cáo hoặc GitHub."
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "3.2. CÀI ĐẶT VÀ HIỆN THỰC HÓA HỆ THỐNG"
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "3.2.1. Hiện thực cơ sở dữ liệu và dữ liệu thử"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Baseline database/thesis-mysql/001_thesis_schema.sql là nguồn tạo schema mới. Runner theo dõi tên và checksum trong schema_migrations, giúp phát hiện khác biệt với bản đã áp dụng. Bản hiện tại dùng 31 bảng thật và 8 view lịch sử. Các trang dữ liệu không trực tiếp ghi vào view lịch sử; service gọi hàm appendHistory trong cùng giao dịch với nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Dữ liệu mô phỏng và dữ liệu kiểm thử được tách khỏi dữ liệu sử dụng. npm test và npm run test:e2e chọn chung_cu_test, cài fixture và chạy tuần tự. Mục đích của fixture là tạo các trường hợp có thể lặp lại: căn, cư dân, tài khoản, QR, hóa đơn và trạng thái liên quan. Ảnh minh họa trong báo cáo dùng dữ liệu thử; không phải hồ sơ cư dân của một chung cư đã triển khai."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Thiết kế vật lý bổ sung cho sơ đồ chương 2 bằng kiểu dữ liệu, chỉ mục, CHECK và các cột sinh. Ví dụ tang_toa_nha dùng khóa ghép; can_ho tham chiếu cặp khối/tầng; hóa đơn giữ ràng buộc duy nhất cho bản còn hiệu lực. Việc đếm bảng bao gồm cả bảng kỹ thuật; tám view lịch sử không cộng thêm vào 31 bảng vật lý. Phụ lục 2 liệt kê cấu trúc đủ để đối chiếu với mã SQL."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "3.2.2. Backend RESTful API và cơ chế xác thực"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Express route xác định phương thức/đường dẫn, gắn middleware và gọi service; repository hoặc service thực hiện truy vấn có tham số. Cách phân tách phù hợp vai trò routing và middleware của Express [1]. JSON được giới hạn kích thước ở đầu ứng dụng; ảnh dùng multipart với giới hạn riêng. Lỗi trả mã, thông báo, lỗi trường khi có và request ID để đối chiếu."
+  },
+  {
+    "kind": "paragraph",
+    "text": "JWT được ký HS256 bằng jose, có issuer, audience, thời hạn tám giờ và phiên bản tài khoản. Token nằm trong cookie HttpOnly, SameSite=Strict; thuộc tính Secure phụ thuộc cấu hình HTTPS. Mỗi lần xác thực, máy chủ đọc lại tài khoản để kiểm tra trạng thái và phiên bản. Cách làm này cho phép khóa tài khoản, đổi mật khẩu hoặc đăng xuất làm mất hiệu lực phiên trước, phù hợp yêu cầu kiểm tra quyền ở mọi yêu cầu [9]."
+  },
+  {
+    "kind": "code",
+    "title": "Đoạn phát JWT trong auth.service.js (trích mã nguồn)",
+    "text": "const token = await new SignJWT({ version: user.phien_ban_token })\n  .setProtectedHeader({ alg: \"HS256\" })\n  .setSubject(String(user.ma_nguoi_dung))\n  .setIssuer(\"chung-cu\")\n  .setAudience(\"chung-cu-web\")\n  .setIssuedAt()\n  .setExpirationTime(\"8h\")\n  .sign(secret());"
+  },
+  {
+    "kind": "table",
+    "title": "Các API tiêu biểu của luồng cốt lõi",
+    "headers": [
+      "Phương thức và đường dẫn (sau /api)",
+      "Quyền",
+      "Chức năng"
+    ],
+    "rows": [
+      [
+        "POST /xac_thuc/dang_nhap",
+        "Công khai",
+        "Xác minh và tạo phiên"
+      ],
+      [
+        "GET /xac_thuc/toi",
+        "Đã đăng nhập",
+        "Đọc danh tính hiện tại"
+      ],
+      [
+        "GET, POST /vi_tri_qr",
+        "BQL",
+        "Danh sách / tạo vị trí"
+      ],
+      [
+        "POST /vi_tri_qr/:id/sinh_lai_qr",
+        "BQL",
+        "Thu hồi token cũ, cấp token mới"
+      ],
+      [
+        "PUT /vi_tri_qr/:id/thiet_bi",
+        "BQL",
+        "Đổi liên kết thiết bị"
+      ],
+      [
+        "GET /cong_khai/vi_tri_qr/:token",
+        "Công khai",
+        "Tra vị trí với tập trường tối thiểu"
+      ],
+      [
+        "POST /cong_khai/phan_anh",
+        "Công khai / Cư dân",
+        "Gửi multipart, chống gửi lặp"
+      ],
+      [
+        "POST /cong_khai/phan_anh/tra_cuu",
+        "Công khai",
+        "Tra bằng mã riêng và SĐT"
+      ],
+      [
+        "GET /phan_anh; GET /phan_anh/:id",
+        "Theo phạm vi tài khoản",
+        "Danh sách / chi tiết"
+      ],
+      [
+        "PATCH /phan_anh/:id/phan_cong",
+        "BQL",
+        "Giao hoặc giao lại công việc"
+      ],
+      [
+        "PATCH /phan_anh/:id/trang_thai",
+        "BQL / KTV theo quy tắc",
+        "Chuyển trạng thái và ghi lịch sử"
+      ],
+      [
+        "POST /hoa_don/lap",
+        "BQL",
+        "Lập nháp một hóa đơn"
+      ],
+      [
+        "POST /hoa_don/:id/duyet; /gui",
+        "BQL",
+        "Duyệt / gửi theo trạng thái"
+      ],
+      [
+        "POST /hoa_don/:id/xac_nhan_thanh_toan",
+        "BQL",
+        "Ghi nhận thu sau đối soát"
+      ],
+      [
+        "GET /cua_toi/hoa_don/:id",
+        "Cư dân có quyền",
+        "Chi tiết hóa đơn và payload QR"
+      ],
+      [
+        "GET /cua_toi/thong_bao",
+        "Cư dân có quyền",
+        "Đọc hộp thông báo Web"
+      ]
+    ],
+    "source": "Nguồn: backend/src/app.js và các tệp *.routes.js tại commit ứng dụng cceb904. Đây là bảng đại diện, không thay thế toàn bộ hợp đồng API."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Các API theo lô có bước xem trước và xác nhận riêng. Token xem trước gắn với người thao tác, đầu vào và dữ liệu nguồn; server kiểm lại dưới khóa trước khi ghi. Nếu dữ liệu đổi, trả xung đột để xem lại thay vì dùng báo giá cũ. Khóa yêu cầu theo lô giúp nhận lại kết quả khi response bị mất, không tạo thêm hóa đơn hoặc sự kiện thu tiền."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "3.2.3. Sinh QR, nhận ảnh và xử lý phản ánh"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Khi tạo vị trí, service kiểm loại và liên kết thiết bị rồi lưu token. Frontend tạo URL theo origin đang mở, dùng qrcode dựng ảnh để xem/tải/in [10]. API công khai không trả mã nội bộ tùy ý hoặc toàn bộ hồ sơ thiết bị. Khi người gửi xác nhận, server lấy lại thiết bị từ vị trí và ghi snapshot mã/tên/vị trí tại thời điểm gửi."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Multer nhận tối đa năm tệp; Sharp giải mã JPEG/PNG/WebP tĩnh, kiểm số điểm ảnh, xoay theo hướng ảnh và tạo JPEG đã loại metadata. Tên tệp lưu được sinh ngẫu nhiên, không dùng tên gốc. Ảnh không được mount công khai thành một thư mục tĩnh; endpoint đọc ảnh kiểm tra quyền trên phản ánh trước khi trả tệp. Ảnh đã chuẩn bị được xóa nếu giao dịch lưu thất bại."
+  },
+  {
+    "kind": "code",
+    "title": "Giới hạn multipart và xử lý ảnh (trích rút gọn từ images.js)",
+    "text": "const upload = multer({\n  storage: multer.memoryStorage(),\n  limits: { files: 5, fileSize: 5 * 1024 * 1024,\n    fields: 20, fieldSize: 10000, parts: 25 }\n}).array(\"hinh_anh\", 5);\n// Mỗi tệp được Sharp giải mã với limitInputPixels: 25_000_000.\n// Chỉ nhận jpeg/png/webp tĩnh, rồi xuất JPEG và đổi tên ngẫu nhiên."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "3.2.4. Frontend, cửa sổ thao tác và tích hợp camera"
+  },
+  {
+    "kind": "paragraph",
+    "text": "frontend/src/app ghép router, điều hướng và bố cục; frontend/src/features chứa các màn theo nghiệp vụ; frontend/src/shared chứa component và API client dùng chung. React component quản lý trạng thái nhập, đang tải và lỗi, tương ứng cách tổ chức giao diện bằng component và state trong tài liệu React [4]. Backend giữ quyền quyết định cuối cùng; thay đổi state ở trình duyệt không đủ để đổi trạng thái nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Các màn thêm/sửa, chi tiết và lịch sử sử dụng cửa sổ thao tác chung. Cửa sổ đặt focus khi mở, giữ focus trong phạm vi, đóng bằng nút hoặc Esc khi điều kiện cho phép và trả focus về vị trí trước đó. Trạng thái đang gửi khóa nút để hạn chế thao tác lặp ở giao diện, trong khi idempotency và ràng buộc MySQL vẫn xử lý trường hợp mạng hoặc người dùng gửi lại."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Camera quét QR chỉ khởi động sau thao tác người dùng. Cấu hình hiện tại ưu tiên camera sau, 8 khung/giây và vùng nhận diện 220 px. Khi rời màn hình hoặc quá trình khởi động kết thúc sau khi component đã bị tháo, scanner được dừng. Các giá trị này là cấu hình mã nguồn, không phải tốc độ nhận diện thực tế được đo trên điện thoại [3], [6]."
+  },
+  {
+    "kind": "code",
+    "title": "Khởi động bộ quét trong PublicReports.jsx (trích rút gọn)",
+    "text": "const { Html5Qrcode } = await import(\"html5-qrcode\");\nscanner.current = new Html5Qrcode(\"qr-reader\");\nawait scanner.current.start(\n  { facingMode: \"environment\" },\n  { fps: 8, qrbox: 220 },\n  (value) => { open(value); },\n  () => {}\n);\n// open() kiểm tra URL trước khi điều hướng; có xử lý lỗi và cleanup."
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "3.3. KẾT QUẢ GIAO DIỆN VÀ CÁC PHÂN HỆ ĐÃ XÂY DỰNG"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Các hình dưới đây được chụp từ giao diện mã nguồn hiện tại với dữ liệu mô phỏng hoặc database kiểm thử riêng. Chúng minh họa kết quả hiện thực màn hình, không phải bằng chứng đã đưa vào vận hành ở một chung cư thật. Ảnh fixture chỉ kiểm lớp trình bày; kết quả nghiệp vụ được xác nhận riêng bằng bộ kiểm thử MySQL và trình duyệt ở mục 3.4."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "3.3.1. Kết quả phân hệ Ban quản lý"
+  },
+  {
+    "kind": "ui",
+    "key": "dang-nhap",
+    "title": "Biểu mẫu đăng nhập của hệ thống",
+    "description": "Biểu mẫu sử dụng định danh tài khoản và mật khẩu; không có đăng ký công khai hoặc nút chọn vai trò giả lập. Ảnh chỉ chụp vùng biểu mẫu, không chứa ảnh trang trí bên ngoài. Phiên và quyền thực tế được API kiểm tra sau đăng nhập."
+  },
+  {
+    "kind": "ui",
+    "key": "tong-quan",
+    "title": "Màn hình tổng quan vận hành của Ban quản lý",
+    "description": "Các nhóm số liệu tài chính, phản ánh và công việc tạo điểm vào cho các thao tác. Tổng quan đọc số liệu theo một snapshot, không tự thu tiền hay phát hành thông báo. Ảnh dùng dữ liệu kiểm thử, các con số không phải thống kê của một chung cư đang vận hành."
+  },
+  {
+    "kind": "ui",
+    "key": "cu-dan",
+    "title": "Danh sách hồ sơ cư dân",
+    "description": "Danh sách trình bày thông tin cần thiết để tra cứu và mở chi tiết. Quan hệ với căn hộ được quản lý qua các đợt cư trú, thay vì ghi đè lịch sử khi chuyển đi. Tên và số điện thoại trong ảnh là dữ liệu mô phỏng."
+  },
+  {
+    "kind": "ui",
+    "key": "them-can-desktop",
+    "title": "Cửa sổ thêm căn hộ trên máy tính",
+    "description": "Thao tác thêm mở thành một cửa sổ riêng với trường căn hộ, khối, tầng và diện tích. Danh sách phía sau giữ ngữ cảnh để người dùng quay lại sau khi đóng. Kiểm tra trường và API vẫn là bước quyết định chấp nhận dữ liệu."
+  },
+  {
+    "kind": "ui",
+    "key": "them-can-mobile",
+    "title": "Cửa sổ thao tác căn hộ ở màn hình hẹp",
+    "description": "Cùng biểu mẫu được xếp theo chiều dọc để dùng ở viewport hẹp. Đây là ảnh trình duyệt mô phỏng kích thước màn hình, không được gọi là ảnh chụp điện thoại vật lý. Bộ kiểm thử kiểm tra khả năng đóng, focus và giữ ngữ cảnh danh sách [5]."
+  },
+  {
+    "kind": "ui",
+    "key": "qr",
+    "title": "Xem trước và xuất mã QR vị trí",
+    "description": "QR biểu diễn liên kết mở biểu mẫu theo vị trí đã được tạo. BQL có thể xem, tải hoặc in; ảnh minh họa dùng origin thử tạm thời và không phải mã đưa vào sử dụng. Mã in thật cần địa chỉ Web ổn định mà điện thoại truy cập được."
+  },
+  {
+    "kind": "ui",
+    "key": "xu-ly",
+    "title": "Chi tiết phản ánh và thao tác xử lý",
+    "description": "Màn chi tiết tập trung thông tin phản ánh, trạng thái và hành động theo vai trò. Luồng kiểm thử tạo phản ánh công khai, phân công KTV, nộp kết quả và nghiệm thu. Dữ liệu trong ảnh được tạo riêng cho kiểm thử, không phải hồ sơ khiếu nại thật."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "3.3.2. Kết quả phân hệ cư dân và giao diện di động"
+  },
+  {
+    "kind": "ui",
+    "key": "phan-anh",
+    "title": "Biểu mẫu phản ánh theo QR trên màn hình di động",
+    "description": "Vị trí đã được nhận diện từ token được hiển thị phía trên biểu mẫu. Người gửi nhập nội dung, thông tin liên hệ và ảnh; không cần cài ứng dụng riêng. Ảnh này minh họa form ở viewport 375 px, không chứng minh đã thử camera thật hoặc đã gửi dữ liệu qua backend."
+  },
+  {
+    "kind": "ui",
+    "key": "vietqr",
+    "title": "Cửa sổ thanh toán và mã VietQR trong luồng kiểm thử",
+    "description": "Màn hình hiển thị tổng số tiền và QR từ thông tin hóa đơn được phép xem. QR phục vụ nhập thông tin chuyển khoản; thao tác đọc hoặc quét không xác nhận tiền đã đến tài khoản. Thông tin nhận tiền trong hình thuộc dữ liệu thử và không được dùng để thanh toán thật."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Ngoài các màn hình minh họa, mã nguồn có thông báo/biên nhận đọc, báo cáo công nợ và thu phí, bảo trì thiết bị, đặt lịch tiện ích, quỹ và trao đổi dữ liệu Excel/PDF. Mỗi phần dùng các route và kiểm tra nghiệp vụ riêng. Các phần mở rộng này được kiểm thử trong bộ tích hợp, nhưng không biến phạm vi đề tài thành một giải pháp kế toán, hệ thống ngân hàng hoặc sản phẩm nhiều chung cư."
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "3.4. KIỂM THỬ HỆ THỐNG VÀ ĐÁNH GIÁ"
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "3.4.1. Phương pháp, dữ liệu và kết quả chạy lại"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Kiểm chứng được chia thành bốn mức. Build kiểm tra tạo bản dựng frontend. Bộ backend kiểm tra nghiệp vụ trên MySQL riêng. Bộ UI dùng API giả lập để thử cửa sổ, ảnh, camera giả và trạng thái lỗi. Bộ end-to-end (E2E) chạy trình duyệt cùng backend để kiểm các luồng tích hợp. Các bộ dùng database được chạy tuần tự, không cùng ghi một bộ dữ liệu thử."
+  },
+  {
+    "kind": "paragraph",
+    "text": "API giả lập (fixture) cho phép chủ động tạo phản hồi thành công, chờ hoặc hết phiên. Kết quả UI đạt không đủ khẳng định database đã lưu đúng. Ngược lại, test service đạt không bảo đảm mọi màn hình dùng được trên thiết bị. Playwright mô phỏng viewport và điều kiện trình duyệt, nhưng không thay thế cảm biến ảnh, ống kính và môi trường ánh sáng thực [5]."
+  },
+  {
+    "kind": "table",
+    "title": "Kết quả kiểm chứng tự động ngày 17/11/2026",
+    "headers": [
+      "Nhóm",
+      "Lệnh / phạm vi",
+      "Kết quả thực tế",
+      "Giới hạn"
+    ],
+    "rows": [
+      [
+        "Bản dựng",
+        "npm run build",
+        "Thành công; 171 mô-đun; có cảnh báo chunk > 500 kB",
+        "Không xác nhận nghiệp vụ hoặc tốc độ tải trên mạng thật"
+      ],
+      [
+        "Backend/MySQL",
+        "npm test",
+        "227/227 đạt; 0 bỏ qua",
+        "Dữ liệu thử, không phải nghiệm thu chung cư thực tế"
+      ],
+      [
+        "UI với fixture",
+        "npm run test:ui",
+        "48/48 đạt",
+        "Không dùng database; có camera/ảnh giả lập"
+      ],
+      [
+        "E2E",
+        "npm run test:e2e",
+        "95/96 đạt; 1 quá thời gian chờ tải Excel",
+        "Có một lần timeout; không phải thử QR vật lý đa máy"
+      ],
+      [
+        "Chạy lại xuất tệp",
+        "report-exports.spec.js",
+        "2/2 đạt ở 1440 và 375 px",
+        "Giữ cả log lần đầu để theo dõi độ ổn định"
+      ]
+    ],
+    "source": "Nguồn: các log build.txt, backend-tests.txt, test-ui.txt và e2e-tests.txt được lưu kèm báo cáo. Không cộng số bài giữa các bộ vì có tình huống giao nhau."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Lần chạy E2E đầy đủ có 95 bài đạt và một bài chưa đạt do chờ sự kiện tải Excel quá 10 giây khi chuyển sang báo cáo thu phí ở viewport 1440 px. Kết quả này được giữ nguyên trong log, không đổi thành đạt. Phạm vi lỗi nằm ở lần tải xuống; chưa đủ bằng chứng kết luận đó là lỗi sản phẩm hay vấn đề thời điểm kiểm thử. Khi chạy lại riêng report-exports.spec.js, cả hai cấu hình 1440 px và 375 px đều đạt (2/2). Kết quả chạy lại không xóa lần timeout đầu; cần tiếp tục theo dõi tính ổn định của thao tác tải xuống. Build hoàn thành trong môi trường kiểm chứng, đồng thời Vite cảnh báo một chunk sau minify lớn hơn 500 kB. Đây là điểm cần tối ưu tải, không bị che bằng việc chỉ ghi “build đạt”. Bộ backend kiểm tra ràng buộc, quyền, thử lại, giao dịch và một số cạnh tranh đồng thời. Kết quả không xác lập một SLA hoặc chứng nhận an toàn thông tin cho môi trường production."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "3.4.2. Ma trận kiểm thử chức năng và ngoại lệ"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Các bảng sau chọn các tình huống đại diện để truy vết đủ nhóm yêu cầu chính. “Đạt” là kết quả tự động của bộ kiểm thử được chỉ ra, không phải xác nhận sử dụng của cư dân. Danh sách đầy đủ tên bài và kết quả nằm trong log; không dùng số lượng ca đại diện trong bảng để thay số lượng bài đã chạy."
+  },
+  {
+    "kind": "table",
+    "title": "Kiểm thử nhóm tài khoản, dữ liệu nền và tiếp nhận",
+    "headers": [
+      "Mã",
+      "Chức năng",
+      "Đầu vào",
+      "Mong đợi",
+      "Thực tế",
+      "Trạng thái"
+    ],
+    "rows": [
+      [
+        "KT01",
+        "CN01: đăng nhập",
+        "Tài khoản đúng/sai",
+        "Đúng được vào; sai bị từ chối",
+        "Đúng kỳ vọng (backend)",
+        "Đạt"
+      ],
+      [
+        "KT02",
+        "CN01: thu hồi phiên",
+        "Khóa/đổi mật khẩu/đăng xuất",
+        "Token cũ mất quyền",
+        "Đúng kỳ vọng (backend)",
+        "Đạt"
+      ],
+      [
+        "KT03",
+        "CN02: cấu trúc",
+        "Khối/tầng chưa có căn",
+        "Sơ đồ vẫn giữ mục rỗng",
+        "Đúng kỳ vọng (backend/E2E)",
+        "Đạt"
+      ],
+      [
+        "KT04",
+        "CN03: cư trú",
+        "Chuyển căn/kết thúc đợt",
+        "Giữ lịch sử; thu hồi scope cũ",
+        "Đúng kỳ vọng (backend)",
+        "Đạt"
+      ],
+      [
+        "KT05",
+        "CN03: bàn giao",
+        "Đổi người phụ trách căn",
+        "Phiên cũ mất hiệu lực",
+        "Đúng kỳ vọng (backend/E2E)",
+        "Đạt"
+      ],
+      [
+        "KT06",
+        "CN04: phương tiện",
+        "Đăng ký/chuyển xe qua kỳ chốt",
+        "Không sửa nguồn đã chốt",
+        "Đúng kỳ vọng (backend)",
+        "Đạt"
+      ],
+      [
+        "KT07",
+        "CN05: QR",
+        "Tạo, đổi liên kết, thay token",
+        "Snapshot cũ giữ; mã cũ thu hồi",
+        "Đúng kỳ vọng (backend/E2E)",
+        "Đạt"
+      ],
+      [
+        "KT08",
+        "CN06: phản ánh",
+        "QR hợp lệ + nội dung + ảnh",
+        "Lưu một phản ánh và biên nhận",
+        "Đúng kỳ vọng (backend/E2E)",
+        "Đạt"
+      ],
+      [
+        "KT09",
+        "CN06: gửi lại",
+        "Cùng khóa, cùng nội dung",
+        "Trả kết quả cũ, không thêm bản",
+        "Đúng kỳ vọng (backend)",
+        "Đạt"
+      ],
+      [
+        "KT10",
+        "CN06: nội dung đổi",
+        "Cùng khóa, khác nội dung",
+        "Từ chối xung đột",
+        "Đúng kỳ vọng (backend)",
+        "Đạt"
+      ],
+      [
+        "KT11",
+        "CN06: giới hạn",
+        "Quá số lần gửi theo SĐT/IP",
+        "Từ chối; replay không tính thêm",
+        "Đúng kỳ vọng (backend)",
+        "Đạt"
+      ],
+      [
+        "KT12",
+        "CN07: phân công",
+        "BQL giao và giao lại KTV",
+        "Người cũ mất quyền ngay",
+        "Đúng kỳ vọng (backend/E2E)",
+        "Đạt"
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "table",
+    "title": "Kiểm thử xử lý, tài chính, thông báo và giao diện",
+    "headers": [
+      "Mã",
+      "Chức năng",
+      "Đầu vào",
+      "Mong đợi",
+      "Thực tế",
+      "Trạng thái"
+    ],
+    "rows": [
+      [
+        "KT13",
+        "CN07: hoàn thành",
+        "Thiếu ảnh mới của lượt xử lý",
+        "Không nhận hoàn thành",
+        "Đúng kỳ vọng (backend)",
+        "Đạt"
+      ],
+      [
+        "KT14",
+        "CN07: nghiệm thu",
+        "Nộp kết quả, trả lại, nộp lại",
+        "Đúng lượt và đúng trạng thái",
+        "Đúng kỳ vọng (backend/E2E)",
+        "Đạt"
+      ],
+      [
+        "KT15",
+        "CN08: công khai",
+        "Mã riêng + SĐT đúng/sai",
+        "Đúng trả whitelist; sai không lộ",
+        "Đúng kỳ vọng (backend/E2E)",
+        "Đạt"
+      ],
+      [
+        "KT16",
+        "CN09: hóa đơn",
+        "Căn/kỳ đã có bản hiệu lực",
+        "Không tạo hóa đơn trùng",
+        "Đúng kỳ vọng (backend)",
+        "Đạt"
+      ],
+      [
+        "KT17",
+        "CN09: giá đổi",
+        "Nguồn thay sau lập nháp",
+        "Chặn duyệt dữ liệu cũ",
+        "Đúng kỳ vọng (backend)",
+        "Đạt"
+      ],
+      [
+        "KT18",
+        "CN09: lô lỗi",
+        "Một hóa đơn trong lô sai",
+        "Rollback toàn bộ lần xác nhận",
+        "Đúng kỳ vọng (backend)",
+        "Đạt"
+      ],
+      [
+        "KT19",
+        "CN10: quyền hóa đơn",
+        "Cư dân chuyển đi; ID trực tiếp",
+        "Không đọc hóa đơn ngoài scope",
+        "Đúng kỳ vọng (backend/E2E)",
+        "Đạt"
+      ],
+      [
+        "KT20",
+        "CN10–11: VietQR",
+        "Xem QR, xác nhận thu có quyền",
+        "Xem không đổi trạng thái thu",
+        "Đúng kỳ vọng (backend/E2E)",
+        "Đạt"
+      ],
+      [
+        "KT21",
+        "CN11: báo cáo",
+        "Nhiều dòng chi tiết/đồng chủ",
+        "Không nhân tổng; snapshot đúng",
+        "Đúng kỳ vọng (backend)",
+        "Đạt"
+      ],
+      [
+        "KT22",
+        "CN12: thông báo",
+        "Phát hành/thu hồi/đánh dấu đọc",
+        "Đúng người nhận và receipt",
+        "Đúng kỳ vọng (backend/E2E)",
+        "Đạt"
+      ],
+      [
+        "KT23",
+        "PC02: lỗi nhật ký",
+        "Cố ý gây lỗi audit",
+        "Trạng thái và lịch sử rollback",
+        "Đúng kỳ vọng (backend)",
+        "Đạt"
+      ],
+      [
+        "KT24",
+        "PC03–04: cửa sổ",
+        "Esc, focus, chờ ghi, hết phiên",
+        "Đóng đúng; không lộ bản ghi cũ",
+        "Đúng kỳ vọng (UI)",
+        "Đạt"
+      ],
+      [
+        "KT25",
+        "PC05: ảnh",
+        "Ảnh lớn, MIME thiếu, đang giải mã",
+        "Thu nhỏ đúng; chặn gửi sớm",
+        "Đúng kỳ vọng (UI/backend)",
+        "Đạt"
+      ],
+      [
+        "KT26",
+        "PC06: camera giả",
+        "Cho phép/từ chối; rời form",
+        "Giữ nội dung; dừng stream",
+        "Đúng kỳ vọng (UI)",
+        "Đạt"
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Các phần mở rộng có kiểm thử riêng về đặt lịch trùng, thu/chi quỹ, bảo trì, nhập theo lô và xuất tệp. Phạm vi chứng minh là những điều kiện có trong bài kiểm thử. Báo cáo không suy ra rằng mọi tình huống thực tế đều đã được thử, cũng không coi số lượng test là tỷ lệ lỗi còn lại của sản phẩm."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "3.4.3. Thử nghiệm quét QR đa thiết bị và trình duyệt"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Đề cương yêu cầu thử QR trên nhiều thiết bị Android và các trình duyệt Chrome, Edge, Cốc Cốc. Bộ tài liệu hiện có chưa chứa nhật ký thí nghiệm, video hoặc số đo camera vật lý để xác nhận các phép thử đó. Vì vậy chưa thể báo cáo thời gian nhận diện, tỷ lệ thành công hoặc kết luận tương thích cho từng máy. Các ô trong bảng sau ghi rõ “Chưa đo”, không điền số giả hoặc dùng số 0 thay cho dữ liệu chưa có."
+  },
+  {
+    "kind": "table",
+    "title": "Tình trạng thực nghiệm QR trên thiết bị vật lý",
+    "headers": [
+      "Thiết bị / trình duyệt",
+      "Điều kiện cần ghi",
+      "Số lần / thời gian / tỷ lệ",
+      "Trạng thái"
+    ],
+    "rows": [
+      [
+        "Android + Chrome",
+        "Model, Android, bản Chrome, camera, HTTPS, ánh sáng",
+        "Chưa đo",
+        "Chưa có bằng chứng"
+      ],
+      [
+        "Android + Edge",
+        "Model, Android, bản Edge, camera, HTTPS, ánh sáng",
+        "Chưa đo",
+        "Chưa có bằng chứng"
+      ],
+      [
+        "Android + Cốc Cốc",
+        "Model, Android, bản Cốc Cốc, camera, HTTPS, ánh sáng",
+        "Chưa đo",
+        "Chưa có bằng chứng"
+      ],
+      [
+        "Camera hệ điều hành → Web",
+        "Model, ứng dụng camera, trình duyệt mở liên kết",
+        "Chưa đo",
+        "Chưa có bằng chứng"
+      ]
+    ],
+    "source": "Nguồn: đối chiếu yêu cầu đề cương với bộ bằng chứng bàn giao. Không phải bảng kết quả đo đã hoàn thành."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Một quy trình đo có thể lặp lại là dùng cùng QR in, cùng khoảng cách và ánh sáng; mỗi cấu hình thực hiện ít nhất 20 lượt độc lập. Ghi thời gian từ khi đưa QR vào vùng nhìn đến khi nhận chuỗi, ghi riêng thời gian Web tải biểu mẫu. Tỷ lệ nhận diện bằng số lượt nhận đúng chia số lượt đã thử; thời gian tổng hợp dùng trung vị và nêu cả lượt thất bại. Đây là phương án thực nghiệm đề xuất, chưa phải số liệu thực hiện."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Cần thử thêm từ chối quyền, cấp lại quyền, chuyển camera, QR đã vô hiệu và liên kết không thuộc hệ thống. Trình duyệt tích hợp trong ứng dụng chat phải được coi là cấu hình riêng. Tài liệu thư viện công bố phạm vi hỗ trợ [3] và tài liệu camera mô tả điều kiện cấp quyền [6], nhưng hai nguồn đó không thay chứng cứ sản phẩm chạy trên máy cụ thể."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "3.4.4. Đối chiếu mục tiêu, hạn chế và đánh giá chung"
+  },
+  {
+    "kind": "table",
+    "title": "Mức độ đáp ứng mục tiêu đề cương",
+    "headers": [
+      "Mục tiêu",
+      "Bằng chứng",
+      "Đánh giá"
+    ],
+    "rows": [
+      [
+        "Web BQL và cư dân",
+        "Mã React/Express, ảnh và E2E",
+        "Đã hiện thực trong môi trường thử"
+      ],
+      [
+        "QR tự nhận vị trí, gửi ảnh không bắt buộc đăng nhập",
+        "API công khai, form, thử luồng tích hợp",
+        "Đã hiện thực; camera thật đa máy chưa xác nhận"
+      ],
+      [
+        "Phân công, KTV xử lý, BQL nghiệm thu",
+        "Trạng thái, nhật ký và test quyền/ảnh",
+        "Đã kiểm chứng tự động theo tình huống"
+      ],
+      [
+        "Căn hộ/cư dân/phương tiện",
+        "Schema, màn quản lý, test cư trú và bàn giao",
+        "Đã hiện thực"
+      ],
+      [
+        "Phí/chỉ số/hóa đơn/VietQR",
+        "Service tiền, snapshot, API và E2E",
+        "Đã hiện thực; không đối soát ngân hàng tự động"
+      ],
+      [
+        "Thông báo tòa nhà",
+        "Phát hành, hộp Web, receipt",
+        "Đã hiện thực; không email/SMS/push"
+      ],
+      [
+        "Mockup Figma và Postman",
+        "Chưa có tệp thiết kế/collection bàn giao",
+        "Chưa đủ bằng chứng sản phẩm công cụ"
+      ],
+      [
+        "Thử QR Android nhiều trình duyệt",
+        "Chưa có nhật ký camera vật lý",
+        "Chưa hoàn thành phần đánh giá thực địa"
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Kết quả đáp ứng phần hiện thực các chức năng cốt lõi trong môi trường kiểm thử, với kiểm soát quyền, giao dịch và lịch sử được kiểm tra tự động. Giá trị thực tiễn kỳ vọng là tập trung phản ánh theo địa điểm và minh bạch trạng thái. Chưa có đo trước/sau tại một chung cư nên không kết luận hệ thống đã rút ngắn một tỷ lệ thời gian hoặc nâng mức hài lòng của cư dân."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Các hạn chế chính gồm một lần E2E tải Excel chưa đạt cần theo dõi, chưa thử camera vật lý đa cấu hình; chưa đo tải và thời gian phản hồi ở quy mô triển khai; chưa có nghiệm thu người dùng; chưa có tác vụ dọn ảnh mồ côi định kỳ; giới hạn IP trong bộ nhớ cần thiết kế lại khi chạy nhiều instance. Cũng cần thử sao lưu/khôi phục và giám sát vận hành trước khi dùng dài hạn. Các điểm này được đặt trong hướng phát triển, không thay thế bằng nhận xét “hệ thống hoàn thiện tuyệt đối”."
+  },
+  {
+    "kind": "heading",
+    "level": 1,
+    "text": "KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN"
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "1. KẾT QUẢ ĐẠT ĐƯỢC"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Đề tài đã xây dựng ứng dụng Web theo kiến trúc React – Express – MySQL cho một chung cư, nối dữ liệu căn hộ/cư trú, vị trí và thiết bị QR, tiếp nhận phản ánh, phân công xử lý, nghiệm thu, hóa đơn và thông báo. Các đường vào công khai được tách khỏi dữ liệu cần tài khoản; quyền KTV và cư dân được kiểm theo bản ghi tại máy chủ. Hóa đơn giữ snapshot và VietQR hỗ trợ thông tin chuyển khoản, phù hợp giới hạn không tích hợp cổng thanh toán."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Bằng chứng ngày 17/11/2026 gồm build thành công, 227 bài backend đạt, 48 bài UI fixture đạt và 95/96 bài E2E đạt; một lần tải Excel bị timeout. Những kết quả này xác nhận các tình huống trong môi trường thử, không chứng minh sản phẩm đã được triển khai và nghiệm thu tại chung cư. So với mục tiêu đề cương, phần hiện thực chính đã có; thực nghiệm camera thật trên nhiều thiết bị và đánh giá sử dụng còn thiếu bằng chứng."
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "2. KIẾN THỨC, KỸ NĂNG VÀ KINH NGHIỆM"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quá trình thực hiện củng cố cách chuyển bài toán nghiệp vụ thành yêu cầu, ca sử dụng, trạng thái và dữ liệu có ràng buộc. Thiết kế quan hệ cư trú cho thấy một trường “căn hộ hiện tại” không đủ để quyết định mọi quyền lịch sử; thiết kế hóa đơn cho thấy dữ liệu tài chính cần chốt nguồn thay vì đọc động từ đơn giá mới nhất. Việc mô hình hóa trước rồi đối chiếu lại mã nguồn giúp phát hiện khác biệt giữa sơ đồ phân tích và hiện thực."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Các kỹ năng thực hành trọng tâm gồm tổ chức component React, xây dựng API và middleware Express, truy vấn MySQL có giao dịch, chuẩn hóa ảnh, xử lý camera trình duyệt và viết kiểm thử có thể lặp lại. Kinh nghiệm kỹ thuật rút ra là luôn xem xét lỗi mạng, gửi lại và thao tác đồng thời; giữ lịch sử cùng giao dịch; phân biệt quyền hiển thị trên Web với quyền truy cập API. Tài liệu và ảnh minh họa cũng cần gắn với một phiên bản mã nguồn để tránh báo cáo mô tả sản phẩm đã thay đổi."
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "3. HẠN CHẾ VÀ ĐỀ XUẤT PHÁT TRIỂN"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Ưu tiên tiếp theo là hoàn tất ma trận QR vật lý theo đề cương, lưu phiên bản thiết bị/trình duyệt và số đo có thể kiểm tra. Sau đó cần thử tải với dữ liệu quy mô xác định, đo độ trễ và tài nguyên, tối ưu chunk frontend đang có cảnh báo, rồi kiểm tra sao lưu/khôi phục và dọn ảnh mồ côi. Việc đánh giá với người dùng thật cần tình huống sử dụng, tiêu chí rõ ràng và ghi nhận trung thực phản hồi."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Khi mở rộng vận hành, có thể bổ sung bộ giới hạn dùng chung giữa nhiều tiến trình, giám sát lỗi, chính sách lưu trữ và quy trình phục hồi. Email/SMS/push hoặc kết nối ngân hàng chỉ nên thực hiện như một phạm vi mới có yêu cầu, quyền truy cập và kiểm thử riêng. Mô hình nhiều chung cư cũng cần thiết kế phân vùng dữ liệu từ đầu; không chỉ thêm một lựa chọn giao diện vào schema hiện tại."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Đề tài tạo được nền tảng quản lý và theo dõi phản ánh gắn vị trí trên Web. Việc bàn giao mã nguồn, sơ đồ chỉnh sửa được, từ điển dữ liệu và bằng chứng kiểm thử giúp tiếp tục phát triển và rà soát. Kết quả cuối cùng cần được bổ sung thực nghiệm thiết bị và xác nhận thực tế trước khi xem là đủ điều kiện triển khai vận hành dài hạn."
+  },
+  {
+    "kind": "heading",
+    "level": 1,
+    "text": "PHỤ LỤC"
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "PHỤ LỤC 1. HƯỚNG DẪN SỬ DỤNG VÀ TÁI KIỂM CHỨNG"
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL1.1. Quy trình sử dụng theo vai trò"
+  },
+  {
+    "kind": "table",
+    "title": "Quy trình thao tác Ban quản lý",
+    "headers": [
+      "Bước",
+      "Thao tác",
+      "Điểm cần kiểm tra"
+    ],
+    "rows": [
+      [
+        "1",
+        "Đăng nhập; khai báo khối/tầng/căn",
+        "Đúng cấu trúc, diện tích, căn không trùng"
+      ],
+      [
+        "2",
+        "Thêm cư dân, mở đợt ở và quản lý tài khoản",
+        "Đúng ngày/quan hệ; bàn giao mật khẩu riêng"
+      ],
+      [
+        "3",
+        "Khai báo thiết bị và vị trí QR",
+        "Đúng loại, thiết bị và địa chỉ Web"
+      ],
+      [
+        "4",
+        "Mở Xem QR, tải hoặc in",
+        "Thử liên kết bằng điện thoại trước khi dán"
+      ],
+      [
+        "5",
+        "Tiếp nhận phản ánh và phân công",
+        "Chọn KTV còn hoạt động; kiểm phiên bản"
+      ],
+      [
+        "6",
+        "Nghiệm thu kết quả KTV",
+        "Kiểm ảnh và kết quả; trả lại cần lý do"
+      ],
+      [
+        "7",
+        "Cấu hình phí, chốt chỉ số, lập/duyệt/gửi",
+        "Đúng kỳ/giá và thông tin nhận tiền"
+      ],
+      [
+        "8",
+        "Đối soát rồi xác nhận thu",
+        "Đủ số tiền và mã tham chiếu; không chỉ dựa QR"
+      ],
+      [
+        "9",
+        "Phát hành thông báo, xem báo cáo",
+        "Kiểm đối tượng nhận và kỳ lọc"
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "table",
+    "title": "Quy trình cư dân và kỹ thuật viên",
+    "headers": [
+      "Vai trò",
+      "Trình tự",
+      "Lưu ý"
+    ],
+    "rows": [
+      [
+        "Người gửi công khai",
+        "Quét QR → kiểm vị trí → nhập nội dung/ảnh → gửi → lưu mã",
+        "Giữ mã tra cứu riêng; không chia sẻ ảnh/định danh người khác"
+      ],
+      [
+        "Cư dân có tài khoản",
+        "Đăng nhập → xem hóa đơn/thông báo/phản ánh được phép",
+        "Đọc VietQR không xác nhận thanh toán; thông báo có đánh dấu đọc riêng"
+      ],
+      [
+        "KTV",
+        "Đăng nhập → mở việc được giao → bắt đầu → nộp kết quả/ảnh",
+        "Ảnh mới theo lượt; giao lại công việc làm thay đổi quyền"
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL1.2. Chạy lại kiểm thử và đọc bằng chứng"
+  },
+  {
+    "kind": "code",
+    "title": "Các lệnh kiểm chứng dùng trong báo cáo",
+    "text": "npm run build\nnpm run test:ui\n# Hai bộ sau dùng database chung_cu_test; chạy lần lượt:\nnpm test\nnpm run test:e2e"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Thư mục kiem-chung đi kèm lưu đầu ra của bốn lệnh cùng thông tin nguồn. Khi chạy lại, số bài có thể thay đổi theo phiên bản mã nguồn; cần ghi commit và ngày kiểm tra mới. Không dùng database chứa dữ liệu làm việc cho test. Để cập nhật mục lục, mở Word trên máy có Times New Roman, chọn toàn bộ rồi Update Field/Update entire table và kiểm tra lại phân trang trước khi in."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tệp sơ đồ chỉnh sửa được nằm trong docs/so-do-theo-mau-2026-11-17. Hình 2.15 vẫn là một ERD duy nhất gồm 18 bảng trọng tâm; khi cần đọc tên thuộc tính hãy mở PDF vector/SVG hoặc draw.io riêng. Không coi các đoạn phóng to trong phần mềm xem ảnh là những ERD phân hệ độc lập. Từ điển dưới đây bổ sung đủ các bảng vật lý không vẽ trên hình."
+  },
+  {
+    "kind": "heading",
+    "level": 2,
+    "text": "PHỤ LỤC 2. TỪ ĐIỂN DỮ LIỆU ĐẦY ĐỦ"
+  },
+  {
+    "kind": "paragraph",
+    "text": "Các bảng sau được sinh từ từ điển metadata của schema hiện tại và đối chiếu mô hình đã xuất: 31 bảng, 362 cột, 81 ràng buộc khóa ngoại. PK là khóa chính; FK là khóa ngoại; “Có/Không” chỉ khả năng nhận NULL. Các cột trong khóa ghép được đánh dấu thành viên; dòng quan hệ sau bảng giữ đúng tổ hợp. Ký hiệu trong bảng từ điển phục vụ tra cứu kỹ thuật; hình ERD vẫn dùng quy ước gạch chân theo mẫu."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.1. can_ho"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng can_ho",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_can_ho",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "so_can_ho",
+        "varchar(20)",
+        "Không",
+        "—"
+      ],
+      [
+        "khoi",
+        "varchar(10)",
+        "Không",
+        "FK → tang_toa_nha.khoi (ghép)"
+      ],
+      [
+        "tang",
+        "smallint unsigned",
+        "Không",
+        "FK → tang_toa_nha.tang (ghép)"
+      ],
+      [
+        "dien_tich_m2",
+        "decimal(8,2)",
+        "Không",
+        "—"
+      ],
+      [
+        "tinh_phi_dich_vu",
+        "tinyint(1)",
+        "Không",
+        "—"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_tao",
+        "datetime",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (so_can_ho)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (khoi, tang) → tang_toa_nha(khoi, tang)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.2. cau_hinh_phi"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng cau_hinh_phi",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_cau_hinh_phi",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "loai_phi",
+        "varchar(30)",
+        "Không",
+        "FK → loai_phi.loai_phi"
+      ],
+      [
+        "don_gia",
+        "decimal(12,2)",
+        "Không",
+        "—"
+      ],
+      [
+        "tu_ngay",
+        "date",
+        "Không",
+        "—"
+      ],
+      [
+        "den_ngay",
+        "date",
+        "Có",
+        "—"
+      ],
+      [
+        "ma_nguoi_tao",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ngay_tao",
+        "datetime",
+        "Không",
+        "—"
+      ],
+      [
+        "cach_tinh",
+        "enum('DON_GIA','BAC_THANG')",
+        "Không",
+        "—"
+      ],
+      [
+        "thue_gtgt",
+        "decimal(5,2)",
+        "Không",
+        "—"
+      ],
+      [
+        "bac_dien",
+        "json",
+        "Có",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (loai_phi, tu_ngay)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (loai_phi) → loai_phi(loai_phi); (ma_nguoi_tao) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.3. chi_so_dich_vu"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng chi_so_dich_vu",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_chi_so_dich_vu",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ma_can_ho",
+        "int unsigned",
+        "Không",
+        "FK → can_ho.ma_can_ho"
+      ],
+      [
+        "loai_dich_vu",
+        "enum('DIEN','NUOC')",
+        "Không",
+        "—"
+      ],
+      [
+        "ky_thanh_toan",
+        "char(7)",
+        "Không",
+        "—"
+      ],
+      [
+        "chi_so_cu",
+        "decimal(12,3)",
+        "Không",
+        "—"
+      ],
+      [
+        "chi_so_moi",
+        "decimal(12,3)",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_chot",
+        "date",
+        "Không",
+        "—"
+      ],
+      [
+        "ghi_chu",
+        "varchar(255)",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_nguoi_ghi",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_ghi",
+        "datetime",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (ma_can_ho, loai_dich_vu, ky_thanh_toan)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_can_ho) → can_ho(ma_can_ho); (ma_nguoi_ghi) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.4. chi_tiet_hoa_don"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng chi_tiet_hoa_don",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_chi_tiet_hoa_don",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ma_hoa_don",
+        "int unsigned",
+        "Không",
+        "FK → hoa_don.ma_hoa_don"
+      ],
+      [
+        "ma_cau_hinh_phi",
+        "int unsigned",
+        "Không",
+        "FK → cau_hinh_phi.ma_cau_hinh_phi"
+      ],
+      [
+        "ma_chi_so_dich_vu",
+        "int unsigned",
+        "Có",
+        "FK → chi_so_dich_vu.ma_chi_so_dich_vu"
+      ],
+      [
+        "loai_phi",
+        "varchar(30)",
+        "Không",
+        "—"
+      ],
+      [
+        "dien_giai",
+        "varchar(255)",
+        "Không",
+        "—"
+      ],
+      [
+        "don_vi_tinh",
+        "varchar(20)",
+        "Không",
+        "—"
+      ],
+      [
+        "so_luong",
+        "decimal(12,3)",
+        "Không",
+        "—"
+      ],
+      [
+        "don_gia",
+        "decimal(16,2)",
+        "Không",
+        "—"
+      ],
+      [
+        "thanh_tien",
+        "decimal(14,0)",
+        "Không",
+        "—"
+      ],
+      [
+        "du_lieu_nguon",
+        "json",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_hoa_don) → hoa_don(ma_hoa_don); (ma_cau_hinh_phi) → cau_hinh_phi(ma_cau_hinh_phi); (ma_chi_so_dich_vu) → chi_so_dich_vu(ma_chi_so_dich_vu)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.5. chung_tu_thu_chi"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng chung_tu_thu_chi",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_chung_tu",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ma_phieu",
+        "int unsigned",
+        "Không",
+        "FK → phieu_thu_chi.ma_phieu"
+      ],
+      [
+        "ten_tep",
+        "varchar(120)",
+        "Không",
+        "—"
+      ],
+      [
+        "loai_tep",
+        "enum('image/jpeg','application/pdf')",
+        "Không",
+        "—"
+      ],
+      [
+        "kich_thuoc",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "bam_sha256",
+        "char(64)",
+        "Không",
+        "—"
+      ],
+      [
+        "noi_dung",
+        "mediumblob",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_nguoi_tai",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ngay_tao",
+        "datetime(6)",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (ma_phieu, bam_sha256)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_phieu) → phieu_thu_chi(ma_phieu); (ma_nguoi_tai) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.6. cu_dan"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng cu_dan",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_cu_dan",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ho_va_ten",
+        "varchar(100)",
+        "Không",
+        "—"
+      ],
+      [
+        "so_dien_thoai",
+        "varchar(15)",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_nguoi_dung",
+        "int unsigned",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_tao",
+        "datetime",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (ma_nguoi_dung)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_nguoi_dung) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.7. dat_lich_tien_ich"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng dat_lich_tien_ich",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_dat_lich",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ma_tien_ich",
+        "int unsigned",
+        "Không",
+        "FK → tien_ich.ma_tien_ich"
+      ],
+      [
+        "ma_can_ho",
+        "int unsigned",
+        "Không",
+        "FK → can_ho.ma_can_ho"
+      ],
+      [
+        "ma_nguoi_dat",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ma_cu_dan",
+        "int unsigned",
+        "Không",
+        "FK → cu_dan.ma_cu_dan"
+      ],
+      [
+        "ma_lich_su_cu_tru",
+        "int unsigned",
+        "Không",
+        "FK → lich_su_cu_tru.ma_lich_su_cu_tru"
+      ],
+      [
+        "ten_tien_ich",
+        "varchar(120)",
+        "Không",
+        "—"
+      ],
+      [
+        "vi_tri",
+        "varchar(160)",
+        "Không",
+        "—"
+      ],
+      [
+        "ten_nguoi_dat",
+        "varchar(100)",
+        "Không",
+        "—"
+      ],
+      [
+        "bat_dau",
+        "datetime",
+        "Không",
+        "—"
+      ],
+      [
+        "ket_thuc",
+        "datetime",
+        "Không",
+        "—"
+      ],
+      [
+        "so_nguoi",
+        "smallint unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ghi_chu",
+        "varchar(1000)",
+        "Không",
+        "—"
+      ],
+      [
+        "trang_thai",
+        "enum('CHO_DUYET','DA_DUYET','TU_CHOI','DA_HUY')",
+        "Không",
+        "—"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "khoa_yeu_cau",
+        "char(36)",
+        "Không",
+        "—"
+      ],
+      [
+        "van_tay",
+        "char(64)",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_tao",
+        "datetime(6)",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (khoa_yeu_cau)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_tien_ich) → tien_ich(ma_tien_ich); (ma_can_ho) → can_ho(ma_can_ho); (ma_nguoi_dat) → nguoi_dung(ma_nguoi_dung); (ma_cu_dan) → cu_dan(ma_cu_dan); (ma_lich_su_cu_tru) → lich_su_cu_tru(ma_lich_su_cu_tru)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.8. dot_lap_hoa_don"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng dot_lap_hoa_don",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_dot_lap",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ma_nguoi_lap",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "khoa_yeu_cau",
+        "char(36)",
+        "Không",
+        "—"
+      ],
+      [
+        "dau_vao_sha256",
+        "char(64)",
+        "Không",
+        "—"
+      ],
+      [
+        "ket_qua",
+        "json",
+        "Có",
+        "—"
+      ],
+      [
+        "ngay_tao",
+        "datetime(6)",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (ma_nguoi_lap, khoa_yeu_cau)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_nguoi_lap) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.9. dot_nhap_du_lieu"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng dot_nhap_du_lieu",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_dot_nhap",
+        "bigint unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ma_nguoi_nhap",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "khoa_yeu_cau",
+        "char(36)",
+        "Không",
+        "—"
+      ],
+      [
+        "phan_he",
+        "varchar(30)",
+        "Không",
+        "—"
+      ],
+      [
+        "sha256",
+        "char(64)",
+        "Không",
+        "—"
+      ],
+      [
+        "so_dong",
+        "smallint unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ket_qua",
+        "json",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_tao",
+        "datetime(6)",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (ma_nguoi_nhap, khoa_yeu_cau); (ma_nguoi_nhap, phan_he, sha256)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_nguoi_nhap) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.10. dot_xu_ly_hoa_don"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng dot_xu_ly_hoa_don",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_dot_xu_ly",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ma_nguoi_thuc_hien",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "khoa_yeu_cau",
+        "char(36)",
+        "Không",
+        "—"
+      ],
+      [
+        "thao_tac",
+        "enum('DUYET','GUI')",
+        "Không",
+        "—"
+      ],
+      [
+        "dau_vao_sha256",
+        "char(64)",
+        "Không",
+        "—"
+      ],
+      [
+        "ket_qua",
+        "json",
+        "Có",
+        "—"
+      ],
+      [
+        "ngay_tao",
+        "datetime(6)",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (ma_nguoi_thuc_hien, khoa_yeu_cau)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_nguoi_thuc_hien) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.11. gioi_han_gui"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng gioi_han_gui",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "khoa",
+        "char(64)",
+        "Không",
+        "PK"
+      ],
+      [
+        "cac_moc_thoi_gian",
+        "json",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.12. hinh_anh_phan_anh"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng hinh_anh_phan_anh",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_hinh_anh_phan_anh",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ma_phan_anh",
+        "int unsigned",
+        "Không",
+        "FK → phan_anh.ma_phan_anh"
+      ],
+      [
+        "duong_dan_tep",
+        "varchar(80)",
+        "Không",
+        "—"
+      ],
+      [
+        "loai",
+        "enum('PHAN_ANH','NGHIEM_THU')",
+        "Không",
+        "—"
+      ],
+      [
+        "luot_xu_ly",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_nguoi_tai_len",
+        "int unsigned",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ngay_tai_len",
+        "datetime",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (duong_dan_tep)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_phan_anh) → phan_anh(ma_phan_anh); (ma_nguoi_tai_len) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.13. hoa_don"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng hoa_don",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_hoa_don",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "so_hoa_don",
+        "varchar(25)",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_can_ho",
+        "int unsigned",
+        "Không",
+        "FK → can_ho.ma_can_ho"
+      ],
+      [
+        "ky_thanh_toan",
+        "char(7)",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_chot_phi",
+        "date",
+        "Không",
+        "—"
+      ],
+      [
+        "lan_lap",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "trang_thai",
+        "enum('NHAP','DA_DUYET','DA_GUI','DA_THANH_TOAN','HUY')",
+        "Không",
+        "—"
+      ],
+      [
+        "tinh_nuoc",
+        "tinyint(1)",
+        "Không",
+        "—"
+      ],
+      [
+        "tinh_dien",
+        "tinyint(1)",
+        "Không",
+        "—"
+      ],
+      [
+        "tinh_xe",
+        "tinyint(1)",
+        "Không",
+        "—"
+      ],
+      [
+        "tong_tien",
+        "decimal(14,0)",
+        "Không",
+        "—"
+      ],
+      [
+        "loi_du_lieu",
+        "json",
+        "Không",
+        "—"
+      ],
+      [
+        "dau_van_tay",
+        "char(64)",
+        "Không",
+        "—"
+      ],
+      [
+        "han_thanh_toan",
+        "date",
+        "Có",
+        "—"
+      ],
+      [
+        "ma_ngan_hang",
+        "char(6)",
+        "Không",
+        "—"
+      ],
+      [
+        "so_tai_khoan",
+        "varchar(30)",
+        "Không",
+        "—"
+      ],
+      [
+        "ten_nguoi_nhan",
+        "varchar(100)",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_hoa_don_thay_the_cho",
+        "int unsigned",
+        "Có",
+        "FK → hoa_don.ma_hoa_don"
+      ],
+      [
+        "ma_nguoi_lap",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ma_nguoi_duyet",
+        "int unsigned",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ma_nguoi_gui",
+        "int unsigned",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ma_nguoi_huy",
+        "int unsigned",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ma_nguoi_xac_nhan",
+        "int unsigned",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ngay_tao",
+        "datetime",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_duyet",
+        "datetime",
+        "Có",
+        "—"
+      ],
+      [
+        "ngay_gui",
+        "datetime",
+        "Có",
+        "—"
+      ],
+      [
+        "ngay_huy",
+        "datetime",
+        "Có",
+        "—"
+      ],
+      [
+        "ngay_thanh_toan",
+        "datetime",
+        "Có",
+        "—"
+      ],
+      [
+        "ly_do_huy",
+        "varchar(255)",
+        "Không",
+        "—"
+      ],
+      [
+        "so_tien_da_thu",
+        "decimal(14,0)",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_tham_chieu",
+        "varchar(100)",
+        "Có",
+        "—"
+      ],
+      [
+        "hieu_luc",
+        "tinyint",
+        "Có",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (so_hoa_don); (ma_can_ho, ky_thanh_toan, lan_lap); (ma_hoa_don_thay_the_cho); (ma_tham_chieu); (ma_can_ho, ky_thanh_toan, hieu_luc)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_can_ho) → can_ho(ma_can_ho); (ma_hoa_don_thay_the_cho) → hoa_don(ma_hoa_don); (ma_nguoi_lap) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_duyet) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_gui) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_huy) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_xac_nhan) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.14. khoi_toa_nha"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng khoi_toa_nha",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "khoi",
+        "varchar(10)",
+        "Không",
+        "PK"
+      ],
+      [
+        "ten_khoi",
+        "varchar(100)",
+        "Không",
+        "—"
+      ],
+      [
+        "mo_ta",
+        "varchar(255)",
+        "Không",
+        "—"
+      ],
+      [
+        "giu_khi_trong",
+        "tinyint(1)",
+        "Không",
+        "—"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_tao",
+        "datetime",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.15. lich_su_cu_tru"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng lich_su_cu_tru",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_lich_su_cu_tru",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ma_cu_dan",
+        "int unsigned",
+        "Không",
+        "FK → cu_dan.ma_cu_dan"
+      ],
+      [
+        "ma_can_ho",
+        "int unsigned",
+        "Không",
+        "FK → can_ho.ma_can_ho"
+      ],
+      [
+        "quan_he",
+        "enum('CHU_HO','THANH_VIEN','NGUOI_THUE')",
+        "Không",
+        "—"
+      ],
+      [
+        "tu_ngay",
+        "date",
+        "Không",
+        "—"
+      ],
+      [
+        "den_ngay",
+        "date",
+        "Có",
+        "—"
+      ],
+      [
+        "ma_nguoi_ghi_nhan",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ngay_tao",
+        "datetime",
+        "Không",
+        "—"
+      ],
+      [
+        "cu_dan_dang_o",
+        "int unsigned",
+        "Có",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (cu_dan_dang_o)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_cu_dan) → cu_dan(ma_cu_dan); (ma_can_ho) → can_ho(ma_can_ho); (ma_nguoi_ghi_nhan) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.16. loai_phi"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng loai_phi",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "loai_phi",
+        "varchar(30)",
+        "Không",
+        "PK"
+      ],
+      [
+        "ten_phi",
+        "varchar(80)",
+        "Không",
+        "—"
+      ],
+      [
+        "don_vi_tinh",
+        "varchar(20)",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.17. nguoi_dung"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng nguoi_dung",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_nguoi_dung",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ho_va_ten",
+        "varchar(100)",
+        "Không",
+        "—"
+      ],
+      [
+        "so_dien_thoai",
+        "varchar(15)",
+        "Có",
+        "—"
+      ],
+      [
+        "mat_khau_ma_hoa",
+        "varchar(255)",
+        "Không",
+        "—"
+      ],
+      [
+        "vai_tro",
+        "enum('QUAN_TRI_VIEN','KY_THUAT_VIEN','CU_DAN')",
+        "Không",
+        "—"
+      ],
+      [
+        "chuyen_mon",
+        "varchar(100)",
+        "Không",
+        "—"
+      ],
+      [
+        "dang_hoat_dong",
+        "tinyint(1)",
+        "Không",
+        "—"
+      ],
+      [
+        "phien_ban_token",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "so_lan_dang_nhap_sai",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "khoa_den_luc",
+        "datetime",
+        "Có",
+        "—"
+      ],
+      [
+        "ngay_tao",
+        "datetime",
+        "Không",
+        "—"
+      ],
+      [
+        "ten_dang_nhap",
+        "varchar(30)",
+        "Có",
+        "—"
+      ],
+      [
+        "ma_can_ho_thanh_toan",
+        "int unsigned",
+        "Có",
+        "FK → can_ho.ma_can_ho"
+      ],
+      [
+        "ma_cu_dan_phu_trach",
+        "int unsigned",
+        "Có",
+        "FK → cu_dan.ma_cu_dan"
+      ],
+      [
+        "phien_ban_ban_giao",
+        "int unsigned",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (so_dien_thoai); (ten_dang_nhap); (ma_can_ho_thanh_toan); (ma_cu_dan_phu_trach)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_can_ho_thanh_toan) → can_ho(ma_can_ho); (ma_cu_dan_phu_trach) → cu_dan(ma_cu_dan)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.18. phan_anh"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng phan_anh",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_phan_anh",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ma_tra_cuu",
+        "char(64)",
+        "Không",
+        "—"
+      ],
+      [
+        "khoa_yeu_cau",
+        "char(36)",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_vi_tri_qr",
+        "int unsigned",
+        "Không",
+        "FK → vi_tri_qr.ma_vi_tri_qr"
+      ],
+      [
+        "ma_nguoi_gui",
+        "int unsigned",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ten_nguoi_gui",
+        "varchar(100)",
+        "Không",
+        "—"
+      ],
+      [
+        "so_dien_thoai_nguoi_gui",
+        "varchar(15)",
+        "Không",
+        "—"
+      ],
+      [
+        "can_ho_khai_bao",
+        "varchar(40)",
+        "Không",
+        "—"
+      ],
+      [
+        "tieu_de",
+        "varchar(150)",
+        "Không",
+        "—"
+      ],
+      [
+        "noi_dung",
+        "text",
+        "Không",
+        "—"
+      ],
+      [
+        "loai_su_co",
+        "enum('DIEN','NUOC','THANG_MAY','VE_SINH','AN_NINH','KHAC')",
+        "Không",
+        "—"
+      ],
+      [
+        "do_uu_tien",
+        "enum('THAP','TRUNG_BINH','CAO','KHAN_CAP')",
+        "Không",
+        "—"
+      ],
+      [
+        "trang_thai",
+        "enum('MOI','DA_PHAN_CONG','DANG_XU_LY','DA_XU_LY','DA_DONG','TU_CHOI','TRUNG')",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_ky_thuat_vien",
+        "int unsigned",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ma_phan_anh_goc",
+        "int unsigned",
+        "Có",
+        "FK → phan_anh.ma_phan_anh"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "luot_xu_ly",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_tao",
+        "datetime",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_dong",
+        "datetime",
+        "Có",
+        "—"
+      ],
+      [
+        "ma_thiet_bi",
+        "int unsigned",
+        "Có",
+        "FK → thiet_bi.ma_thiet_bi"
+      ],
+      [
+        "ma_tai_san_luc_gui",
+        "varchar(30)",
+        "Có",
+        "—"
+      ],
+      [
+        "ten_thiet_bi_luc_gui",
+        "varchar(150)",
+        "Có",
+        "—"
+      ],
+      [
+        "vi_tri_thiet_bi_luc_gui",
+        "varchar(160)",
+        "Có",
+        "—"
+      ],
+      [
+        "ma_cu_dan_nguoi_gui",
+        "int unsigned",
+        "Có",
+        "FK → cu_dan.ma_cu_dan"
+      ],
+      [
+        "gui_tu_tai_khoan_can_ho",
+        "tinyint(1)",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (ma_tra_cuu); (khoa_yeu_cau)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_thiet_bi) → thiet_bi(ma_thiet_bi); (ma_cu_dan_nguoi_gui) → cu_dan(ma_cu_dan); (ma_vi_tri_qr) → vi_tri_qr(ma_vi_tri_qr); (ma_nguoi_gui) → nguoi_dung(ma_nguoi_dung); (ma_ky_thuat_vien) → nguoi_dung(ma_nguoi_dung); (ma_phan_anh_goc) → phan_anh(ma_phan_anh)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.19. phieu_bao_tri"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng phieu_bao_tri",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_phieu_bao_tri",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ma_thiet_bi",
+        "int unsigned",
+        "Không",
+        "FK → thiet_bi.ma_thiet_bi"
+      ],
+      [
+        "loai",
+        "enum('DINH_KY','DOT_XUAT')",
+        "Không",
+        "—"
+      ],
+      [
+        "tieu_de",
+        "varchar(180)",
+        "Không",
+        "—"
+      ],
+      [
+        "noi_dung",
+        "varchar(2000)",
+        "Không",
+        "—"
+      ],
+      [
+        "ten_thiet_bi_luc_lap",
+        "varchar(150)",
+        "Không",
+        "—"
+      ],
+      [
+        "vi_tri_luc_lap",
+        "varchar(160)",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_lap",
+        "date",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_den_han",
+        "date",
+        "Không",
+        "—"
+      ],
+      [
+        "chu_ky_ngay",
+        "smallint unsigned",
+        "Có",
+        "—"
+      ],
+      [
+        "do_uu_tien",
+        "enum('THUONG','CAO','KHAN_CAP')",
+        "Không",
+        "—"
+      ],
+      [
+        "trang_thai",
+        "enum('MOI','DA_PHAN_CONG','DANG_THUC_HIEN','CHO_NGHIEM_THU','HOAN_THANH','HUY')",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_ky_thuat_vien",
+        "int unsigned",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ma_nguoi_lap",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ma_nguoi_nghiem_thu",
+        "int unsigned",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ma_nguoi_huy",
+        "int unsigned",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "luot_thuc_hien",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_thuc_hien",
+        "date",
+        "Có",
+        "—"
+      ],
+      [
+        "ket_qua",
+        "text",
+        "Không",
+        "—"
+      ],
+      [
+        "nhan_xet_nghiem_thu",
+        "varchar(1000)",
+        "Không",
+        "—"
+      ],
+      [
+        "ly_do_huy",
+        "varchar(500)",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_tao",
+        "datetime(6)",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_bat_dau",
+        "datetime(6)",
+        "Có",
+        "—"
+      ],
+      [
+        "ngay_bao_cao",
+        "datetime(6)",
+        "Có",
+        "—"
+      ],
+      [
+        "ngay_nghiem_thu",
+        "datetime(6)",
+        "Có",
+        "—"
+      ],
+      [
+        "ngay_huy",
+        "datetime(6)",
+        "Có",
+        "—"
+      ],
+      [
+        "khoa_yeu_cau",
+        "char(36)",
+        "Không",
+        "—"
+      ],
+      [
+        "van_tay",
+        "char(64)",
+        "Không",
+        "—"
+      ],
+      [
+        "dinh_ky_dang_mo",
+        "int unsigned",
+        "Có",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (khoa_yeu_cau); (dinh_ky_dang_mo)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_thiet_bi) → thiet_bi(ma_thiet_bi); (ma_ky_thuat_vien) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_lap) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_nghiem_thu) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_huy) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.20. phieu_thu_chi"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng phieu_thu_chi",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_phieu",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ma_quy",
+        "int unsigned",
+        "Không",
+        "FK → quy_tai_chinh.ma_quy"
+      ],
+      [
+        "loai",
+        "enum('THU','CHI')",
+        "Không",
+        "—"
+      ],
+      [
+        "nhom",
+        "varchar(30)",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_hach_toan",
+        "date",
+        "Không",
+        "—"
+      ],
+      [
+        "so_tien",
+        "decimal(14,0)",
+        "Không",
+        "—"
+      ],
+      [
+        "doi_tac",
+        "varchar(150)",
+        "Không",
+        "—"
+      ],
+      [
+        "dien_giai",
+        "varchar(1000)",
+        "Không",
+        "—"
+      ],
+      [
+        "trang_thai",
+        "enum('NHAP','DA_GHI_SO','HUY')",
+        "Không",
+        "—"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_nguoi_lap",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ma_nguoi_duyet",
+        "int unsigned",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ngay_duyet",
+        "datetime(6)",
+        "Có",
+        "—"
+      ],
+      [
+        "ngay_tao",
+        "datetime(6)",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_phieu_goc",
+        "int unsigned",
+        "Có",
+        "FK → phieu_thu_chi.ma_phieu"
+      ],
+      [
+        "khoa_yeu_cau",
+        "char(36)",
+        "Có",
+        "—"
+      ],
+      [
+        "van_tay",
+        "char(64)",
+        "Có",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (ma_phieu_goc); (khoa_yeu_cau)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_quy) → quy_tai_chinh(ma_quy); (ma_nguoi_lap) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_duyet) → nguoi_dung(ma_nguoi_dung); (ma_phieu_goc) → phieu_thu_chi(ma_phieu)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.21. phuong_tien"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng phuong_tien",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_phuong_tien",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ma_dang_ky",
+        "varchar(20)",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_cu_dan",
+        "int unsigned",
+        "Không",
+        "FK → cu_dan.ma_cu_dan"
+      ],
+      [
+        "ma_can_ho",
+        "int unsigned",
+        "Không",
+        "FK → can_ho.ma_can_ho"
+      ],
+      [
+        "ma_lich_su_cu_tru",
+        "int unsigned",
+        "Không",
+        "FK → lich_su_cu_tru.ma_lich_su_cu_tru"
+      ],
+      [
+        "ma_dang_ky_truoc",
+        "int unsigned",
+        "Có",
+        "FK → phuong_tien.ma_phuong_tien"
+      ],
+      [
+        "loai_xe",
+        "enum('O_TO','XE_MAY','XE_DAP')",
+        "Không",
+        "—"
+      ],
+      [
+        "bien_so",
+        "varchar(15)",
+        "Có",
+        "—"
+      ],
+      [
+        "hang_xe",
+        "varchar(50)",
+        "Không",
+        "—"
+      ],
+      [
+        "mau_sac",
+        "varchar(50)",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_dang_ky",
+        "date",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_ket_thuc",
+        "date",
+        "Có",
+        "—"
+      ],
+      [
+        "ly_do_ket_thuc",
+        "varchar(255)",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_nguoi_tao",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ma_nguoi_ket_thuc",
+        "int unsigned",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_tao",
+        "datetime(6)",
+        "Không",
+        "—"
+      ],
+      [
+        "bien_so_dang_hoat_dong",
+        "varchar(15)",
+        "Có",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (ma_dang_ky); (ma_dang_ky_truoc); (bien_so_dang_hoat_dong)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_cu_dan) → cu_dan(ma_cu_dan); (ma_can_ho) → can_ho(ma_can_ho); (ma_lich_su_cu_tru) → lich_su_cu_tru(ma_lich_su_cu_tru); (ma_dang_ky_truoc) → phuong_tien(ma_phuong_tien); (ma_nguoi_tao) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_ket_thuc) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.22. quy_tai_chinh"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng quy_tai_chinh",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_quy",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ten_quy",
+        "varchar(120)",
+        "Không",
+        "—"
+      ],
+      [
+        "mo_ta",
+        "varchar(1000)",
+        "Không",
+        "—"
+      ],
+      [
+        "dang_hoat_dong",
+        "tinyint(1)",
+        "Không",
+        "—"
+      ],
+      [
+        "nhan_thu_hoa_don",
+        "tinyint(1)",
+        "Không",
+        "—"
+      ],
+      [
+        "quy_hoa_don",
+        "tinyint",
+        "Có",
+        "—"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_tao",
+        "datetime(6)",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (quy_hoa_don)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.23. schema_migrations"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng schema_migrations",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "name",
+        "varchar(100)",
+        "Không",
+        "PK"
+      ],
+      [
+        "checksum",
+        "char(64)",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.24. tang_toa_nha"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng tang_toa_nha",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "khoi",
+        "varchar(10)",
+        "Không",
+        "PK ghép; FK → khoi_toa_nha.khoi"
+      ],
+      [
+        "tang",
+        "smallint unsigned",
+        "Không",
+        "PK ghép"
+      ],
+      [
+        "ten_tang",
+        "varchar(100)",
+        "Không",
+        "—"
+      ],
+      [
+        "mo_ta",
+        "varchar(255)",
+        "Không",
+        "—"
+      ],
+      [
+        "giu_khi_trong",
+        "tinyint(1)",
+        "Không",
+        "—"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_tao",
+        "datetime",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (khoi) → khoi_toa_nha(khoi)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.25. thiet_bi"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng thiet_bi",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_thiet_bi",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ma_tai_san",
+        "varchar(30)",
+        "Không",
+        "—"
+      ],
+      [
+        "ten_thiet_bi",
+        "varchar(150)",
+        "Không",
+        "—"
+      ],
+      [
+        "loai",
+        "enum('THANG_MAY','MAY_BOM','PCCC','DIEN','NUOC','CAMERA','KHAC')",
+        "Không",
+        "—"
+      ],
+      [
+        "vi_tri",
+        "varchar(160)",
+        "Không",
+        "—"
+      ],
+      [
+        "so_serial",
+        "varchar(100)",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_lap_dat",
+        "date",
+        "Có",
+        "—"
+      ],
+      [
+        "ghi_chu",
+        "varchar(1000)",
+        "Không",
+        "—"
+      ],
+      [
+        "trang_thai",
+        "enum('DANG_SU_DUNG','TAM_DUNG','NGUNG_SU_DUNG')",
+        "Không",
+        "—"
+      ],
+      [
+        "chu_ky_ngay",
+        "smallint unsigned",
+        "Có",
+        "—"
+      ],
+      [
+        "ngay_bao_tri_tiep_theo",
+        "date",
+        "Có",
+        "—"
+      ],
+      [
+        "nhac_truoc_ngay",
+        "tinyint unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_nguoi_tao",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ngay_tao",
+        "datetime(6)",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_cap_nhat",
+        "datetime(6)",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (ma_tai_san)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_nguoi_tao) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.26. thong_bao"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng thong_bao",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_thong_bao",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "loai",
+        "enum('THONG_BAO','NHAC_PHI')",
+        "Không",
+        "—"
+      ],
+      [
+        "tieu_de",
+        "varchar(160)",
+        "Không",
+        "—"
+      ],
+      [
+        "noi_dung",
+        "text",
+        "Không",
+        "—"
+      ],
+      [
+        "pham_vi",
+        "enum('TOAN_BO','KHOI','CAN_HO')",
+        "Không",
+        "—"
+      ],
+      [
+        "khoi",
+        "varchar(10)",
+        "Có",
+        "—"
+      ],
+      [
+        "ma_can_ho",
+        "int unsigned",
+        "Có",
+        "FK → can_ho.ma_can_ho"
+      ],
+      [
+        "muc_do",
+        "enum('THUONG','QUAN_TRONG')",
+        "Không",
+        "—"
+      ],
+      [
+        "trang_thai",
+        "enum('NHAP','DA_GUI','THU_HOI')",
+        "Không",
+        "—"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_hoa_don",
+        "int unsigned",
+        "Có",
+        "FK → hoa_don.ma_hoa_don"
+      ],
+      [
+        "ngay_nhac",
+        "date",
+        "Có",
+        "—"
+      ],
+      [
+        "ma_nguoi_tao",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ma_nguoi_gui",
+        "int unsigned",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ma_nguoi_thu_hoi",
+        "int unsigned",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ngay_tao",
+        "datetime(6)",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_gui",
+        "datetime(6)",
+        "Có",
+        "—"
+      ],
+      [
+        "ngay_thu_hoi",
+        "datetime(6)",
+        "Có",
+        "—"
+      ],
+      [
+        "ly_do_thu_hoi",
+        "varchar(255)",
+        "Có",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (ma_hoa_don, ngay_nhac)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_can_ho) → can_ho(ma_can_ho); (ma_hoa_don) → hoa_don(ma_hoa_don); (ma_nguoi_tao) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_gui) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_thu_hoi) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.27. thong_bao_da_doc"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng thong_bao_da_doc",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_thong_bao",
+        "int unsigned",
+        "Không",
+        "PK ghép; FK → thong_bao.ma_thong_bao"
+      ],
+      [
+        "ma_nguoi_dung",
+        "int unsigned",
+        "Không",
+        "PK ghép; FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "nguoi_tiep_nhan",
+        "int unsigned",
+        "Không",
+        "PK ghép"
+      ],
+      [
+        "ngay_doc",
+        "datetime(6)",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_thong_bao) → thong_bao(ma_thong_bao); (ma_nguoi_dung) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.28. tien_ich"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng tien_ich",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_tien_ich",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ten_tien_ich",
+        "varchar(120)",
+        "Không",
+        "—"
+      ],
+      [
+        "vi_tri",
+        "varchar(160)",
+        "Không",
+        "—"
+      ],
+      [
+        "mo_ta",
+        "text",
+        "Không",
+        "—"
+      ],
+      [
+        "suc_chua",
+        "smallint unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "gio_mo",
+        "time",
+        "Không",
+        "—"
+      ],
+      [
+        "gio_dong",
+        "time",
+        "Không",
+        "—"
+      ],
+      [
+        "toi_da_phut",
+        "smallint unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "dat_truoc_ngay",
+        "smallint unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "dang_mo",
+        "tinyint(1)",
+        "Không",
+        "—"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_nguoi_tao",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ngay_tao",
+        "datetime(6)",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_nguoi_tao) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.29. vi_tri_qr"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng vi_tri_qr",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_vi_tri_qr",
+        "int unsigned",
+        "Không",
+        "PK"
+      ],
+      [
+        "ten_vi_tri",
+        "varchar(100)",
+        "Không",
+        "—"
+      ],
+      [
+        "loai",
+        "enum('KHU_VUC','THIET_BI')",
+        "Không",
+        "—"
+      ],
+      [
+        "mo_ta",
+        "varchar(255)",
+        "Không",
+        "—"
+      ],
+      [
+        "token_qr",
+        "char(36)",
+        "Không",
+        "—"
+      ],
+      [
+        "dang_hoat_dong",
+        "tinyint(1)",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_nguoi_tao",
+        "int unsigned",
+        "Không",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ngay_tao",
+        "datetime",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_thiet_bi",
+        "int unsigned",
+        "Có",
+        "FK → thiet_bi.ma_thiet_bi"
+      ],
+      [
+        "phien_ban",
+        "int unsigned",
+        "Không",
+        "—"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (token_qr)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_thiet_bi) → thiet_bi(ma_thiet_bi); (ma_nguoi_tao) → nguoi_dung(ma_nguoi_dung)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.30. yeu_cau_gui"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng yeu_cau_gui",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "khoa",
+        "char(36)",
+        "Không",
+        "PK"
+      ],
+      [
+        "van_tay",
+        "char(64)",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_phan_anh",
+        "int unsigned",
+        "Có",
+        "FK → phan_anh.ma_phan_anh"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_phan_anh) → phan_anh(ma_phan_anh)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.31. nhat_ky_nghiep_vu"
+  },
+  {
+    "kind": "table",
+    "title": "Cấu trúc bảng nhat_ky_nghiep_vu",
+    "headers": [
+      "Thuộc tính",
+      "Kiểu MySQL",
+      "NULL",
+      "Khóa / tham chiếu"
+    ],
+    "rows": [
+      [
+        "ma_nhat_ky",
+        "BIGINT UNSIGNED",
+        "Không",
+        "PK"
+      ],
+      [
+        "loai_nhat_ky",
+        "VARCHAR(40)",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_goc",
+        "INT UNSIGNED",
+        "Có",
+        "—"
+      ],
+      [
+        "ma_nguoi_thuc_hien",
+        "INT UNSIGNED",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "su_kien",
+        "VARCHAR(40)",
+        "Không",
+        "—"
+      ],
+      [
+        "ghi_chu",
+        "TEXT",
+        "Có",
+        "—"
+      ],
+      [
+        "chi_tiet",
+        "JSON",
+        "Không",
+        "—"
+      ],
+      [
+        "ngay_tao",
+        "DATETIME(6)",
+        "Không",
+        "—"
+      ],
+      [
+        "ma_phan_anh",
+        "INT UNSIGNED",
+        "Có",
+        "FK → phan_anh.ma_phan_anh"
+      ],
+      [
+        "ma_hoa_don",
+        "INT UNSIGNED",
+        "Có",
+        "FK → hoa_don.ma_hoa_don"
+      ],
+      [
+        "ma_can_ho",
+        "INT UNSIGNED",
+        "Có",
+        "FK → can_ho.ma_can_ho"
+      ],
+      [
+        "ma_thong_bao",
+        "INT UNSIGNED",
+        "Có",
+        "FK → thong_bao.ma_thong_bao"
+      ],
+      [
+        "ma_thiet_bi",
+        "INT UNSIGNED",
+        "Có",
+        "FK → thiet_bi.ma_thiet_bi"
+      ],
+      [
+        "ma_phieu_bao_tri",
+        "INT UNSIGNED",
+        "Có",
+        "FK → phieu_bao_tri.ma_phieu_bao_tri"
+      ],
+      [
+        "ma_dat_lich",
+        "INT UNSIGNED",
+        "Có",
+        "FK → dat_lich_tien_ich.ma_dat_lich"
+      ],
+      [
+        "ma_phieu",
+        "INT UNSIGNED",
+        "Có",
+        "FK → phieu_thu_chi.ma_phieu"
+      ],
+      [
+        "ma_vi_tri_qr",
+        "INT UNSIGNED",
+        "Có",
+        "FK → vi_tri_qr.ma_vi_tri_qr"
+      ],
+      [
+        "ma_ky_thuat_vien_cu",
+        "INT UNSIGNED",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ma_ky_thuat_vien_moi",
+        "INT UNSIGNED",
+        "Có",
+        "FK → nguoi_dung.ma_nguoi_dung"
+      ],
+      [
+        "ma_thiet_bi_cu",
+        "INT UNSIGNED",
+        "Có",
+        "FK → thiet_bi.ma_thiet_bi"
+      ],
+      [
+        "ma_thiet_bi_moi",
+        "INT UNSIGNED",
+        "Có",
+        "FK → thiet_bi.ma_thiet_bi"
+      ]
+    ],
+    "source": "Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Tổ hợp UNIQUE: (loai_nhat_ky, ma_goc)."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Quan hệ khóa ngoại: (ma_nguoi_thuc_hien) → nguoi_dung(ma_nguoi_dung); (ma_phan_anh) → phan_anh(ma_phan_anh); (ma_hoa_don) → hoa_don(ma_hoa_don); (ma_can_ho) → can_ho(ma_can_ho); (ma_thong_bao) → thong_bao(ma_thong_bao); (ma_thiet_bi) → thiet_bi(ma_thiet_bi); (ma_phieu_bao_tri) → phieu_bao_tri(ma_phieu_bao_tri); (ma_dat_lich) → dat_lich_tien_ich(ma_dat_lich); (ma_phieu) → phieu_thu_chi(ma_phieu); (ma_vi_tri_qr) → vi_tri_qr(ma_vi_tri_qr); (ma_ky_thuat_vien_cu) → nguoi_dung(ma_nguoi_dung); (ma_ky_thuat_vien_moi) → nguoi_dung(ma_nguoi_dung); (ma_thiet_bi_cu) → thiet_bi(ma_thiet_bi); (ma_thiet_bi_moi) → thiet_bi(ma_thiet_bi)."
+  },
+  {
+    "kind": "heading",
+    "level": 3,
+    "text": "PL2.32. Các view lịch sử và nguồn schema"
+  },
+  {
+    "kind": "table",
+    "title": "Tám view lịch sử nghiệp vụ",
+    "headers": [
+      "View",
+      "Nội dung"
+    ],
+    "rows": [
+      [
+        "lich_su_phan_anh",
+        "Phân công, xử lý và nghiệm thu phản ánh"
+      ],
+      [
+        "lich_su_hoa_don",
+        "Lập, duyệt, gửi, hủy và thu hóa đơn"
+      ],
+      [
+        "lich_su_ban_giao_can_ho",
+        "Bàn giao tài khoản/trách nhiệm căn"
+      ],
+      [
+        "lich_su_thong_bao",
+        "Tạo, phát hành và thu hồi thông báo"
+      ],
+      [
+        "lich_su_bao_tri",
+        "Xử lý phiếu bảo trì"
+      ],
+      [
+        "lich_su_dat_lich",
+        "Yêu cầu và quyết định đặt tiện ích"
+      ],
+      [
+        "lich_su_thu_chi",
+        "Các sự kiện phiếu thu/chi"
+      ],
+      [
+        "lich_su_lien_ket_qr",
+        "Thay đổi liên kết vị trí QR và thiết bị"
+      ]
+    ],
+    "source": "Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án."
+  },
+  {
+    "kind": "paragraph",
+    "text": "Các view là giao diện đọc dữ liệu lịch sử từ bảng nhật ký chung, không phải tám bảng vật lý bổ sung. Baseline SQL là nguồn quyết định cho CHECK, biểu thức cột sinh và hành vi cập nhật/xóa của FK. Từ điển bảng trong báo cáo lược cột mặc định và toàn văn CHECK để thuận tiện đọc; từ điển kỹ thuật docs/bao-cao/tu-dien-du-lieu.md và SQL vẫn giữ chi tiết cần cho triển khai."
+  },
+  {
+    "kind": "heading",
+    "level": 1,
+    "text": "DANH MỤC TÀI LIỆU THAM KHẢO"
+  },
+  {
+    "kind": "reference",
+    "id": 1,
+    "author": "Express.js",
+    "title": "Express — README",
+    "url": "https://github.com/expressjs/express/blob/master/Readme.md",
+    "access": "17/11/2026"
+  },
+  {
+    "kind": "reference",
+    "id": 2,
+    "author": "Frappe Technologies",
+    "title": "ERPNext — README",
+    "url": "https://github.com/frappe/erpnext/blob/develop/README.md",
+    "access": "17/11/2026"
+  },
+  {
+    "kind": "reference",
+    "id": 3,
+    "author": "Mehul Patel",
+    "title": "html5-qrcode — README",
+    "url": "https://github.com/mebjas/html5-qrcode/blob/master/README.md",
+    "access": "17/11/2026"
+  },
+  {
+    "kind": "reference",
+    "id": 4,
+    "author": "Meta Open Source",
+    "title": "React: Quick Start",
+    "url": "https://github.com/reactjs/react.dev/blob/main/src/content/learn/index.md",
+    "access": "17/11/2026"
+  },
+  {
+    "kind": "reference",
+    "id": 5,
+    "author": "Microsoft",
+    "title": "Playwright: Emulation",
+    "url": "https://github.com/microsoft/playwright/blob/main/docs/src/emulation.md",
+    "access": "17/11/2026"
+  },
+  {
+    "kind": "reference",
+    "id": 6,
+    "author": "Mozilla",
+    "title": "MDN Web Docs: MediaDevices.getUserMedia()",
+    "url": "https://github.com/mdn/content/blob/main/files/en-us/web/api/mediadevices/getusermedia/index.md",
+    "access": "17/11/2026"
+  },
+  {
+    "kind": "reference",
+    "id": 7,
+    "author": "Node.js",
+    "title": "Introduction to Node.js",
+    "url": "https://nodejs.org/en/learn/getting-started/introduction-to-nodejs",
+    "access": "17/11/2026"
+  },
+  {
+    "kind": "reference",
+    "id": 8,
+    "author": "Oracle",
+    "title": "MySQL Server 8.4: foreign_key.test (mã kiểm thử khóa ngoại chính thức)",
+    "url": "https://github.com/mysql/mysql-server/blob/8.4/mysql-test/t/foreign_key.test",
+    "access": "17/11/2026"
+  },
+  {
+    "kind": "reference",
+    "id": 9,
+    "author": "OWASP Foundation",
+    "title": "Authorization Cheat Sheet",
+    "url": "https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Authorization_Cheat_Sheet.md",
+    "access": "17/11/2026"
+  },
+  {
+    "kind": "reference",
+    "id": 10,
+    "author": "soldair và cộng tác viên",
+    "title": "node-qrcode — README",
+    "url": "https://github.com/soldair/node-qrcode/blob/master/README.md",
+    "access": "17/11/2026"
+  },
+  {
+    "kind": "reference",
+    "id": 11,
+    "author": "Vite Team",
+    "title": "Vite 7: Getting Started",
+    "url": "https://github.com/vitejs/vite/blob/v7.0.0/docs/guide/index.md",
+    "access": "17/11/2026"
+  }
+]

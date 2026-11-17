@@ -1,0 +1,1029 @@
+{
+  "headings": [
+    {
+      "title": "MỞ ĐẦU",
+      "mark": "H1",
+      "level": 1
+    },
+    {
+      "title": "CHƯƠNG 1. TỔNG QUAN TÀI LIỆU",
+      "mark": "H2",
+      "level": 1
+    },
+    {
+      "title": "1.1. CÁC CÔNG VIỆC VÀ DỰ ÁN LIÊN QUAN",
+      "mark": "H3",
+      "level": 2
+    },
+    {
+      "title": "1.1.1. Các cách tổ chức quản lý và tiếp nhận phản ánh",
+      "mark": "H4",
+      "level": 3
+    },
+    {
+      "title": "1.1.2. Sự khác biệt và giá trị của đề tài",
+      "mark": "H5",
+      "level": 3
+    },
+    {
+      "title": "1.2. CƠ SỞ LÝ THUYẾT VÀ NGHIỆP VỤ",
+      "mark": "H6",
+      "level": 2
+    },
+    {
+      "title": "1.2.1. Quy trình vận hành và quản lý yêu cầu",
+      "mark": "H7",
+      "level": 3
+    },
+    {
+      "title": "1.2.2. Phân tích hướng đối tượng và các mô hình thiết kế",
+      "mark": "H8",
+      "level": 3
+    },
+    {
+      "title": "1.2.3. Dữ liệu quan hệ, giao dịch và tính nhất quán",
+      "mark": "H9",
+      "level": 3
+    },
+    {
+      "title": "1.2.4. Phân quyền và bảo vệ dữ liệu",
+      "mark": "H10",
+      "level": 3
+    },
+    {
+      "title": "1.3. CÔNG NGHỆ VÀ CÔNG CỤ SỬ DỤNG",
+      "mark": "H11",
+      "level": 2
+    },
+    {
+      "title": "1.3.1. React, giao diện thích ứng và Vite",
+      "mark": "H12",
+      "level": 3
+    },
+    {
+      "title": "1.3.2. Node.js, Express và MySQL",
+      "mark": "H13",
+      "level": 3
+    },
+    {
+      "title": "1.3.3. html5-qrcode, qrcode và camera trình duyệt",
+      "mark": "H14",
+      "level": 3
+    },
+    {
+      "title": "1.3.4. Công cụ phát triển và kiểm thử",
+      "mark": "H15",
+      "level": 3
+    },
+    {
+      "title": "CHƯƠNG 2. PHƯƠNG PHÁP THỰC HIỆN",
+      "mark": "H16",
+      "level": 1
+    },
+    {
+      "title": "2.1. XÁC ĐỊNH YÊU CẦU VÀ PHÂN RÃ CHỨC NĂNG",
+      "mark": "H17",
+      "level": 2
+    },
+    {
+      "title": "2.1.1. Tác nhân, phạm vi và yêu cầu chức năng",
+      "mark": "H18",
+      "level": 3
+    },
+    {
+      "title": "2.1.2. Yêu cầu phi chức năng và tiêu chí đánh giá",
+      "mark": "H19",
+      "level": 3
+    },
+    {
+      "title": "2.2. PHÂN TÍCH HỆ THỐNG VỚI SƠ ĐỒ USE CASE",
+      "mark": "H20",
+      "level": 2
+    },
+    {
+      "title": "2.2.1. Use Case tổng thể và phân rã theo tác nhân",
+      "mark": "H21",
+      "level": 3
+    },
+    {
+      "title": "2.2.2. Đặc tả năm Use Case cốt lõi",
+      "mark": "H22",
+      "level": 3
+    },
+    {
+      "title": "2.3. MÔ HÌNH HÓA HOẠT ĐỘNG VÀ TƯƠNG TÁC",
+      "mark": "H23",
+      "level": 2
+    },
+    {
+      "title": "2.3.1. Sơ đồ hoạt động của bốn quy trình chính",
+      "mark": "H24",
+      "level": 3
+    },
+    {
+      "title": "2.3.2. Sơ đồ tuần tự của các luồng nghiệp vụ",
+      "mark": "H25",
+      "level": 3
+    },
+    {
+      "title": "2.3.3. Mô hình trạng thái phản ánh",
+      "mark": "H26",
+      "level": 3
+    },
+    {
+      "title": "2.4. THIẾT KẾ CẤU TRÚC TĨNH VÀ CƠ SỞ DỮ LIỆU",
+      "mark": "H27",
+      "level": 2
+    },
+    {
+      "title": "2.4.1. Sơ đồ lớp phân tích và ánh xạ mô-đun",
+      "mark": "H28",
+      "level": 3
+    },
+    {
+      "title": "2.4.2. ERD thống nhất và phạm vi mô hình dữ liệu",
+      "mark": "H29",
+      "level": 3
+    },
+    {
+      "title": "2.4.3. Thiết kế chi tiết bảng và ràng buộc",
+      "mark": "H30",
+      "level": 3
+    },
+    {
+      "title": "2.5. KIẾN TRÚC HỆ THỐNG VÀ LỰA CHỌN CÔNG NGHỆ",
+      "mark": "H31",
+      "level": 2
+    },
+    {
+      "title": "2.5.1. Kiến trúc ba tầng và dữ liệu vào – ra",
+      "mark": "H32",
+      "level": 3
+    },
+    {
+      "title": "2.5.2. Lý do lựa chọn và các phương án thay thế",
+      "mark": "H33",
+      "level": 3
+    },
+    {
+      "title": "2.6. THÁCH THỨC KỸ THUẬT VÀ THUẬT TOÁN XỬ LÝ",
+      "mark": "H34",
+      "level": 2
+    },
+    {
+      "title": "2.6.1. Quét camera và kiểm tra URL QR",
+      "mark": "H35",
+      "level": 3
+    },
+    {
+      "title": "2.6.2. Xử lý ảnh và thử lại khi lỗi mạng",
+      "mark": "H36",
+      "level": 3
+    },
+    {
+      "title": "2.6.3. Trạng thái, đồng thời và lịch sử",
+      "mark": "H37",
+      "level": 3
+    },
+    {
+      "title": "2.6.4. Tính tiền, chốt nguồn và VietQR",
+      "mark": "H38",
+      "level": 3
+    },
+    {
+      "title": "2.7. THIẾT KẾ GIAO DIỆN NGƯỜI DÙNG",
+      "mark": "H39",
+      "level": 2
+    },
+    {
+      "title": "2.7.1. Giao diện Ban quản lý",
+      "mark": "H40",
+      "level": 3
+    },
+    {
+      "title": "2.7.2. Giao diện cư dân và kỹ thuật viên",
+      "mark": "H41",
+      "level": 3
+    },
+    {
+      "title": "CHƯƠNG 3. CÀI ĐẶT THỬ NGHIỆM, KẾT QUẢ VÀ ĐÁNH GIÁ",
+      "mark": "H42",
+      "level": 1
+    },
+    {
+      "title": "3.1. MÔI TRƯỜNG PHÁT TRIỂN VÀ CÔNG CỤ CÀI ĐẶT",
+      "mark": "H43",
+      "level": 2
+    },
+    {
+      "title": "3.1.1. Môi trường và phiên bản được kiểm chứng",
+      "mark": "H44",
+      "level": 3
+    },
+    {
+      "title": "3.1.2. Cài đặt và cấu hình chạy thử",
+      "mark": "H45",
+      "level": 3
+    },
+    {
+      "title": "3.2. CÀI ĐẶT VÀ HIỆN THỰC HÓA HỆ THỐNG",
+      "mark": "H46",
+      "level": 2
+    },
+    {
+      "title": "3.2.1. Hiện thực cơ sở dữ liệu và dữ liệu thử",
+      "mark": "H47",
+      "level": 3
+    },
+    {
+      "title": "3.2.2. Backend RESTful API và cơ chế xác thực",
+      "mark": "H48",
+      "level": 3
+    },
+    {
+      "title": "3.2.3. Sinh QR, nhận ảnh và xử lý phản ánh",
+      "mark": "H49",
+      "level": 3
+    },
+    {
+      "title": "3.2.4. Frontend, cửa sổ thao tác và tích hợp camera",
+      "mark": "H50",
+      "level": 3
+    },
+    {
+      "title": "3.3. KẾT QUẢ GIAO DIỆN VÀ CÁC PHÂN HỆ ĐÃ XÂY DỰNG",
+      "mark": "H51",
+      "level": 2
+    },
+    {
+      "title": "3.3.1. Kết quả phân hệ Ban quản lý",
+      "mark": "H52",
+      "level": 3
+    },
+    {
+      "title": "3.3.2. Kết quả phân hệ cư dân và giao diện di động",
+      "mark": "H53",
+      "level": 3
+    },
+    {
+      "title": "3.4. KIỂM THỬ HỆ THỐNG VÀ ĐÁNH GIÁ",
+      "mark": "H54",
+      "level": 2
+    },
+    {
+      "title": "3.4.1. Phương pháp, dữ liệu và kết quả chạy lại",
+      "mark": "H55",
+      "level": 3
+    },
+    {
+      "title": "3.4.2. Ma trận kiểm thử chức năng và ngoại lệ",
+      "mark": "H56",
+      "level": 3
+    },
+    {
+      "title": "3.4.3. Thử nghiệm quét QR đa thiết bị và trình duyệt",
+      "mark": "H57",
+      "level": 3
+    },
+    {
+      "title": "3.4.4. Đối chiếu mục tiêu, hạn chế và đánh giá chung",
+      "mark": "H58",
+      "level": 3
+    },
+    {
+      "title": "KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN",
+      "mark": "H59",
+      "level": 1
+    },
+    {
+      "title": "1. KẾT QUẢ ĐẠT ĐƯỢC",
+      "mark": "H60",
+      "level": 2
+    },
+    {
+      "title": "2. KIẾN THỨC, KỸ NĂNG VÀ KINH NGHIỆM",
+      "mark": "H61",
+      "level": 2
+    },
+    {
+      "title": "3. HẠN CHẾ VÀ ĐỀ XUẤT PHÁT TRIỂN",
+      "mark": "H62",
+      "level": 2
+    },
+    {
+      "title": "PHỤ LỤC",
+      "mark": "H63",
+      "level": 1
+    },
+    {
+      "title": "PHỤ LỤC 1. HƯỚNG DẪN SỬ DỤNG VÀ TÁI KIỂM CHỨNG",
+      "mark": "H64",
+      "level": 2
+    },
+    {
+      "title": "PL1.1. Quy trình sử dụng theo vai trò",
+      "mark": "H65",
+      "level": 3
+    },
+    {
+      "title": "PL1.2. Chạy lại kiểm thử và đọc bằng chứng",
+      "mark": "H66",
+      "level": 3
+    },
+    {
+      "title": "PHỤ LỤC 2. TỪ ĐIỂN DỮ LIỆU ĐẦY ĐỦ",
+      "mark": "H67",
+      "level": 2
+    },
+    {
+      "title": "PL2.1. can_ho",
+      "mark": "H68",
+      "level": 3
+    },
+    {
+      "title": "PL2.2. cau_hinh_phi",
+      "mark": "H69",
+      "level": 3
+    },
+    {
+      "title": "PL2.3. chi_so_dich_vu",
+      "mark": "H70",
+      "level": 3
+    },
+    {
+      "title": "PL2.4. chi_tiet_hoa_don",
+      "mark": "H71",
+      "level": 3
+    },
+    {
+      "title": "PL2.5. chung_tu_thu_chi",
+      "mark": "H72",
+      "level": 3
+    },
+    {
+      "title": "PL2.6. cu_dan",
+      "mark": "H73",
+      "level": 3
+    },
+    {
+      "title": "PL2.7. dat_lich_tien_ich",
+      "mark": "H74",
+      "level": 3
+    },
+    {
+      "title": "PL2.8. dot_lap_hoa_don",
+      "mark": "H75",
+      "level": 3
+    },
+    {
+      "title": "PL2.9. dot_nhap_du_lieu",
+      "mark": "H76",
+      "level": 3
+    },
+    {
+      "title": "PL2.10. dot_xu_ly_hoa_don",
+      "mark": "H77",
+      "level": 3
+    },
+    {
+      "title": "PL2.11. gioi_han_gui",
+      "mark": "H78",
+      "level": 3
+    },
+    {
+      "title": "PL2.12. hinh_anh_phan_anh",
+      "mark": "H79",
+      "level": 3
+    },
+    {
+      "title": "PL2.13. hoa_don",
+      "mark": "H80",
+      "level": 3
+    },
+    {
+      "title": "PL2.14. khoi_toa_nha",
+      "mark": "H81",
+      "level": 3
+    },
+    {
+      "title": "PL2.15. lich_su_cu_tru",
+      "mark": "H82",
+      "level": 3
+    },
+    {
+      "title": "PL2.16. loai_phi",
+      "mark": "H83",
+      "level": 3
+    },
+    {
+      "title": "PL2.17. nguoi_dung",
+      "mark": "H84",
+      "level": 3
+    },
+    {
+      "title": "PL2.18. phan_anh",
+      "mark": "H85",
+      "level": 3
+    },
+    {
+      "title": "PL2.19. phieu_bao_tri",
+      "mark": "H86",
+      "level": 3
+    },
+    {
+      "title": "PL2.20. phieu_thu_chi",
+      "mark": "H87",
+      "level": 3
+    },
+    {
+      "title": "PL2.21. phuong_tien",
+      "mark": "H88",
+      "level": 3
+    },
+    {
+      "title": "PL2.22. quy_tai_chinh",
+      "mark": "H89",
+      "level": 3
+    },
+    {
+      "title": "PL2.23. schema_migrations",
+      "mark": "H90",
+      "level": 3
+    },
+    {
+      "title": "PL2.24. tang_toa_nha",
+      "mark": "H91",
+      "level": 3
+    },
+    {
+      "title": "PL2.25. thiet_bi",
+      "mark": "H92",
+      "level": 3
+    },
+    {
+      "title": "PL2.26. thong_bao",
+      "mark": "H93",
+      "level": 3
+    },
+    {
+      "title": "PL2.27. thong_bao_da_doc",
+      "mark": "H94",
+      "level": 3
+    },
+    {
+      "title": "PL2.28. tien_ich",
+      "mark": "H95",
+      "level": 3
+    },
+    {
+      "title": "PL2.29. vi_tri_qr",
+      "mark": "H96",
+      "level": 3
+    },
+    {
+      "title": "PL2.30. yeu_cau_gui",
+      "mark": "H97",
+      "level": 3
+    },
+    {
+      "title": "PL2.31. nhat_ky_nghiep_vu",
+      "mark": "H98",
+      "level": 3
+    },
+    {
+      "title": "PL2.32. Các view lịch sử và nguồn schema",
+      "mark": "H99",
+      "level": 3
+    },
+    {
+      "title": "DANH MỤC TÀI LIỆU THAM KHẢO",
+      "mark": "H100",
+      "level": 1
+    }
+  ],
+  "figures": [
+    {
+      "title": "Hình 2.1. Phân rã chức năng của hệ thống",
+      "mark": "F2_1"
+    },
+    {
+      "title": "Hình 2.2. Use Case tổng thể",
+      "mark": "F2_2"
+    },
+    {
+      "title": "Hình 2.3. Use Case phân rã Ban quản lý",
+      "mark": "F2_3"
+    },
+    {
+      "title": "Hình 2.4. Use Case cư dân, người gửi công khai và kỹ thuật viên",
+      "mark": "F2_4"
+    },
+    {
+      "title": "Hình 2.5. Hoạt động tạo và xuất mã QR vị trí",
+      "mark": "F2_5"
+    },
+    {
+      "title": "Hình 2.6. Hoạt động quét QR và gửi phản ánh",
+      "mark": "F2_6"
+    },
+    {
+      "title": "Hình 2.7. Hoạt động phân công, xử lý và nghiệm thu",
+      "mark": "F2_7"
+    },
+    {
+      "title": "Hình 2.8. Hoạt động lập, duyệt và gửi hóa đơn",
+      "mark": "F2_8"
+    },
+    {
+      "title": "Hình 2.9. Tuần tự tạo mã QR vị trí",
+      "mark": "F2_9"
+    },
+    {
+      "title": "Hình 2.10. Tuần tự quét QR và gửi phản ánh",
+      "mark": "F2_10"
+    },
+    {
+      "title": "Hình 2.11. Tuần tự điều phối và chuyển trạng thái phản ánh",
+      "mark": "F2_11"
+    },
+    {
+      "title": "Hình 2.12. Tuần tự tra cứu hóa đơn và hiển thị VietQR",
+      "mark": "F2_12"
+    },
+    {
+      "title": "Hình 2.13. Vòng đời và điều kiện chuyển trạng thái phản ánh",
+      "mark": "F2_13"
+    },
+    {
+      "title": "Hình 2.14. Sơ đồ lớp phân tích các khái niệm trọng tâm",
+      "mark": "F2_14"
+    },
+    {
+      "title": "Hình 2.15. ERD thống nhất 18 bảng trọng tâm, 218 thuộc tính và 46 quan hệ",
+      "mark": "F2_15"
+    },
+    {
+      "title": "Hình 2.16. Kiến trúc ba tầng React – Express – MySQL",
+      "mark": "F2_16"
+    },
+    {
+      "title": "Hình 2.17. Luồng dữ liệu phản ánh từ QR đến nghiệm thu",
+      "mark": "F2_17"
+    },
+    {
+      "title": "Hình 3.1. Biểu mẫu đăng nhập của hệ thống",
+      "mark": "F3_1"
+    },
+    {
+      "title": "Hình 3.2. Màn hình tổng quan vận hành của Ban quản lý",
+      "mark": "F3_2"
+    },
+    {
+      "title": "Hình 3.3. Danh sách hồ sơ cư dân",
+      "mark": "F3_3"
+    },
+    {
+      "title": "Hình 3.4. Cửa sổ thêm căn hộ trên máy tính",
+      "mark": "F3_4"
+    },
+    {
+      "title": "Hình 3.5. Cửa sổ thao tác căn hộ ở màn hình hẹp",
+      "mark": "F3_5"
+    },
+    {
+      "title": "Hình 3.6. Xem trước và xuất mã QR vị trí",
+      "mark": "F3_6"
+    },
+    {
+      "title": "Hình 3.7. Chi tiết phản ánh và thao tác xử lý",
+      "mark": "F3_7"
+    },
+    {
+      "title": "Hình 3.8. Biểu mẫu phản ánh theo QR trên màn hình di động",
+      "mark": "F3_8"
+    },
+    {
+      "title": "Hình 3.9. Cửa sổ thanh toán và mã VietQR trong luồng kiểm thử",
+      "mark": "F3_9"
+    }
+  ],
+  "tables": [
+    {
+      "title": "Bảng 1.1. So sánh các phương án giải quyết bài toán",
+      "mark": "T1"
+    },
+    {
+      "title": "Bảng 2.1. Danh sách yêu cầu chức năng chính",
+      "mark": "T2"
+    },
+    {
+      "title": "Bảng 2.2. Yêu cầu phi chức năng và cách kiểm tra",
+      "mark": "T3"
+    },
+    {
+      "title": "Bảng 2.3. UC01 – Đăng nhập và phân quyền",
+      "mark": "T4"
+    },
+    {
+      "title": "Bảng 2.4. UC02 – Sinh và xuất mã QR vị trí",
+      "mark": "T5"
+    },
+    {
+      "title": "Bảng 2.5. UC03 – Quét QR và gửi phản ánh",
+      "mark": "T6"
+    },
+    {
+      "title": "Bảng 2.6. UC04 – Phân công và xử lý phản ánh",
+      "mark": "T7"
+    },
+    {
+      "title": "Bảng 2.7. UC05 – Lập và phát hành hóa đơn dịch vụ",
+      "mark": "T8"
+    },
+    {
+      "title": "Bảng 2.8. Quy tắc chuyển trạng thái phản ánh",
+      "mark": "T9"
+    },
+    {
+      "title": "Bảng 2.9. Nhóm bảng và vai trò trong thiết kế dữ liệu",
+      "mark": "T10"
+    },
+    {
+      "title": "Bảng 2.10. Các ràng buộc dữ liệu trọng tâm",
+      "mark": "T11"
+    },
+    {
+      "title": "Bảng 2.11. Lựa chọn thiết kế và công nghệ",
+      "mark": "T12"
+    },
+    {
+      "title": "Bảng 3.1. Môi trường dùng cho lần kiểm chứng báo cáo",
+      "mark": "T13"
+    },
+    {
+      "title": "Bảng 3.2. Các API tiêu biểu của luồng cốt lõi",
+      "mark": "T14"
+    },
+    {
+      "title": "Bảng 3.3. Kết quả kiểm chứng tự động ngày 17/11/2026",
+      "mark": "T15"
+    },
+    {
+      "title": "Bảng 3.4. Kiểm thử nhóm tài khoản, dữ liệu nền và tiếp nhận",
+      "mark": "T16"
+    },
+    {
+      "title": "Bảng 3.5. Kiểm thử xử lý, tài chính, thông báo và giao diện",
+      "mark": "T17"
+    },
+    {
+      "title": "Bảng 3.6. Tình trạng thực nghiệm QR trên thiết bị vật lý",
+      "mark": "T18"
+    },
+    {
+      "title": "Bảng 3.7. Mức độ đáp ứng mục tiêu đề cương",
+      "mark": "T19"
+    },
+    {
+      "title": "Bảng PL.1. Quy trình thao tác Ban quản lý",
+      "mark": "T20"
+    },
+    {
+      "title": "Bảng PL.2. Quy trình cư dân và kỹ thuật viên",
+      "mark": "T21"
+    },
+    {
+      "title": "Bảng PL.3. Cấu trúc bảng can_ho",
+      "mark": "T22"
+    },
+    {
+      "title": "Bảng PL.4. Cấu trúc bảng cau_hinh_phi",
+      "mark": "T23"
+    },
+    {
+      "title": "Bảng PL.5. Cấu trúc bảng chi_so_dich_vu",
+      "mark": "T24"
+    },
+    {
+      "title": "Bảng PL.6. Cấu trúc bảng chi_tiet_hoa_don",
+      "mark": "T25"
+    },
+    {
+      "title": "Bảng PL.7. Cấu trúc bảng chung_tu_thu_chi",
+      "mark": "T26"
+    },
+    {
+      "title": "Bảng PL.8. Cấu trúc bảng cu_dan",
+      "mark": "T27"
+    },
+    {
+      "title": "Bảng PL.9. Cấu trúc bảng dat_lich_tien_ich",
+      "mark": "T28"
+    },
+    {
+      "title": "Bảng PL.10. Cấu trúc bảng dot_lap_hoa_don",
+      "mark": "T29"
+    },
+    {
+      "title": "Bảng PL.11. Cấu trúc bảng dot_nhap_du_lieu",
+      "mark": "T30"
+    },
+    {
+      "title": "Bảng PL.12. Cấu trúc bảng dot_xu_ly_hoa_don",
+      "mark": "T31"
+    },
+    {
+      "title": "Bảng PL.13. Cấu trúc bảng gioi_han_gui",
+      "mark": "T32"
+    },
+    {
+      "title": "Bảng PL.14. Cấu trúc bảng hinh_anh_phan_anh",
+      "mark": "T33"
+    },
+    {
+      "title": "Bảng PL.15. Cấu trúc bảng hoa_don",
+      "mark": "T34"
+    },
+    {
+      "title": "Bảng PL.16. Cấu trúc bảng khoi_toa_nha",
+      "mark": "T35"
+    },
+    {
+      "title": "Bảng PL.17. Cấu trúc bảng lich_su_cu_tru",
+      "mark": "T36"
+    },
+    {
+      "title": "Bảng PL.18. Cấu trúc bảng loai_phi",
+      "mark": "T37"
+    },
+    {
+      "title": "Bảng PL.19. Cấu trúc bảng nguoi_dung",
+      "mark": "T38"
+    },
+    {
+      "title": "Bảng PL.20. Cấu trúc bảng phan_anh",
+      "mark": "T39"
+    },
+    {
+      "title": "Bảng PL.21. Cấu trúc bảng phieu_bao_tri",
+      "mark": "T40"
+    },
+    {
+      "title": "Bảng PL.22. Cấu trúc bảng phieu_thu_chi",
+      "mark": "T41"
+    },
+    {
+      "title": "Bảng PL.23. Cấu trúc bảng phuong_tien",
+      "mark": "T42"
+    },
+    {
+      "title": "Bảng PL.24. Cấu trúc bảng quy_tai_chinh",
+      "mark": "T43"
+    },
+    {
+      "title": "Bảng PL.25. Cấu trúc bảng schema_migrations",
+      "mark": "T44"
+    },
+    {
+      "title": "Bảng PL.26. Cấu trúc bảng tang_toa_nha",
+      "mark": "T45"
+    },
+    {
+      "title": "Bảng PL.27. Cấu trúc bảng thiet_bi",
+      "mark": "T46"
+    },
+    {
+      "title": "Bảng PL.28. Cấu trúc bảng thong_bao",
+      "mark": "T47"
+    },
+    {
+      "title": "Bảng PL.29. Cấu trúc bảng thong_bao_da_doc",
+      "mark": "T48"
+    },
+    {
+      "title": "Bảng PL.30. Cấu trúc bảng tien_ich",
+      "mark": "T49"
+    },
+    {
+      "title": "Bảng PL.31. Cấu trúc bảng vi_tri_qr",
+      "mark": "T50"
+    },
+    {
+      "title": "Bảng PL.32. Cấu trúc bảng yeu_cau_gui",
+      "mark": "T51"
+    },
+    {
+      "title": "Bảng PL.33. Cấu trúc bảng nhat_ky_nghiep_vu",
+      "mark": "T52"
+    },
+    {
+      "title": "Bảng PL.34. Tám view lịch sử nghiệp vụ",
+      "mark": "T53"
+    }
+  ],
+  "bookmarks": {
+    "H1": "MỞ ĐẦU",
+    "H2": "CHƯƠNG 1. TỔNG QUAN TÀI LIỆU",
+    "H3": "1.1. CÁC CÔNG VIỆC VÀ DỰ ÁN LIÊN QUAN",
+    "H4": "1.1.1. Các cách tổ chức quản lý và tiếp nhận phản ánh",
+    "T1": "Bảng 1.1. So sánh các phương án giải quyết bài toán",
+    "H5": "1.1.2. Sự khác biệt và giá trị của đề tài",
+    "H6": "1.2. CƠ SỞ LÝ THUYẾT VÀ NGHIỆP VỤ",
+    "H7": "1.2.1. Quy trình vận hành và quản lý yêu cầu",
+    "H8": "1.2.2. Phân tích hướng đối tượng và các mô hình thiết kế",
+    "H9": "1.2.3. Dữ liệu quan hệ, giao dịch và tính nhất quán",
+    "H10": "1.2.4. Phân quyền và bảo vệ dữ liệu",
+    "H11": "1.3. CÔNG NGHỆ VÀ CÔNG CỤ SỬ DỤNG",
+    "H12": "1.3.1. React, giao diện thích ứng và Vite",
+    "H13": "1.3.2. Node.js, Express và MySQL",
+    "H14": "1.3.3. html5-qrcode, qrcode và camera trình duyệt",
+    "H15": "1.3.4. Công cụ phát triển và kiểm thử",
+    "H16": "CHƯƠNG 2. PHƯƠNG PHÁP THỰC HIỆN",
+    "H17": "2.1. XÁC ĐỊNH YÊU CẦU VÀ PHÂN RÃ CHỨC NĂNG",
+    "H18": "2.1.1. Tác nhân, phạm vi và yêu cầu chức năng",
+    "T2": "Bảng 2.1. Danh sách yêu cầu chức năng chính",
+    "H19": "2.1.2. Yêu cầu phi chức năng và tiêu chí đánh giá",
+    "T3": "Bảng 2.2. Yêu cầu phi chức năng và cách kiểm tra",
+    "F2_1": "Hình 2.1. Phân rã chức năng của hệ thống",
+    "H20": "2.2. PHÂN TÍCH HỆ THỐNG VỚI SƠ ĐỒ USE CASE",
+    "H21": "2.2.1. Use Case tổng thể và phân rã theo tác nhân",
+    "F2_2": "Hình 2.2. Use Case tổng thể",
+    "F2_3": "Hình 2.3. Use Case phân rã Ban quản lý",
+    "F2_4": "Hình 2.4. Use Case cư dân, người gửi công khai và kỹ thuật viên",
+    "H22": "2.2.2. Đặc tả năm Use Case cốt lõi",
+    "T4": "Bảng 2.3. UC01 – Đăng nhập và phân quyền",
+    "T5": "Bảng 2.4. UC02 – Sinh và xuất mã QR vị trí",
+    "T6": "Bảng 2.5. UC03 – Quét QR và gửi phản ánh",
+    "T7": "Bảng 2.6. UC04 – Phân công và xử lý phản ánh",
+    "T8": "Bảng 2.7. UC05 – Lập và phát hành hóa đơn dịch vụ",
+    "H23": "2.3. MÔ HÌNH HÓA HOẠT ĐỘNG VÀ TƯƠNG TÁC",
+    "H24": "2.3.1. Sơ đồ hoạt động của bốn quy trình chính",
+    "F2_5": "Hình 2.5. Hoạt động tạo và xuất mã QR vị trí",
+    "F2_6": "Hình 2.6. Hoạt động quét QR và gửi phản ánh",
+    "F2_7": "Hình 2.7. Hoạt động phân công, xử lý và nghiệm thu",
+    "F2_8": "Hình 2.8. Hoạt động lập, duyệt và gửi hóa đơn",
+    "H25": "2.3.2. Sơ đồ tuần tự của các luồng nghiệp vụ",
+    "F2_9": "Hình 2.9. Tuần tự tạo mã QR vị trí",
+    "F2_10": "Hình 2.10. Tuần tự quét QR và gửi phản ánh",
+    "F2_11": "Hình 2.11. Tuần tự điều phối và chuyển trạng thái phản ánh",
+    "F2_12": "Hình 2.12. Tuần tự tra cứu hóa đơn và hiển thị VietQR",
+    "H26": "2.3.3. Mô hình trạng thái phản ánh",
+    "F2_13": "Hình 2.13. Vòng đời và điều kiện chuyển trạng thái phản ánh",
+    "T9": "Bảng 2.8. Quy tắc chuyển trạng thái phản ánh",
+    "H27": "2.4. THIẾT KẾ CẤU TRÚC TĨNH VÀ CƠ SỞ DỮ LIỆU",
+    "H28": "2.4.1. Sơ đồ lớp phân tích và ánh xạ mô-đun",
+    "F2_14": "Hình 2.14. Sơ đồ lớp phân tích các khái niệm trọng tâm",
+    "H29": "2.4.2. ERD thống nhất và phạm vi mô hình dữ liệu",
+    "F2_15": "Hình 2.15. ERD thống nhất 18 bảng trọng tâm, 218 thuộc tính và 46 quan hệ",
+    "T10": "Bảng 2.9. Nhóm bảng và vai trò trong thiết kế dữ liệu",
+    "H30": "2.4.3. Thiết kế chi tiết bảng và ràng buộc",
+    "T11": "Bảng 2.10. Các ràng buộc dữ liệu trọng tâm",
+    "H31": "2.5. KIẾN TRÚC HỆ THỐNG VÀ LỰA CHỌN CÔNG NGHỆ",
+    "H32": "2.5.1. Kiến trúc ba tầng và dữ liệu vào – ra",
+    "F2_16": "Hình 2.16. Kiến trúc ba tầng React – Express – MySQL",
+    "F2_17": "Hình 2.17. Luồng dữ liệu phản ánh từ QR đến nghiệm thu",
+    "H33": "2.5.2. Lý do lựa chọn và các phương án thay thế",
+    "T12": "Bảng 2.11. Lựa chọn thiết kế và công nghệ",
+    "H34": "2.6. THÁCH THỨC KỸ THUẬT VÀ THUẬT TOÁN XỬ LÝ",
+    "H35": "2.6.1. Quét camera và kiểm tra URL QR",
+    "H36": "2.6.2. Xử lý ảnh và thử lại khi lỗi mạng",
+    "H37": "2.6.3. Trạng thái, đồng thời và lịch sử",
+    "H38": "2.6.4. Tính tiền, chốt nguồn và VietQR",
+    "H39": "2.7. THIẾT KẾ GIAO DIỆN NGƯỜI DÙNG",
+    "H40": "2.7.1. Giao diện Ban quản lý",
+    "H41": "2.7.2. Giao diện cư dân và kỹ thuật viên",
+    "H42": "CHƯƠNG 3. CÀI ĐẶT THỬ NGHIỆM, KẾT QUẢ VÀ ĐÁNH GIÁ",
+    "H43": "3.1. MÔI TRƯỜNG PHÁT TRIỂN VÀ CÔNG CỤ CÀI ĐẶT",
+    "H44": "3.1.1. Môi trường và phiên bản được kiểm chứng",
+    "T13": "Bảng 3.1. Môi trường dùng cho lần kiểm chứng báo cáo",
+    "H45": "3.1.2. Cài đặt và cấu hình chạy thử",
+    "H46": "3.2. CÀI ĐẶT VÀ HIỆN THỰC HÓA HỆ THỐNG",
+    "H47": "3.2.1. Hiện thực cơ sở dữ liệu và dữ liệu thử",
+    "H48": "3.2.2. Backend RESTful API và cơ chế xác thực",
+    "T14": "Bảng 3.2. Các API tiêu biểu của luồng cốt lõi",
+    "H49": "3.2.3. Sinh QR, nhận ảnh và xử lý phản ánh",
+    "H50": "3.2.4. Frontend, cửa sổ thao tác và tích hợp camera",
+    "H51": "3.3. KẾT QUẢ GIAO DIỆN VÀ CÁC PHÂN HỆ ĐÃ XÂY DỰNG",
+    "H52": "3.3.1. Kết quả phân hệ Ban quản lý",
+    "F3_1": "Hình 3.1. Biểu mẫu đăng nhập của hệ thống",
+    "F3_2": "Hình 3.2. Màn hình tổng quan vận hành của Ban quản lý",
+    "F3_3": "Hình 3.3. Danh sách hồ sơ cư dân",
+    "F3_4": "Hình 3.4. Cửa sổ thêm căn hộ trên máy tính",
+    "F3_5": "Hình 3.5. Cửa sổ thao tác căn hộ ở màn hình hẹp",
+    "F3_6": "Hình 3.6. Xem trước và xuất mã QR vị trí",
+    "F3_7": "Hình 3.7. Chi tiết phản ánh và thao tác xử lý",
+    "H53": "3.3.2. Kết quả phân hệ cư dân và giao diện di động",
+    "F3_8": "Hình 3.8. Biểu mẫu phản ánh theo QR trên màn hình di động",
+    "F3_9": "Hình 3.9. Cửa sổ thanh toán và mã VietQR trong luồng kiểm thử",
+    "H54": "3.4. KIỂM THỬ HỆ THỐNG VÀ ĐÁNH GIÁ",
+    "H55": "3.4.1. Phương pháp, dữ liệu và kết quả chạy lại",
+    "T15": "Bảng 3.3. Kết quả kiểm chứng tự động ngày 17/11/2026",
+    "H56": "3.4.2. Ma trận kiểm thử chức năng và ngoại lệ",
+    "T16": "Bảng 3.4. Kiểm thử nhóm tài khoản, dữ liệu nền và tiếp nhận",
+    "T17": "Bảng 3.5. Kiểm thử xử lý, tài chính, thông báo và giao diện",
+    "H57": "3.4.3. Thử nghiệm quét QR đa thiết bị và trình duyệt",
+    "T18": "Bảng 3.6. Tình trạng thực nghiệm QR trên thiết bị vật lý",
+    "H58": "3.4.4. Đối chiếu mục tiêu, hạn chế và đánh giá chung",
+    "T19": "Bảng 3.7. Mức độ đáp ứng mục tiêu đề cương",
+    "H59": "KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN",
+    "H60": "1. KẾT QUẢ ĐẠT ĐƯỢC",
+    "H61": "2. KIẾN THỨC, KỸ NĂNG VÀ KINH NGHIỆM",
+    "H62": "3. HẠN CHẾ VÀ ĐỀ XUẤT PHÁT TRIỂN",
+    "H63": "PHỤ LỤC",
+    "H64": "PHỤ LỤC 1. HƯỚNG DẪN SỬ DỤNG VÀ TÁI KIỂM CHỨNG",
+    "H65": "PL1.1. Quy trình sử dụng theo vai trò",
+    "T20": "Bảng PL.1. Quy trình thao tác Ban quản lý",
+    "T21": "Bảng PL.2. Quy trình cư dân và kỹ thuật viên",
+    "H66": "PL1.2. Chạy lại kiểm thử và đọc bằng chứng",
+    "H67": "PHỤ LỤC 2. TỪ ĐIỂN DỮ LIỆU ĐẦY ĐỦ",
+    "H68": "PL2.1. can_ho",
+    "T22": "Bảng PL.3. Cấu trúc bảng can_ho",
+    "H69": "PL2.2. cau_hinh_phi",
+    "T23": "Bảng PL.4. Cấu trúc bảng cau_hinh_phi",
+    "H70": "PL2.3. chi_so_dich_vu",
+    "T24": "Bảng PL.5. Cấu trúc bảng chi_so_dich_vu",
+    "H71": "PL2.4. chi_tiet_hoa_don",
+    "T25": "Bảng PL.6. Cấu trúc bảng chi_tiet_hoa_don",
+    "H72": "PL2.5. chung_tu_thu_chi",
+    "T26": "Bảng PL.7. Cấu trúc bảng chung_tu_thu_chi",
+    "H73": "PL2.6. cu_dan",
+    "T27": "Bảng PL.8. Cấu trúc bảng cu_dan",
+    "H74": "PL2.7. dat_lich_tien_ich",
+    "T28": "Bảng PL.9. Cấu trúc bảng dat_lich_tien_ich",
+    "H75": "PL2.8. dot_lap_hoa_don",
+    "T29": "Bảng PL.10. Cấu trúc bảng dot_lap_hoa_don",
+    "H76": "PL2.9. dot_nhap_du_lieu",
+    "T30": "Bảng PL.11. Cấu trúc bảng dot_nhap_du_lieu",
+    "H77": "PL2.10. dot_xu_ly_hoa_don",
+    "T31": "Bảng PL.12. Cấu trúc bảng dot_xu_ly_hoa_don",
+    "H78": "PL2.11. gioi_han_gui",
+    "T32": "Bảng PL.13. Cấu trúc bảng gioi_han_gui",
+    "H79": "PL2.12. hinh_anh_phan_anh",
+    "T33": "Bảng PL.14. Cấu trúc bảng hinh_anh_phan_anh",
+    "H80": "PL2.13. hoa_don",
+    "T34": "Bảng PL.15. Cấu trúc bảng hoa_don",
+    "H81": "PL2.14. khoi_toa_nha",
+    "T35": "Bảng PL.16. Cấu trúc bảng khoi_toa_nha",
+    "H82": "PL2.15. lich_su_cu_tru",
+    "T36": "Bảng PL.17. Cấu trúc bảng lich_su_cu_tru",
+    "H83": "PL2.16. loai_phi",
+    "T37": "Bảng PL.18. Cấu trúc bảng loai_phi",
+    "H84": "PL2.17. nguoi_dung",
+    "T38": "Bảng PL.19. Cấu trúc bảng nguoi_dung",
+    "H85": "PL2.18. phan_anh",
+    "T39": "Bảng PL.20. Cấu trúc bảng phan_anh",
+    "H86": "PL2.19. phieu_bao_tri",
+    "T40": "Bảng PL.21. Cấu trúc bảng phieu_bao_tri",
+    "H87": "PL2.20. phieu_thu_chi",
+    "T41": "Bảng PL.22. Cấu trúc bảng phieu_thu_chi",
+    "H88": "PL2.21. phuong_tien",
+    "T42": "Bảng PL.23. Cấu trúc bảng phuong_tien",
+    "H89": "PL2.22. quy_tai_chinh",
+    "T43": "Bảng PL.24. Cấu trúc bảng quy_tai_chinh",
+    "H90": "PL2.23. schema_migrations",
+    "T44": "Bảng PL.25. Cấu trúc bảng schema_migrations",
+    "H91": "PL2.24. tang_toa_nha",
+    "T45": "Bảng PL.26. Cấu trúc bảng tang_toa_nha",
+    "H92": "PL2.25. thiet_bi",
+    "T46": "Bảng PL.27. Cấu trúc bảng thiet_bi",
+    "H93": "PL2.26. thong_bao",
+    "T47": "Bảng PL.28. Cấu trúc bảng thong_bao",
+    "H94": "PL2.27. thong_bao_da_doc",
+    "T48": "Bảng PL.29. Cấu trúc bảng thong_bao_da_doc",
+    "H95": "PL2.28. tien_ich",
+    "T49": "Bảng PL.30. Cấu trúc bảng tien_ich",
+    "H96": "PL2.29. vi_tri_qr",
+    "T50": "Bảng PL.31. Cấu trúc bảng vi_tri_qr",
+    "H97": "PL2.30. yeu_cau_gui",
+    "T51": "Bảng PL.32. Cấu trúc bảng yeu_cau_gui",
+    "H98": "PL2.31. nhat_ky_nghiep_vu",
+    "T52": "Bảng PL.33. Cấu trúc bảng nhat_ky_nghiep_vu",
+    "H99": "PL2.32. Các view lịch sử và nguồn schema",
+    "T53": "Bảng PL.34. Tám view lịch sử nghiệp vụ",
+    "H100": "DANH MỤC TÀI LIỆU THAM KHẢO",
+    "TLTK_1": "[1] ",
+    "TLTK_2": "[2] ",
+    "TLTK_3": "[3] ",
+    "TLTK_4": "[4] ",
+    "TLTK_5": "[5] ",
+    "TLTK_6": "[6] ",
+    "TLTK_7": "[7] ",
+    "TLTK_8": "[8] ",
+    "TLTK_9": "[9] ",
+    "TLTK_10": "[10] ",
+    "TLTK_11": "[11] "
+  },
+  "citations": {
+    "3": 5,
+    "10": 6,
+    "5": 5,
+    "2": 2,
+    "6": 6,
+    "8": 2,
+    "9": 3,
+    "4": 3,
+    "11": 2,
+    "7": 2,
+    "1": 3
+  }
+}

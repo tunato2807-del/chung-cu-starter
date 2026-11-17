@@ -1,0 +1,158 @@
+
+> test:e2e
+> node --env-file-if-exists=.env scripts/test-local.js e2e
+
+MySQL thesis schema current: 001_thesis_schema.sql (31 tables, 8 history views)
+[WebServer] (node:273042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:273056) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 96 tests using 1 worker
+
+(node:273096) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 e2e/amenities.spec.js:13:3 › amenity creation → household booking → overlap error → approval → cancellation → rejection at 1440px (10.7s)
+  ✓   2 e2e/amenities.spec.js:13:3 › amenity creation → household booking → overlap error → approval → cancellation → rejection at 375px (7.4s)
+  ✓   3 e2e/announcements.spec.js:9:3 › announcement draft → publish → unread/read → bill reminder → paid at 1440px (6.4s)
+  ✓   4 e2e/announcements.spec.js:9:3 › announcement draft → publish → unread/read → bill reminder → paid at 375px (4.8s)
+  ✓   5 e2e/apartment-accounts.spec.js:8:3 › apartment login → automatic householder binding → password reset → handover at 1440px (11.2s)
+  ✓   6 e2e/apartment-accounts.spec.js:8:3 › apartment login → automatic householder binding → password reset → handover at 375px (9.9s)
+  ✓   7 e2e/billing-batch-actions.spec.js:13:3 › bulk approve → stale source → review bank → lost publish response → resident QR at 1440px (4.8s)
+  ✓   8 e2e/billing-batch-actions.spec.js:13:3 › bulk approve → stale source → review bank → lost publish response → resident QR at 375px (3.1s)
+  ✓   9 e2e/billing-batch.spec.js:9:3 › batch preview → missing data → source change → lost response → retry at 1440px (2.7s)
+  ✓  10 e2e/billing-batch.spec.js:9:3 › batch preview → missing data → source change → lost response → retry at 375px (2.2s)
+  ✓  11 e2e/billing.spec.js:8:3 › prices + electricity tiers → incomplete draft → meters → approve → send → resident QR → collect at 1440px (8.1s)
+  ✓  12 e2e/billing.spec.js:8:3 › prices + electricity tiers → incomplete draft → meters → approve → send → resident QR → collect at 375px (6.2s)
+  ✓  13 e2e/building-map.spec.js:9:3 › building map: hierarchy, filters, pagination, editing and recovery at 1440px (6.5s)
+  ✓  14 e2e/building-map.spec.js:9:3 › building map: hierarchy, filters, pagination, editing and recovery at 375px (5.0s)
+  ✓  15 e2e/building-map.spec.js:278:1 › building map discards slow responses and blocks residents (1.1s)
+  ✓  16 e2e/building-structure.spec.js:9:3 › building structure: empty block/floor → apartment picker → rename → stale form → safe delete at 1440px (5.9s)
+  ✓  17 e2e/building-structure.spec.js:9:3 › building structure: empty block/floor → apartment picker → rename → stale form → safe delete at 375px (5.2s)
+  ✓  18 e2e/connection-recovery.spec.js:28:1 › QR đã in với IP cũ mở biểu mẫu và public API trên địa chỉ hiện tại (455ms)
+  ✓  19 e2e/connection-recovery.spec.js:72:1 › QR với IP cũ và token không tồn tại vẫn nhận lỗi 404 từ máy chủ hiện tại (503ms)
+  ✓  20 e2e/connection-recovery.spec.js:129:3 › trang quét QR từ chối host ngoài hệ thống trước khi mở biểu mẫu (448ms)
+  ✓  21 e2e/connection-recovery.spec.js:129:3 › trang quét QR từ chối giao thức javascript trước khi mở biểu mẫu (421ms)
+  ✓  22 e2e/connection-recovery.spec.js:129:3 › trang quét QR từ chối URL chứa thông tin đăng nhập trước khi mở biểu mẫu (553ms)
+  ✓  23 e2e/connection-recovery.spec.js:161:1 › đăng nhập được trả về tài khoản nhưng không lưu được phiên phải ở lại trang đăng nhập (580ms)
+  ✓  24 e2e/connection-recovery.spec.js:220:1 › phiên hết hạn mở lại đăng nhập, giữ lỗi sai mật khẩu và bỏ qua 401 cũ sau đăng nhập mới (1.4s)
+  ✓  25 e2e/connection-recovery.spec.js:320:1 › phiên hết hạn trên biểu mẫu QR giữ nội dung và ảnh, không tự gửi lại dưới vai trò khách (1.3s)
+  ✓  26 e2e/connection-recovery.spec.js:414:1 › cookie hết hạn ngay khi mở trang hiển thị hướng dẫn đăng nhập lại (488ms)
+  ✓  27 e2e/connection-recovery.spec.js:430:1 › tải báo cáo trả 401 cập nhật AuthContext và mở lại trang đăng nhập (815ms)
+  ✓  28 e2e/dashboard.spec.js:10:3 › operations dashboard: exact totals, links, refresh, empty/error states at 1440px (9.3s)
+  ✓  29 e2e/dashboard.spec.js:10:3 › operations dashboard: exact totals, links, refresh, empty/error states at 375px (6.4s)
+[WebServer] (node:273042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:273042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:273042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:273042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  30 e2e/data-exchange.spec.js:12:3 › BQL imports Excel with previews and exports complete filtered lists at 1440px (4.3s)
+[WebServer] (node:273042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:273042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:273042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:273042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  31 e2e/data-exchange.spec.js:12:3 › BQL imports Excel with previews and exports complete filtered lists at 375px (3.9s)
+  ✓  32 e2e/dialog-workflows.spec.js:142:1 › detail and nested edit keep filters, data on validation error, focus and scroll (1.4s)
+  ✓  33 e2e/dialog-workflows.spec.js:213:1 › a pending mutation blocks Escape and close, then closes only its form (943ms)
+  ✓  34 e2e/dialog-workflows.spec.js:251:1 › related table opens above the record and closes back to the original context (1.9s)
+  ✓  35 e2e/dialog-workflows.spec.js:298:1 › temporary account credentials survive refresh and close above their parent (1.0s)
+  ✓  36 e2e/dialog-workflows.spec.js:346:1 › creating a record opens its detail, closes the completed form and keeps the list (1.0s)
+  ✓  37 e2e/dialog-workflows.spec.js:386:1 › expired authentication removes record dialogs and private content (1.0s)
+  ✓  38 e2e/dialog-workflows.spec.js:426:3 › apartment editor fits 320px, traps keyboard focus and returns to its trigger (1.1s)
+  ✓  39 e2e/dialog-workflows.spec.js:426:3 › apartment editor fits 768px, traps keyboard focus and returns to its trigger (959ms)
+  ✓  40 e2e/dialog-workflows.spec.js:426:3 › apartment editor fits 1024px, traps keyboard focus and returns to its trigger (917ms)
+  ✓  41 e2e/dialog-workflows.spec.js:426:3 › apartment editor fits 1440px, traps keyboard focus and returns to its trigger (999ms)
+  ✓  42 e2e/dialog-workflows.spec.js:476:3 › action opens directly and dismisses on /quan-tri/cu-dan (685ms)
+  ✓  43 e2e/dialog-workflows.spec.js:476:3 › action opens directly and dismisses on /quan-tri/phuong-tien (694ms)
+  ✓  44 e2e/dialog-workflows.spec.js:476:3 › action opens directly and dismisses on /quan-tri/nhan-su (620ms)
+  ✓  45 e2e/dialog-workflows.spec.js:476:3 › action opens directly and dismisses on /quan-tri/don-gia (605ms)
+  ✓  46 e2e/dialog-workflows.spec.js:476:3 › action opens directly and dismisses on /quan-tri/chi-so (660ms)
+  ✓  47 e2e/dialog-workflows.spec.js:476:3 › action opens directly and dismisses on /quan-tri/vi-tri-qr (756ms)
+  ✓  48 e2e/dialog-workflows.spec.js:476:3 › action opens directly and dismisses on /quan-tri/thiet-bi (662ms)
+  ✓  49 e2e/dialog-workflows.spec.js:476:3 › action opens directly and dismisses on /quan-tri/tien-ich (791ms)
+  ✓  50 e2e/dialog-workflows.spec.js:476:3 › action opens directly and dismisses on /quan-tri/quy (676ms)
+  ✓  51 e2e/equipment-qr.spec.js:11:3 › equipment QR → photo report → reassignment → stale form → snapshot/filter → unlink at 1440px (6.6s)
+  ✓  52 e2e/equipment-qr.spec.js:11:3 › equipment QR → photo report → reassignment → stale form → snapshot/filter → unlink at 375px (6.0s)
+  ✓  53 e2e/financial-reports.spec.js:9:3 › financial reports filters → overdue → invoice reminder/payment → Vietnam receipt date at 1440px (6.0s)
+  ✓  54 e2e/financial-reports.spec.js:9:3 › financial reports filters → overdue → invoice reminder/payment → Vietnam receipt date at 375px (5.2s)
+  ✓  55 e2e/gallery-upload.spec.js:25:1 › large library JPEG with missing MIME is resized, previewed and sent after native FileList is cleared (2.0s)
+  ✓  56 e2e/gallery-upload.spec.js:82:1 › submitting while decoding is blocked until the processed image is ready (783ms)
+  ✓  57 e2e/in-page-photo.spec.js:54:1 › capture creates a visible JPEG, attaches it to FormData and stops the camera (803ms)
+  ✓  58 e2e/in-page-photo.spec.js:117:1 › denied camera permission preserves typed content and allows library selection (676ms)
+  ✓  59 e2e/in-page-photo.spec.js:149:1 › closing a pending camera or leaving the form stops its stream (857ms)
+  ✓  60 e2e/interface.spec.js:8:3 › interface: keyboard access, password visibility, navigation and logout at 1440px (2.5s)
+  ✓  61 e2e/interface.spec.js:8:3 › interface: keyboard access, password visibility, navigation and logout at 768px (2.0s)
+  ✓  62 e2e/interface.spec.js:8:3 › interface: keyboard access, password visibility, navigation and logout at 320px (1.8s)
+  ✓  63 e2e/maintenance.spec.js:13:3 › equipment → periodic work → technician report → return → acceptance → one-off cancellation at 1440px (10.0s)
+  ✓  64 e2e/maintenance.spec.js:13:3 › equipment → periodic work → technician report → return → acceptance → one-off cancellation at 375px (7.0s)
+  ✓  65 e2e/photo-carousel.spec.js:4:3 › photo carousel: local photographs, autoplay, pause, manual navigation and offscreen at 1440px (748ms)
+  ✓  66 e2e/photo-carousel.spec.js:4:3 › photo carousel: local photographs, autoplay, pause, manual navigation and offscreen at 375px (1.8s)
+  ✓  67 e2e/photo-carousel.spec.js:92:1 › photo carousel respects reduced motion and changing photos never resets or submits the login form (762ms)
+  ✓  68 e2e/photo-carousel.spec.js:145:1 › missing photo files show a fallback and leave the login form usable (589ms)
+  ✓  69 e2e/qr-preview.spec.js:69:3 › QR-only preview stays by its trigger, dismisses and switches correctly at 1440px (2.0s)
+  ✓  70 e2e/qr-preview.spec.js:154:3 › QR download and print keep the current origin and only print the code at 1440px (1.8s)
+  ✓  71 e2e/qr-preview.spec.js:69:3 › QR-only preview stays by its trigger, dismisses and switches correctly at 375px (1.7s)
+  ✓  72 e2e/qr-preview.spec.js:154:3 › QR download and print keep the current origin and only print the code at 375px (1.6s)
+  ✓  73 e2e/report-draft.spec.js:65:1 › gallery selection and cancellation preserve fields and never submit the form (868ms)
+  ✓  74 e2e/report-draft.spec.js:89:1 › reload restores draft and request key; successful upload clears draft (1.6s)
+  ✓  75 e2e/report-draft.spec.js:134:1 › drafts are isolated by QR and account and expired drafts are removed (1.4s)
+  ✓  76 e2e/report-draft.spec.js:177:1 › blocked storage and invalid uploads keep text editable (6.2s)
+  ✘  77 e2e/report-exports.spec.js:12:3 › download filtered Excel/PDF for debts, receipts and treasury across pages at 1440px (11.8s)
+(node:276653) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  78 e2e/report-exports.spec.js:12:3 › download filtered Excel/PDF for debts, receipts and treasury across pages at 375px (4.5s)
+  ✓  79 e2e/residency.spec.js:8:3 › apartment → resident → profile → transfer → departure → return at 1440px (8.8s)
+  ✓  80 e2e/residency.spec.js:8:3 › apartment → resident → profile → transfer → departure → return at 375px (5.9s)
+  ✓  81 e2e/residency.spec.js:318:3 › same-day transfer accepts today and keeps profile editing available at 1440px (1.0s)
+  ✓  82 e2e/residency.spec.js:318:3 › same-day transfer accepts today and keeps profile editing available at 375px (1.1s)
+  ✓  83 e2e/service-discovery.spec.js:8:3 › service catalog: search, categories, empty state and guest access at 1440px (850ms)
+  ✓  84 e2e/service-discovery.spec.js:8:3 › service catalog: search, categories, empty state and guest access at 375px (1.4s)
+  ✓  85 e2e/service-discovery.spec.js:91:3 › service intent and function search use the signed-in role: QUAN_TRI_VIEN @database (2.3s)
+  ✓  86 e2e/service-discovery.spec.js:91:3 › service intent and function search use the signed-in role: CU_DAN @database (929ms)
+  ✓  87 e2e/service-discovery.spec.js:91:3 › service intent and function search use the signed-in role: KY_THUAT_VIEN @database (1.4s)
+  ✓  88 e2e/treasury.spec.js:10:3 › fund → receipt → expense/proofs → posting → reversal → monthly ledger at 1440px (8.9s)
+  ✓  89 e2e/treasury.spec.js:10:3 › fund → receipt → expense/proofs → posting → reversal → monthly ledger at 375px (7.3s)
+  ✓  90 e2e/vehicles.spec.js:8:3 › register motorbike and bicycle → duplicate → carry on same-day move → end at 1440px (6.0s)
+  ✓  91 e2e/vehicles.spec.js:8:3 › register motorbike and bicycle → duplicate → carry on same-day move → end at 375px (4.5s)
+  ✓  92 e2e/workflow.spec.js:9:1 › guest → management → technician → acceptance → private public lookup (7.1s)
+  ✓  93 e2e/workspace-layout.spec.js:5:3 › header and BQL menu stay aligned while scrolling at 320px (828ms)
+  ✓  94 e2e/workspace-layout.spec.js:5:3 › header and BQL menu stay aligned while scrolling at 768px (1.2s)
+  ✓  95 e2e/workspace-layout.spec.js:5:3 › header and BQL menu stay aligned while scrolling at 1024px (1.0s)
+  ✓  96 e2e/workspace-layout.spec.js:5:3 › header and BQL menu stay aligned while scrolling at 1440px (955ms)
+
+
+  1) e2e/report-exports.spec.js:12:3 › download filtered Excel/PDF for debts, receipts and treasury across pages at 1440px
+
+    TimeoutError: page.waitForEvent: Timeout 10000ms exceeded while waiting for event "download"
+    =========================== logs ===========================
+    waiting for event "download"
+    ============================================================
+
+      37 |     page.on("pageerror", (e) => errors.push(e.message));
+      38 |     async function download(name) {
+    > 39 |       const waiting = page.waitForEvent("download");
+         |                            ^
+      40 |       await page.getByRole("button", { name, exact: true }).click();
+      41 |       const file = await waiting;
+      42 |       expect(await file.failure()).toBeNull();
+        at download (/workspace/chung-cu-starter/e2e/report-exports.spec.js:39:28)
+        at xlsx (/workspace/chung-cu-starter/e2e/report-exports.spec.js:46:23)
+        at /workspace/chung-cu-starter/e2e/report-exports.spec.js:164:29
+
+    Error Context: test-results/report-exports-download-fi-28072-sury-across-pages-at-1440px/error-context.md
+
+  1 failed
+    e2e/report-exports.spec.js:12:3 › download filtered Excel/PDF for debts, receipts and treasury across pages at 1440px
+  95 passed (5.1m)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice

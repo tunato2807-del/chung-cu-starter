@@ -1,0 +1,41 @@
+[
+  {
+    "id": "huong-dan-word",
+    "filename": "Huong dan trinh bay Báo cáo ĐACN_2026-2027.docx",
+    "sha256": "0f3622dbcd74009fb0867e0d3fa4a1624a38983af502e55d48868edf33f74e78",
+    "bytes": 124071,
+    "paragraphs": 628,
+    "tables": 2,
+    "text_chars": 22308,
+    "parts_text_checked": [
+      "word/endnotes.xml",
+      "word/footer1.xml",
+      "word/footer2.xml",
+      "word/footnotes.xml",
+      "word/header1.xml",
+      "word/header2.xml"
+    ]
+  },
+  {
+    "id": "de-cuong",
+    "filename": "1250080221_To_Hoang_Tuan.docx",
+    "sha256": "fb12e7a78fb2180a21759ea0324402c208da5fe45167db1c401223fe35329419",
+    "bytes": 109833,
+    "paragraphs": 272,
+    "tables": 1,
+    "text_chars": 22333,
+    "parts_text_checked": [
+      "word/footnotes.xml",
+      "word/endnotes.xml",
+      "word/header1.xml"
+    ]
+  },
+  {
+    "id": "huong-dan-pdf",
+    "filename": "HƯỚNG DẪN TRÌNH BÀY BÁO CÁO.pdf",
+    "sha256": "0f5402d187485f740bdd3f6f2852e4caf03b85ff014db88ac101101fbcc41818",
+    "bytes": 508284,
+    "pages": 16,
+    "text_chars": 6747
+  }
+]
