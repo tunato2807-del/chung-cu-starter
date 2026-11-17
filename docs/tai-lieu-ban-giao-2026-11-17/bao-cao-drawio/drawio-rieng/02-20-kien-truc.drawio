@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" agent="Editable report diagrams" version="24.7.17" type="device" compressed="false">
+  <diagram id="hinh-2-20" name="Hình 2.20. Kiến trúc ba tầng và kho ảnh">
+    <mxGraphModel dx="800.0" dy="868.34" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="f20-1" value="Tầng trình bày — trình duyệt" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=none;align=center;verticalAlign=top;spacingTop=6;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="253.52" y="105.8" width="263.25" height="117.45" as="geometry" />
+        </mxCell>
+        <mxCell id="f20-2" value="Tầng ứng dụng — Node.js / Express" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=none;align=center;verticalAlign=top;spacingTop=6;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="225.18" y="292.1" width="319.95" height="248.4" as="geometry" />
+        </mxCell>
+        <mxCell id="f20-3" value="Tầng dữ liệu" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=none;align=center;verticalAlign=top;spacingTop=6;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="160.38" y="591.8" width="479.25" height="140.74" as="geometry" />
+        </mxCell>
+        <mxCell id="f20-4" value="React + Router + CSS&lt;br&gt;Camera / chọn ảnh / QR" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=1;arcSize=12;html=1;whiteSpace=wrap;fillColor=#ffffff;align=center;spacing=6;" parent="1" vertex="1">
+          <mxGeometry x="273.1" y="150.35" width="222.75" height="62.1" as="geometry" />
+        </mxCell>
+        <mxCell id="f20-5" value="Router + middleware&lt;br&gt;Phiên / quyền / giới hạn" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=1;arcSize=12;html=1;whiteSpace=wrap;fillColor=#ffffff;align=center;spacing=6;" parent="1" vertex="1">
+          <mxGeometry x="273.77" y="336.65" width="221.4" height="62.1" as="geometry" />
+        </mxCell>
+        <mxCell id="f20-6" value="Service nghiệp vụ&lt;br&gt;Validation / giao dịch / snapshot" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=1;arcSize=12;html=1;whiteSpace=wrap;fillColor=#ffffff;align=center;spacing=6;" parent="1" vertex="1">
+          <mxGeometry x="239.35" y="467.6" width="290.25" height="62.1" as="geometry" />
+        </mxCell>
+        <mxCell id="f20-7" value="MySQL / InnoDB&lt;br&gt;31 bảng + 8 view" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;shape=cylinder;html=1;whiteSpace=wrap;boundedLbl=1;backgroundOutline=1;fillColor=#ffffff;spacingTop=10;" parent="1" vertex="1">
+          <mxGeometry x="171.85" y="636.35" width="171.45" height="85.39" as="geometry" />
+        </mxCell>
+        <mxCell id="f20-8" value="Kho tệp ảnh&lt;br&gt;Metadata trong MySQL" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;shape=cylinder;html=1;whiteSpace=wrap;boundedLbl=1;backgroundOutline=1;fillColor=#ffffff;spacingTop=10;" parent="1" vertex="1">
+          <mxGeometry x="407.42" y="636.35" width="221.4" height="85.39" as="geometry" />
+        </mxCell>
+        <mxCell id="f20-9" value="HTTPS /api&lt;br&gt;JSON hoặc multipart" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;html=1;edgeStyle=none;noEdgeStyle=1;rounded=0;endArrow=block;endSize=9;endFill=1;labelBackgroundColor=#ffffff;labelBorderColor=none;align=center;verticalAlign=middle;exitX=0.5;exitY=1.0;exitPerimeter=0;entryX=0.5;entryY=-0.0;entryPerimeter=0;" parent="1" edge="1" source="f20-4" target="f20-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="384.48" y="221.47" />
+              <mxPoint x="384.48" y="252.68" />
+              <mxPoint x="384.48" y="296.37" />
+              <mxPoint x="384.48" y="327.59" />
+            </Array>
+            <mxPoint x="67.5" y="-10.81" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f20-10" value="" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;html=1;edgeStyle=none;noEdgeStyle=1;rounded=0;endArrow=block;endSize=9;endFill=1;labelBackgroundColor=#ffffff;labelBorderColor=none;align=center;verticalAlign=middle;exitX=0.5;exitY=1.0;exitPerimeter=0;entryX=0.5;entryY=-0.01;entryPerimeter=0;" parent="1" edge="1" source="f20-5" target="f20-6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="384.48" y="416.48" />
+              <mxPoint x="384.48" y="439.1" />
+              <mxPoint x="384.48" y="458.2" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f20-11" value="mysql2 / truy vấn tham số" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;html=1;edgeStyle=none;noEdgeStyle=1;rounded=0;endArrow=block;endSize=9;endFill=1;labelBackgroundColor=#ffffff;labelBorderColor=none;align=center;verticalAlign=middle;exitX=0.31;exitY=1.0;exitPerimeter=0;entryX=0.52;entryY=-0.01;entryPerimeter=0;" parent="1" edge="1" source="f20-6" target="f20-7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="321.34" y="534.11" />
+              <mxPoint x="293.51" y="549.14" />
+              <mxPoint x="267.02" y="563.45" />
+              <mxPoint x="264.3" y="596.38" />
+              <mxPoint x="261.77" y="626.87" />
+            </Array>
+            <mxPoint x="83.1" y="7.81" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f20-12" value="Kiểm tra và lưu ảnh" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;html=1;edgeStyle=none;noEdgeStyle=1;rounded=0;endArrow=block;endSize=9;endFill=1;labelBackgroundColor=#ffffff;labelBorderColor=none;align=center;verticalAlign=middle;exitX=0.59;exitY=1.0;exitPerimeter=0;entryX=0.37;entryY=-0.01;entryPerimeter=0;" parent="1" edge="1" source="f20-6" target="f20-8">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="417.79" y="536.42" />
+              <mxPoint x="430.74" y="550.57" />
+              <mxPoint x="442.53" y="563.45" />
+              <mxPoint x="465.07" y="597.51" />
+              <mxPoint x="485.54" y="628.44" />
+            </Array>
+            <mxPoint x="64.89" y="-8.42" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f20-13" value="Hình 2.20. Kiến trúc ba tầng và kho ảnh" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;text;html=1;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontSize=22;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="20.0" y="12.0" width="760.0" height="55.0" as="geometry" />
+        </mxCell>
+        <mxCell id="f20-14" value="Nguồn: chuyển thành đối tượng draw.io từ sơ đồ tương ứng trong bản báo cáo người dùng cung cấp.&lt;br&gt;Các ô, chữ và đường nối đều chỉnh sửa được." style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;text;html=1;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontSize=14;fontColor=#444444;" parent="1" vertex="1">
+          <mxGeometry x="20.0" y="768.34" width="760.0" height="80.0" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

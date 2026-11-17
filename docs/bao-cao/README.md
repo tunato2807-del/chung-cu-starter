@@ -1,5 +1,7 @@
 # Hồ sơ phân tích thiết kế và nghiệm thu
 
+> **Bộ tài liệu bàn giao 17/11/2026:** [Word mới, 21 file draw.io riêng, XML để copy và hình minh họa](../tai-lieu-ban-giao-2026-11-17/README.md). Có bảng đối chiếu từng mục Word với giao diện cửa sổ trên `main`.
+
 > **Quyển báo cáo mới theo hướng dẫn khoa/GVHD:** [Word, PDF xem trước và hướng dẫn hoàn thiện](quyen-bao-cao-2026/README.md). Đối chiếu mã nguồn `56ebfe8`, dùng schema **31 bảng + 8 view**, có 25 hình và 32 ca nghiệm thu. Những hình 38 bảng bên dưới thuộc hồ sơ lịch sử, không thay hiện trạng trong quyển mới.
 
 > **CSDL hiện tại (05/11/2026):** [MySQL31 bảng thật, 8 view, giữ đủ nghiệp vụ và18 bảng trọng tâm](../csdl-do-an/README.md). Các hình/kiểm tra schema38 bảng ở bản cũ là lịch sử; ERD vật lý và từ điển đã sinh lại theo baseline mới.

@@ -1,0 +1,34 @@
+﻿Trang thai;File;Muc Word va thay doi
+M;frontend/src/app/App.jsx;Bố cục nền, điều hướng chi tiết thành cửa sổ: Word 2.7, 3.2.3
+M;frontend/src/app/Layout.jsx;Bố cục nền, điều hướng chi tiết thành cửa sổ: Word 2.7, 3.2.3
+M;frontend/src/features/amenities/Amenities.jsx;"Tiện ích và đặt lịch: form/chi tiết trong cửa sổ; Word 3.2.4, 3.3"
+M;frontend/src/features/announcements/Announcements.jsx;"Thông báo: thao tác trong cửa sổ; Word 3.2.4, 3.3"
+M;frontend/src/features/auth/Auth.jsx;"Đổi mật khẩu/quản lý tài khoản: cửa sổ; không phải thay luồng đăng nhập công khai; Word 3.2.3–3.3"
+M;frontend/src/features/auth/Users.jsx;"Đổi mật khẩu/quản lý tài khoản: cửa sổ; không phải thay luồng đăng nhập công khai; Word 3.2.3–3.3"
+M;frontend/src/features/billing/BatchBillActions.jsx;"Lập, duyệt, gửi, xem hóa đơn và VietQR thanh toán: cửa sổ; Word 3.2.4, 3.3"
+M;frontend/src/features/billing/BatchBills.jsx;"Lập, duyệt, gửi, xem hóa đơn và VietQR thanh toán: cửa sổ; Word 3.2.4, 3.3"
+M;frontend/src/features/billing/Billing.jsx;"Lập, duyệt, gửi, xem hóa đơn và VietQR thanh toán: cửa sổ; Word 3.2.4, 3.3"
+M;frontend/src/features/dashboard/Dashboard.jsx;"Tổng quan/biểu đồ và bảng số liệu mở riêng; Word 2.7, 3.2.4, 3.3"
+M;frontend/src/features/dashboard/DashboardCharts.jsx;"Tổng quan/biểu đồ và bảng số liệu mở riêng; Word 2.7, 3.2.4, 3.3"
+M;frontend/src/features/data-exchange/DataExchange.jsx;"Nhập/xuất dữ liệu: cách mở thao tác; không thêm định dạng nhập mới; Word 3.2.4, 3.3"
+M;frontend/src/features/financial-reports/FinancialReports.jsx;"Báo cáo công nợ/thu phí: trình bày thao tác; Word 3.2.4, 3.3"
+M;frontend/src/features/incidents/Reports.jsx;"Phản ánh: chi tiết, phân công, xử lý, nghiệm thu trong cửa sổ; Word 3.2.3–3.3"
+M;frontend/src/features/maintenance/Maintenance.jsx;"Thiết bị và bảo trì: form/chi tiết/phân công; Word 3.2.4, 3.3"
+M;frontend/src/features/qr/Locations.jsx;"Vị trí/thiết bị/QR: form mở riêng, QR xem nhỏ; Word 2.7, 3.2.3, 3.3"
+M;frontend/src/features/qr/QrEquipment.jsx;"Vị trí/thiết bị/QR: form mở riêng, QR xem nhỏ; Word 2.7, 3.2.3, 3.3"
+M;frontend/src/features/qr/QrPreview.jsx;"Vị trí/thiết bị/QR: form mở riêng, QR xem nhỏ; Word 2.7, 3.2.3, 3.3"
+M;frontend/src/features/residency/ApartmentAccounts.jsx;"Căn hộ/cư dân/khối tầng/tài khoản căn: form và chi tiết; Word 3.2.4, 3.3"
+M;frontend/src/features/residency/ApartmentFloorPicker.jsx;"Căn hộ/cư dân/khối tầng/tài khoản căn: form và chi tiết; Word 3.2.4, 3.3"
+M;frontend/src/features/residency/BuildingMap.jsx;"Căn hộ/cư dân/khối tầng/tài khoản căn: form và chi tiết; Word 3.2.4, 3.3"
+M;frontend/src/features/residency/BuildingStructure.jsx;"Căn hộ/cư dân/khối tầng/tài khoản căn: form và chi tiết; Word 3.2.4, 3.3"
+M;frontend/src/features/residency/Residency.jsx;"Căn hộ/cư dân/khối tầng/tài khoản căn: form và chi tiết; Word 3.2.4, 3.3"
+M;frontend/src/features/treasury/Treasury.jsx;"Quỹ/phiếu thu chi/chứng từ/sổ quỹ: cửa sổ; Word 3.2.4, 3.3"
+M;frontend/src/features/vehicles/Vehicles.jsx;"Phương tiện: form thao tác riêng; Word 3.2.4, 3.3"
+A;frontend/src/shared/Dialog.css;Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4
+A;frontend/src/shared/Dialog.jsx;Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4
+A;frontend/src/shared/PageActions.jsx;Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4
+A;frontend/src/shared/dialog-feedback.js;Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4
+A;frontend/src/shared/dialog-navigation.jsx;Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4
+A;frontend/src/shared/dialog-state.js;Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4
+A;frontend/src/shared/resource-events.js;Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4
+M;frontend/src/shared/ui.jsx;Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4

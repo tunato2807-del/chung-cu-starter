@@ -1,0 +1,149 @@
+[
+  {
+    "figure": "2.1",
+    "caption": "Hình 2.1. Phân rã chức năng theo nhóm nghiệp vụ",
+    "filename": "02-01-phan-ra-chuc-nang",
+    "vertices": 8,
+    "edges": 5
+  },
+  {
+    "figure": "2.2",
+    "caption": "Hình 2.2. Use Case tổng thể",
+    "filename": "02-02-use-case-tong-the",
+    "vertices": 22,
+    "edges": 30
+  },
+  {
+    "figure": "2.3",
+    "caption": "Hình 2.3. Use Case phân rã Ban quản lý",
+    "filename": "02-03-use-case-bql",
+    "vertices": 15,
+    "edges": 13
+  },
+  {
+    "figure": "2.4",
+    "caption": "Hình 2.4. Use Case cư dân, người gửi công khai và kỹ thuật viên",
+    "filename": "02-04-use-case-cu-dan",
+    "vertices": 19,
+    "edges": 21
+  },
+  {
+    "figure": "2.5",
+    "caption": "Hình 2.5. Hoạt động tạo và xuất mã QR vị trí",
+    "filename": "02-05-activity-qr",
+    "vertices": 12,
+    "edges": 11
+  },
+  {
+    "figure": "2.6",
+    "caption": "Hình 2.6. Hoạt động quét QR và gửi phản ánh",
+    "filename": "02-06-activity-gui",
+    "vertices": 11,
+    "edges": 11
+  },
+  {
+    "figure": "2.7",
+    "caption": "Hình 2.7. Hoạt động phân công, xử lý và nghiệm thu",
+    "filename": "02-07-activity-xu-ly",
+    "vertices": 12,
+    "edges": 11
+  },
+  {
+    "figure": "2.8",
+    "caption": "Hình 2.8. Hoạt động lập, duyệt, gửi và xác nhận thu hóa đơn",
+    "filename": "02-08-activity-hoa-don",
+    "vertices": 13,
+    "edges": 13
+  },
+  {
+    "figure": "2.9",
+    "caption": "Hình 2.9. Tuần tự tạo và hiển thị QR",
+    "filename": "02-09-sequence-qr",
+    "vertices": 27,
+    "edges": 11
+  },
+  {
+    "figure": "2.10",
+    "caption": "Hình 2.10. Tuần tự mở QR và gửi phản ánh",
+    "filename": "02-10-sequence-gui",
+    "vertices": 33,
+    "edges": 13
+  },
+  {
+    "figure": "2.11",
+    "caption": "Hình 2.11. Tuần tự điều phối và chuyển trạng thái phản ánh",
+    "filename": "02-11-sequence-xu-ly",
+    "vertices": 39,
+    "edges": 15
+  },
+  {
+    "figure": "2.12",
+    "caption": "Hình 2.12. Tuần tự tra cứu hóa đơn và hiển thị VietQR",
+    "filename": "02-12-sequence-vietqr",
+    "vertices": 24,
+    "edges": 10
+  },
+  {
+    "figure": "2.13",
+    "caption": "Hình 2.13. Vòng đời phản ánh",
+    "filename": "02-13-trang-thai-phan-anh",
+    "vertices": 9,
+    "edges": 7
+  },
+  {
+    "figure": "2.14",
+    "caption": "Hình 2.14. Sơ đồ lớp phân tích các khái niệm trọng tâm",
+    "filename": "02-14-lop-phan-tich",
+    "vertices": 42,
+    "edges": 8
+  },
+  {
+    "figure": "2.15",
+    "caption": "Hình 2.15. ERD logic nhà ở, cư trú và phương tiện",
+    "filename": "02-15-erd-cu-tru",
+    "vertices": 28,
+    "edges": 6
+  },
+  {
+    "figure": "2.16",
+    "caption": "Hình 2.16. ERD logic QR, phản ánh và ảnh",
+    "filename": "02-16-erd-phan-anh",
+    "vertices": 26,
+    "edges": 5
+  },
+  {
+    "figure": "2.17",
+    "caption": "Hình 2.17. ERD logic phí, chỉ số, hóa đơn và thông báo",
+    "filename": "02-17-erd-hoa-don",
+    "vertices": 36,
+    "edges": 8
+  },
+  {
+    "figure": "2.18",
+    "caption": "Hình 2.18. ERD vật lý rút gọn của luồng phản ánh và ảnh",
+    "filename": "02-18-erd-vat-ly-phan-anh",
+    "vertices": 21,
+    "edges": 2
+  },
+  {
+    "figure": "2.19",
+    "caption": "Hình 2.19. ERD vật lý rút gọn của luồng hóa đơn",
+    "filename": "02-19-erd-vat-ly-hoa-don",
+    "vertices": 28,
+    "edges": 3
+  },
+  {
+    "figure": "2.20",
+    "caption": "Hình 2.20. Kiến trúc ba tầng và kho ảnh",
+    "filename": "02-20-kien-truc",
+    "vertices": 10,
+    "edges": 4
+  },
+  {
+    "figure": "2.21",
+    "caption": "Hình 2.21. Luồng dữ liệu từ QR đến theo dõi kết quả",
+    "filename": "02-21-luong-du-lieu",
+    "vertices": 11,
+    "edges": 9
+  }
+]

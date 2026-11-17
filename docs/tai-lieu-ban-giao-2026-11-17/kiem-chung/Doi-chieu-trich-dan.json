@@ -1,0 +1,260 @@
+{
+  "output": "Bao-cao-DACN_To-Hoang-Tuan_Bo-sung-trich-dan.docx",
+  "input_sha256": "9b91dc716f22811b6825b8c2eaa20305b4c1581d8db607b206769871f600be36",
+  "edited_paragraphs": 22,
+  "inline_hyperlinks": 49,
+  "all_14_references_used": true,
+  "original_figures_preserved": 25,
+  "tables_preserved": 56,
+  "by_chapter_excluding_tables": {
+    "MỞ ĐẦU": {
+      "paragraphs": 1,
+      "occurrences": 1,
+      "references": [
+        1
+      ]
+    },
+    "CHƯƠNG 1. TỔNG QUAN TÀI LIỆU": {
+      "paragraphs": 12,
+      "occurrences": 16,
+      "references": [
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14
+      ]
+    },
+    "CHƯƠNG 2. PHƯƠNG PHÁP THỰC HIỆN": {
+      "paragraphs": 14,
+      "occurrences": 18,
+      "references": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        13,
+        14
+      ]
+    },
+    "CHƯƠNG 3. CÀI ĐẶT THỬ NGHIỆM, KẾT QUẢ VÀ ĐÁNH GIÁ": {
+      "paragraphs": 8,
+      "occurrences": 9,
+      "references": [
+        2,
+        3,
+        6,
+        9,
+        10,
+        11,
+        12,
+        14
+      ]
+    }
+  },
+  "locations": {
+    "1": [
+      "MỞ ĐẦU"
+    ],
+    "2": [
+      "2.1.2. Yêu cầu chức năng",
+      "2.7. Thiết kế giao diện và trải nghiệm sử dụng",
+      "3.5. Đánh giá mức độ đáp ứng"
+    ],
+    "3": [
+      "1.2. Ứng dụng web, kiến trúc phân tầng và API",
+      "2.5.1. Kiến trúc tổng thể",
+      "3.2.2. Backend và các API tiêu biểu"
+    ],
+    "4": [
+      "1.1.2. Các hệ thống và công cụ có liên quan"
+    ],
+    "5": [
+      "1.6. Xác thực, phân quyền và kiểm thử",
+      "2.2.2. UC01 — Đăng nhập và phân quyền"
+    ],
+    "6": [
+      "1.1.2. Các hệ thống và công cụ có liên quan",
+      "1.3. Mã QR, URL định danh và camera trình duyệt",
+      "2.6.1. Kiểm soát QR, HTTPS và thay đổi địa chỉ mạng",
+      "3.2.3. Frontend, camera và ảnh"
+    ],
+    "7": [
+      "2.5.1. Kiến trúc tổng thể"
+    ],
+    "8": [
+      "1.4. Mô hình hóa nghiệp vụ bằng UML",
+      "2.2.1. Các sơ đồ Use Case",
+      "2.3.1. Sơ đồ hoạt động",
+      "2.3.2. Sơ đồ tuần tự",
+      "2.4.1. Sơ đồ lớp phân tích"
+    ],
+    "9": [
+      "1.2. Ứng dụng web, kiến trúc phân tầng và API",
+      "1.5. Cơ sở dữ liệu quan hệ và bảo toàn lịch sử",
+      "2.6.2. Chống tạo phản ánh lặp và phát lại yêu cầu",
+      "3.2.1. Cơ sở dữ liệu và migration"
+    ],
+    "10": [
+      "1.2. Ứng dụng web, kiến trúc phân tầng và API",
+      "1.6. Xác thực, phân quyền và kiểm thử",
+      "3.2.2. Backend và các API tiêu biểu"
+    ],
+    "11": [
+      "1.2. Ứng dụng web, kiến trúc phân tầng và API",
+      "2.5.1. Kiến trúc tổng thể",
+      "3.2.3. Frontend, camera và ảnh"
+    ],
+    "12": [
+      "1.3. Mã QR, URL định danh và camera trình duyệt",
+      "3.2.3. Frontend, camera và ảnh"
+    ],
+    "13": [
+      "2.5.1. Kiến trúc tổng thể"
+    ],
+    "14": [
+      "1.2. Ứng dụng web, kiến trúc phân tầng và API",
+      "1.3. Mã QR, URL định danh và camera trình duyệt",
+      "2.6.1. Kiểm soát QR, HTTPS và thay đổi địa chỉ mạng",
+      "3.2.3. Frontend, camera và ảnh"
+    ]
+  },
+  "changes": [
+    {
+      "original_paragraph": 251,
+      "before": "Ứng dụng web cho phép người dùng truy cập thông qua URL và trình duyệt. Việc chọn web cho luồng phản ánh phù hợp với yêu cầu mở liên kết từ QR mà không phải cài đặt ứng dụng riêng. Đổi lại, quyền camera, chất lượng mạng và các chính sách của trình duyệt trở thành những điều kiện phải kiểm tra. Giao diện tương thích kích thước màn hình không tự chứng minh camera sẽ hoạt động trên mọi thiết bị.",
+      "after": "Ứng dụng web cho phép người dùng truy cập thông qua URL và trình duyệt. Việc chọn web cho luồng phản ánh phù hợp với yêu cầu mở liên kết từ QR mà không phải cài đặt ứng dụng riêng. Đổi lại, quyền camera, chất lượng mạng và các chính sách của trình duyệt trở thành những điều kiện phải kiểm tra [14]. Giao diện tương thích kích thước màn hình không tự chứng minh camera sẽ hoạt động trên mọi thiết bị."
+    },
+    {
+      "original_paragraph": 253,
+      "before": "Giao diện lập trình ứng dụng (Application Programming Interface — API) dùng giao thức truyền siêu văn bản (HTTP) với dữ liệu JavaScript Object Notation (JSON) hoặc multipart khi gửi ảnh. Một yêu cầu thay đổi không được xem là hợp lệ chỉ vì nút tương ứng xuất hiện trên giao diện. API phải kiểm tra người dùng, phạm vi bản ghi, dữ liệu đầu vào và trạng thái hiện tại. Các phản hồi lỗi cần giúp người dùng sửa thao tác mà không lộ câu truy vấn, mật khẩu hoặc thông tin kết nối máy chủ.",
+      "after": "Giao diện lập trình ứng dụng (Application Programming Interface — API) dùng giao thức truyền siêu văn bản (HTTP) với dữ liệu JavaScript Object Notation (JSON) hoặc multipart khi gửi ảnh. Một yêu cầu thay đổi không được xem là hợp lệ chỉ vì nút tương ứng xuất hiện trên giao diện. API phải kiểm tra người dùng, phạm vi bản ghi, dữ liệu đầu vào và trạng thái hiện tại; riêng việc kiểm tra quyền trên từng yêu cầu tuân theo nguyên tắc kiểm soát truy cập phía máy chủ [10]. Các phản hồi lỗi cần giúp người dùng sửa thao tác mà không lộ câu truy vấn, mật khẩu hoặc thông tin kết nối máy chủ."
+    },
+    {
+      "original_paragraph": 262,
+      "before": "Khóa chính nhận diện bản ghi; khóa ngoại liên kết các thực thể; UNIQUE và CHECK hỗ trợ ngăn dữ liệu không hợp lệ. Giao dịch cho phép nhóm nhiều thay đổi cần cùng thành công hoặc cùng hoàn tác. Dữ liệu được truy vấn bằng ngôn ngữ truy vấn có cấu trúc (Structured Query Language — SQL). Với nghiệp vụ phân công, thay đổi trạng thái phản ánh và ghi nhật ký phải nằm trong cùng giao dịch. Nếu ghi trạng thái thành công nhưng ghi lịch sử thất bại, hệ thống không còn đủ căn cứ truy vết.",
+      "after": "Khóa chính nhận diện bản ghi; khóa ngoại liên kết các thực thể; UNIQUE và CHECK hỗ trợ ngăn dữ liệu không hợp lệ. Giao dịch cho phép nhóm nhiều thay đổi cần cùng thành công hoặc cùng hoàn tác. Dữ liệu được truy vấn bằng ngôn ngữ truy vấn có cấu trúc (Structured Query Language — SQL). Các cơ chế ràng buộc và giao dịch nêu trên được tham chiếu từ tài liệu MySQL/InnoDB [9]. Với nghiệp vụ phân công, thay đổi trạng thái phản ánh và ghi nhật ký phải nằm trong cùng giao dịch. Nếu ghi trạng thái thành công nhưng ghi lịch sử thất bại, hệ thống không còn đủ căn cứ truy vết."
+    },
+    {
+      "original_paragraph": "before 277",
+      "before": "",
+      "after": "Danh sách yêu cầu chức năng được đối chiếu với phạm vi và mục tiêu của đề cương đồ án [2], sau đó cụ thể hóa thành các luồng nghiệp vụ và tiêu chí kiểm tra trong Bảng 2.2."
+    },
+    {
+      "original_paragraph": 288,
+      "before": "Hình 2.2 thể hiện các mục tiêu chính trong ranh giới ứng dụng. Các đường nối là quan hệ tham gia, không biểu diễn thứ tự thao tác. Hình 2.3 phân rã nhóm tác vụ của Ban quản lý; Hình 2.4 làm rõ sự khác biệt giữa người gửi công khai, cư dân đã đăng nhập và kỹ thuật viên. Đăng nhập là điều kiện của các chức năng riêng, không phải điều kiện bắt buộc của việc gửi phản ánh công khai.",
+      "after": "Hình 2.2 thể hiện các mục tiêu chính trong ranh giới ứng dụng. Các đường nối là quan hệ tham gia, không biểu diễn thứ tự thao tác; cách đọc này dựa trên ký pháp Use Case của UML [8]. Hình 2.3 phân rã nhóm tác vụ của Ban quản lý; Hình 2.4 làm rõ sự khác biệt giữa người gửi công khai, cư dân đã đăng nhập và kỹ thuật viên. Đăng nhập là điều kiện của các chức năng riêng, không phải điều kiện bắt buộc của việc gửi phản ánh công khai."
+    },
+    {
+      "original_paragraph": 302,
+      "before": "Phiên dùng JWT ký HS256, có thời hạn và phiên bản tài khoản. API không lấy vai trò từ dữ liệu do frontend gửi lên để quyết định quyền. Khi đổi mật khẩu hoặc bàn giao tài khoản căn, phiên bản token tăng; token cũ mất hiệu lực dù chưa hết thời hạn. Với số điện thoại trùng giữa tài khoản cá nhân và tài khoản căn, việc chọn loại tài khoản giúp xác định đúng ngữ cảnh mà không gộp quyền của hai tài khoản.",
+      "after": "Phiên sử dụng JWT theo định dạng thông tin xác nhận của RFC 7519 [5]; bản hiện thực chọn ký HS256, có thời hạn và phiên bản tài khoản. API không lấy vai trò từ dữ liệu do frontend gửi lên để quyết định quyền. Khi đổi mật khẩu hoặc bàn giao tài khoản căn, phiên bản token tăng; token cũ mất hiệu lực dù chưa hết thời hạn. Với số điện thoại trùng giữa tài khoản cá nhân và tài khoản căn, việc chọn loại tài khoản giúp xác định đúng ngữ cảnh mà không gộp quyền của hai tài khoản."
+    },
+    {
+      "original_paragraph": 325,
+      "before": "Bốn sơ đồ hoạt động mô tả quy trình từ góc nhìn nghiệp vụ. Mỗi sơ đồ thể hiện đường đi chính, một số nhánh lỗi và kết quả kết thúc. Các bước ghi cơ sở dữ liệu là nhóm thao tác thuộc giao dịch; thao tác in, camera và lựa chọn ảnh xảy ra ở trình duyệt nên không nằm trong giao dịch MySQL.",
+      "after": "Bốn sơ đồ hoạt động mô tả quy trình từ góc nhìn nghiệp vụ, sử dụng ký pháp hoạt động và nhánh quyết định của UML [8]. Mỗi sơ đồ thể hiện đường đi chính, một số nhánh lỗi và kết quả kết thúc. Các bước ghi cơ sở dữ liệu là nhóm thao tác thuộc giao dịch; thao tác in, camera và lựa chọn ảnh xảy ra ở trình duyệt nên không nằm trong giao dịch MySQL."
+    },
+    {
+      "original_paragraph": 339,
+      "before": "Các sơ đồ tuần tự phân biệt người sử dụng, React, API/service và tầng lưu trữ. Khi gửi ảnh, hệ thống có thêm kho tệp; cơ sở dữ liệu chỉ lưu metadata ảnh. Bản vẽ chọn những thông điệp quyết định để đảm bảo đọc được trên trang A4. Kiểm tra dữ liệu, xử lý lỗi và dọn ảnh là một phần của hiện thực, dù không lặp lại đầy đủ trên mọi hình.",
+      "after": "Các sơ đồ tuần tự sử dụng ký pháp thông điệp theo thời gian của UML [8] để phân biệt người sử dụng, React, API/service và tầng lưu trữ. Khi gửi ảnh, hệ thống có thêm kho tệp; cơ sở dữ liệu chỉ lưu metadata ảnh. Bản vẽ chọn những thông điệp quyết định để đảm bảo đọc được trên trang A4. Kiểm tra dữ liệu, xử lý lỗi và dọn ảnh là một phần của hiện thực, dù không lặp lại đầy đủ trên mọi hình."
+    },
+    {
+      "original_paragraph": 361,
+      "before": "Các lớp phân tích thể hiện thực thể và năng lực xử lý: căn hộ, cư dân, đợt cư trú, thiết bị, vị trí QR, phản ánh, hóa đơn và module nghiệp vụ. Phương thức trên các module là cách biểu diễn trách nhiệm trong mô hình. Hiện thực sử dụng hàm export và SQL qua mysql2, không sử dụng lớp ORM tương ứng một–một với mỗi bảng.",
+      "after": "Các lớp phân tích thể hiện thực thể và năng lực xử lý: căn hộ, cư dân, đợt cư trú, thiết bị, vị trí QR, phản ánh, hóa đơn và module nghiệp vụ. Thuộc tính, phương thức và quan hệ được biểu diễn theo ký pháp lớp của UML [8]; phương thức trên các module là cách mô tả trách nhiệm trong mô hình. Hiện thực sử dụng hàm export và SQL qua mysql2, không sử dụng lớp ORM tương ứng một–một với mỗi bảng."
+    },
+    {
+      "original_paragraph": 400,
+      "before": "Tầng React chứa các màn hình theo phân hệ và thành phần dùng chung như nhãn trường, thông báo lỗi, chọn ảnh và điều hướng. Tầng Express tách router, middleware xác thực/quyền, service và truy vấn dữ liệu. Cơ sở dữ liệu MySQL lưu bảng nghiệp vụ, nhật ký và biên nhận kỹ thuật. Ảnh phản ánh được lưu ở kho tệp với metadata trong bảng; chứng từ thu chi có cơ chế lưu binary trong cơ sở dữ liệu riêng của phân hệ.",
+      "after": "Tầng giao diện vận dụng mô hình thành phần của React [11], gồm các màn hình theo phân hệ và thành phần dùng chung như nhãn trường, thông báo lỗi, chọn ảnh và điều hướng. Tầng Express tách router, middleware xác thực/quyền, service và truy vấn dữ liệu. Cơ sở dữ liệu MySQL lưu bảng nghiệp vụ, nhật ký và biên nhận kỹ thuật. Ảnh phản ánh được lưu ở kho tệp với metadata trong bảng; chứng từ thu chi có cơ chế lưu binary trong cơ sở dữ liệu riêng của phân hệ."
+    },
+    {
+      "original_paragraph": 400,
+      "before": "Tầng giao diện vận dụng mô hình thành phần của React [11], gồm các màn hình theo phân hệ và thành phần dùng chung như nhãn trường, thông báo lỗi, chọn ảnh và điều hướng. Tầng Express tách router, middleware xác thực/quyền, service và truy vấn dữ liệu. Cơ sở dữ liệu MySQL lưu bảng nghiệp vụ, nhật ký và biên nhận kỹ thuật. Ảnh phản ánh được lưu ở kho tệp với metadata trong bảng; chứng từ thu chi có cơ chế lưu binary trong cơ sở dữ liệu riêng của phân hệ.",
+      "after": "Tầng giao diện vận dụng mô hình thành phần của React [11], gồm các màn hình theo phân hệ và thành phần dùng chung như nhãn trường, thông báo lỗi, chọn ảnh và điều hướng. Cơ chế router và middleware được cung cấp bởi Express [3]; trong dự án, tầng này tách xác thực/quyền, service và truy vấn dữ liệu. Cơ sở dữ liệu MySQL lưu bảng nghiệp vụ, nhật ký và biên nhận kỹ thuật. Ảnh phản ánh được lưu ở kho tệp với metadata trong bảng; chứng từ thu chi có cơ chế lưu binary trong cơ sở dữ liệu riêng của phân hệ."
+    },
+    {
+      "original_paragraph": 401,
+      "before": "Ở môi trường phát triển, frontend và API có thể chạy trên hai cổng nhưng được truy cập qua cùng origin nhờ proxy /api của Vite. Điện thoại chỉ cần truy cập cổng frontend HTTPS mà máy tính cung cấp trong mạng. Việc sử dụng proxy giảm cấu hình khác nguồn ở trình duyệt, nhưng không loại bỏ nhu cầu kiểm tra backend đang chạy và kết nối MySQL sẵn sàng. Khi triển khai, cần đặt frontend/API sau cấu hình phục vụ phù hợp, không mặc định coi Vite dev server là máy chủ sản xuất.",
+      "after": "Ở môi trường phát triển, frontend và API có thể chạy trên hai cổng nhưng được truy cập qua cùng origin nhờ tùy chọn proxy /api của Vite [13]. Điện thoại chỉ cần truy cập cổng frontend HTTPS mà máy tính cung cấp trong mạng. Việc sử dụng proxy giảm cấu hình khác nguồn ở trình duyệt, nhưng không loại bỏ nhu cầu kiểm tra backend đang chạy và kết nối MySQL sẵn sàng. Khi triển khai, cần đặt frontend/API sau cấu hình phục vụ phù hợp, không mặc định coi Vite dev server là máy chủ sản xuất."
+    },
+    {
+      "original_paragraph": 401,
+      "before": "Ở môi trường phát triển, frontend và API có thể chạy trên hai cổng nhưng được truy cập qua cùng origin nhờ tùy chọn proxy /api của Vite [13]. Điện thoại chỉ cần truy cập cổng frontend HTTPS mà máy tính cung cấp trong mạng. Việc sử dụng proxy giảm cấu hình khác nguồn ở trình duyệt, nhưng không loại bỏ nhu cầu kiểm tra backend đang chạy và kết nối MySQL sẵn sàng. Khi triển khai, cần đặt frontend/API sau cấu hình phục vụ phù hợp, không mặc định coi Vite dev server là máy chủ sản xuất.",
+      "after": "Ở môi trường phát triển, frontend và API có thể chạy trên hai cổng nhưng được truy cập qua cùng origin nhờ tùy chọn proxy /api của Vite [13]. Điện thoại chỉ cần truy cập cổng frontend HTTPS mà máy tính cung cấp trong mạng. Ở mức nền tảng, module https của Node.js hỗ trợ tạo máy chủ với khóa và chứng chỉ TLS [7]. Việc sử dụng proxy giảm cấu hình khác nguồn ở trình duyệt, nhưng không loại bỏ nhu cầu kiểm tra backend đang chạy và kết nối MySQL sẵn sàng. Khi triển khai, cần đặt frontend/API sau cấu hình phục vụ phù hợp, không mặc định coi Vite dev server là máy chủ sản xuất."
+    },
+    {
+      "original_paragraph": 401,
+      "before": "Ở môi trường phát triển, frontend và API có thể chạy trên hai cổng nhưng được truy cập qua cùng origin nhờ tùy chọn proxy /api của Vite [13]. Điện thoại chỉ cần truy cập cổng frontend HTTPS mà máy tính cung cấp trong mạng. Ở mức nền tảng, module https của Node.js hỗ trợ tạo máy chủ với khóa và chứng chỉ TLS [7]. Việc sử dụng proxy giảm cấu hình khác nguồn ở trình duyệt, nhưng không loại bỏ nhu cầu kiểm tra backend đang chạy và kết nối MySQL sẵn sàng. Khi triển khai, cần đặt frontend/API sau cấu hình phục vụ phù hợp, không mặc định coi Vite dev server là máy chủ sản xuất.",
+      "after": "Ở môi trường phát triển, frontend và API có thể chạy trên hai cổng nhưng được truy cập qua cùng origin nhờ tùy chọn proxy /api của Vite [13]. Điện thoại chỉ cần truy cập cổng frontend HTTPS mà máy tính cung cấp trong mạng. Ở mức nền tảng, module https của Node.js hỗ trợ tạo máy chủ với khóa và chứng chỉ TLS [7]. Việc sử dụng proxy giảm cấu hình khác nguồn ở trình duyệt, nhưng không loại bỏ nhu cầu kiểm tra backend đang chạy và kết nối MySQL sẵn sàng. Khi triển khai, cần đặt frontend/API sau cấu hình phục vụ phù hợp, không mặc định coi Vite dev server là máy chủ sản xuất; quy trình đóng gói được trình bày riêng trong Vite Guide [13]."
+    },
+    {
+      "original_paragraph": 415,
+      "before": "Người dùng có thể dùng camera ứng dụng điện thoại để mở URL hoặc dùng màn quét trong web. Ứng dụng kiểm tra ngữ cảnh an toàn trước khi xin quyền camera, báo lỗi khi quyền bị từ chối và cung cấp cách dán liên kết. Khẳng định thư viện hỗ trợ một trình duyệt không thay cho kết quả quét trên phiên bản trình duyệt và thiết bị cụ thể. README của Html5-qrcode cũng cần được theo dõi về trạng thái bảo trì khi phát triển lâu dài [6].",
+      "after": "Người dùng có thể dùng camera ứng dụng điện thoại để mở URL hoặc dùng màn quét trong web. Điều kiện ngữ cảnh an toàn và quyền truy cập camera được tham chiếu từ đặc tả Media Capture and Streams [14]. Ứng dụng kiểm tra điều kiện trước khi xin quyền camera, báo lỗi khi quyền bị từ chối và cung cấp cách dán liên kết. Khẳng định thư viện hỗ trợ một trình duyệt không thay cho kết quả quét trên phiên bản trình duyệt và thiết bị cụ thể. README của Html5-qrcode cũng cần được theo dõi về trạng thái bảo trì khi phát triển lâu dài [6]."
+    },
+    {
+      "original_paragraph": 418,
+      "before": "Quy trình xử lý gồm chuẩn bị ảnh, bắt đầu giao dịch, khóa bản ghi yêu cầu, kiểm tra kết quả trước đó, xác minh QR/phiên bản/giới hạn, lưu phản ánh–metadata–nhật ký–biên nhận và commit. Nếu yêu cầu là phát lại hoặc giao dịch không thành công, tệp ảnh vừa chuẩn bị phải được dọn. MySQL và filesystem không có giao dịch chung trong kiến trúc hiện tại; vì vậy cần xử lý bù khi lỗi và cần xét cả hai loại dữ liệu trong kế hoạch sao lưu.",
+      "after": "Giao dịch và khóa bản ghi dựa trên cơ chế MySQL/InnoDB [9]. Trên cơ sở đó, quy trình của ứng dụng gồm chuẩn bị ảnh, bắt đầu giao dịch, khóa bản ghi yêu cầu, kiểm tra kết quả trước đó, xác minh QR/phiên bản/giới hạn, lưu phản ánh–metadata–nhật ký–biên nhận và commit. Nếu yêu cầu là phát lại hoặc giao dịch không thành công, tệp ảnh vừa chuẩn bị phải được dọn. MySQL và filesystem không có giao dịch chung trong kiến trúc hiện tại; vì vậy cần xử lý bù khi lỗi và cần xét cả hai loại dữ liệu trong kế hoạch sao lưu."
+    },
+    {
+      "original_paragraph": 438,
+      "before": "Đề cương dự kiến mockup Figma, nhưng repository chưa cung cấp bằng chứng để kết luận đã hoàn thành bộ Figma. Các hình giao diện tại Chương 3 là ảnh chụp từ ứng dụng hiện có với phạm vi dữ liệu được ghi rõ. Khi hoàn thiện báo cáo nộp, cần bổ sung đường dẫn hoặc hình mockup được GVHD chấp thuận nếu vẫn giữ yêu cầu Figma trong đề cương.",
+      "after": "Đề cương dự kiến mockup Figma [2], nhưng repository chưa cung cấp bằng chứng để kết luận đã hoàn thành bộ Figma. Các hình giao diện tại Chương 3 là ảnh chụp từ ứng dụng hiện có với phạm vi dữ liệu được ghi rõ. Khi hoàn thiện báo cáo nộp, cần bổ sung đường dẫn hoặc hình mockup được GVHD chấp thuận nếu vẫn giữ yêu cầu Figma trong đề cương."
+    },
+    {
+      "original_paragraph": 453,
+      "before": "Baseline 001_thesis_schema.sql khởi tạo schema MySQL hiện tại. Runner kiểm tra migration và checksum để phát hiện cấu hình/schema không phù hợp. Endpoint /api/health kiểm tra tiến trình HTTP; /api/ready kiểm tra điều kiện dữ liệu. Vì vậy, health trả 200 không đồng nghĩa kết nối MySQL đã sẵn sàng.",
+      "after": "Baseline 001_thesis_schema.sql khởi tạo schema MySQL hiện tại. Các ràng buộc khóa và thao tác COMMIT/ROLLBACK sử dụng cơ chế của MySQL/InnoDB [9]. Runner kiểm tra migration và checksum để phát hiện cấu hình/schema không phù hợp. Endpoint /api/health kiểm tra tiến trình HTTP; /api/ready kiểm tra điều kiện dữ liệu. Vì vậy, health trả 200 không đồng nghĩa kết nối MySQL đã sẵn sàng."
+    },
+    {
+      "original_paragraph": 456,
+      "before": "Router nhận HTTP, middleware kiểm tra phiên/quyền, service áp dụng nghiệp vụ và lớp truy vấn đọc/ghi dữ liệu. Lỗi ứng dụng được trả với mã, thông báo và request ID phù hợp. Các câu lệnh có tham số được dùng cho dữ liệu người dùng; định danh động cần nằm trong danh mục cho phép. Kiểm tra phía client không thay cho kiểm tra này.",
+      "after": "Cách ghép router và middleware dựa trên cơ chế của Express [3]. Trong ứng dụng, router nhận HTTP, middleware kiểm tra phiên/quyền, service áp dụng nghiệp vụ và lớp truy vấn đọc/ghi dữ liệu. Lỗi ứng dụng được trả với mã, thông báo và request ID phù hợp. Các câu lệnh có tham số được dùng cho dữ liệu người dùng; định danh động cần nằm trong danh mục cho phép. Kiểm tra phía client không thay cho kiểm tra này."
+    },
+    {
+      "original_paragraph": 460,
+      "before": "Đoạn mã kiểm tra vai trò dưới đây được trích từ auth.middleware.js. Middleware xác thực được chạy trước để xác định req.user; bước kiểm tra vai trò này tiếp tục giới hạn tác nhân. Quyền đối với từng phản ánh hoặc hóa đơn còn được kiểm tra trong service/lớp truy vấn, không dừng ở việc so sánh vai trò.",
+      "after": "Đoạn mã kiểm tra vai trò dưới đây được trích từ auth.middleware.js. Middleware xác thực được chạy trước để xác định req.user; bước kiểm tra vai trò này tiếp tục giới hạn tác nhân. Quyền đối với từng phản ánh hoặc hóa đơn còn được kiểm tra trong service/lớp truy vấn, không dừng ở việc so sánh vai trò; yêu cầu kiểm tra quyền trên từng đối tượng được tham chiếu từ hướng dẫn của OWASP [10]."
+    },
+    {
+      "original_paragraph": 469,
+      "before": "Các route công khai gồm cổng dịch vụ, đăng nhập, quét QR, form theo token và tra cứu. Các route quản trị, kỹ thuật và cư dân được bọc kiểm tra vai trò. Bộ API client đọc phản hồi có kiểm tra kiểu nội dung để không biến một lỗi proxy HTML thành thông báo sai mật khẩu. Phiên hết hạn cần xóa trạng thái dữ liệu riêng và yêu cầu đăng nhập lại theo luồng ứng dụng.",
+      "after": "Frontend được tổ chức theo mô hình thành phần của React [11]. Các route công khai gồm cổng dịch vụ, đăng nhập, quét QR, form theo token và tra cứu. Các route quản trị, kỹ thuật và cư dân được bọc kiểm tra vai trò. Bộ API client đọc phản hồi có kiểm tra kiểu nội dung để không biến một lỗi proxy HTML thành thông báo sai mật khẩu. Phiên hết hạn cần xóa trạng thái dữ liệu riêng và yêu cầu đăng nhập lại theo luồng ứng dụng."
+    },
+    {
+      "original_paragraph": 470,
+      "before": "Màn quét sử dụng html5-qrcode và kiểm tra HTTPS trước khi xin camera. Nội dung QR sau khi đọc được phải được xác minh là đường dẫn phản ánh phù hợp thay vì mở tùy ý một URL bên ngoài. Màn gửi phản ánh phối hợp trạng thái xử lý ảnh và trạng thái gửi để tránh bấm gửi khi ảnh chưa sẵn sàng. Khi trang được khôi phục, giao diện thông báo trường hợp ảnh phải chọn lại.",
+      "after": "Màn quét sử dụng thư viện Html5-qrcode [6]; việc truy cập camera trong web phải đáp ứng điều kiện ngữ cảnh an toàn và quyền người dùng [14]. Nội dung QR sau khi đọc được phải được xác minh là đường dẫn phản ánh phù hợp thay vì mở tùy ý một URL bên ngoài. Màn gửi phản ánh phối hợp trạng thái xử lý ảnh và trạng thái gửi để tránh bấm gửi khi ảnh chưa sẵn sàng. Khi trang được khôi phục, giao diện thông báo trường hợp ảnh phải chọn lại."
+    },
+    {
+      "original_paragraph": 472,
+      "before": "Đoạn sinh ảnh QR trong QrPreview.jsx sử dụng origin trình duyệt và token máy chủ cấp. Thư viện tạo ảnh ở độ phân giải 512 px; kích thước ô xem được giới hạn riêng trong CSS để mã vẫn rõ khi tải hoặc in.",
+      "after": "Đoạn sinh ảnh QR trong QrPreview.jsx gọi QRCode.toDataURL theo API của thư viện qrcode [12], với dữ liệu là URL ghép từ origin trình duyệt và token máy chủ cấp. Thư viện tạo ảnh ở độ phân giải 512 px; kích thước ô xem được giới hạn riêng trong CSS để mã vẫn rõ khi tải hoặc in."
+    },
+    {
+      "original_paragraph": 544,
+      "before": "Kết quả cho thấy ứng dụng đã hình thành các thành phần cần thiết cho bài toán: có dữ liệu nền, có điểm tiếp nhận tại vị trí, có vòng đời công việc và có liên kết với nghiệp vụ thu phí/thông báo. Giá trị của thiết kế nằm ở sự liên tục giữa các bước và việc giữ bối cảnh lịch sử, không chỉ ở số lượng màn hình hoặc bảng dữ liệu. Tuy nhiên, chưa đủ cơ sở kết luận hệ thống đã đạt mọi yêu cầu vận hành sản xuất khi chưa có nghiệm thu dài hạn và phép đo tải.",
+      "after": "Mức đáp ứng được đối chiếu với phạm vi và mục tiêu của đề cương [2]. Kết quả cho thấy ứng dụng đã hình thành các thành phần cần thiết cho bài toán: có dữ liệu nền, có điểm tiếp nhận tại vị trí, có vòng đời công việc và có liên kết với nghiệp vụ thu phí/thông báo. Giá trị của thiết kế nằm ở sự liên tục giữa các bước và việc giữ bối cảnh lịch sử, không chỉ ở số lượng màn hình hoặc bảng dữ liệu. Tuy nhiên, chưa đủ cơ sở kết luận hệ thống đã đạt mọi yêu cầu vận hành sản xuất khi chưa có nghiệm thu dài hạn và phép đo tải."
+    },
+    {
+      "original_paragraph": 787,
+      "before": "[13] Vite contributors. Getting Started — Vite Guide. https://github.com/vitejs/vite/blob/main/docs/guide/index.md. Đối chiếu ngày 06/11/2026.",
+      "after": "[13] Vite contributors. Vite Guide — Getting Started, Server Options và Building for Production. https://github.com/vitejs/vite/blob/main/docs/guide/index.md; https://github.com/vitejs/vite/blob/main/docs/config/server-options.md; https://github.com/vitejs/vite/blob/main/docs/guide/build.md. Đối chiếu các mục proxy và build ngày 17/11/2026."
+    }
+  ],
+  "edits_performed": 25,
+  "index_cleanup": "Removed three IndexEntry paragraphs whose PAGEREF _missing targets did not exist; updated cached page references."
+}

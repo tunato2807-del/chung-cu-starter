@@ -1,0 +1,186 @@
+<mxGraphModel dx="890.93" dy="959.8" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0" background="#ffffff">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+    <mxCell id="f17-1" value="" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;group;fillColor=#ffffff;strokeColor=none;" parent="1" vertex="1">
+      <mxGeometry x="215.63" y="95.0" width="141.75" height="75.6" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-2" value="can_ho" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#eeeeee;fontStyle=1;align=center;spacing=4;" parent="f17-1" vertex="1">
+      <mxGeometry x="0.0" y="0.0" width="141.75" height="37.8" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-3" value="PK ma_can_ho" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-1" vertex="1">
+      <mxGeometry x="0.0" y="37.8" width="141.75" height="37.8" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-4" value="" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;group;fillColor=#ffffff;strokeColor=none;" parent="1" vertex="1">
+      <mxGeometry x="682.72" y="95.0" width="114.75" height="75.6" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-5" value="loai_phi" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#eeeeee;fontStyle=1;align=center;spacing=4;" parent="f17-4" vertex="1">
+      <mxGeometry x="0.0" y="0.0" width="114.75" height="37.8" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-6" value="PK loai_phi" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-4" vertex="1">
+      <mxGeometry x="0.0" y="37.8" width="114.75" height="37.8" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-7" value="" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;group;fillColor=#ffffff;strokeColor=none;" parent="1" vertex="1">
+      <mxGeometry x="619.28" y="255.65" width="241.65" height="148.5" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-8" value="cau_hinh_phi" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#eeeeee;fontStyle=1;align=center;spacing=4;" parent="f17-7" vertex="1">
+      <mxGeometry x="0.0" y="0.0" width="241.65" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-9" value="PK ma_cau_hinh_phi" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-7" vertex="1">
+      <mxGeometry x="0.0" y="37.13" width="241.65" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-10" value="FK loai_phi" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-7" vertex="1">
+      <mxGeometry x="0.0" y="74.25" width="241.65" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-11" value="tu_ngay, don_gia, bac_dien" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-7" vertex="1">
+      <mxGeometry x="0.0" y="111.38" width="241.65" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-12" value="" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;group;fillColor=#ffffff;strokeColor=none;" parent="1" vertex="1">
+      <mxGeometry x="343.87" y="255.65" width="211.95" height="148.5" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-13" value="chi_so_dich_vu" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#eeeeee;fontStyle=1;align=center;spacing=4;" parent="f17-12" vertex="1">
+      <mxGeometry x="0.0" y="0.0" width="211.95" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-14" value="PK ma_chi_so_dich_vu" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-12" vertex="1">
+      <mxGeometry x="0.0" y="37.13" width="211.95" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-15" value="FK ma_can_ho" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-12" vertex="1">
+      <mxGeometry x="0.0" y="74.25" width="211.95" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-16" value="ky_thanh_toan, chỉ số" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-12" vertex="1">
+      <mxGeometry x="0.0" y="111.38" width="211.95" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-17" value="" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;group;fillColor=#ffffff;strokeColor=none;" parent="1" vertex="1">
+      <mxGeometry x="52.95" y="255.65" width="226.8" height="148.5" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-18" value="hoa_don" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#eeeeee;fontStyle=1;align=center;spacing=4;" parent="f17-17" vertex="1">
+      <mxGeometry x="0.0" y="0.0" width="226.8" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-19" value="PK ma_hoa_don" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-17" vertex="1">
+      <mxGeometry x="0.0" y="37.13" width="226.8" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-20" value="FK ma_can_ho" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-17" vertex="1">
+      <mxGeometry x="0.0" y="74.25" width="226.8" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-21" value="ky_thanh_toan, tong_tien" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-17" vertex="1">
+      <mxGeometry x="0.0" y="111.38" width="226.8" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-22" value="" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;group;fillColor=#ffffff;strokeColor=none;" parent="1" vertex="1">
+      <mxGeometry x="324.3" y="489.2" width="264.6" height="148.5" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-23" value="chi_tiet_hoa_don" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#eeeeee;fontStyle=1;align=center;spacing=4;" parent="f17-22" vertex="1">
+      <mxGeometry x="0.0" y="0.0" width="264.6" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-24" value="PK ma_chi_tiet_hoa_don" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-22" vertex="1">
+      <mxGeometry x="0.0" y="37.13" width="264.6" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-25" value="FK hóa đơn / giá / chỉ số" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-22" vertex="1">
+      <mxGeometry x="0.0" y="74.25" width="264.6" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-26" value="so_luong, don_gia, thanh_tien" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-22" vertex="1">
+      <mxGeometry x="0.0" y="111.38" width="264.6" height="37.13" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-27" value="" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;group;fillColor=#ffffff;strokeColor=none;" parent="1" vertex="1">
+      <mxGeometry x="36.75" y="507.42" width="224.1" height="112.05" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-28" value="thong_bao" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#eeeeee;fontStyle=1;align=center;spacing=4;" parent="f17-27" vertex="1">
+      <mxGeometry x="0.0" y="0.0" width="224.1" height="37.35" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-29" value="PK ma_thong_bao" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-27" vertex="1">
+      <mxGeometry x="0.0" y="37.35" width="224.1" height="37.35" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-30" value="FK ma_hoa_don (NULL)" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-27" vertex="1">
+      <mxGeometry x="0.0" y="74.7" width="224.1" height="37.35" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-31" value="" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;group;fillColor=#ffffff;strokeColor=none;" parent="1" vertex="1">
+      <mxGeometry x="30.0" y="722.75" width="237.6" height="112.05" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-32" value="thong_bao_da_doc" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#eeeeee;fontStyle=1;align=center;spacing=4;" parent="f17-31" vertex="1">
+      <mxGeometry x="0.0" y="0.0" width="237.6" height="37.35" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-33" value="FK thông báo / người nhận" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-31" vertex="1">
+      <mxGeometry x="0.0" y="37.35" width="237.6" height="37.35" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-34" value="ngữ cảnh người phụ trách" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f17-31" vertex="1">
+      <mxGeometry x="0.0" y="74.7" width="237.6" height="37.35" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-35" value="1 : N" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;html=1;edgeStyle=none;noEdgeStyle=1;rounded=0;endArrow=none;endSize=9;endFill=1;labelBackgroundColor=#ffffff;labelBorderColor=none;align=center;verticalAlign=middle;exitX=0.72;exitY=1.0;exitPerimeter=0;entryX=0.21;entryY=-0.0;entryPerimeter=0;" parent="1" edge="1" source="f17-1" target="f17-12">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="337.27" y="194.58" />
+          <mxPoint x="364.15" y="226.57" />
+        </Array>
+        <mxPoint x="22.08" y="0.01" as="offset" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="f17-36" value="1 : N" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;html=1;edgeStyle=none;noEdgeStyle=1;rounded=0;endArrow=none;endSize=9;endFill=1;labelBackgroundColor=#ffffff;labelBorderColor=none;align=center;verticalAlign=middle;exitX=0.34;exitY=1.0;exitPerimeter=0;entryX=0.7;entryY=-0.0;entryPerimeter=0;" parent="1" edge="1" source="f17-1" target="f17-17">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="249.15" y="194.58" />
+          <mxPoint x="229.38" y="226.57" />
+        </Array>
+        <mxPoint x="21.13" y="0.01" as="offset" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="f17-37" value="1 : N" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;html=1;edgeStyle=none;noEdgeStyle=1;rounded=0;endArrow=none;endSize=9;endFill=1;labelBackgroundColor=#ffffff;labelBorderColor=none;align=center;verticalAlign=middle;exitX=0.5;exitY=1.0;exitPerimeter=0;entryX=0.5;entryY=-0.0;entryPerimeter=0;" parent="1" edge="1" source="f17-4" target="f17-7">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="740.1" y="194.58" />
+          <mxPoint x="740.1" y="226.57" />
+        </Array>
+        <mxPoint x="16.88" y="0.01" as="offset" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="f17-38" value="1 : N" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;html=1;edgeStyle=none;noEdgeStyle=1;rounded=0;endArrow=none;endSize=9;endFill=1;labelBackgroundColor=#ffffff;labelBorderColor=none;align=center;verticalAlign=middle;exitX=0.13;exitY=1.0;exitPerimeter=0;entryX=0.84;entryY=-0.0;entryPerimeter=0;" parent="1" edge="1" source="f17-7" target="f17-22">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="617.14" y="431.37" />
+          <mxPoint x="579.45" y="462.06" />
+        </Array>
+        <mxPoint x="25.03" y="-0.04" as="offset" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="f17-39" value="0..1 : N" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;html=1;edgeStyle=none;noEdgeStyle=1;rounded=0;endArrow=none;endSize=9;endFill=1;labelBackgroundColor=#ffffff;labelBorderColor=none;align=center;verticalAlign=middle;exitX=0.51;exitY=1.0;exitPerimeter=0;entryX=0.49;entryY=-0.0;entryPerimeter=0;" parent="1" edge="1" source="f17-12" target="f17-22">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="452.78" y="431.37" />
+          <mxPoint x="453.67" y="462.06" />
+        </Array>
+        <mxPoint x="24.3" y="-0.04" as="offset" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="f17-40" value="1 : N" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;html=1;edgeStyle=none;noEdgeStyle=1;rounded=0;endArrow=none;endSize=9;endFill=1;labelBackgroundColor=#ffffff;labelBorderColor=none;align=center;verticalAlign=middle;exitX=0.9;exitY=1.0;exitPerimeter=0;entryX=0.15;entryY=-0.0;entryPerimeter=0;" parent="1" edge="1" source="f17-17" target="f17-22">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="292.24" y="431.37" />
+          <mxPoint x="330.82" y="462.06" />
+        </Array>
+        <mxPoint x="24.25" y="-0.04" as="offset" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="f17-41" value="0..1 : N" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;html=1;edgeStyle=none;noEdgeStyle=1;rounded=0;endArrow=none;endSize=9;endFill=1;labelBackgroundColor=#ffffff;labelBorderColor=none;align=center;verticalAlign=middle;exitX=0.48;exitY=1.0;exitPerimeter=0;entryX=0.52;entryY=-0.0;entryPerimeter=0;" parent="1" edge="1" source="f17-17" target="f17-27">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="158.26" y="437.58" />
+          <mxPoint x="155.32" y="476.33" />
+        </Array>
+        <mxPoint x="26.34" y="-9.02" as="offset" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="f17-42" value="1 : N" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;html=1;edgeStyle=none;noEdgeStyle=1;rounded=0;endArrow=none;endSize=9;endFill=1;labelBackgroundColor=#ffffff;labelBorderColor=none;align=center;verticalAlign=middle;exitX=0.5;exitY=1.0;exitPerimeter=0;entryX=0.5;entryY=-0.0;entryPerimeter=0;" parent="1" edge="1" source="f17-27" target="f17-31">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="148.8" y="651.17" />
+          <mxPoint x="148.8" y="690.84" />
+        </Array>
+        <mxPoint x="16.88" y="9.21" as="offset" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="f17-43" value="Hình 2.17. ERD logic phí, chỉ số, hóa đơn và thông báo" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;text;html=1;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontSize=22;fontStyle=1;" parent="1" vertex="1">
+      <mxGeometry x="20.0" y="12.0" width="850.93" height="55.0" as="geometry" />
+    </mxCell>
+    <mxCell id="f17-44" value="ERD rút gọn theo từng phân hệ; chỉ hiển thị thuộc tính và quan hệ được chọn, không phải toàn bộ schema.&lt;br&gt;PK: khóa chính · FK: khóa ngoại · 0..1: tùy chọn · N / 0..*: nhiều. Schema hiện hành: 31 bảng, 8 view." style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;text;html=1;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontSize=14;fontColor=#444444;" parent="1" vertex="1">
+      <mxGeometry x="20.0" y="859.8" width="850.93" height="80.0" as="geometry" />
+    </mxCell>
+  </root>
+</mxGraphModel>

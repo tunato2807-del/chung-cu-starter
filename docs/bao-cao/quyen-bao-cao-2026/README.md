@@ -1,5 +1,7 @@
 # Quyển báo cáo đồ án chuyên ngành
 
+> **Bản bổ sung ngày 17/11/2026:** [mở mục lục Word, draw.io và hình minh họa mới](../../tai-lieu-ban-giao-2026-11-17/README.md). Bản Word bổ sung trích dẫn được lưu riêng; tài liệu hướng dẫn cập nhật UI nêu các mục cần sửa theo `main` tại `cceb904`. Các file trong thư mục hiện tại giữ nguyên làm bản gốc.
+
 **Xây dựng hệ thống quản lý vận hành chung cư và tiếp nhận phản ánh cư dân**
 Tô Hoàng Tuấn — MSSV 1250080221 — lớp 12_ĐH_CNPM3 — khóa 2023–2027.
 GVHD theo đề cương: **ThS. Đặng Đức Trung**.

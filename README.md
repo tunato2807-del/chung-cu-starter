@@ -1,5 +1,7 @@
 # Quản lý chung cư · Phản ánh QR
 
+> **Word, draw.io và hình minh họa — 17/11/2026:** [mở mục lục đầy đủ để xem/tải từng file](docs/tai-lieu-ban-giao-2026-11-17/README.md). Có Word bổ sung trích dẫn, hướng dẫn sửa theo form riêng, 21 sơ đồ chỉnh sửa được và ảnh minh họa.
+
 > **Cửa sổ thao tác mới — nhánh `main`:** [cách cập nhật bằng một lệnh trong VS Code](docs/cua-so-thao-tac-vscode.md). Thêm/sửa, chi tiết, lịch sử, hóa đơn, đặt lịch và phân công/nghiệm thu mở thành cửa sổ có thể đóng bằng ×, Đóng hoặc Esc. Giữ API, MySQL và dữ liệu hiện có; không cần migration cho lần sửa giao diện này.
 
 > **Cài mới hoàn toàn, không chép dữ liệu cũ:** [hướng dẫn Windows / VS Code](docs/cai-moi-hoan-toan-vscode.md). `npm run init:fresh` tạo cấu hình và tên database mới; `npm run db:realistic:fresh` chỉ tạo database chưa tồn tại. Backend dùng `npm run dev:backend` với cấu hình mới.

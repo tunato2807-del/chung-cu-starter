@@ -1,0 +1,87 @@
+<mxGraphModel dx="800.0" dy="981.4" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0" background="#ffffff">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+    <mxCell id="f18-1" value="" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;group;fillColor=#ffffff;strokeColor=none;" parent="1" vertex="1">
+      <mxGeometry x="121.23" y="95.0" width="557.55" height="184.95" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-2" value="vi_tri_qr" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#eeeeee;fontStyle=1;align=center;spacing=4;" parent="f18-1" vertex="1">
+      <mxGeometry x="0.0" y="0.0" width="557.55" height="36.99" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-3" value="ma_vi_tri_qr : int unsigned" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f18-1" vertex="1">
+      <mxGeometry x="0.0" y="36.99" width="557.55" height="36.99" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-4" value="token_qr : char(36) CHARACTER SET ascii COLLATE ascii_bin" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f18-1" vertex="1">
+      <mxGeometry x="0.0" y="73.98" width="557.55" height="36.99" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-5" value="ma_thiet_bi : int unsigned" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f18-1" vertex="1">
+      <mxGeometry x="0.0" y="110.97" width="557.55" height="36.99" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-6" value="phien_ban : int unsigned" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f18-1" vertex="1">
+      <mxGeometry x="0.0" y="147.96" width="557.55" height="36.99" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-7" value="" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;group;fillColor=#ffffff;strokeColor=none;" parent="1" vertex="1">
+      <mxGeometry x="256.23" y="365.0" width="287.55" height="221.4" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-8" value="phan_anh" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#eeeeee;fontStyle=1;align=center;spacing=4;" parent="f18-7" vertex="1">
+      <mxGeometry x="0.0" y="0.0" width="287.55" height="36.9" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-9" value="ma_phan_anh : int unsigned" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f18-7" vertex="1">
+      <mxGeometry x="0.0" y="36.9" width="287.55" height="36.9" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-10" value="ma_vi_tri_qr : int unsigned" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f18-7" vertex="1">
+      <mxGeometry x="0.0" y="73.8" width="287.55" height="36.9" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-11" value="ma_ky_thuat_vien : int unsigned" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f18-7" vertex="1">
+      <mxGeometry x="0.0" y="110.7" width="287.55" height="36.9" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-12" value="trang_thai : enum (…)" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f18-7" vertex="1">
+      <mxGeometry x="0.0" y="147.6" width="287.55" height="36.9" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-13" value="luot_xu_ly : int unsigned" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f18-7" vertex="1">
+      <mxGeometry x="0.0" y="184.5" width="287.55" height="36.9" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-14" value="" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;group;fillColor=#ffffff;strokeColor=none;" parent="1" vertex="1">
+      <mxGeometry x="232.6" y="671.45" width="334.8" height="184.95" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-15" value="hinh_anh_phan_anh" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#eeeeee;fontStyle=1;align=center;spacing=4;" parent="f18-14" vertex="1">
+      <mxGeometry x="0.0" y="0.0" width="334.8" height="36.99" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-16" value="ma_hinh_anh_phan_anh : int unsigned" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f18-14" vertex="1">
+      <mxGeometry x="0.0" y="36.99" width="334.8" height="36.99" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-17" value="ma_phan_anh : int unsigned" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f18-14" vertex="1">
+      <mxGeometry x="0.0" y="73.98" width="334.8" height="36.99" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-18" value="duong_dan_tep : varchar(80)" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f18-14" vertex="1">
+      <mxGeometry x="0.0" y="110.97" width="334.8" height="36.99" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-19" value="luot_xu_ly : int unsigned" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;rounded=0;html=1;whiteSpace=wrap;fillColor=#ffffff;align=left;spacingLeft=10;spacingRight=8;" parent="f18-14" vertex="1">
+      <mxGeometry x="0.0" y="147.96" width="334.8" height="36.99" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-20" value="PK → FK; 1 : 0..*" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;html=1;edgeStyle=none;noEdgeStyle=1;rounded=0;endArrow=none;endSize=9;endFill=1;labelBackgroundColor=#ffffff;labelBorderColor=none;align=center;verticalAlign=middle;exitX=0.5;exitY=1.0;exitPerimeter=0;entryX=0.5;entryY=-0.0;entryPerimeter=0;" parent="1" edge="1" source="f18-1" target="f18-7">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="400.0" y="306.88" />
+          <mxPoint x="400.0" y="336.64" />
+        </Array>
+        <mxPoint x="60.07" y="0.2" as="offset" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="f18-21" value="PK → FK; 1 : 0..*" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;html=1;edgeStyle=none;noEdgeStyle=1;rounded=0;endArrow=none;endSize=9;endFill=1;labelBackgroundColor=#ffffff;labelBorderColor=none;align=center;verticalAlign=middle;exitX=0.5;exitY=1.0;exitPerimeter=0;entryX=0.5;entryY=-0.0;entryPerimeter=0;" parent="1" edge="1" source="f18-7" target="f18-14">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="400.0" y="614.62" />
+          <mxPoint x="400.0" y="644.41" />
+        </Array>
+        <mxPoint x="60.07" y="-0.07" as="offset" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="f18-22" value="Hình 2.18. ERD vật lý rút gọn của luồng phản ánh và ảnh" style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;text;html=1;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontSize=22;fontStyle=1;" parent="1" vertex="1">
+      <mxGeometry x="20.0" y="12.0" width="760.0" height="55.0" as="geometry" />
+    </mxCell>
+    <mxCell id="f18-23" value="ERD rút gọn theo từng phân hệ; chỉ hiển thị thuộc tính và quan hệ được chọn, không phải toàn bộ schema.&lt;br&gt;PK: khóa chính · FK: khóa ngoại · 0..1: tùy chọn · N / 0..*: nhiều. Schema hiện hành: 31 bảng, 8 view." style="fontFamily=Times New Roman;fontSize=16;fontColor=#111111;strokeColor=#333333;strokeWidth=1.2;text;html=1;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontSize=14;fontColor=#444444;" parent="1" vertex="1">
+      <mxGeometry x="20.0" y="881.4" width="760.0" height="80.0" as="geometry" />
+    </mxCell>
+  </root>
+</mxGraphModel>

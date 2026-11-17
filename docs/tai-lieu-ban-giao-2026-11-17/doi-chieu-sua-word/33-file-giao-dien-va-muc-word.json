@@ -1,0 +1,167 @@
+[
+  {
+    "status": "M",
+    "file": "frontend/src/app/App.jsx",
+    "word": "Bố cục nền, điều hướng chi tiết thành cửa sổ: Word 2.7, 3.2.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/app/Layout.jsx",
+    "word": "Bố cục nền, điều hướng chi tiết thành cửa sổ: Word 2.7, 3.2.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/amenities/Amenities.jsx",
+    "word": "Tiện ích và đặt lịch: form/chi tiết trong cửa sổ; Word 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/announcements/Announcements.jsx",
+    "word": "Thông báo: thao tác trong cửa sổ; Word 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/auth/Auth.jsx",
+    "word": "Đổi mật khẩu/quản lý tài khoản: cửa sổ; không phải thay luồng đăng nhập công khai; Word 3.2.3–3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/auth/Users.jsx",
+    "word": "Đổi mật khẩu/quản lý tài khoản: cửa sổ; không phải thay luồng đăng nhập công khai; Word 3.2.3–3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/billing/BatchBillActions.jsx",
+    "word": "Lập, duyệt, gửi, xem hóa đơn và VietQR thanh toán: cửa sổ; Word 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/billing/BatchBills.jsx",
+    "word": "Lập, duyệt, gửi, xem hóa đơn và VietQR thanh toán: cửa sổ; Word 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/billing/Billing.jsx",
+    "word": "Lập, duyệt, gửi, xem hóa đơn và VietQR thanh toán: cửa sổ; Word 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/dashboard/Dashboard.jsx",
+    "word": "Tổng quan/biểu đồ và bảng số liệu mở riêng; Word 2.7, 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/dashboard/DashboardCharts.jsx",
+    "word": "Tổng quan/biểu đồ và bảng số liệu mở riêng; Word 2.7, 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/data-exchange/DataExchange.jsx",
+    "word": "Nhập/xuất dữ liệu: cách mở thao tác; không thêm định dạng nhập mới; Word 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/financial-reports/FinancialReports.jsx",
+    "word": "Báo cáo công nợ/thu phí: trình bày thao tác; Word 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/incidents/Reports.jsx",
+    "word": "Phản ánh: chi tiết, phân công, xử lý, nghiệm thu trong cửa sổ; Word 3.2.3–3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/maintenance/Maintenance.jsx",
+    "word": "Thiết bị và bảo trì: form/chi tiết/phân công; Word 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/qr/Locations.jsx",
+    "word": "Vị trí/thiết bị/QR: form mở riêng, QR xem nhỏ; Word 2.7, 3.2.3, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/qr/QrEquipment.jsx",
+    "word": "Vị trí/thiết bị/QR: form mở riêng, QR xem nhỏ; Word 2.7, 3.2.3, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/qr/QrPreview.jsx",
+    "word": "Vị trí/thiết bị/QR: form mở riêng, QR xem nhỏ; Word 2.7, 3.2.3, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/residency/ApartmentAccounts.jsx",
+    "word": "Căn hộ/cư dân/khối tầng/tài khoản căn: form và chi tiết; Word 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/residency/ApartmentFloorPicker.jsx",
+    "word": "Căn hộ/cư dân/khối tầng/tài khoản căn: form và chi tiết; Word 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/residency/BuildingMap.jsx",
+    "word": "Căn hộ/cư dân/khối tầng/tài khoản căn: form và chi tiết; Word 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/residency/BuildingStructure.jsx",
+    "word": "Căn hộ/cư dân/khối tầng/tài khoản căn: form và chi tiết; Word 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/residency/Residency.jsx",
+    "word": "Căn hộ/cư dân/khối tầng/tài khoản căn: form và chi tiết; Word 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/treasury/Treasury.jsx",
+    "word": "Quỹ/phiếu thu chi/chứng từ/sổ quỹ: cửa sổ; Word 3.2.4, 3.3"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/features/vehicles/Vehicles.jsx",
+    "word": "Phương tiện: form thao tác riêng; Word 3.2.4, 3.3"
+  },
+  {
+    "status": "A",
+    "file": "frontend/src/shared/Dialog.css",
+    "word": "Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4"
+  },
+  {
+    "status": "A",
+    "file": "frontend/src/shared/Dialog.jsx",
+    "word": "Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4"
+  },
+  {
+    "status": "A",
+    "file": "frontend/src/shared/PageActions.jsx",
+    "word": "Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4"
+  },
+  {
+    "status": "A",
+    "file": "frontend/src/shared/dialog-feedback.js",
+    "word": "Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4"
+  },
+  {
+    "status": "A",
+    "file": "frontend/src/shared/dialog-navigation.jsx",
+    "word": "Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4"
+  },
+  {
+    "status": "A",
+    "file": "frontend/src/shared/dialog-state.js",
+    "word": "Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4"
+  },
+  {
+    "status": "A",
+    "file": "frontend/src/shared/resource-events.js",
+    "word": "Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4"
+  },
+  {
+    "status": "M",
+    "file": "frontend/src/shared/ui.jsx",
+    "word": "Dialog dùng chung, bàn phím, trạng thái chờ/lỗi, làm mới dữ liệu: Word 2.7, 3.2.3, 3.4"
+  }
+]
