@@ -1,0 +1,19 @@
+{
+  "baseline_commit": "2f341fc",
+  "before": {
+    "relationship_arms": 92,
+    "overlapping_wire_segment_pairs": 77,
+    "overlapping_wire_length": 29882.38,
+    "perpendicular_crossings": 218,
+    "shape_overlaps": 0,
+    "wire_length": 117675.9
+  },
+  "after": {
+    "relationship_arms": 92,
+    "overlapping_wire_segment_pairs": 0,
+    "overlapping_wire_length": 0,
+    "perpendicular_crossings": 159,
+    "shape_overlaps": 0,
+    "wire_length": 88457.6
+  }
+}

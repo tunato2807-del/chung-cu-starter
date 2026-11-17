@@ -1,6 +1,6 @@
 # Từ điển dữ liệu đầy đủ — 31 bảng, 362 cột
 
-ERD hiện hành chỉ chọn 56 thuộc tính của 12 bảng để trình bày nhỏ gọn; không liệt kê đủ mọi cột của các bảng đó. Từ điển này vẫn liệt kê toàn bộ schema, kể cả 19 bảng được lược khỏi hình.
+ERD hiện hành vẽ 18 bảng nghiệp vụ trọng tâm và đủ 218 thuộc tính của các bảng đó. Từ điển này vẫn liệt kê toàn bộ schema, kể cả 13 bảng được lược khỏi hình.
 
 ## can_ho
 
