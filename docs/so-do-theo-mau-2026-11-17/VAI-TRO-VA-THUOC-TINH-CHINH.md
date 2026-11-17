@@ -1,45 +1,48 @@
-# Vai trò và thuộc tính chính của từng bảng
+# Phạm vi ERD và thuộc tính của từng bảng
 
-ERD hiện hành giữ cả 31 bảng trên **một trang**. Mỗi bảng có một câu mô tả vai trò và các thuộc tính oval được chọn. Tổng số thuộc tính giảm từ **362 xuống 185**; **mọi cột PK/FK vẫn được giữ**. Số cột trong cơ sở dữ liệu không thay đổi.
+Theo yêu cầu mới nhất: giữ một ERD nghiệp vụ trọng tâm, lược bảng phụ nhưng **không lược thuộc tính của các bảng được giữ**. Hình hiện có **18 bảng, đủ 218 thuộc tính và đủ 46 khóa ngoại giữa chúng**. Mỗi bảng là một cột oval dọc; chữ thường, không in đậm; khóa chính gạch liền, khóa ngoại gạch đứt.
 
-Thuộc tính nghiệp vụ trong bảng dưới được chọn để giải thích nội dung chính. Ngoài chúng, hình luôn giữ các khóa của bảng. Các cột kỹ thuật còn lại xem [từ điển 362 cột](TU-DIEN-362-COT.md).
+18 bảng này chính là nhóm “Nghiệp vụ trọng tâm của đề cương” trong [tài liệu CSDL](../csdl-do-an/README.md). Schema thực tế giữ nguyên 31 bảng, 362 cột, 81 FK; đây không phải thao tác xóa bảng hay xóa cột trong database.
 
-| Bảng | Vai trò chính | Thuộc tính nghiệp vụ được chọn | Cột trên hình / trong schema |
-|---|---|---|---|
-| `can_ho` | Lưu căn hộ và diện tích tính phí | `so_can_ho`, `dien_tich_m2` | 5 / 8 |
-| `cau_hinh_phi` | Thiết lập đơn giá và kỳ áp dụng | `don_gia`, `tu_ngay`, `cach_tinh` | 6 / 10 |
-| `chi_so_dich_vu` | Ghi chỉ số điện, nước theo kỳ | `loai_dich_vu`, `ky_thanh_toan`, `chi_so_cu`, `chi_so_moi` | 7 / 11 |
-| `chi_tiet_hoa_don` | Lưu các khoản phí của hóa đơn | `so_luong`, `don_gia`, `thanh_tien` | 7 / 11 |
-| `chung_tu_thu_chi` | Lưu tệp chứng từ của phiếu | `ten_tep`, `loai_tep` | 5 / 9 |
-| `cu_dan` | Quản lý hồ sơ và liên hệ cư dân | `ho_va_ten`, `so_dien_thoai` | 4 / 6 |
-| `dat_lich_tien_ich` | Đặt và theo dõi lịch tiện ích | `bat_dau`, `ket_thuc`, `trang_thai` | 9 / 18 |
-| `dot_lap_hoa_don` | Theo dõi đợt lập hóa đơn | `ngay_tao`, `ket_qua` | 4 / 6 |
-| `dot_nhap_du_lieu` | Theo dõi lần nhập dữ liệu | `phan_he`, `so_dong` | 4 / 8 |
-| `dot_xu_ly_hoa_don` | Lưu kết quả xử lý hóa đơn | `thao_tac`, `ket_qua` | 4 / 7 |
-| `gioi_han_gui` | Giới hạn tần suất gửi yêu cầu | `cac_moc_thoi_gian` | 2 / 2 |
-| `hinh_anh_phan_anh` | Lưu ảnh gửi và ảnh xử lý | `duong_dan_tep`, `loai`, `luot_xu_ly` | 6 / 7 |
-| `hoa_don` | Lập và theo dõi hóa đơn theo kỳ | `ky_thanh_toan`, `tong_tien`, `trang_thai` | 11 / 33 |
-| `khoi_toa_nha` | Quản lý các khối tòa nhà | `ten_khoi` | 2 / 6 |
-| `lich_su_cu_tru` | Ghi nhận các đợt cư trú | `tu_ngay`, `den_ngay`, `quan_he` | 7 / 9 |
-| `loai_phi` | Danh mục các loại phí | `ten_phi`, `don_vi_tinh` | 3 / 3 |
-| `nguoi_dung` | Quản lý tài khoản và vai trò | `ho_va_ten`, `vai_tro` | 5 / 15 |
-| `phan_anh` | Tiếp nhận và theo dõi phản ánh | `tieu_de`, `noi_dung`, `trang_thai` | 10 / 25 |
-| `phieu_bao_tri` | Lập và theo dõi việc bảo trì | `tieu_de`, `ngay_den_han`, `trang_thai` | 9 / 30 |
-| `phieu_thu_chi` | Ghi nhận thu, chi của quỹ | `loai`, `so_tien`, `trang_thai` | 8 / 17 |
-| `phuong_tien` | Quản lý đăng ký xe cư dân | `bien_so`, `loai_xe` | 9 / 18 |
-| `quy_tai_chinh` | Quản lý danh mục quỹ | `ten_quy`, `dang_hoat_dong` | 3 / 8 |
-| `schema_migrations` | Theo dõi phiên bản CSDL | `checksum` | 2 / 2 |
-| `tang_toa_nha` | Quản lý tầng trong mỗi khối | `ten_tang` | 3 / 7 |
-| `thiet_bi` | Quản lý tài sản và vị trí thiết bị | `ten_thiet_bi`, `vi_tri`, `trang_thai` | 5 / 16 |
-| `thong_bao` | Gửi và theo dõi thông báo | `tieu_de`, `pham_vi`, `trang_thai` | 9 / 19 |
-| `thong_bao_da_doc` | Theo dõi người đã đọc thông báo | `ngay_doc` | 4 / 4 |
-| `tien_ich` | Quản lý tiện ích và sức chứa | `ten_tien_ich`, `suc_chua`, `dang_mo` | 5 / 13 |
-| `vi_tri_qr` | Gắn QR với vị trí hoặc thiết bị | `ten_vi_tri`, `token_qr`, `dang_hoat_dong` | 6 / 10 |
-| `yeu_cau_gui` | Chống gửi phản ánh trùng lặp | `van_tay` | 3 / 3 |
-| `nhat_ky_nghiep_vu` | Lưu vết thay đổi nghiệp vụ | `loai_nhat_ky`, `su_kien`, `ngay_tao` | 18 / 21 |
+## 18 bảng được giữ — đầy đủ mọi cột
 
-## Cách giảm đường nối
+| Bảng | Vai trò | Số thuộc tính được vẽ / số cột thật |
+|---|---|---|
+| `can_ho` | Lưu căn hộ và diện tích tính phí | 8 / 8 |
+| `cau_hinh_phi` | Thiết lập đơn giá và kỳ áp dụng | 10 / 10 |
+| `chi_so_dich_vu` | Ghi chỉ số điện, nước theo kỳ | 11 / 11 |
+| `chi_tiet_hoa_don` | Lưu các khoản phí của hóa đơn | 11 / 11 |
+| `cu_dan` | Quản lý hồ sơ và liên hệ cư dân | 6 / 6 |
+| `hinh_anh_phan_anh` | Lưu ảnh gửi và ảnh xử lý | 7 / 7 |
+| `hoa_don` | Lập và theo dõi hóa đơn theo kỳ | 33 / 33 |
+| `khoi_toa_nha` | Quản lý các khối tòa nhà | 6 / 6 |
+| `lich_su_cu_tru` | Ghi nhận các đợt cư trú | 9 / 9 |
+| `loai_phi` | Danh mục các loại phí | 3 / 3 |
+| `nguoi_dung` | Quản lý tài khoản và vai trò | 15 / 15 |
+| `phan_anh` | Tiếp nhận và theo dõi phản ánh | 25 / 25 |
+| `phuong_tien` | Quản lý đăng ký xe cư dân | 18 / 18 |
+| `tang_toa_nha` | Quản lý tầng trong mỗi khối | 7 / 7 |
+| `thiet_bi` | Quản lý tài sản và vị trí thiết bị | 16 / 16 |
+| `thong_bao` | Gửi và theo dõi thông báo | 19 / 19 |
+| `thong_bao_da_doc` | Theo dõi người đã đọc thông báo | 4 / 4 |
+| `vi_tri_qr` | Gắn QR với vị trí hoặc thiết bị | 10 / 10 |
 
-Lớp **01 Nghiệp vụ chính** hiện mặc định 39 quan hệ: nhà ở/cư trú, hóa đơn, QR/phản ánh, giao việc kỹ thuật, tiện ích và quỹ. Lớp **02 FK người thao tác và nhật ký** giữ 42 FK còn lại, gồm các liên kết người lập/duyệt/gửi và 14 FK của nhật ký dùng chung. Có thể bật lớp 02 bằng **View → Layers** trong draw.io.
+## 13 bảng lược khỏi hình
 
-Đây là hai lớp hiển thị của **cùng một ERD**, không phải các sơ đồ phân hệ độc lập. Tất cả 31 thực thể luôn ở cùng trang; không tạo bản sao của bảng để né liên kết xuyên nhóm. PNG/SVG/PDF/Word dùng bản xem chính và không hiển thị 42 FK đang ẩn. [Bảng đối chiếu 81 FK](DOI-CHIEU-KHOA-NGOAI.md) ghi rõ từng quan hệ thuộc lớp nào.
+| Bảng | Lý do lược khi trình bày |
+|---|---|
+| `chung_tu_thu_chi` | Chứng từ của phần mở rộng quỹ, không cần trong hình nghiệp vụ trọng tâm. |
+| `dat_lich_tien_ich` | Đặt lịch tiện ích là phần mở rộng, lược khỏi hình chính. |
+| `dot_lap_hoa_don` | Bảng kỹ thuật quản lý đợt lập và chống xử lý lặp. |
+| `dot_nhap_du_lieu` | Theo dõi lần nhập dữ liệu, không phải thực thể nghiệp vụ chính của hình. |
+| `dot_xu_ly_hoa_don` | Bảng kỹ thuật theo dõi các đợt xử lý hóa đơn. |
+| `gioi_han_gui` | Bảng giới hạn tần suất gửi. |
+| `nhat_ky_nghiep_vu` | Nhật ký kiểm soát/lịch sử, lược để không tạo thêm nhiều đường nối. |
+| `phieu_bao_tri` | Bảo trì là phần mở rộng ngoài nhóm 18 bảng trọng tâm của đề cương. |
+| `phieu_thu_chi` | Phiếu thu chi quỹ thuộc phần mở rộng. |
+| `quy_tai_chinh` | Quỹ tài chính thuộc phần mở rộng. |
+| `schema_migrations` | Metadata phiên bản schema. |
+| `tien_ich` | Danh mục tiện ích thuộc phần mở rộng. |
+| `yeu_cau_gui` | Khóa kỹ thuật chống gửi phản ánh lặp. |
+
+Các bảng lược vẫn tồn tại trong ứng dụng và từ điển dữ liệu. Không có bảng lược nào được giấu dưới một lớp vẽ khác. Đây là một hình rút gọn phạm vi bảng, không phải các ERD phân hệ độc lập.

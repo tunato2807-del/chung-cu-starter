@@ -1,6 +1,6 @@
 # Quyển báo cáo đồ án chuyên ngành
 
-> **Sơ đồ hiện hành — ERD đã hợp nhất:** [17 sơ đồ, Word tập hình và một ERD đủ 31 bảng / 81 FK](../../so-do-theo-mau-2026-11-17/README.md). Bản báo cáo toàn văn trong thư mục này giữ làm bản gốc; khi cập nhật Word, thay năm ERD cũ bằng Hình 2.15 và đổi số hình theo bảng hướng dẫn trong bộ mới.
+> **Sơ đồ hiện hành — ERD theo mẫu:** [17 sơ đồ, Word tập hình và một ERD 18 bảng trọng tâm với đủ 218 thuộc tính](../../so-do-theo-mau-2026-11-17/README.md). Khóa chính liền, khóa ngoại đứt, thuộc tính xếp một cột dọc. Schema vẫn 31 bảng. Báo cáo toàn văn ở đây giữ làm bản gốc; khi cập nhật Word, thay năm ERD cũ bằng Hình 2.15 và sửa số hình theo bộ mới.
 
 > **Bản bổ sung ngày 17/11/2026:** [mở mục lục Word, draw.io và hình minh họa mới](../../tai-lieu-ban-giao-2026-11-17/README.md). Bản Word bổ sung trích dẫn được lưu riêng; tài liệu hướng dẫn cập nhật UI nêu các mục cần sửa theo `main` tại `cceb904`. Các file trong thư mục hiện tại giữ nguyên làm bản gốc.
 

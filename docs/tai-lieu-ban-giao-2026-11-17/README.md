@@ -1,6 +1,6 @@
 # Báo cáo Word, sơ đồ draw.io và hình minh họa
 
-> **Bộ hiện hành — ERD gọn, giữ oval:** [17 sơ đồ, Word/PDF và draw.io](../so-do-theo-mau-2026-11-17/README.md). Một ERD giữ 31 bảng, chọn 185 thuộc tính và hiện 39 FK chính; đủ 81 FK khi bật lớp kiểm soát trong draw.io. Các sơ đồ và báo cáo toàn văn bên dưới lưu để đối chiếu bản trước.
+> **Bộ hiện hành — ERD theo mẫu cột dọc:** [17 sơ đồ, Word/PDF và draw.io](../so-do-theo-mau-2026-11-17/README.md). Một ERD giữ 18 bảng trọng tâm, đủ 218 thuộc tính và 46 FK giữa chúng; khóa chính gạch liền, khóa ngoại gạch đứt, không in đậm. Database vẫn đủ 31 bảng. Các sơ đồ và báo cáo toàn văn bên dưới lưu để đối chiếu bản trước.
 
 **Tô Hoàng Tuấn — MSSV 1250080221 · Bộ bàn giao ngày 17/11/2026**
 

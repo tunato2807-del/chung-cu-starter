@@ -2,12 +2,9 @@
   "status": "passed",
   "collection_pdf_pages": 17,
   "erd_pdf_pages": 1,
-  "word_sections": 18,
-  "word_rendered_pages": 18,
   "word_figures": 17,
-  "word_has_vector_erd_and_png_fallback": true,
-  "static_erd_shows_main_39_relationships": true,
-  "word_explains_42_optional_relationships": true,
-  "word_erd_section_paper": "A3 landscape",
-  "all_captions_present_on_expected_word_pages": true
+  "word_rendered_pages": 18,
+  "word_erd_section_paper": "A3 portrait",
+  "embedded_vector_erd": true,
+  "all_captions_present_on_expected_pages": true
 }

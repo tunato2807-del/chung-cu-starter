@@ -1,6 +1,6 @@
 # ERD rút gọn cho báo cáo đồ án
 
-> **Bản lưu lịch sử, đã được thay thế:** theo yêu cầu không tách ERD, dùng [ERD hợp nhất duy nhất, đủ 31 bảng / 81 FK](../../so-do-theo-mau-2026-11-17/README.md). Các số 38 bảng và hình phân hệ dưới đây thuộc bản thiết kế cũ, không phải hiện trạng.
+> **Bản lưu lịch sử, đã được thay thế:** dùng [một ERD 18 bảng trọng tâm, đầy đủ thuộc tính theo cột dọc và ký pháp khóa như mẫu](../../so-do-theo-mau-2026-11-17/README.md). Schema vẫn 31 bảng; các số 38 bảng và hình phân hệ dưới đây thuộc bản thiết kế cũ.
 
 > **CSDL hiện tại (05/11/2026):** [MySQL31 bảng thật, 8 view, giữ đủ nghiệp vụ và18 bảng trọng tâm](../../csdl-do-an/README.md). Các hình/kiểm tra schema38 bảng ở bản cũ là lịch sử; ERD vật lý và từ điển đã sinh lại theo baseline mới.
 
