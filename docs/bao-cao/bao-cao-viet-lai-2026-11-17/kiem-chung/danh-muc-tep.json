@@ -1,18 +1,18 @@
 [
   {
     "file": "Ban-xem-truoc_Bao-cao-viet-lai.pdf",
-    "bytes": 4992714,
-    "sha256": "f61f044e487f2022e3cd6301a3483cdedba77350bf304e9f9ed5aefaf4b77224"
+    "bytes": 4973615,
+    "sha256": "0d32bc7a58ca355207001d0512888f559018d942a9076de98a24d14ef85e613b"
   },
   {
     "file": "Bao-cao-DACN_To-Hoang-Tuan_Viet-lai.docx",
-    "bytes": 4266819,
-    "sha256": "09242cca5d25d692eca73f74555a6fe51819f6fae0f934570f8481c48993ed18"
+    "bytes": 4411819,
+    "sha256": "5e10569e61e69225f8fc0ae871328a998815983b6e69888236805ac19bd72289"
   },
   {
     "file": "Bao-cao-moi-va-so-do-chinh-sua.zip",
-    "bytes": 12331204,
-    "sha256": "220169fbb2f892bcab16a0a3e1db0adfc14ae9a8685dc036ef655f803aaf31aa"
+    "bytes": 12723852,
+    "sha256": "65fa1c96851d5145de595bd60b0dbf8e24527be393859c667bfc12daa6ef5cb9"
   },
   {
     "file": "DOI-CHIEU-YEU-CAU.md",
@@ -122,7 +122,7 @@
   {
     "file": "kiem-chung/kiem-tra-trinh-bay.json",
     "bytes": 1443,
-    "sha256": "ac8a1008bc31e608b24b953fa60b4d4064dfb4240ab55bc137087f64a16ca3b1"
+    "sha256": "836d9fb51de308cb18c827ca5498b890b2d42cc5cadb800584a5a64482204438"
   },
   {
     "file": "kiem-chung/nguon-tham-khao.json",

@@ -86,7 +86,7 @@
     "vertices": 33,
     "edges": 23,
     "width": 1580,
-    "height": 1815,
+    "height": 1928,
     "note": "Tạo QR ở React; lỗi giao dịch không để lại vị trí ghi dở dang."
   },
   {
@@ -96,7 +96,7 @@
     "vertices": 39,
     "edges": 26,
     "width": 1885,
-    "height": 2079,
+    "height": 2192,
     "note": "Replay hoặc lỗi: ảnh mới không được giữ phải được dọn; lỗi trả về phải giữ nháp phù hợp."
   },
   {
@@ -106,7 +106,7 @@
     "vertices": 53,
     "edges": 33,
     "width": 1885,
-    "height": 3003,
+    "height": 3116,
     "note": "Các nhóm cập nhật là những transaction riêng. KTV không tự nghiệm thu; trả lại yêu cầu ảnh mới ở lượt sau."
   },
   {
@@ -116,7 +116,7 @@
     "vertices": 31,
     "edges": 22,
     "width": 1580,
-    "height": 1683,
+    "height": 1796,
     "note": "Luồng xem VietQR không gọi ngân hàng và không tự ghi đã thanh toán; BQL đối soát ở thao tác riêng."
   },
   {

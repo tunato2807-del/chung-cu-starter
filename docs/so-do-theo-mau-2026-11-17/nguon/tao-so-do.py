@@ -71,6 +71,7 @@ SCHEMA,FKS=parse_full_schema(SQL)
 def N(x):return f'{float(x):.2f}'.rstrip('0').rstrip('.')
 def safe(s):return html.escape(str(s),quote=True)
 FONT_PATH='/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf'
+ACTOR_HEIGHT = 180
 def wrap(s,w,fs):
     font=ImageFont.truetype(FONT_PATH,int(fs));result=[]
     for raw in str(s).split('\n'):
@@ -164,7 +165,7 @@ class Diagram:
     def connect(self,a,b,sa='B',sb='T',via=None,**kw):
         return self.line([self.anchor(a,sa)]+(via or [])+[self.anchor(b,sb)],a,b,**kw)
     def actor(self,cx,y,title,scale=1):
-        group=self.box(cx-75,y,150,180,'',shape='group')
+        group=self.box(cx-75,y,150,ACTOR_HEIGHT,'',shape='group')
         self.box(61,0,28,28,'',shape='ellipse',parent=group)
         for points in [[(75,28),(75,78)],[(45,48),(105,48)],[(75,78),(47,112)],[(75,78),(103,112)]]:
             # Actor parts are native vertices; thin rectangles form the limbs.
@@ -700,12 +701,21 @@ def sequences():
      (12,['Cư dân /\ntài khoản căn','React\n(Client)','billing.routes.js\nAPI / quyền','billing.service.js\nNghiệp vụ','MySQL'],[
        (0,1,'Mở chi tiết hóa đơn',0),(1,2,'GET /api/cua_toi/hoa_don/:id',0),(2,3,'detail(id, user)',0),(3,4,'Đọc hóa đơn và ngữ cảnh quyền xem',0),(4,3,'Hóa đơn thuộc phạm vi được phép',1),(3,2,'Chi tiết và dữ liệu VietQR',1),(2,1,'HTTP 200 + hóa đơn',1),(1,1,'Dựng QR và thông tin nhận tiền',0),(1,0,'Hiện hóa đơn / VietQR',1)],'Luồng xem VietQR không gọi ngân hàng và không tự ghi đã thanh toán; BQL đối soát ở thao tác riêng.')]
     for index,participants,msgs,note in datasets:
-        count=len(participants);gap=305;width=180+(count-1)*gap+180;top=250;row=132;height=top+len(msgs)*row+245;d=Diagram(index,width,height)
+        actor_y = 65
+        participant_y, participant_height = 106, 100
+        header_bottom = max(actor_y + ACTOR_HEIGHT, participant_y + participant_height)
+        message_label_offset = 94
+        top = header_bottom + 24 + message_label_offset
+        count=len(participants);gap=305;width=180+(count-1)*gap+180;row=132;height=top+len(msgs)*row+245;d=Diagram(index,width,height)
         xs=[180+i*gap for i in range(count)];end=height-330
         for i,(x,title) in enumerate(zip(xs,participants)):
-            if i==0:d.actor(x,65,title)
-            else:d.box(x-112,78,224,100,title,fill='#e9e9f0',shape='cylinder' if title=='MySQL' else 'rect',fs=20)
-            d.line([(x,190),(x,end)],dashed=True)
+            if i==0:
+                d.actor(x,actor_y,title)
+                lifeline_start = actor_y + ACTOR_HEIGHT
+            else:
+                d.box(x-112,participant_y,224,participant_height,title,fill='#e9e9f0',shape='cylinder' if title=='MySQL' else 'rect',fs=20)
+                lifeline_start = participant_y + participant_height
+            d.line([(x,lifeline_start+10),(x,end)],dashed=True)
             # Repeat participant labels at the foot as in the supplied sample.
             if i==0:d.actor(x,end+12,title)
             else:d.box(x-112,end+20,224,85,title,fill='#e9e9f0',shape='cylinder' if title=='MySQL' else 'rect',fs=19)
@@ -729,7 +739,7 @@ def sequences():
             else:
                 start=xa+(7 if b>a and a>0 else -7 if b<a and a>0 else 0);finish=xb+(-7 if b>a else 7)
                 d.line([(start,y),(finish,y)],arrow='open' if returned else 'block',dashed=bool(returned))
-                d.text(min(xa,xb)+14,y-94,abs(xb-xa)-28,88,f'{k+1}. '+label,fs=19,align='left')
+                d.text(min(xa,xb)+14,y-message_label_offset,abs(xb-xa)-28,88,f'{k+1}. '+label,fs=19,align='left')
         d.note=note;save(d)
 
 def main():

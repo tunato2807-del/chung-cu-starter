@@ -58,6 +58,6 @@
   "unresolved_bookmarks": [],
   "cache_stable": true,
   "preview_font": "PDF uses installed Liberation Serif where Times New Roman is unavailable. DOCX explicitly specifies Times New Roman. Update fields and review pagination in Microsoft Word before printing.",
-  "docx_sha256": "09242cca5d25d692eca73f74555a6fe51819f6fae0f934570f8481c48993ed18",
-  "pdf_sha256": "f61f044e487f2022e3cd6301a3483cdedba77350bf304e9f9ed5aefaf4b77224"
+  "docx_sha256": "5e10569e61e69225f8fc0ae871328a998815983b6e69888236805ac19bd72289",
+  "pdf_sha256": "0d32bc7a58ca355207001d0512888f559018d942a9076de98a24d14ef85e613b"
 }

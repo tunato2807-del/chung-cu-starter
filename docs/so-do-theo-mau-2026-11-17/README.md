@@ -42,6 +42,8 @@ Trong GitHub, mở `.drawio`/`.docx` rồi chọn **Download raw file** để t�
 
 ## Danh mục 17 sơ đồ
 
+Trong Hình 2.9–2.12, tên tác nhân nằm phía trên vùng thông điệp và đường sống bắt đầu bên dưới tên. Bố cục này đã được cập nhật trong các tệp riêng, bộ tổng hợp và báo cáo Word/PDF.
+
 | Hình | Nội dung | PNG | SVG | draw.io | XML |
 |---|---|---|---|---|---|
 | 2.1 | Phân rã chức năng theo nhóm nghiệp vụ | [PNG](png/02-01-phan-ra-chuc-nang.png) | [SVG](svg/02-01-phan-ra-chuc-nang.svg) | [draw.io](drawio/02-01-phan-ra-chuc-nang.drawio) | [XML](xml/02-01-phan-ra-chuc-nang.xml.txt) |
