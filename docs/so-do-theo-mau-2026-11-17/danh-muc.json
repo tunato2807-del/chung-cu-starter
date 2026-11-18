@@ -141,13 +141,13 @@
   },
   {
     "figure": "2.15",
-    "caption": "Hình 2.15. ERD 18 bảng nghiệp vụ — bố cục dây nối sắp xếp lại",
+    "caption": "Hình 2.15. ERD 18 bảng nghiệp vụ — bố cục gọn theo mẫu",
     "filename": "02-15-erd-hop-nhat",
-    "vertices": 370,
-    "edges": 531,
-    "width": 4800,
-    "height": 6264,
-    "note": "Bố cục mới, chia đầu nối sang các cạnh và dùng rãnh dây riêng: ERD 18 bảng trọng tâm: liệt kê đủ 218 thuộc tính và 46 khóa ngoại giữa các bảng được giữ; mỗi bảng một cột oval dọc, chữ thường, đường nối vuông góc, quan hệ hình thoi trống, bội số một/nhiều bằng vạch/chân quạ. Khóa chính gạch liền, khóa ngoại gạch đứt; không có mã FK/R. Schema vẫn 31 bảng, 362 cột, 81 FK."
+    "vertices": 356,
+    "edges": 501,
+    "width": 3830,
+    "height": 3695,
+    "note": "ERD 18 bảng trọng tâm, 218 thuộc tính và 46 khóa ngoại. Dây ngang và dọc. Nhãn ×n gộp n khóa ngoại có cùng cặp bảng và cùng bội số. Khóa chính gạch liền, khóa ngoại gạch đứt."
   },
   {
     "figure": "2.16",

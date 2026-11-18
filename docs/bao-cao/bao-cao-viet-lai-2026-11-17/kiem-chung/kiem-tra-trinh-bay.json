@@ -1,15 +1,15 @@
 {
-  "pdf_pages": 126,
-  "front_pages": 17,
+  "pdf_pages": 109,
+  "front_pages": 16,
   "main_pages": 66,
-  "appendix_pages": 41,
+  "appendix_pages": 25,
   "references_pages": 2,
-  "headings": 100,
+  "headings": 86,
   "figures": 26,
-  "tables": 53,
+  "tables": 39,
   "references": 11,
   "toc_fields": 3,
-  "pageref_fields": 179,
+  "pageref_fields": 151,
   "citation_ref_fields": 39,
   "embedded_svg": 0,
   "sections": [
@@ -58,6 +58,6 @@
   "unresolved_bookmarks": [],
   "cache_stable": true,
   "preview_font": "PDF uses installed Liberation Serif where Times New Roman is unavailable. DOCX explicitly specifies Times New Roman. Update fields and review pagination in Microsoft Word before printing.",
-  "docx_sha256": "5e10569e61e69225f8fc0ae871328a998815983b6e69888236805ac19bd72289",
-  "pdf_sha256": "0d32bc7a58ca355207001d0512888f559018d942a9076de98a24d14ef85e613b"
+  "docx_sha256": "a60394eb7ead6631d7737fe3ad7142edeefffa5ac4d843629e8f45a19602d916",
+  "pdf_sha256": "6499d98780d18a321b4fa6b0c600fc9d30aa865db6ab2792e6bea2cda3fd87bf"
 }

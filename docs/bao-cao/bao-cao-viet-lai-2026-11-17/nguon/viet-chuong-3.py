@@ -25,7 +25,7 @@ h(2,'3.2. CÀI ĐẶT VÀ HIỆN THỰC HÓA HỆ THỐNG')
 h(3,'3.2.1. Hiện thực cơ sở dữ liệu và dữ liệu thử')
 p('Baseline database/thesis-mysql/001_thesis_schema.sql là nguồn tạo schema mới. Runner theo dõi tên và checksum trong schema_migrations, giúp phát hiện khác biệt với bản đã áp dụng. Bản hiện tại dùng 31 bảng thật và 8 view lịch sử. Các trang dữ liệu không trực tiếp ghi vào view lịch sử; service gọi hàm appendHistory trong cùng giao dịch với nghiệp vụ.',
 'Dữ liệu mô phỏng và dữ liệu kiểm thử được tách khỏi dữ liệu sử dụng. npm test và npm run test:e2e chọn chung_cu_test, cài fixture và chạy tuần tự. Mục đích của fixture là tạo các trường hợp có thể lặp lại: căn, cư dân, tài khoản, QR, hóa đơn và trạng thái liên quan. Ảnh minh họa trong báo cáo dùng dữ liệu thử; không phải hồ sơ cư dân của một chung cư đã triển khai.',
-'Thiết kế vật lý bổ sung cho sơ đồ chương 2 bằng kiểu dữ liệu, chỉ mục, CHECK và các cột sinh. Ví dụ tang_toa_nha dùng khóa ghép; can_ho tham chiếu cặp khối/tầng; hóa đơn giữ ràng buộc duy nhất cho bản còn hiệu lực. Việc đếm bảng bao gồm cả bảng kỹ thuật; tám view lịch sử không cộng thêm vào 31 bảng vật lý. Phụ lục 2 liệt kê cấu trúc đủ để đối chiếu với mã SQL.')
+'Thiết kế vật lý bổ sung cho sơ đồ chương 2 bằng kiểu dữ liệu, chỉ mục, CHECK và các cột sinh. Ví dụ tang_toa_nha dùng khóa ghép; can_ho tham chiếu cặp khối/tầng; hóa đơn giữ ràng buộc duy nhất cho bản còn hiệu lực. Việc đếm bảng bao gồm cả bảng kỹ thuật; tám view lịch sử không cộng thêm vào 31 bảng vật lý. Phụ lục 2 liệt kê cấu trúc của 18 bảng trong Hình 2.15 để đối chiếu với mã SQL.')
 h(3,'3.2.2. Backend RESTful API và cơ chế xác thực')
 p('Express route xác định phương thức/đường dẫn, gắn middleware và gọi service; repository hoặc service thực hiện truy vấn có tham số. Cách phân tách phù hợp vai trò routing và middleware của Express [1]. JSON được giới hạn kích thước ở đầu ứng dụng; ảnh dùng multipart với giới hạn riêng. Lỗi trả mã, thông báo, lỗi trường khi có và request ID để đối chiếu.',
 'JWT được ký HS256 bằng jose, có issuer, audience, thời hạn tám giờ và phiên bản tài khoản. Token nằm trong cookie HttpOnly, SameSite=Strict; thuộc tính Secure phụ thuộc cấu hình HTTPS. Mỗi lần xác thực, máy chủ đọc lại tài khoản để kiểm tra trạng thái và phiên bản. Cách làm này cho phép khóa tài khoản, đổi mật khẩu hoặc đăng xuất làm mất hiệu lực phiên trước, phù hợp yêu cầu kiểm tra quyền ở mọi yêu cầu [9].')
@@ -183,17 +183,24 @@ npm run test:ui
 npm test
 npm run test:e2e''')
 p('Thư mục kiem-chung đi kèm lưu đầu ra của bốn lệnh cùng thông tin nguồn. Khi chạy lại, số bài có thể thay đổi theo phiên bản mã nguồn; cần ghi commit và ngày kiểm tra mới. Không dùng database chứa dữ liệu làm việc cho test. Để cập nhật mục lục, mở Word trên máy có Times New Roman, chọn toàn bộ rồi Update Field/Update entire table và kiểm tra lại phân trang trước khi in.',
-'Tệp sơ đồ chỉnh sửa được nằm trong docs/so-do-theo-mau-2026-11-17. Hình 2.15 vẫn là một ERD duy nhất gồm 18 bảng trọng tâm; khi cần đọc tên thuộc tính hãy mở PDF vector/SVG hoặc draw.io riêng. Không coi các đoạn phóng to trong phần mềm xem ảnh là những ERD phân hệ độc lập. Từ điển dưới đây bổ sung đủ các bảng vật lý không vẽ trên hình.')
+'Tệp sơ đồ chỉnh sửa được nằm trong docs/so-do-theo-mau-2026-11-17. Khi cần đọc tên thuộc tính của Hình 2.15, có thể mở bản PDF vector, SVG hoặc draw.io. Từ điển ở Phụ lục 2 sử dụng đúng danh sách 18 bảng trong hình.')
 
-h(2,'PHỤ LỤC 2. TỪ ĐIỂN DỮ LIỆU ĐẦY ĐỦ')
-p('Các bảng sau được sinh từ từ điển metadata của schema hiện tại và đối chiếu mô hình đã xuất: 31 bảng, 362 cột, 81 ràng buộc khóa ngoại. PK là khóa chính; FK là khóa ngoại; “Có/Không” chỉ khả năng nhận NULL. Các cột trong khóa ghép được đánh dấu thành viên; dòng quan hệ sau bảng giữ đúng tổ hợp. Ký hiệu trong bảng từ điển phục vụ tra cứu kỹ thuật; hình ERD vẫn dùng quy ước gạch chân theo mẫu.')
+h(2,'PHỤ LỤC 2. TỪ ĐIỂN DỮ LIỆU 18 BẢNG TRONG ERD')
+p('Phụ lục gồm 18 bảng, 218 thuộc tính và 46 ràng buộc khóa ngoại trong Hình 2.15. PK là khóa chính, FK là khóa ngoại và “Có/Không” chỉ khả năng nhận NULL. Dòng quan hệ sau mỗi bảng ghi đủ các cột của khóa ghép.',
+  'Cơ sở dữ liệu triển khai có 31 bảng, 362 cột, 81 khóa ngoại và 8 view lịch sử. Từ điển toàn bộ 31 bảng nằm trong tệp TU-DIEN-362-COT.md ở thư mục so-do của bộ ZIP. Mã SQL gốc nằm tại database/thesis-mysql/001_thesis_schema.sql.')
 model=json.loads((R/'docs/so-do-theo-mau-2026-11-17/nguon/mo-hinh-va-doi-chieu.json').read_text())
-raw=(R/'docs/bao-cao/tu-dien-du-lieu.md').read_text()
-for i,(name,tab) in enumerate(model['tables'].items(),1):
+erd=next(diagram for diagram in model['diagrams'] if diagram['figure']=='2.15')
+erd_columns={}
+for field in erd['fields']:
+ erd_columns.setdefault(field['table'],[]).append(field['field'])
+erd_fk_names={relation['name'] for relation in erd['relations']}
+for i,name in enumerate(sorted(erd_columns),1):
+ tab=model['tables'][name]
  h(3,'PL2.'+str(i)+'. '+name)
- fk=[x for x in model['foreign_keys'] if x['child']==name]
+ fk=[x for x in model['foreign_keys'] if x['child']==name and x['name'] in erd_fk_names]
  rows=[]
- for col,d in tab['columns'].items():
+ for col in erd_columns[name]:
+  d=tab['columns'][col]
   keys=[]
   if col in tab['pk']:keys.append('PK'+(' ghép' if len(tab['pk'])>1 else ''))
   for rel in fk:
@@ -203,11 +210,6 @@ for i,(name,tab) in enumerate(model['tables'].items(),1):
  tb('Cấu trúc bảng '+name,['Thuộc tính','Kiểu MySQL','NULL','Khóa / tham chiếu'],rows,'Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.')
  if tab.get('unique'):p('Tổ hợp UNIQUE: '+'; '.join('('+', '.join(u)+')' for u in tab['unique'])+'.')
  if fk:p('Quan hệ khóa ngoại: '+'; '.join('('+', '.join(x['columns'])+') → '+x['parent']+'('+', '.join(x['references'])+')' for x in fk)+'.')
-views=[('lich_su_phan_anh','Phân công, xử lý và nghiệm thu phản ánh'),('lich_su_hoa_don','Lập, duyệt, gửi, hủy và thu hóa đơn'),('lich_su_ban_giao_can_ho','Bàn giao tài khoản/trách nhiệm căn'),('lich_su_thong_bao','Tạo, phát hành và thu hồi thông báo'),('lich_su_bao_tri','Xử lý phiếu bảo trì'),('lich_su_dat_lich','Yêu cầu và quyết định đặt tiện ích'),('lich_su_thu_chi','Các sự kiện phiếu thu/chi'),('lich_su_lien_ket_qr','Thay đổi liên kết vị trí QR và thiết bị')]
-h(3,'PL2.32. Các view lịch sử và nguồn schema')
-tb('Tám view lịch sử nghiệp vụ',['View','Nội dung'],views)
-p('Các view là giao diện đọc dữ liệu lịch sử từ bảng nhật ký chung, không phải tám bảng vật lý bổ sung. Baseline SQL là nguồn quyết định cho CHECK, biểu thức cột sinh và hành vi cập nhật/xóa của FK. Từ điển bảng trong báo cáo lược cột mặc định và toàn văn CHECK để thuận tiện đọc; từ điển kỹ thuật docs/bao-cao/tu-dien-du-lieu.md và SQL vẫn giữ chi tiết cần cho triển khai.')
-
 h(1,'DANH MỤC TÀI LIỆU THAM KHẢO')
 refs=[
 ('Express.js','Express — README','https://github.com/expressjs/express/blob/master/Readme.md'),

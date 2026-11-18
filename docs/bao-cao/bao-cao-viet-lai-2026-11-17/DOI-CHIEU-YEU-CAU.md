@@ -20,7 +20,7 @@ Bản báo cáo mới được viết lại từ nội dung đề cương, khôn
 | Chương 1 | Word P67–72; PDF trang 11; đề cương 1.1–1.2 | Có công việc/dự án liên quan, so sánh phương án, khác biệt, lý thuyết và công nghệ |
 | CyHome / Building Care | Đề cương P129 | Ghi là ví dụ từ đề cương; chưa có tài liệu chính thức truy cập được nên không gán tính năng hay chấm điểm sản phẩm. Dùng README ERPNext chính thức để tham khảo dự án liên quan; không gọi là khảo sát dùng thử |
 | Chương 2 | Word P73–78; PDF trang 12; đề cương 2.1–2.7 | Đủ yêu cầu, phân rã, use case/5 đặc tả, 4 activity, 4 sequence, trạng thái, lớp, ERD, từ điển, kiến trúc/luồng, lý do và thuật toán, UI/UX |
-| Mô hình dữ liệu | Đề cương 2.4; yêu cầu người dùng những lượt trước | Một ERD 18 bảng/218 cột/46 FK, đúng oval một cột và gạch khóa. Nêu rõ phép chiếu 18 bảng không đại diện toàn bộ 31 bảng/362 cột/81 FK. Phụ lục có đủ từ điển 31 bảng; SQL là nguồn vật lý |
+| Mô hình dữ liệu | Đề cương 2.4 và yêu cầu người dùng | Hình 2.15 và Phụ lục 2 cùng mô tả 18 bảng, 218 thuộc tính và 46 khóa ngoại. Từ điển kỹ thuật đi kèm mô tả đủ 31 bảng, 362 cột và 81 khóa ngoại của CSDL triển khai. |
 | Chương 3 | Word P79–82; PDF trang 13; đề cương 3.1–3.4 | Môi trường thật, cài đặt, API/mã tiêu biểu, hình hiện thực, test có log, đánh giá và hạn chế |
 | Khác biệt công nghệ | Đề cương P75, P179 và package-lock.json | Viết CSS riêng, jose, Node.js 24 như hiện thực, không tuyên bố đã dùng Tailwind/Bootstrap/jsonwebtoken |
 | Figma / Postman | Đề cương 2.7, 3.1 | Chưa có tệp Figma/collection Postman nên không gán ảnh thực thi là mockup hoặc nói đã dùng công cụ mà không có bằng chứng |
@@ -28,7 +28,7 @@ Bản báo cáo mới được viết lại từ nội dung đề cương, khôn
 | Tài liệu tham khảo | Word P39, P95–101, P548–550; PDF trang 16 | 11 nguồn chính thức đã tải và đọc phần liên quan; sắp theo ABC tác giả tổ chức, đánh [n], có trích dẫn trong cả ba chương. Không chép danh sách sách trong đề cương nếu chưa đọc/kiểm chứng |
 | Trường trích dẫn Word | Word P119 gợi ý References/IEEE | Số [n] dùng field REF liên kết bookmark mục tài liệu, cập nhật được. Không tuyên bố đã tạo cơ sở dữ liệu citation manager của Word. Danh mục giữ thứ tự ABC như quy định chính |
 | Mục lục và danh mục động | Word P355, P403–433; PDF trang 9 | Ba field TOC, bookmark, PAGEREF; caption có SEQ. Cache số trang được kết xuất và đối chiếu PDF trước bàn giao |
-| Phụ lục | Word P92, P537–550; PDF trang 15 | Sau kết luận, trước tài liệu tham khảo; không dày hơn phần chính; hướng dẫn dùng và từ điển dữ liệu |
+| Phụ lục | Word P92, P537–550 và PDF trang 15 | Sau kết luận và trước tài liệu tham khảo. Phụ lục 1 hướng dẫn sử dụng. Phụ lục 2 tra cứu cấu trúc đúng theo 18 bảng trong Hình 2.15. |
 | Nhận xét và chữ ký | Word P13–21; PDF trang 4–7 | Giữ ô nhận xét/chữ ký thật để người có trách nhiệm điền; không giả nhận xét, điểm hoặc chữ ký |
 
 Các đoạn quy định trong tài liệu được dùng làm yêu cầu trình bày theo yêu cầu của người dùng. Những dòng “cơ quan cần liên hệ” trong đề cương là nội dung tham khảo, không phải ủy quyền liên hệ hoặc gửi tin nhắn.

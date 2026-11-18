@@ -1,6 +1,6 @@
 # Báo cáo chuyên ngành viết lại từ đầu — Tô Hoàng Tuấn
 
-Bản báo cáo đầy đủ theo **đề cương 1250080221_To_Hoang_Tuan.docx, hướng dẫn Word 2026–2027 và toàn bộ 16 trang hướng dẫn PDF** vừa được cung cấp. Đối chiếu ứng dụng hiện tại `cceb904`, không dùng nguyên văn quyển cũ. Bản PDF xem trước có **126 trang**: 17 trang đầu không đánh số, 66 trang nội dung chính, 41 trang phụ lục và 2 trang tài liệu tham khảo.
+Bản báo cáo đầy đủ theo **đề cương 1250080221_To_Hoang_Tuan.docx, hướng dẫn Word 2026–2027 và toàn bộ 16 trang hướng dẫn PDF** vừa được cung cấp. Đối chiếu ứng dụng hiện tại `cceb904`, không dùng nguyên văn quyển cũ. Bản PDF xem trước có **109 trang**, gồm 16 trang đầu không đánh số, 66 trang nội dung chính, 25 trang phụ lục và 2 trang tài liệu tham khảo.
 
 ## Tải và xem
 
@@ -17,13 +17,13 @@ Trên GitHub, mở `.docx` hoặc `.zip`, chọn **Download raw file**. Tệp Wo
 
 Đủ thứ tự các phần theo hướng dẫn: hai bìa, lời cảm ơn/cam đoan, hai trang nhận xét, lịch 15 tuần, tóm tắt một trang, mục lục và hai danh mục động, viết tắt, Mở đầu, ba chương, kết luận, phụ lục, tài liệu tham khảo.
 
-Chương 1 có công việc liên quan, so sánh phương án, cơ sở lý thuyết và công nghệ. Chương 2 có yêu cầu chức năng/phi chức năng; 5 đặc tả Use Case; các sơ đồ chức năng, use case, activity, sequence, trạng thái, lớp, ERD, kiến trúc và luồng dữ liệu; thuật toán QR, ảnh, giao dịch và tiền. Chương 3 có môi trường, cài đặt, API/mã tiêu biểu, 9 ảnh giao diện hiện tại, ma trận 26 ca kiểm thử đại diện và đánh giá mục tiêu. Phụ lục có hướng dẫn sử dụng và từ điển **31 bảng/362 cột**.
+Chương 1 có công việc liên quan, so sánh phương án, cơ sở lý thuyết và công nghệ. Chương 2 có yêu cầu chức năng/phi chức năng; 5 đặc tả Use Case; các sơ đồ chức năng, use case, activity, sequence, trạng thái, lớp, ERD, kiến trúc và luồng dữ liệu; thuật toán QR, ảnh, giao dịch và tiền. Chương 3 có môi trường, cài đặt, API/mã tiêu biểu, 9 ảnh giao diện hiện tại, ma trận 26 ca kiểm thử đại diện và đánh giá mục tiêu. Phụ lục 1 hướng dẫn sử dụng. Phụ lục 2 tra cứu đúng **18 bảng, 218 thuộc tính và 46 khóa ngoại** của Hình 2.15. [Từ điển đầy đủ 31 bảng của CSDL triển khai](../../so-do-theo-mau-2026-11-17/TU-DIEN-362-COT.md).
 
-Có **26 hình, 53 bảng và 11 tài liệu tham khảo**. Các số `[n]` trong nội dung liên kết bằng field REF tới mục nguồn; cả 11 tài liệu đều có trích dẫn. Các danh mục sử dụng TOC, số trang dùng PAGEREF, chú thích có SEQ. Các tham chiếu đã được đối chiếu theo bản PDF trước bàn giao.
+Có **26 hình, 39 bảng biểu và 11 tài liệu tham khảo**. Các số `[n]` trong nội dung liên kết bằng field REF tới mục nguồn; cả 11 tài liệu đều có trích dẫn. Các danh mục sử dụng TOC, số trang dùng PAGEREF, chú thích có SEQ. Các tham chiếu đã được đối chiếu theo bản PDF trước bàn giao.
 
 ## ERD và hình có thể sửa
 
-Giữ đúng ERD đã thống nhất: **18 bảng trọng tâm, đủ 218 thuộc tính và 46 quan hệ trên một trang**, oval một cột; khóa chính gạch liền, khóa ngoại gạch đứt; không in đậm thuộc tính, không nhãn FK/R trong oval. Database đầy đủ vẫn là **31 bảng/362 cột/81 FK và 8 view**, không bị sửa hoặc cắt bảng.
+Giữ đúng ERD đã thống nhất: **18 bảng trọng tâm, đủ 218 thuộc tính và 46 khóa ngoại qua 41 hình thoi trên một trang**, oval một cột; khóa chính gạch liền, khóa ngoại gạch đứt; không in đậm thuộc tính, không nhãn FK/R trong oval. Database đầy đủ vẫn là **31 bảng/362 cột/81 FK và 8 view**, không bị sửa hoặc cắt bảng.
 
 Hình 2.15 trong quyển A4 là hình tổng quan thu nhỏ, cần mở bản vector để đọc các thuộc tính. [ERD PDF vector](../../so-do-theo-mau-2026-11-17/ERD-18-bang-bo-cuc-ro.pdf) · [ERD draw.io](../../so-do-theo-mau-2026-11-17/drawio/02-15-erd-hop-nhat.drawio) · [draw.io tổng hợp 17 trang](../../so-do-theo-mau-2026-11-17/Tat-ca-17-so-do-ERD-hop-nhat.drawio). Tệp ZIP của báo cáo mới chứa cả bản gốc để phóng to/chỉnh sửa; không tách ERD thành các phân hệ.
 

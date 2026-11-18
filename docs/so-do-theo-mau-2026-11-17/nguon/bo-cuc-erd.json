@@ -1,972 +1,1098 @@
 {
-  "screen_coordinates": true,
-  "bb": "0,0,4800,6144",
+  "bb": [
+    3830,
+    3575
+  ],
   "objects": [
     {
-      "_gvid": 0,
-      "name": "khoi_toa_nha",
-      "pos": "448.0,1219.0",
-      "screen_box": [
-        288,
-        998,
-        320,
-        442
-      ],
-      "header_box": [
-        288,
-        1386,
-        320,
-        54
-      ],
-      "attributes_side": "above",
-      "width": 4.444444444444445,
-      "height": 6.138888888888889
-    },
-    {
-      "_gvid": 1,
-      "name": "tang_toa_nha",
-      "pos": "1216.0,1189.0",
-      "screen_box": [
-        1056,
-        938,
-        320,
-        502
-      ],
-      "header_box": [
-        1056,
-        1386,
-        320,
-        54
-      ],
-      "attributes_side": "above",
-      "width": 4.444444444444445,
-      "height": 6.972222222222222
-    },
-    {
-      "_gvid": 2,
       "name": "can_ho",
-      "pos": "1984.0,1159.0",
       "screen_box": [
-        1824,
-        878,
-        320,
-        562
+        2350.22,
+        1277.18,
+        244.80000000000018,
+        394.0
       ],
       "header_box": [
-        1824,
-        1386,
-        320,
-        54
+        2350.22,
+        1603.18,
+        244.8,
+        68
       ],
-      "attributes_side": "above",
-      "width": 4.444444444444445,
-      "height": 7.805555555555555
-    },
-    {
-      "_gvid": 3,
-      "name": "nguoi_dung",
-      "pos": "2752.0,949.0",
-      "screen_box": [
-        2592,
-        458,
-        320,
-        982
-      ],
-      "header_box": [
-        2592,
-        1386,
-        320,
-        54
-      ],
-      "attributes_side": "above",
-      "width": 4.444444444444445,
-      "height": 13.63888888888889
-    },
-    {
-      "_gvid": 4,
-      "name": "cu_dan",
-      "pos": "3520.0,1219.0",
-      "screen_box": [
-        3360,
-        998,
-        320,
-        442
-      ],
-      "header_box": [
-        3360,
-        1386,
-        320,
-        54
-      ],
-      "attributes_side": "above",
-      "width": 4.444444444444445,
-      "height": 6.138888888888889
-    },
-    {
-      "_gvid": 5,
-      "name": "thiet_bi",
-      "pos": "4288.0,919.0",
-      "screen_box": [
-        4128,
-        398,
-        320,
-        1042
-      ],
-      "header_box": [
-        4128,
-        1386,
-        320,
-        54
-      ],
-      "attributes_side": "above",
-      "width": 4.444444444444445,
-      "height": 14.472222222222221
-    },
-    {
-      "_gvid": 6,
-      "name": "loai_phi",
-      "pos": "448.0,2214.0",
-      "screen_box": [
-        288,
-        2088,
-        320,
-        252
-      ],
-      "header_box": [
-        288,
-        2088,
-        320,
-        54
-      ],
-      "attributes_side": "below",
-      "width": 4.444444444444445,
-      "height": 3.5
-    },
-    {
-      "_gvid": 7,
-      "name": "cau_hinh_phi",
-      "pos": "1216.0,2424.0",
-      "screen_box": [
-        1056,
-        2088,
-        320,
-        672
-      ],
-      "header_box": [
-        1056,
-        2088,
-        320,
-        54
-      ],
-      "attributes_side": "below",
-      "width": 4.444444444444445,
-      "height": 9.333333333333334
-    },
-    {
-      "_gvid": 8,
-      "name": "chi_so_dich_vu",
-      "pos": "1984.0,2454.0",
-      "screen_box": [
-        1824,
-        2088,
-        320,
-        732
-      ],
-      "header_box": [
-        1824,
-        2088,
-        320,
-        54
-      ],
-      "attributes_side": "below",
-      "width": 4.444444444444445,
-      "height": 10.166666666666666
-    },
-    {
-      "_gvid": 9,
-      "name": "lich_su_cu_tru",
-      "pos": "2752.0,2394.0",
-      "screen_box": [
-        2592,
-        2088,
-        320,
-        612
-      ],
-      "header_box": [
-        2592,
-        2088,
-        320,
-        54
-      ],
-      "attributes_side": "below",
-      "width": 4.444444444444445,
-      "height": 8.5
-    },
-    {
-      "_gvid": 10,
-      "name": "phuong_tien",
-      "pos": "3520.0,2664.0",
-      "screen_box": [
-        3360,
-        2088,
-        320,
-        1152
-      ],
-      "header_box": [
-        3360,
-        2088,
-        320,
-        54
-      ],
-      "attributes_side": "below",
-      "width": 4.444444444444445,
-      "height": 16.0
-    },
-    {
-      "_gvid": 11,
-      "name": "vi_tri_qr",
-      "pos": "4288.0,2424.0",
-      "screen_box": [
-        4128,
-        2088,
-        320,
-        672
-      ],
-      "header_box": [
-        4128,
-        2088,
-        320,
-        54
-      ],
-      "attributes_side": "below",
-      "width": 4.444444444444445,
-      "height": 9.333333333333334
-    },
-    {
-      "_gvid": 12,
-      "name": "chi_tiet_hoa_don",
-      "pos": "448.0,4182.0",
-      "screen_box": [
-        288,
-        3816,
-        320,
-        732
-      ],
-      "header_box": [
-        288,
-        3816,
-        320,
-        54
-      ],
-      "attributes_side": "below",
-      "width": 4.444444444444445,
-      "height": 10.166666666666666
-    },
-    {
-      "_gvid": 13,
-      "name": "hoa_don",
-      "pos": "1216.0,4842.0",
-      "screen_box": [
-        1056,
-        3816,
-        320,
-        2052
-      ],
-      "header_box": [
-        1056,
-        3816,
-        320,
-        54
-      ],
-      "attributes_side": "below",
-      "width": 4.444444444444445,
-      "height": 28.5
-    },
-    {
-      "_gvid": 14,
-      "name": "thong_bao",
-      "pos": "1984.0,4422.0",
-      "screen_box": [
-        1824,
-        3816,
-        320,
-        1212
-      ],
-      "header_box": [
-        1824,
-        3816,
-        320,
-        54
-      ],
-      "attributes_side": "below",
-      "width": 4.444444444444445,
-      "height": 16.833333333333332
-    },
-    {
-      "_gvid": 15,
-      "name": "thong_bao_da_doc",
-      "pos": "2752.0,3972.0",
-      "screen_box": [
-        2592,
-        3816,
-        320,
+      "attributes_box": [
+        2350.22,
+        1277.18,
+        196,
         312
       ],
-      "header_box": [
-        2592,
-        3816,
-        320,
-        54
-      ],
-      "attributes_side": "below",
-      "width": 4.444444444444445,
-      "height": 4.333333333333333
+      "attributes_side": "above",
+      "attributes_column": "aligned"
     },
     {
-      "_gvid": 16,
-      "name": "phan_anh",
-      "pos": "3520.0,4602.0",
+      "name": "cau_hinh_phi",
       "screen_box": [
-        3360,
-        3816,
-        320,
-        1572
+        3275.86,
+        89.79999999999995,
+        244.80000000000018,
+        474.0
       ],
       "header_box": [
-        3360,
-        3816,
-        320,
-        54
+        3275.86,
+        495.79999999999995,
+        244.8,
+        68
       ],
-      "attributes_side": "below",
-      "width": 4.444444444444445,
-      "height": 21.833333333333332
+      "attributes_box": [
+        3275.86,
+        89.79999999999995,
+        196,
+        392
+      ],
+      "attributes_side": "above",
+      "attributes_column": "aligned"
     },
     {
-      "_gvid": 17,
+      "name": "chi_so_dich_vu",
+      "screen_box": [
+        3114.5,
+        737.4200000000001,
+        244.80000000000018,
+        514.0
+      ],
+      "header_box": [
+        3114.5,
+        1183.42,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        3114.5,
+        737.4200000000001,
+        196,
+        432
+      ],
+      "attributes_side": "above",
+      "attributes_column": "aligned"
+    },
+    {
+      "name": "chi_tiet_hoa_don",
+      "screen_box": [
+        3236.9,
+        1706.92,
+        244.80000000000018,
+        514.0
+      ],
+      "header_box": [
+        3236.9,
+        1706.92,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        3236.9,
+        1788.92,
+        196,
+        432
+      ],
+      "attributes_side": "below",
+      "attributes_column": "aligned"
+    },
+    {
+      "name": "cu_dan",
+      "screen_box": [
+        64.0,
+        2671.14,
+        244.8,
+        314.0
+      ],
+      "header_box": [
+        64.0,
+        2671.14,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        64.0,
+        2753.14,
+        196,
+        232
+      ],
+      "attributes_side": "below",
+      "attributes_column": "aligned"
+    },
+    {
       "name": "hinh_anh_phan_anh",
-      "pos": "4288.0,4062.0",
       "screen_box": [
-        4128,
-        3816,
-        320,
-        492
+        597.4200000000001,
+        1222.38,
+        244.79999999999995,
+        354.0
       ],
       "header_box": [
-        4128,
-        3816,
-        320,
-        54
+        597.4200000000001,
+        1222.38,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        597.4200000000001,
+        1304.38,
+        196,
+        272
       ],
       "attributes_side": "below",
-      "width": 4.444444444444445,
-      "height": 6.833333333333333
+      "attributes_column": "aligned"
     },
     {
-      "_gvid": 18,
-      "name": "R23",
-      "pos": "1560,3864",
+      "name": "hoa_don",
       "screen_box": [
-        1488,
-        3824.4,
-        144,
-        79.2
+        2666.5299999999997,
+        1994.82,
+        244.80000000000018,
+        1393.9999999999998
       ],
-      "width": 2,
-      "height": 1.1
+      "header_box": [
+        2666.5299999999997,
+        1994.82,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        2666.5299999999997,
+        2076.8199999999997,
+        196,
+        1312
+      ],
+      "attributes_side": "below",
+      "attributes_column": "aligned"
     },
     {
-      "_gvid": 19,
-      "name": "R39",
-      "pos": "3864,3864",
+      "name": "khoi_toa_nha",
       "screen_box": [
-        3792,
-        3824.4,
-        144,
-        79.2
+        3520.66,
+        2089.56,
+        244.80000000000018,
+        314.0
       ],
-      "width": 2,
-      "height": 1.1
+      "header_box": [
+        3520.66,
+        2089.56,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        3520.66,
+        2171.56,
+        196,
+        232
+      ],
+      "attributes_side": "below",
+      "attributes_column": "aligned"
     },
     {
-      "_gvid": 20,
-      "name": "R52",
-      "pos": "3864,2136",
+      "name": "lich_su_cu_tru",
       "screen_box": [
-        3792,
-        2096.4,
-        144,
-        79.2
+        941.42,
+        2210.12,
+        244.80000000000007,
+        434.0
       ],
-      "width": 2,
-      "height": 1.1
+      "header_box": [
+        941.42,
+        2210.12,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        941.42,
+        2292.12,
+        196,
+        352
+      ],
+      "attributes_side": "below",
+      "attributes_column": "aligned"
     },
     {
-      "_gvid": 21,
+      "name": "loai_phi",
+      "screen_box": [
+        3437.22,
+        940.92,
+        244.80000000000018,
+        194.0000000000001
+      ],
+      "header_box": [
+        3437.22,
+        940.92,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        3437.22,
+        1022.92,
+        196,
+        112
+      ],
+      "attributes_side": "below",
+      "attributes_column": "aligned"
+    },
+    {
+      "name": "nguoi_dung",
+      "screen_box": [
+        1347.56,
+        1290.38,
+        440.79999999999995,
+        674.0
+      ],
+      "header_box": [
+        1543.56,
+        1290.38,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        1347.56,
+        1372.38,
+        196,
+        592
+      ],
+      "attributes_side": "below",
+      "attributes_column": "left"
+    },
+    {
+      "name": "phan_anh",
+      "screen_box": [
+        124.15,
+        138.46000000000004,
+        244.80000000000004,
+        1074.0
+      ],
+      "header_box": [
+        124.15,
+        1144.46,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        124.15,
+        138.46000000000004,
+        196,
+        992
+      ],
+      "attributes_side": "above",
+      "attributes_column": "aligned"
+    },
+    {
+      "name": "phuong_tien",
+      "screen_box": [
+        1839.34,
+        2671.14,
+        244.79999999999995,
+        794.0
+      ],
+      "header_box": [
+        1839.34,
+        2671.14,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        1839.34,
+        2753.14,
+        196,
+        712
+      ],
+      "attributes_side": "below",
+      "attributes_column": "aligned"
+    },
+    {
+      "name": "tang_toa_nha",
+      "screen_box": [
+        3398.2599999999998,
+        1303.12,
+        244.80000000000018,
+        354.0
+      ],
+      "header_box": [
+        3398.2599999999998,
+        1589.12,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        3398.2599999999998,
+        1303.12,
+        196,
+        272
+      ],
+      "attributes_side": "above",
+      "attributes_column": "aligned"
+    },
+    {
+      "name": "thiet_bi",
+      "screen_box": [
+        524.5600000000001,
+        308.98,
+        244.80000000000007,
+        714.0
+      ],
+      "header_box": [
+        524.5600000000001,
+        954.98,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        524.5600000000001,
+        308.98,
+        196,
+        632
+      ],
+      "attributes_side": "above",
+      "attributes_column": "aligned"
+    },
+    {
+      "name": "thong_bao",
+      "screen_box": [
+        2256.86,
+        2128.52,
+        244.80000000000018,
+        834.0
+      ],
+      "header_box": [
+        2256.86,
+        2128.52,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        2256.86,
+        2210.52,
+        196,
+        752
+      ],
+      "attributes_side": "below",
+      "attributes_column": "aligned"
+    },
+    {
+      "name": "thong_bao_da_doc",
+      "screen_box": [
+        1879.6799999999998,
+        1926.82,
+        244.80000000000018,
+        233.99999999999977
+      ],
+      "header_box": [
+        1879.6799999999998,
+        1926.82,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        1879.6799999999998,
+        2008.82,
+        196,
+        152
+      ],
+      "attributes_side": "below",
+      "attributes_column": "aligned"
+    },
+    {
+      "name": "vi_tri_qr",
+      "screen_box": [
+        279.76,
+        1814.8,
+        244.79999999999995,
+        474.0000000000002
+      ],
+      "header_box": [
+        279.76,
+        1814.8,
+        244.8,
+        68
+      ],
+      "attributes_box": [
+        279.76,
+        1896.8,
+        196,
+        392
+      ],
+      "attributes_side": "below",
+      "attributes_column": "aligned"
+    },
+    {
       "name": "R01",
-      "pos": "1632,1416",
-      "screen_box": [
-        1560,
-        1376.4,
-        144,
-        79.2
+      "pos": [
+        2994.11,
+        1642.14
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        2952.46,
+        1618.3400000000001,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "fk_apartment_floor"
+      ]
     },
     {
-      "_gvid": 22,
       "name": "R02",
-      "pos": "840,2136",
-      "screen_box": [
-        768,
-        2096.4,
-        144,
-        79.2
+      "pos": [
+        3462.58,
+        744.08
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        3420.93,
+        720.2800000000001,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "cau_hinh_phi_ibfk_1"
+      ]
     },
     {
-      "_gvid": 23,
       "name": "R03",
-      "pos": "1200,1920",
-      "screen_box": [
-        1128,
-        1880.4,
-        144,
-        79.2
+      "pos": [
+        1686.49,
+        512.16
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        1644.84,
+        488.35999999999996,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "cau_hinh_phi_ibfk_2"
+      ]
     },
     {
-      "_gvid": 24,
       "name": "R04",
-      "pos": "1992,1920",
-      "screen_box": [
-        1920,
-        1880.4,
-        144,
-        79.2
+      "pos": [
+        2687.72,
+        1238.74
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        2646.0699999999997,
+        1214.94,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "chi_so_dich_vu_ibfk_1"
+      ]
     },
     {
-      "_gvid": 25,
       "name": "R05",
-      "pos": "1992,1704",
-      "screen_box": [
-        1920,
-        1664.4,
-        144,
-        79.2
+      "pos": [
+        2156.31,
+        1196.1
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        2114.66,
+        1172.3,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "chi_so_dich_vu_ibfk_2"
+      ]
     },
     {
-      "_gvid": 26,
-      "name": "R07",
-      "pos": "480,3648",
-      "screen_box": [
-        408,
-        3608.4,
-        144,
-        79.2
-      ],
-      "width": 2,
-      "height": 1.1
-    },
-    {
-      "_gvid": 27,
-      "name": "R08",
-      "pos": "480,3432",
-      "screen_box": [
-        408,
-        3392.4,
-        144,
-        79.2
-      ],
-      "width": 2,
-      "height": 1.1
-    },
-    {
-      "_gvid": 28,
       "name": "R06",
-      "pos": "840,3864",
-      "screen_box": [
-        768,
-        3824.4,
-        144,
-        79.2
+      "pos": [
+        2892.21,
+        1722.36
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        2850.56,
+        1698.56,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "chi_tiet_hoa_don_ibfk_1"
+      ]
     },
     {
-      "_gvid": 29,
+      "name": "R07",
+      "pos": [
+        3381.21,
+        1135.82
+      ],
+      "screen_box": [
+        3339.56,
+        1112.02,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "chi_tiet_hoa_don_ibfk_2"
+      ]
+    },
+    {
+      "name": "R08",
+      "pos": [
+        3246.82,
+        1460.54
+      ],
+      "screen_box": [
+        3205.17,
+        1436.74,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "chi_tiet_hoa_don_ibfk_3"
+      ]
+    },
+    {
       "name": "R11",
-      "pos": "3144,1416",
-      "screen_box": [
-        3072,
-        1376.4,
-        144,
-        79.2
+      "pos": [
+        268.46,
+        1609.52
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        226.80999999999997,
+        1585.72,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "cu_dan_ibfk_1"
+      ]
     },
     {
-      "_gvid": 30,
-      "name": "R21",
-      "pos": "4296,3648",
-      "screen_box": [
-        4224,
-        3608.4,
-        144,
-        79.2
-      ],
-      "width": 2,
-      "height": 1.1
-    },
-    {
-      "_gvid": 31,
       "name": "R20",
-      "pos": "3936,3648",
-      "screen_box": [
-        3864,
-        3608.4,
-        144,
-        79.2
+      "pos": [
+        445.05,
+        1277.7
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        403.40000000000003,
+        1253.9,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "hinh_anh_phan_anh_ibfk_1"
+      ]
     },
     {
-      "_gvid": 32,
+      "name": "R21",
+      "pos": [
+        1191.18,
+        1238.74
+      ],
+      "screen_box": [
+        1149.53,
+        1214.94,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "hinh_anh_phan_anh_ibfk_2"
+      ]
+    },
+    {
       "name": "R22",
-      "pos": "1200,3648",
-      "screen_box": [
-        1128,
-        3608.4,
-        144,
-        79.2
+      "pos": [
+        2501.66,
+        1934.54
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        2460.0099999999998,
+        1910.74,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "hoa_don_ibfk_1"
+      ]
     },
     {
-      "_gvid": 33,
+      "name": "R23",
+      "pos": [
+        2707.56,
+        1728.24
+      ],
+      "screen_box": [
+        2665.91,
+        1704.44,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "hoa_don_ibfk_2"
+      ]
+    },
+    {
       "name": "R24",
-      "pos": "1200,3432",
-      "screen_box": [
-        1128,
-        3392.4,
-        144,
-        79.2
+      "pos": [
+        2564.12,
+        1164.4
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        2522.47,
+        1140.6000000000001,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "hoa_don_ibfk_3"
+      ]
     },
     {
-      "_gvid": 34,
       "name": "R25",
-      "pos": "1488,3648",
-      "screen_box": [
-        1416,
-        3608.4,
-        144,
-        79.2
+      "pos": [
+        2841.26,
+        1125.44
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        2799.61,
+        1101.64,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "hoa_don_ibfk_4",
+        "hoa_don_ibfk_5",
+        "hoa_don_ibfk_6",
+        "hoa_don_ibfk_7"
+      ]
     },
     {
-      "_gvid": 35,
-      "name": "R26",
-      "pos": "1200,3216",
-      "screen_box": [
-        1128,
-        3176.4,
-        144,
-        79.2
-      ],
-      "width": 2,
-      "height": 1.1
-    },
-    {
-      "_gvid": 36,
-      "name": "R27",
-      "pos": "1488,3432",
-      "screen_box": [
-        1416,
-        3392.4,
-        144,
-        79.2
-      ],
-      "width": 2,
-      "height": 1.1
-    },
-    {
-      "_gvid": 37,
-      "name": "R28",
-      "pos": "1776,3648",
-      "screen_box": [
-        1704,
-        3608.4,
-        144,
-        79.2
-      ],
-      "width": 2,
-      "height": 1.1
-    },
-    {
-      "_gvid": 38,
-      "name": "R30",
-      "pos": "2712,1920",
-      "screen_box": [
-        2640,
-        1880.4,
-        144,
-        79.2
-      ],
-      "width": 2,
-      "height": 1.1
-    },
-    {
-      "_gvid": 39,
       "name": "R29",
-      "pos": "2784,1704",
-      "screen_box": [
-        2712,
-        1664.4,
-        144,
-        79.2
+      "pos": [
+        615.85,
+        2458.04
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        574.2,
+        2434.24,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "lich_su_cu_tru_ibfk_1"
+      ]
     },
     {
-      "_gvid": 40,
+      "name": "R30",
+      "pos": [
+        1604.43,
+        1657.12
+      ],
+      "screen_box": [
+        1562.78,
+        1633.32,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "lich_su_cu_tru_ibfk_2"
+      ]
+    },
+    {
       "name": "R31",
-      "pos": "3000,1920",
-      "screen_box": [
-        2928,
-        1880.4,
-        144,
-        79.2
+      "pos": [
+        962.61,
+        1304.44
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        920.96,
+        1280.64,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "lich_su_cu_tru_ibfk_3"
+      ]
     },
     {
-      "_gvid": 41,
       "name": "R32",
-      "pos": "2352,1416",
-      "screen_box": [
-        2280,
-        1376.4,
-        144,
-        79.2
+      "pos": [
+        2227.1,
+        1304.44
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        2185.45,
+        1280.64,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "fk_account_apartment"
+      ]
     },
     {
-      "_gvid": 42,
       "name": "R33",
-      "pos": "3144,1632",
-      "screen_box": [
-        3072,
-        1592.4,
-        144,
-        79.2
+      "pos": [
+        1553.48,
+        2683.82
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        1511.83,
+        2660.02,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "fk_account_owner"
+      ]
     },
     {
-      "_gvid": 43,
-      "name": "R35",
-      "pos": "3504,3648",
-      "screen_box": [
-        3432,
-        3608.4,
-        144,
-        79.2
-      ],
-      "width": 2,
-      "height": 1.1
-    },
-    {
-      "_gvid": 44,
-      "name": "R37",
-      "pos": "3504,3432",
-      "screen_box": [
-        3432,
-        3392.4,
-        144,
-        79.2
-      ],
-      "width": 2,
-      "height": 1.1
-    },
-    {
-      "_gvid": 45,
-      "name": "R38",
-      "pos": "3216,3648",
-      "screen_box": [
-        3144,
-        3608.4,
-        144,
-        79.2
-      ],
-      "width": 2,
-      "height": 1.1
-    },
-    {
-      "_gvid": 46,
       "name": "R34",
-      "pos": "3792,3432",
-      "screen_box": [
-        3720,
-        3392.4,
-        144,
-        79.2
+      "pos": [
+        536.55,
+        1157.14
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        494.9,
+        1133.3400000000001,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "fk_incident_equipment"
+      ]
     },
     {
-      "_gvid": 47,
+      "name": "R35",
+      "pos": [
+        135.45,
+        1939.5
+      ],
+      "screen_box": [
+        93.79999999999998,
+        1915.7,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "fk_incident_sender_resident"
+      ]
+    },
+    {
       "name": "R36",
-      "pos": "3864,3216",
-      "screen_box": [
-        3792,
-        3176.4,
-        144,
-        79.2
+      "pos": [
+        186.4,
+        1689.74
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        144.75,
+        1665.94,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "phan_anh_ibfk_1"
+      ]
     },
     {
-      "_gvid": 48,
-      "name": "R50",
-      "pos": "3504,1920",
-      "screen_box": [
-        3432,
-        1880.4,
-        144,
-        79.2
+      "name": "R37",
+      "pos": [
+        967.57,
+        1196.1
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        925.9200000000001,
+        1172.3,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "phan_anh_ibfk_2",
+        "phan_anh_ibfk_3"
+      ]
     },
     {
-      "_gvid": 49,
+      "name": "R39",
+      "pos": [
+        308.8,
+        1465.5
+      ],
+      "screen_box": [
+        267.15000000000003,
+        1441.7,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "phan_anh_ibfk_4"
+      ]
+    },
+    {
       "name": "R49",
-      "pos": "3504,1704",
-      "screen_box": [
-        3432,
-        1664.4,
-        144,
-        79.2
+      "pos": [
+        1069.47,
+        2722.78
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        1027.82,
+        2698.98,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "phuong_tien_ibfk_1"
+      ]
     },
     {
-      "_gvid": 50,
+      "name": "R50",
+      "pos": [
+        2575.9,
+        3063.14
+      ],
+      "screen_box": [
+        2534.25,
+        3039.3399999999997,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "phuong_tien_ibfk_2"
+      ]
+    },
+    {
       "name": "R51",
-      "pos": "3144,2136",
-      "screen_box": [
-        3072,
-        2096.4,
-        144,
-        79.2
+      "pos": [
+        1726.83,
+        2251.84
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        1685.1799999999998,
+        2228.04,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "phuong_tien_ibfk_3"
+      ]
     },
     {
-      "_gvid": 51,
+      "name": "R52",
+      "pos": [
+        1910.79,
+        2385.64
+      ],
+      "screen_box": [
+        1869.1399999999999,
+        2361.8399999999997,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "phuong_tien_ibfk_4"
+      ]
+    },
+    {
       "name": "R53",
-      "pos": "3792,1920",
-      "screen_box": [
-        3720,
-        1880.4,
-        144,
-        79.2
+      "pos": [
+        1859.84,
+        1842.94
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        1818.1899999999998,
+        1819.14,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "phuong_tien_ibfk_5"
+      ]
     },
     {
-      "_gvid": 52,
       "name": "R54",
-      "pos": "3792,1704",
-      "screen_box": [
-        3720,
-        1664.4,
-        144,
-        79.2
+      "pos": [
+        2014.07,
+        2215.54
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        1972.4199999999998,
+        2191.74,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "phuong_tien_ibfk_6"
+      ]
     },
     {
-      "_gvid": 53,
       "name": "R55",
-      "pos": "840,1416",
-      "screen_box": [
-        768,
-        1376.4,
-        144,
-        79.2
+      "pos": [
+        3582.91,
+        1867.36
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        3541.2599999999998,
+        1843.56,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "fk_floor_block"
+      ]
     },
     {
-      "_gvid": 54,
       "name": "R56",
-      "pos": "3864,1416",
-      "screen_box": [
-        3792,
-        1376.4,
-        144,
-        79.2
+      "pos": [
+        1604.43,
+        969.96
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        1562.78,
+        946.1600000000001,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "thiet_bi_ibfk_1"
+      ]
     },
     {
-      "_gvid": 55,
       "name": "R57",
-      "pos": "1992,3432",
-      "screen_box": [
-        1920,
-        3392.4,
-        144,
-        79.2
+      "pos": [
+        2389.87,
+        1896.86
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        2348.22,
+        1873.06,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "thong_bao_ibfk_1"
+      ]
     },
     {
-      "_gvid": 56,
       "name": "R58",
-      "pos": "1632,4080",
-      "screen_box": [
-        1560,
-        4040.4,
-        144,
-        79.2
+      "pos": [
+        2483.92,
+        2008.88
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        2442.27,
+        1985.0800000000002,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "thong_bao_ibfk_2"
+      ]
     },
     {
-      "_gvid": 57,
       "name": "R59",
-      "pos": "2064,3648",
-      "screen_box": [
-        1992,
-        3608.4,
-        144,
-        79.2
+      "pos": [
+        1767.86,
+        1769.96
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        1726.2099999999998,
+        1746.16,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "thong_bao_ibfk_3"
+      ]
     },
     {
-      "_gvid": 58,
       "name": "R60",
-      "pos": "2352,3648",
-      "screen_box": [
-        2280,
-        3608.4,
-        144,
-        79.2
+      "pos": [
+        1665.96,
+        2183.84
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        1624.31,
+        2160.04,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "thong_bao_ibfk_4",
+        "thong_bao_ibfk_5"
+      ]
     },
     {
-      "_gvid": 59,
-      "name": "R61",
-      "pos": "1992,3216",
-      "screen_box": [
-        1920,
-        3176.4,
-        144,
-        79.2
-      ],
-      "width": 2,
-      "height": 1.1
-    },
-    {
-      "_gvid": 60,
-      "name": "R63",
-      "pos": "2784,3648",
-      "screen_box": [
-        2712,
-        3608.4,
-        144,
-        79.2
-      ],
-      "width": 2,
-      "height": 1.1
-    },
-    {
-      "_gvid": 61,
       "name": "R62",
-      "pos": "2352,3864",
-      "screen_box": [
-        2280,
-        3824.4,
-        144,
-        79.2
+      "pos": [
+        2278.05,
+        1955.86
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        2236.4,
+        1932.06,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "thong_bao_da_doc_ibfk_1"
+      ]
     },
     {
-      "_gvid": 62,
-      "name": "R66",
-      "pos": "4296,1920",
-      "screen_box": [
-        4224,
-        1880.4,
-        144,
-        79.2
+      "name": "R63",
+      "pos": [
+        1961.74,
+        1508.14
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        1920.09,
+        1484.3400000000001,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "thong_bao_da_doc_ibfk_2"
+      ]
     },
     {
-      "_gvid": 63,
       "name": "R65",
-      "pos": "4296,1704",
-      "screen_box": [
-        4224,
-        1664.4,
-        144,
-        79.2
+      "pos": [
+        484.22,
+        1363.34
       ],
-      "width": 2,
-      "height": 1.1
+      "screen_box": [
+        442.57000000000005,
+        1339.54,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "fk_qr_equipment"
+      ]
+    },
+    {
+      "name": "R66",
+      "pos": [
+        1257.01,
+        1827.48
+      ],
+      "screen_box": [
+        1215.36,
+        1803.68,
+        83.3,
+        47.6
+      ],
+      "members": [
+        "vi_tri_qr_ibfk_1"
+      ]
     }
   ],
-  "edges": [],
-  "routing": "distinct header sides and reserved orthogonal tracks, 12 px grid",
   "routing_metrics": {
-    "grid": 12,
-    "arms": 92,
+    "arms": 82,
+    "horizontal_vertical_only": true,
+    "bends": 28,
+    "max_bends_per_relation": 2,
+    "jumps": 0,
+    "object_overlaps": 0,
+    "obstacle_hits": 0,
     "shared_track_segments": 0,
-    "search_expansions": 480830
+    "crossings": 31,
+    "diamonds_in_middle_third": 37,
+    "relationship_groups": 41,
+    "foreign_keys": 46,
+    "wire_length": 43810.0
   }
 }

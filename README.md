@@ -1,8 +1,8 @@
 # Quản lý chung cư · Phản ánh QR
 
-> **Báo cáo chuyên ngành viết lại từ đầu — 17/11/2026:** [Word toàn văn, PDF 126 trang, 26 hình, 53 bảng và ZIP sơ đồ chỉnh sửa được](docs/bao-cao/bao-cao-viet-lai-2026-11-17/README.md). Theo cả đề cương, hướng dẫn Word và PDF vừa cung cấp; đối chiếu ứng dụng `cceb904`, có trích dẫn trong các chương và log kiểm thử thật.
+> **Báo cáo chuyên ngành viết lại từ đầu — 17/11/2026:** [Word toàn văn, PDF 109 trang, 26 hình, 39 bảng biểu và ZIP sơ đồ chỉnh sửa được](docs/bao-cao/bao-cao-viet-lai-2026-11-17/README.md). Theo cả đề cương, hướng dẫn Word và PDF vừa cung cấp; đối chiếu ứng dụng `cceb904`, có trích dẫn trong các chương và log kiểm thử thật.
 
-> **ERD hiện hành — giữ 18 bảng, sắp xếp lại dây:** [đủ 218 thuộc tính và 46 quan hệ, bố cục đầu nối chia cạnh và dấu cầu vượt; kèm draw.io/Word/PDF/hình](docs/so-do-theo-mau-2026-11-17/README.md). Không còn đoạn dây trùng nhau hoặc khối chồng nhau; vẫn giữ oval một cột, chữ thường, khóa chính liền và khóa ngoại đứt. Schema vẫn 31 bảng / 362 cột / 81 FK.
+> **ERD hiện hành — bố cục gọn cho 18 bảng:** [đủ 218 thuộc tính và 46 quan hệ, kèm draw.io, Word, PDF và hình](docs/so-do-theo-mau-2026-11-17/README.md). Dây nối đi ngang và dọc qua 41 hình thoi, biểu diễn đủ 46 khóa ngoại. Thuộc tính xếp một cột, khóa chính gạch liền và khóa ngoại gạch đứt.
 
 > **Word và hình minh họa — 17/11/2026:** [bản báo cáo bổ sung trích dẫn, hướng dẫn sửa theo form riêng và ảnh minh họa](docs/tai-lieu-ban-giao-2026-11-17/README.md). Sơ đồ trong bộ cũ chỉ dùng đối chiếu lịch sử; dùng bộ 17 hình ở liên kết trên để lấy ERD đã hợp nhất.
 

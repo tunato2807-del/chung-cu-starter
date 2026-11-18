@@ -1,8 +1,8 @@
-# ERD 18 bảng — bố cục dây nối đã sắp xếp lại
+# ERD 18 bảng — bố cục gọn theo mẫu
 
-Giữ lại đúng 18 bảng và toàn bộ 218 thuộc tính như bản đầy đủ; chỉ thay cách đặt bảng, hình thoi và đi dây. Cách trình bày theo ảnh mẫu: thực thể chữ nhật; mỗi bảng có **một cột oval thẳng đứng**, nối vào đường dọc bên trái. **Khóa chính gạch chân liền, khóa ngoại gạch chân nét đứt**; không in đậm thuộc tính hoặc tên thực thể, không thêm nhãn “FK R…”. Các đường quan hệ chỉ đi ngang/dọc, dùng hình thoi trống và ký hiệu một/nhiều bằng vạch/chân quạ như mẫu.
+Giữ lại đúng 18 bảng và toàn bộ 218 thuộc tính như bản đầy đủ; chỉ thay cách đặt bảng, hình thoi và đi dây. Cách trình bày theo ảnh mẫu: thực thể chữ nhật; mỗi bảng có **một cột oval thẳng đứng**, nối vào đường dọc bên trái. **Khóa chính gạch chân liền, khóa ngoại gạch chân nét đứt**; không in đậm thuộc tính hoặc tên thực thể, không thêm nhãn “FK R…”. Các dây gồm đoạn ngang và dọc, nối vào các đỉnh hình thoi. Dùng vạch và chân quạ để ghi bội số.
 
-**Một ERD có 18 bảng trọng tâm, đủ toàn bộ 218 thuộc tính và 46 quan hệ khóa ngoại giữa chúng.** Đã lược 13 bảng kỹ thuật, nhật ký và phần mở rộng khỏi hình. Database vẫn giữ nguyên **31 bảng, 362 cột và 81 FK**. Đây là hình rút gọn phạm vi bảng; không phải toàn bộ schema hoặc các ERD phân hệ tách riêng.
+**Một ERD có 18 bảng trọng tâm, đủ 218 thuộc tính và 46 khóa ngoại, thể hiện qua 41 hình thoi.** Đã lược 13 bảng kỹ thuật, nhật ký và phần mở rộng khỏi hình. Database vẫn giữ nguyên **31 bảng, 362 cột và 81 FK**. Đây là hình rút gọn phạm vi bảng; không phải toàn bộ schema hoặc các ERD phân hệ tách riêng.
 
 ## Mở hoặc tải
 
@@ -12,23 +12,22 @@ Giữ lại đúng 18 bảng và toàn bộ 218 thuộc tính như bản đầy 
 - **[Word tập hình đã cập nhật](Tap-hinh-17-so-do-ERD-hop-nhat.docx)** · [PDF 17 hình](Xem-truoc-17-so-do-ERD-hop-nhat.pdf)
 - [draw.io tổng hợp 17 hình](Tat-ca-17-so-do-ERD-hop-nhat.drawio) · [ZIP trọn bộ](So-do-theo-mau-tron-bo.zip)
 
-Trong GitHub, mở `.drawio`/`.docx` rồi chọn **Download raw file** để tải. Word này là tập hình để copy/chèn. [Quyển báo cáo mới viết lại từ đầu](../bao-cao/bao-cao-viet-lai-2026-11-17/README.md) đã chèn đủ bộ 17 sơ đồ hiện hành và cập nhật mô tả. Trang ERD trong Word dùng A3 dọc; SVG/PDF giữ vector để phóng to.
+Trong GitHub, mở `.drawio`/`.docx` rồi chọn **Download raw file** để tải. Word này là tập hình để copy/chèn. [Quyển báo cáo mới viết lại từ đầu](../bao-cao/bao-cao-viet-lai-2026-11-17/README.md) đã chèn đủ bộ 17 sơ đồ hiện hành và cập nhật mô tả. Trang ERD trong Word dùng A3 ngang; SVG/PDF giữ vector để phóng to.
 
 ## Ký pháp và bố cục
 
 - Tên thuộc tính dùng cùng một kiểu chữ thường; đủ tất cả cột theo thứ tự schema tính từ hộp thực thể đi dọc ra ngoài. Hàng bảng trên có thuộc tính ở phía trên hộp, các hàng còn lại ở phía dưới; mỗi bảng vẫn một cột.
 - Khóa chính gạch chân liền; khóa ngoại gạch chân nét đứt ngay dưới tên. Cột mang cả hai vai trò có hai gạch.
-- Thuộc tính nối thẳng dọc theo mép trái của thực thể như ảnh mẫu. Quan hệ dùng đoạn ngang/dọc, có dấu cầu vượt nhỏ ở giao điểm; không chạy qua các cột thuộc tính.
-- Hình thoi để trống; bội số dùng vạch/chân quạ/vòng tròn. Tên constraint chỉ nằm trong tài liệu đối chiếu, không in lên hình.
+- Thuộc tính nối dọc theo mép trái của thực thể. Dây quan hệ đi ngoài các cột thuộc tính và dùng các đoạn ngang, dọc.
+- Hình thoi để trống cho một khóa ngoại. Nhãn ×n cho biết n khóa ngoại có cùng cặp bảng và cùng bội số. Bội số dùng vạch/chân quạ/vòng tròn. Tên constraint chỉ nằm trong tài liệu đối chiếu, không in lên hình.
 - Không có bảng hoặc quan hệ ẩn dưới lớp tùy chọn. Các đối tượng đều chỉnh sửa được trong draw.io.
 
-## Các thay đổi để dây và khối rõ hơn
+## Bố cục và đường nối
 
-- Giữ nguyên 18 bảng, 218 thuộc tính và 46 FK giữa chúng; không ẩn bớt quan hệ.
-- Chia đầu nối sang cạnh trái/phải/trên/dưới phù hợp, không dồn hết vào nóc bảng `nguoi_dung`.
-- Đặt hình thoi gần bảng liên quan, giãn khoảng cách với các khối và cột thuộc tính.
-- Mỗi đường có đoạn đi riêng: **77 cặp đoạn dây chồng nhau ở bản 18 bảng cũ đã giảm về 0**.
-- Các đường vẫn có thể cắt vuông góc do có 46 quan hệ. Bật sẵn kiểu nhảy cầu (`jumpStyle=arc`) trong draw.io; SVG/PNG/PDF/Word cũng có dấu cầu ở giao điểm để phân biệt hai dây.
+- Tổng chiều dài dây giảm từ 53.760 xuống 43.810 đơn vị bản vẽ. Oval thuộc tính thu từ 248 × 40 xuống 196 × 32.
+- Xếp các bảng liên quan theo cụm. Đặt hình thoi ở chỗ chuyển giữa đoạn ngang và đoạn dọc khi có thể.
+- 37 trong 41 hình thoi nằm ở một phần ba giữa đường nối. 37 trong 41 đường nối có tối đa một góc vuông ở ngoài hình thoi.
+- Dây quanh NGUOI_DUNG chia sang bốn cạnh. Bố cục còn 31 giao điểm. Các khối và đoạn dây có khoảng riêng.
 
 [Đối chiếu bố cục trước/sau](DOI-CHIEU-BO-CUC.md) · [Số đo kiểm tra đường nối](nguon/kiem-tra-duong-noi.json)
 
@@ -60,7 +59,7 @@ Trong Hình 2.9–2.12, tên tác nhân nằm phía trên vùng thông điệp v
 | 2.12 | Tuần tự tra cứu hóa đơn và hiển thị VietQR | [PNG](png/02-12-sequence-vietqr.png) | [SVG](svg/02-12-sequence-vietqr.svg) | [draw.io](drawio/02-12-sequence-vietqr.drawio) | [XML](xml/02-12-sequence-vietqr.xml.txt) |
 | 2.13 | Vòng đời phản ánh | [PNG](png/02-13-trang-thai-phan-anh.png) | [SVG](svg/02-13-trang-thai-phan-anh.svg) | [draw.io](drawio/02-13-trang-thai-phan-anh.drawio) | [XML](xml/02-13-trang-thai-phan-anh.xml.txt) |
 | 2.14 | Sơ đồ lớp phân tích các khái niệm trọng tâm | [PNG](png/02-14-lop-phan-tich.png) | [SVG](svg/02-14-lop-phan-tich.svg) | [draw.io](drawio/02-14-lop-phan-tich.drawio) | [XML](xml/02-14-lop-phan-tich.xml.txt) |
-| 2.15 | ERD 18 bảng nghiệp vụ — bố cục dây nối sắp xếp lại | [PNG](png/02-15-erd-hop-nhat.png) | [SVG](svg/02-15-erd-hop-nhat.svg) | [draw.io](drawio/02-15-erd-hop-nhat.drawio) | [XML](xml/02-15-erd-hop-nhat.xml.txt) |
+| 2.15 | ERD 18 bảng nghiệp vụ — bố cục gọn theo mẫu | [PNG](png/02-15-erd-hop-nhat.png) | [SVG](svg/02-15-erd-hop-nhat.svg) | [draw.io](drawio/02-15-erd-hop-nhat.drawio) | [XML](xml/02-15-erd-hop-nhat.xml.txt) |
 | 2.16 | Kiến trúc ba tầng của hệ thống | [PNG](png/02-16-kien-truc.png) | [SVG](svg/02-16-kien-truc.svg) | [draw.io](drawio/02-16-kien-truc.drawio) | [XML](xml/02-16-kien-truc.xml.txt) |
 | 2.17 | Luồng dữ liệu phản ánh từ QR đến nghiệm thu | [PNG](png/02-17-luong-du-lieu.png) | [SVG](svg/02-17-luong-du-lieu.svg) | [draw.io](drawio/02-17-luong-du-lieu.drawio) | [XML](xml/02-17-luong-du-lieu.xml.txt) |
 
@@ -77,6 +76,6 @@ Trong Hình 2.9–2.12, tên tác nhân nằm phía trên vùng thông điệp v
 - Schema gốc: [`database/thesis-mysql/001_thesis_schema.sql`](../../database/thesis-mysql/001_thesis_schema.sql).
 - [Mô hình và đối chiếu](nguon/mo-hinh-va-doi-chieu.json) · [Phạm vi bảng/thuộc tính](nguon/lua-chon-thuoc-tinh.json).
 - [Kiểm tra đầy đủ thuộc tính/khóa/bố cục](nguon/kiem-tra-erd-hop-nhat.json) · [Mở và kết xuất bằng mxGraph](nguon/kiem-tra-ket-xuat.json) · [Kiểm tra Word/PDF](nguon/kiem-tra-tap-hinh.json).
-- [Mã tái sinh](nguon/tao-so-do.py), cần Python 3 và Pillow. Chạy `python docs/so-do-theo-mau-2026-11-17/nguon/tao-so-do.py` để tái sinh draw.io/XML/SVG; file phạm vi phải nằm cùng thư mục với script.
+- [Mã tái sinh](nguon/tao-so-do.py), cần Python 3 và Pillow. Chạy `python docs/so-do-theo-mau-2026-11-17/nguon/tao-so-do.py` để tái sinh draw.io/XML/SVG; các tệp phạm vi và tọa độ phải nằm cùng thư mục với script. [Tọa độ bố cục](nguon/bo-cuc-day-thang.json).
 
 Các bộ 12 bảng, bản 18 bảng với dây chồng nhau, các bộ 31 bảng, lớp bật/tắt và ERD phân hệ trước đây chỉ còn trong lịch sử/bộ tài liệu cũ; không dùng chúng thay bản hiện hành này.

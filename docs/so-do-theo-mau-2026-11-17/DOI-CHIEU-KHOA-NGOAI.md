@@ -1,10 +1,10 @@
 # Đối chiếu đầy đủ thuộc tính và quan hệ với schema
 
-ERD hiện hành giữ 18 bảng và vẽ **đủ 218/218 cột** của các bảng đó. Nó cũng vẽ **đủ 46/46 FK khai báo từ 18 bảng này**; các bảng cha đều thuộc cùng hình. 13 bảng ngoài phạm vi hình và 35 FK của chúng vẫn có trong schema. Hình không khẳng định schema chỉ có 18 bảng hoặc không có liên kết tới các bảng đã lược.
+ERD hiện hành giữ 18 bảng và vẽ **đủ 218/218 cột** của các bảng đó. Sơ đồ biểu diễn **đủ 46/46 FK khai báo từ 18 bảng này qua 41 hình thoi**; các bảng cha đều thuộc cùng hình. 13 bảng ngoài phạm vi hình và 35 FK của chúng vẫn có trong schema. Hình không khẳng định schema chỉ có 18 bảng hoặc không có liên kết tới các bảng đã lược.
 
 Nguồn: [`001_thesis_schema.sql`](../../database/thesis-mysql/001_thesis_schema.sql). SHA-256: `57d700e4983eb494829a0f32de155bb8657d5abfe1f9511b2e8ac70562e17226`.
 
-Khóa chính gạch chân liền; khóa ngoại gạch chân nét đứt, không ghi nhãn FK/R trong oval. Hình thoi để trống như mẫu; tên constraint dưới đây chỉ dùng đối chiếu nguồn. Không ghép nhiều vai trò thành một FK.
+Khóa chính gạch chân liền; khóa ngoại gạch chân nét đứt, không ghi nhãn FK/R trong oval. Hình thoi có nhãn ×n khi dùng chung cho n FK có cùng cặp bảng và cùng bội số. Từng FK vẫn có mục riêng dưới đây.
 
 | Constraint trong SQL | Bảng con (cột) | Bảng cha (cột) | Trạng thái trong hình |
 |---|---|---|---|
@@ -32,10 +32,10 @@ Khóa chính gạch chân liền; khóa ngoại gạch chân nét đứt, không
 | `hoa_don_ibfk_1` | `hoa_don(ma_can_ho)` | `can_ho(ma_can_ho)` | Đã vẽ |
 | `hoa_don_ibfk_2` | `hoa_don(ma_hoa_don_thay_the_cho)` | `hoa_don(ma_hoa_don)` | Đã vẽ |
 | `hoa_don_ibfk_3` | `hoa_don(ma_nguoi_lap)` | `nguoi_dung(ma_nguoi_dung)` | Đã vẽ |
-| `hoa_don_ibfk_4` | `hoa_don(ma_nguoi_duyet)` | `nguoi_dung(ma_nguoi_dung)` | Đã vẽ |
-| `hoa_don_ibfk_5` | `hoa_don(ma_nguoi_gui)` | `nguoi_dung(ma_nguoi_dung)` | Đã vẽ |
-| `hoa_don_ibfk_6` | `hoa_don(ma_nguoi_huy)` | `nguoi_dung(ma_nguoi_dung)` | Đã vẽ |
-| `hoa_don_ibfk_7` | `hoa_don(ma_nguoi_xac_nhan)` | `nguoi_dung(ma_nguoi_dung)` | Đã vẽ |
+| `hoa_don_ibfk_4` | `hoa_don(ma_nguoi_duyet)` | `nguoi_dung(ma_nguoi_dung)` | Hình thoi ×4 |
+| `hoa_don_ibfk_5` | `hoa_don(ma_nguoi_gui)` | `nguoi_dung(ma_nguoi_dung)` | Hình thoi ×4 |
+| `hoa_don_ibfk_6` | `hoa_don(ma_nguoi_huy)` | `nguoi_dung(ma_nguoi_dung)` | Hình thoi ×4 |
+| `hoa_don_ibfk_7` | `hoa_don(ma_nguoi_xac_nhan)` | `nguoi_dung(ma_nguoi_dung)` | Hình thoi ×4 |
 | `lich_su_cu_tru_ibfk_1` | `lich_su_cu_tru(ma_cu_dan)` | `cu_dan(ma_cu_dan)` | Đã vẽ |
 | `lich_su_cu_tru_ibfk_2` | `lich_su_cu_tru(ma_can_ho)` | `can_ho(ma_can_ho)` | Đã vẽ |
 | `lich_su_cu_tru_ibfk_3` | `lich_su_cu_tru(ma_nguoi_ghi_nhan)` | `nguoi_dung(ma_nguoi_dung)` | Đã vẽ |
@@ -44,8 +44,8 @@ Khóa chính gạch chân liền; khóa ngoại gạch chân nét đứt, không
 | `fk_incident_equipment` | `phan_anh(ma_thiet_bi)` | `thiet_bi(ma_thiet_bi)` | Đã vẽ |
 | `fk_incident_sender_resident` | `phan_anh(ma_cu_dan_nguoi_gui)` | `cu_dan(ma_cu_dan)` | Đã vẽ |
 | `phan_anh_ibfk_1` | `phan_anh(ma_vi_tri_qr)` | `vi_tri_qr(ma_vi_tri_qr)` | Đã vẽ |
-| `phan_anh_ibfk_2` | `phan_anh(ma_nguoi_gui)` | `nguoi_dung(ma_nguoi_dung)` | Đã vẽ |
-| `phan_anh_ibfk_3` | `phan_anh(ma_ky_thuat_vien)` | `nguoi_dung(ma_nguoi_dung)` | Đã vẽ |
+| `phan_anh_ibfk_2` | `phan_anh(ma_nguoi_gui)` | `nguoi_dung(ma_nguoi_dung)` | Hình thoi ×2 |
+| `phan_anh_ibfk_3` | `phan_anh(ma_ky_thuat_vien)` | `nguoi_dung(ma_nguoi_dung)` | Hình thoi ×2 |
 | `phan_anh_ibfk_4` | `phan_anh(ma_phan_anh_goc)` | `phan_anh(ma_phan_anh)` | Đã vẽ |
 | `phieu_bao_tri_ibfk_1` | `phieu_bao_tri(ma_thiet_bi)` | `thiet_bi(ma_thiet_bi)` | Nguồn thuộc bảng đã lược khỏi hình |
 | `phieu_bao_tri_ibfk_2` | `phieu_bao_tri(ma_ky_thuat_vien)` | `nguoi_dung(ma_nguoi_dung)` | Nguồn thuộc bảng đã lược khỏi hình |
@@ -67,8 +67,8 @@ Khóa chính gạch chân liền; khóa ngoại gạch chân nét đứt, không
 | `thong_bao_ibfk_1` | `thong_bao(ma_can_ho)` | `can_ho(ma_can_ho)` | Đã vẽ |
 | `thong_bao_ibfk_2` | `thong_bao(ma_hoa_don)` | `hoa_don(ma_hoa_don)` | Đã vẽ |
 | `thong_bao_ibfk_3` | `thong_bao(ma_nguoi_tao)` | `nguoi_dung(ma_nguoi_dung)` | Đã vẽ |
-| `thong_bao_ibfk_4` | `thong_bao(ma_nguoi_gui)` | `nguoi_dung(ma_nguoi_dung)` | Đã vẽ |
-| `thong_bao_ibfk_5` | `thong_bao(ma_nguoi_thu_hoi)` | `nguoi_dung(ma_nguoi_dung)` | Đã vẽ |
+| `thong_bao_ibfk_4` | `thong_bao(ma_nguoi_gui)` | `nguoi_dung(ma_nguoi_dung)` | Hình thoi ×2 |
+| `thong_bao_ibfk_5` | `thong_bao(ma_nguoi_thu_hoi)` | `nguoi_dung(ma_nguoi_dung)` | Hình thoi ×2 |
 | `thong_bao_da_doc_ibfk_1` | `thong_bao_da_doc(ma_thong_bao)` | `thong_bao(ma_thong_bao)` | Đã vẽ |
 | `thong_bao_da_doc_ibfk_2` | `thong_bao_da_doc(ma_nguoi_dung)` | `nguoi_dung(ma_nguoi_dung)` | Đã vẽ |
 | `tien_ich_ibfk_1` | `tien_ich(ma_nguoi_tao)` | `nguoi_dung(ma_nguoi_dung)` | Nguồn thuộc bảng đã lược khỏi hình |

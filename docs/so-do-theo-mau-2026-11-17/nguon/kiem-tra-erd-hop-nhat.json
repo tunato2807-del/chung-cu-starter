@@ -13,13 +13,22 @@
   "primary_keys_solid_underlined": true,
   "foreign_keys_dashed_underlined": 47,
   "visible_fk_or_relationship_codes": false,
-  "blank_relationship_diamonds": 46,
   "all_fk_of_retained_tables_drawn": true,
-  "relationship_arms": 92,
-  "orthogonal_segments_verified": true,
+  "relationship_arms": 82,
   "paths_crossing_attribute_columns": [],
   "hidden_technical_objects": false,
-  "all_relation_arms_have_native_line_jumps": true,
   "overlapping_wire_segment_pairs": 0,
-  "overlapping_shapes": 0
+  "overlapping_shapes": 0,
+  "line_jumps": 0,
+  "relationship_crossings": 31,
+  "orthogonal_segments_verified": true,
+  "connector_bends": 28,
+  "max_bends_per_relation": 2,
+  "relationship_diamonds": 41,
+  "diamonds_in_middle_third": 37,
+  "wire_length": 43810.0,
+  "attribute_oval_size": [
+    196,
+    32
+  ]
 }

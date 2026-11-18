@@ -13,7 +13,7 @@ OUT=args.out.resolve()
 for name in ['drawio','xml','png','svg','nguon']: (OUT/name).mkdir(parents=True,exist_ok=True)
 OLD=REPO/'docs/bao-cao/quyen-bao-cao-2026'
 MANIFEST=json.loads((REPO/'docs/tai-lieu-ban-giao-2026-11-17/bao-cao-drawio/danh-muc-hinh.json').read_text())
-MANIFEST[14].update(figure='2.15',caption='Hình 2.15. ERD 18 bảng nghiệp vụ — bố cục dây nối sắp xếp lại',filename='02-15-erd-hop-nhat')
+MANIFEST[14].update(figure='2.15',caption='Hình 2.15. ERD 18 bảng nghiệp vụ — bố cục gọn theo mẫu',filename='02-15-erd-hop-nhat')
 MANIFEST[19].update(figure='2.16',caption='Hình 2.16. Kiến trúc ba tầng của hệ thống',filename='02-16-kien-truc')
 MANIFEST[20].update(figure='2.17',caption='Hình 2.17. Luồng dữ liệu phản ánh từ QR đến nghiệm thu',filename='02-17-luong-du-lieu')
 SQL=(REPO/'database/thesis-mysql/001_thesis_schema.sql').read_text()
@@ -82,34 +82,6 @@ def wrap(s,w,fs):
             else:line=test
         result.append(line)
     return result
-
-def svg_relationship_with_jumps(points,previous):
-    """Standalone SVG equivalent of draw.io's native jumpStyle=arc."""
-    chunks=[f'M {N(points[0][0])} {N(points[0][1])}'];masks=[];jumps=0;r=4.3
-    for a,b in zip(points,points[1:]):
-        horizontal=abs(a[1]-b[1])<.05;cross=[]
-        for old in previous:
-            for c,d in zip(old,old[1:]):
-                other_horizontal=abs(c[1]-d[1])<.05
-                if horizontal==other_horizontal:continue
-                x,y=(c[0],a[1]) if horizontal else (a[0],c[1])
-                if min(a[0],b[0])+r+2<x<max(a[0],b[0])-r-2 and min(c[1],d[1])+r+2<y<max(c[1],d[1])-r-2 if horizontal else min(c[0],d[0])+r+2<x<max(c[0],d[0])-r-2 and min(a[1],b[1])+r+2<y<max(a[1],b[1])-r-2:
-                    cross.append((x,y))
-        cross=sorted(set(cross),key=lambda p:p[0] if horizontal else p[1],reverse=(b[0]<a[0] if horizontal else b[1]<a[1]))
-        last=None
-        for x,y in cross:
-            if last is not None and math.dist(last,(x,y))<r*2+2:continue
-            masks.append(f'<circle cx="{N(x)}" cy="{N(y)}" r="{N(r+1.1)}" fill="white" stroke="none"/>')
-            if horizontal:
-                sign=1 if b[0]>a[0] else -1
-                chunks.extend([f'L {N(x-sign*r)} {N(y)}',f'Q {N(x)} {N(y-r*2)} {N(x+sign*r)} {N(y)}'])
-            else:
-                sign=1 if b[1]>a[1] else -1
-                chunks.extend([f'L {N(x)} {N(y-sign*r)}',f'Q {N(x+r*2)} {N(y)} {N(x)} {N(y+sign*r)}'])
-            last=(x,y);jumps+=1
-        chunks.append(f'L {N(b[0])} {N(b[1])}')
-    return ''.join(masks)+f'<path d="{" ".join(chunks)}" fill="none" stroke="#222222" stroke-width="1.3" data-line-jumps="{jumps}"/>',jumps
-
 
 class Diagram:
     def __init__(self,index,width,height):
@@ -182,12 +154,9 @@ class Diagram:
         self.note=note
     def svg(self):
         a=[f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}" viewBox="0 0 {self.width} {self.height}"><rect width="100%" height="100%" fill="white"/>']
-        previous_relationships=[]
         for o in self.svgitems:
             if o.get('hidden'):continue
             if o['kind']=='line':
-                if o.get('relationship'):
-                    fragment,_=svg_relationship_with_jumps(o['points'],previous_relationships);a.append(fragment);previous_relationships.append(o['points']);continue
                 pts=o['points'];dash=' stroke-dasharray="7 5"' if o['dashed'] else ''
                 if o.get('underline_dash'):dash=' stroke-dasharray="3 3"'
                 a.append('<polyline points="'+' '.join(f'{N(x)},{N(y)}' for x,y in pts)+f'" fill="none" stroke="#222222" stroke-width="1.3"{dash}/>')
@@ -306,30 +275,6 @@ def activities():
     flow(d,qq,retry,'L','R',label='Không',lp=(540,1170));flow(d,retry,a,'L','L',[(80,1250),(80,280)]);flow(d,qq,ok,label='Có',lp=(s+35,1180));flow(d,ok,send);flow(d,send,sent);flow(d,sent,check);flow(d,check,paid)
     flow(d,paid,wait,'R','L',label='Chưa',lp=(530,1870));flow(d,wait,check,'R','R',[(1210,1950),(1210,1670)]);flow(d,paid,done,'B','L',[(b,2090)],label='Có',lp=(b+35,1960));flow(d,done,end);save(d)
 
-def orthogonal_entity_attachment(point,header,body):
-    """Connect a routed obstacle port to the actual entity header."""
-    x,y,w,h=body
-    px,py=point
-    if abs(py-y)<.2 and x-.2<=px<=x+w+.2:
-        return [(px,y),point]
-    if abs(px-(x+w))<.2:
-        return [(x+w,y+27),(x+w,py),point]
-    if abs(px-x)<.2:
-        return [(x,y+27),(x-16,y+27),(x-16,py),point]
-    return [(x+w,y+27),(x+w+16,y+27),(x+w+16,y+h+16),(px,y+h+16),point]
-
-
-def simplify_orthogonal(points):
-    result=[]
-    for x,y in points:
-        p=(round(x,2),round(y,2))
-        if result and math.dist(p,result[-1])<.03:continue
-        if len(result)>1 and ((abs(result[-2][0]-result[-1][0])<.03 and abs(p[0]-result[-1][0])<.03) or (abs(result[-2][1]-result[-1][1])<.03 and abs(p[1]-result[-1][1])<.03)):
-            result[-1]=p
-        else:result.append(p)
-    return result
-
-
 def er_marker(d,entity,endpoint,towards,cardinality,tag,fk_name,role):
     """Editable one/many bars and optional circles, matching the supplied ERD."""
     ex,ey=endpoint;dx,dy=towards[0]-ex,towards[1]-ey;length=math.hypot(dx,dy)
@@ -363,183 +308,133 @@ def segment_hits_box(a,b,r):
     return True
 
 
-def make_straight_layout(selection,sizes,foreign_keys):
-    """Separate the attribute columns from wide relation corridors."""
-    width,height=4800,6144
-    rows=selection['layout_rows'];objects=[];lookup={}
-    for row_index,row in enumerate(rows):
-        for col,name in enumerate(row):
-            x=288+col*768;w,h=sizes[name]
-            hy=[1386,2088,3816][row_index]
-            above=row_index==0
-            y=hy-(len(selection['included_tables'][name]['columns'])*60+28) if above else hy
-            obj={'_gvid':len(objects),'name':name,'pos':f'{x+w/2},{y+h/2}','screen_box':[x,y,w,h],
-                 'header_box':[x,hy,w,54],'attributes_side':'above' if above else 'below','width':w/72,'height':h/72}
-            objects.append(obj);lookup[name]=obj
-    occupied=[(o['screen_box'][0]-24,o['screen_box'][1]-24,o['screen_box'][0]+o['screen_box'][2]+24,o['screen_box'][1]+o['screen_box'][3]+24) for o in objects]
-    def free(x,y):
-        a=(x-112,y-80,x+112,y+80)
-        return not any(a[0]<b[2] and a[2]>b[0] and a[1]<b[3] and a[3]>b[1] for b in occupied)
-    candidates=[(x,y) for x in range(192,width-160,72) for y in range(192,height-160,72) if free(x,y)]
-    # Group repeated roles near the same destination, while reserving separate diamonds.
-    ordered=sorted(foreign_keys,key=lambda f:(f['parent']!=f['child'],f['child'],f['parent'],f['name']))
-    for f in ordered:
-        pa=lookup[f['parent']]['header_box'];ch=lookup[f['child']]['header_box']
-        a=(pa[0]+pa[2]/2,pa[1]+27);b=(ch[0]+ch[2]/2,ch[1]+27)
-        if f['parent']==f['child']:ideal=(ch[0]+ch[2]+192,ch[1]+27)
-        elif abs(a[1]-b[1])<100:ideal=((a[0]+b[0])/2,b[1]+72)
-        else:ideal=(b[0],ch[1]+180 if lookup[f['child']]['attributes_side']=='above' else ch[1]-180)
-        pool=[p for p in candidates if free(*p)];assert pool
-        def score(p):
-            return abs(p[0]-a[0])+abs(p[1]-a[1])+abs(p[0]-b[0])+abs(p[1]-b[1])+.8*(abs(p[0]-ideal[0])+abs(p[1]-ideal[1]))
-        x,y=min(pool,key=score)
-        o={'_gvid':len(objects),'name':f['id'],'pos':f'{x},{y}','screen_box':[x-72,y-39.6,144,79.2],'width':2,'height':1.1}
-        objects.append(o);lookup[f['id']]=o;occupied.append((x-112,y-80,x+112,y+80))
-    return {'screen_coordinates':True,'bb':f'0,0,{width},{height}','objects':objects,'edges':[],
-            'routing':'distinct header sides and reserved orthogonal tracks, 12 px grid'}
+ERD_HEADER_WIDTH = 244.8
+ERD_HEADER_HEIGHT = 68
+ERD_ATTRIBUTE_WIDTH = 196
+ERD_ATTRIBUTE_HEIGHT = 32
+ERD_ATTRIBUTE_SPACING = 40
+ERD_ATTRIBUTE_GAP = 14
 
 
-def plan_relation_arms(layout,foreign_keys):
-    objects={o['name']:o for o in layout['objects']};plans=[];groups={}
-    for f in foreign_keys:
-        r=objects[f['id']]['screen_box'];cx,cy=r[0]+72,r[1]+39.6
-        ports={'T':((cx,cy-39.6),(cx,cy-72)),'B':((cx,cy+39.6),(cx,cy+72)),
-               'L':((cx-72,cy),(cx-108,cy)),'R':((cx+72,cy),(cx+108,cy))}
-        used=None
-        for role,name in [('parent',f['parent']),('child',f['child'])]:
-            o=objects[name];x,y,w,h=o['header_box'];head=(x+w/2,y+h/2)
-            dia_side=min((s for s in ports if s!=used),key=lambda s:math.dist(head,ports[s][0]));used=dia_side
-            allowed=['B','L','R'] if o['attributes_side']=='above' else ['T','L','R']
-            middle={'T':(x+w/2,y),'B':(x+w/2,y+h),'L':(x,y+h/2),'R':(x+w,y+h/2)}
-            count=lambda s:len(groups.get((name,s),[]))
-            def side_cost(s):
-                cap=25 if s in ['T','B'] else 3
-                if count(s)>=cap:return float('inf')
-                p=middle[s];q=ports[dia_side][0]
-                penalty=0
-                if s=='L' and q[0]>x+w:penalty=220
-                if s=='R' and q[0]<x:penalty=220
-                if s=='T' and q[1]>y+h:penalty=220
-                if s=='B' and q[1]<y:penalty=220
-                return abs(p[0]-q[0])+abs(p[1]-q[1])+count(s)*20+penalty
-            side=min(allowed,key=side_cost);assert side_cost(side)<float('inf')
-            plan={'fk':f,'role':role,'table':name,'side':side,'diamond_side':dia_side,
-                  'end':ports[dia_side][0],'end_stub':ports[dia_side][1]}
-            plans.append(plan);groups.setdefault((name,side),[]).append(plan)
-    for (name,side),arms in groups.items():
-        x,y,w,h=objects[name]['header_box']
-        arms.sort(key=lambda p:(p['end'][0] if side in ['T','B'] else p['end'][1],p['fk']['name'],p['role']))
-        if side in ['T','B']:
-            available=[xx for xx in range(math.ceil((x+12)/12)*12,math.floor((x+w-12)/12)*12+1,12)]
-        else:
-            available=[yy for yy in range(math.ceil((y+10)/12)*12,math.floor((y+h-10)/12)*12+1,12)]
-        assert len(arms)<=len(available),(name,side,len(arms),len(available))
-        for k,p in enumerate(arms):
-            pos=available[round((k+1)*(len(available)+1)/(len(arms)+1))-1]
-            if side=='T':p['start']=(pos,y);p['start_stub']=(pos,math.floor((y-30)/12)*12)
-            elif side=='B':p['start']=(pos,y+h);p['start_stub']=(pos,math.ceil((y+h+30)/12)*12)
-            elif side=='L':p['start']=(x,pos);p['start_stub']=(math.floor((x-30)/12)*12,pos)
-            else:p['start']=(x+w,pos);p['start_stub']=(math.ceil((x+w+30)/12)*12,pos)
-    return plans
+def make_sample_layout(included, foreign_keys):
+    """Read the reviewed table, diamond and attachment positions."""
+    saved = json.loads(Path(__file__).with_name('bo-cuc-day-thang.json').read_text())
+    assert set(saved['tables']) == set(included)
+    by_name = {f['name']: f for f in foreign_keys}
+    member_names = [member for key, relation in saved['relationships'].items()
+                    for member in relation.get('members', [key])]
+    assert len(member_names) == len(by_name) and set(member_names) == set(by_name)
+    objects = {}
+    obstacles = []
+    for name, table in included.items():
+        cx, cy, side, column = saved['tables'][name]
+        count = len(table['columns'])
+        x, header_y = cx - ERD_HEADER_WIDTH/2, cy - ERD_HEADER_HEIGHT/2
+        stack = ERD_ATTRIBUTE_HEIGHT + (count-1)*ERD_ATTRIBUTE_SPACING
+        attribute_x = x - ERD_ATTRIBUTE_WIDTH if column == 'left' else x
+        attribute_y = (header_y - ERD_ATTRIBUTE_GAP - stack if side == 'above'
+                       else header_y + ERD_HEADER_HEIGHT + ERD_ATTRIBUTE_GAP)
+        y = min(header_y, attribute_y)
+        height = max(header_y + ERD_HEADER_HEIGHT, attribute_y + stack) - y
+        header_box = [x, header_y, ERD_HEADER_WIDTH, ERD_HEADER_HEIGHT]
+        attribute_box = [attribute_x, attribute_y, ERD_ATTRIBUTE_WIDTH, stack]
+        objects[name] = {
+            'name': name, 'screen_box': [attribute_x, y, x+ERD_HEADER_WIDTH-attribute_x, height],
+            'header_box': header_box, 'attributes_box': attribute_box,
+            'attributes_side': side, 'attributes_column': column,
+        }
+        obstacles.append((name, header_box))
+        obstacles.append((name + ':attributes', attribute_box))
 
+    width, height = saved['diamond_size']
+    plans = []
+    for key, relation in saved['relationships'].items():
+        f = by_name[key]
+        members = relation.get('members', [key])
+        for member in members:
+            assert all(by_name[member][field] == f[field]
+                       for field in ('parent', 'child', 'parent_cardinality', 'child_cardinality'))
+        f = dict(f, members=members)
+        cx, cy = relation['center']
+        box = [cx-width/2, cy-height/2, width, height]
+        obstacles.append((f['id'], box))
+        objects[f['id']] = {'name': f['id'], 'pos': [cx, cy], 'screen_box': box, 'members': members}
+        for role in ('parent', 'child'):
+            points = [tuple(point) for point in relation[role]]
+            x, y, w, h = objects[f[role]]['header_box']
+            px, py = points[0]
+            on_side = any(math.isclose(px, edge, abs_tol=.01) for edge in (x, x+w))
+            on_top_or_bottom = any(math.isclose(py, edge, abs_tol=.01) for edge in (y, y+h))
+            assert (on_side and y <= py <= y+h) or (on_top_or_bottom and x <= px <= x+w)
+            tips = [(cx-width/2,cy), (cx+width/2,cy), (cx,cy-height/2), (cx,cy+height/2)]
+            assert any(math.dist(points[-1], tip) < .01 for tip in tips), f['name']
+            plans.append({'fk': f, 'role': role, 'table': f[role], 'points': points})
+        assert plans[-1]['points'][-1] != plans[-2]['points'][-1], f['name']
 
-def route_reserved_tracks(layout,plans):
-    """Every relation gets its own track; perpendicular crossings are penalized."""
-    import heapq
-    pitch=12;_,_,width,height=map(float,layout['bb'].split(','));nx=math.ceil(width/pitch)+1;ny=math.ceil(height/pitch)+1;n=nx*ny
-    blocked=bytearray(n);hr=bytearray(n);vr=bytearray(n);hv=bytearray(n);vv=bytearray(n)
-    def block(rect,pad):
-        x,y,w,h=rect;x1=max(0,math.ceil((x-pad)/pitch));x2=min(nx-1,math.floor((x+w+pad)/pitch));y1=max(0,math.ceil((y-pad)/pitch));y2=min(ny-1,math.floor((y+h+pad)/pitch))
-        for row in range(y1,y2+1):blocked[row*nx+x1:row*nx+x2+1]=b'\x01'*(x2-x1+1)
-    for o in layout['objects']:block(o['screen_box'],18)
-    for p in plans:
-        for a,b in [(p['start'],p['start_stub']),(p['end'],p['end_stub'])]:
-            block((min(a[0],b[0]),min(a[1],b[1]),abs(a[0]-b[0]),abs(a[1]-b[1])),4)
-    def key(p):return round(p[1]/pitch)*nx+round(p[0]/pitch)
-    # Route local relationships first, keeping long role links out of their way.
-    ordered=sorted(plans,key=lambda p:(abs(p['start_stub'][0]-p['end_stub'][0])+abs(p['start_stub'][1]-p['end_stub'][1]),p['fk']['name'],p['role']))
-    metrics={'grid':pitch,'arms':len(plans),'shared_track_segments':0,'search_expansions':0}
-    for route_index,p in enumerate(ordered):
-        start,goal=key(p['start_stub']),key(p['end_stub']);gx,gy=goal%nx,goal//nx
-        orient=1 if p['side'] in ['L','R'] else 2
-        initial=start*3+orient;heap=[(0,0,initial)];cost={initial:0};parent={};found=None
-        while heap:
-            _,g,state=heapq.heappop(heap)
-            if g!=cost.get(state):continue
-            i,heading=divmod(state,3);ix,iy=i%nx,i//nx;metrics['search_expansions']+=1
-            if i==goal:found=state;break
-            for j,d in [(i-1,1),(i+1,1),(i-nx,2),(i+nx,2)]:
-                if j<0 or j>=n or (d==1 and j//nx!=iy):continue
-                if blocked[j] and j!=goal:continue
-                seg=min(i,j);reserved=hr if d==1 else vr
-                if reserved[seg]:continue
-                crossing=(vv[j] if d==1 else hv[j])
-                if d==1:
-                    near=(hr[seg-nx] if iy>0 else 0)+(hr[seg+nx] if iy<ny-1 else 0)
-                else:near=(vr[seg-1] if ix>0 else 0)+(vr[seg+1] if ix<nx-1 else 0)
-                ng=g+pitch+(24 if heading!=d else 0)+350*crossing+10*near
-                ns=j*3+d
-                if ng<cost.get(ns,10**12):
-                    cost[ns]=ng;parent[ns]=state
-                    heuristic=pitch*(abs(j%nx-gx)+abs(j//nx-gy))
-                    heapq.heappush(heap,(ng+heuristic,ng,ns))
-        if found is None:raise RuntimeError('No separate route for '+p['fk']['name']+' '+p['role'])
-        path=[];state=found
-        while True:
-            path.append(state//3)
-            if state==initial:break
-            state=parent[state]
-        path.reverse()
-        for a,b in zip(path,path[1:]):
-            if a//nx==b//nx:
-                assert not hr[min(a,b)];hr[min(a,b)]=1;hv[a]=hv[b]=1
-            else:
-                assert not vr[min(a,b)];vr[min(a,b)]=1;vv[a]=vv[b]=1
-        p['points']=simplify_orthogonal([p['start']]+[(i%nx*pitch,i//nx*pitch) for i in path]+[p['end']])
-    layout['routing_metrics']=metrics
-    return plans
+    crossings = 0
+    port_keys = [(p['table'], p['points'][0]) for p in plans]
+    assert len(set(port_keys)) == len(port_keys)
+    for i, (name, a) in enumerate(obstacles):
+        for other, b in obstacles[:i]:
+            separated = (a[0]+a[2] <= b[0] or b[0]+b[2] <= a[0]
+                         or a[1]+a[3] <= b[1] or b[1]+b[3] <= a[1])
+            assert separated, (name, other)
+    segments = []
+    width, height = saved['canvas']
+    for arm in plans:
+        points = arm['points']
+        assert all(0 < x < width and 0 < y < height for x,y in points)
+        for a,b in zip(points, points[1:]):
+            assert a != b and (a[0] == b[0] or a[1] == b[1]), points
+            for name, rect in obstacles:
+                if name != arm['fk']['id']:
+                    assert not segment_hits_box(a, b, rect), (arm['fk']['name'], arm['role'], name)
+            horizontal = a[1] == b[1]
+            if not horizontal:
+                a,b = (a[1],a[0]),(b[1],b[0])
+            low, high = sorted((a[0],b[0]))
+            fixed = a[1]
+            for prev_horizontal, other_low, other_high, other_fixed in segments:
+                if horizontal == prev_horizontal:
+                    if fixed == other_fixed:
+                        assert min(high,other_high) <= max(low,other_low), arm['fk']['name']
+                elif low < other_fixed < high and other_low < fixed < other_high:
+                    crossings += 1
+            segments.append((horizontal,low,high,fixed))
+    bends = sum(len(arm['points'])-2 for arm in plans)
+    bends_per_relation = [len(parent['points']) + len(child['points']) - 4
+                          for parent, child in zip(plans[::2], plans[1::2])]
+    # Count the diamonds in the middle third of the two visible branches combined.
+    midpoints = 0
+    wire_length = 0
+    for parent, child in zip(plans[::2], plans[1::2]):
+        lengths = [sum(math.dist(a,b) for a,b in zip(arm['points'],arm['points'][1:]))
+                   for arm in (parent, child)]
+        wire_length += sum(lengths)
+        if min(lengths) * 3 >= sum(lengths) - .01:
+            midpoints += 1
+    metrics = {'arms': len(plans), 'horizontal_vertical_only': True,
+               'bends': bends, 'max_bends_per_relation': max(bends_per_relation), 'jumps': 0,
+               'object_overlaps': 0, 'obstacle_hits': 0, 'shared_track_segments': 0,
+               'crossings': crossings, 'diamonds_in_middle_third': midpoints,
+               'relationship_groups': len(plans)//2, 'foreign_keys': len(foreign_keys),
+               'wire_length': round(wire_length, 2)}
+    return {'bb': saved['canvas'], 'objects': list(objects.values()), 'routing_metrics': metrics}, plans
 
 
 def erd_hop_nhat():
     """One logical ERD of the 18 thesis entities, with no hidden tables."""
-    import subprocess
     selection=json.loads(Path(__file__).with_name('lua-chon-thuoc-tinh.json').read_text())
     included=selection['included_tables']
     selected_fks=[f for f in FKS if f['name'] in selection['shown_foreign_keys']]
     assert len(included)==18 and len(selected_fks)==46
     assert all(f['parent'] in included and f['child'] in included for f in selected_fks)
-    labels={
-        'khoi':'thuộc khối','tang':'thuộc tầng','loai_phi':'loại phí',
-        'ma_can_ho':'thuộc căn','ma_cau_hinh_phi':'áp giá',
-        'ma_chi_so_dich_vu':'chỉ số','ma_hoa_don':'hóa đơn',
-        'ma_nguoi_dung':'tài khoản','ma_cu_dan':'cư dân',
-        'ma_cu_dan_nguoi_gui':'người gửi','ma_phan_anh':'có ảnh',
-        'ma_thiet_bi':'thiết bị','ma_vi_tri_qr':'vị trí QR',
-        'ma_ky_thuat_vien':'giao xử lý','ma_lich_su_cu_tru':'đợt cư trú',
-        'ma_thong_bao':'đã đọc'}
-    dot=['graph erd {',
-         'graph [rankdir=TB, ranksep=0.75, nodesep=0.75, splines=ortho, outputorder=edgesfirst];',
-         'node [shape=box,fixedsize=true,label="",margin=0];']
-    sizes={}
-    for name,entity in included.items():
-        assert set(entity['columns'])<=SCHEMA[name]['columns'].keys()
-        assert set(SCHEMA[name]['pk'])<=set(entity['columns'])
-        w,h=320,(82 if name in selection['layout_rows'][0] else 72)+len(entity['columns'])*60
-        sizes[name]=(w,h)
-        dot.append(f'"{name}" [width={w/72},height={h/72}];')
-    for f in selected_fks:
-        dot.extend([f'{f["id"]} [shape=diamond,width=2.0,height=1.1];',
-                    f'"{f["parent"]}" -- {f["id"]} [id="{f["id"]}-parent",tailport=n];',
-                    f'{f["id"]} -- "{f["child"]}" [id="{f["id"]}-child",headport=n];'])
-    dot.append('}')
-    dot='\n'.join(dot)
-    (OUT/'nguon/bo-cuc-erd.dot').write_text(dot)
-    layout=make_straight_layout(selection,sizes,selected_fks)
+    layout, plans = make_sample_layout(included, selected_fks)
     (OUT/'nguon/bo-cuc-erd.json').write_text(json.dumps(layout,ensure_ascii=False,indent=2))
-    _,_,gw,gh=map(float,layout['bb'].split(','))
-    margin,top=0,0
-    d=Diagram(15,math.ceil(gw)+2*margin,math.ceil(gh)+top+120)
-    def transform(x,y):return float(x),float(y)
+    (OUT/'nguon/kiem-tra-duong-noi.json').write_text(json.dumps(layout['routing_metrics'],indent=2)+'\n')
+    gw, gh = layout['bb']
+    d=Diagram(15,gw,gh+120)
+    d.model.set('grid','0')
     cells={}
     def tag(node,**attrs):
         c=cells.get(node)
@@ -553,65 +448,67 @@ def erd_hop_nhat():
     for obj in layout['objects']:
         name=obj['name']
         if name not in included:continue
-        cx,cy=transform(*obj['pos'].split(','));w,h=sizes[name];x,y=cx-w/2,cy-h/2
+        x,y,w,h=obj['screen_box']
         group=d.box(x,y,w,h,'',shape='group');tag(group,erdKind='table-group',tableName=name)
-        header_y=obj['header_box'][1]-y
-        above=obj.get('attributes_side')=='above'
-        entity=d.box(0,header_y,320,54,name.upper(),fs=17,parent=group)
+        header_x,header_y,header_w,header_h=obj['header_box']
+        header_x-=x
+        header_y-=y
+        attr_x,attr_y,attr_w,attr_stack=obj['attributes_box']
+        attr_x-=x
+        attr_y-=y
+        above=obj['attributes_side']=='above'
+        outside=obj['attributes_column']=='left'
+        entity=d.box(header_x,header_y,header_w,header_h,name.upper(),fs=17,parent=group)
         tag(entity,erdKind='entity',tableName=name);entities[name]=entity
         cols=included[name]['columns']
         for k,col in enumerate(cols):
-            ox,oy=0,(header_y-72-k*60 if above else 82+k*60)
+            row=len(cols)-1-k if above else k
+            ox,oy=attr_x,attr_y+row*ERD_ATTRIBUTE_SPACING
             info=SCHEMA[name]['columns'][col]
             primary=col in SCHEMA[name]['pk'];foreign=fk_columns.get((name,col),[])
-            fs=min(17,max(12,math.floor(248/ImageFont.truetype(FONT_PATH,17).getlength(col)*17)))
-            attr=d.box(ox,oy,270,44,col,shape='ellipse',fs=fs,underline=primary,parent=group)
+            fs=min(16,max(11,math.floor((attr_w-32)/ImageFont.truetype(FONT_PATH,16).getlength(col)*16)))
+            attr=d.box(ox,oy,attr_w,ERD_ATTRIBUTE_HEIGHT,col,shape='ellipse',fs=fs,underline=primary,parent=group)
             tag(attr,erdKind='attribute',tableName=name,columnName=col,isPrimary=int(primary),isForeign=int(bool(foreign)),foreignKeyNames=','.join(foreign))
             underline=None
             if foreign:
                 tw=ImageFont.truetype(FONT_PATH,fs).getlength(col)
-                left=x+135-tw/2;baseline=y+oy+22+fs*.35;uy=baseline+(6 if primary else 3)
+                left=x+ox+attr_w/2-tw/2;baseline=y+oy+ERD_ATTRIBUTE_HEIGHT/2+fs*.35;uy=baseline+(6 if primary else 3)
                 underline=d.line([(left,uy),(left+tw,uy)],dashed=True,parent=attr)
                 c=next(c for c in d.root.findall('mxCell') if c.get('id')==underline)
                 c.set('style',c.get('style').replace('dashPattern=6 4','dashPattern=3 3').replace('strokeWidth=1.3','strokeWidth=1'))
                 tag(underline,erdKind='foreign-key-underline',tableName=name,columnName=col,attributeCell=attr)
                 d.svgitems[-1]['underline_dash']=True
-            bus=d.line([(x,y+header_y+(0 if above else 54)),(x,y+oy+22)],source=entity,target=attr,parent=group)
+            bus_x=x+ox+(attr_w if outside else 0)
+            bus=d.line([(bus_x,y+header_y+(0 if above else header_h)),(bus_x,y+oy+ERD_ATTRIBUTE_HEIGHT/2)],source=entity,target=attr,parent=group)
             tag(bus,erdKind='attribute-bus',tableName=name,columnName=col)
             d.fields.append({'table':name,'field':col,'type':info['type'],'primary':primary,'foreign_keys':foreign,'cell_id':attr,'foreign_underline_cell':underline})
     for obj in layout['objects']:
         if obj['name'] in included:continue
         f=next(f for f in selected_fks if f['id']==obj['name'])
-        cx,cy=transform(*obj['pos'].split(','))
-        diamond=d.box(cx-72,cy-39.6,144,79.2,'',shape='diamond',fs=14)
-        tag(diamond,erdKind='relationship',fkName=f['name'],childTable=f['child'],parentTable=f['parent'])
-        relationships[f['id']]=diamond
-    def along(points,amount,from_end=False):
-        pts=list(reversed(points)) if from_end else points
-        for a,b in zip(pts,pts[1:]):
-            length=math.dist(a,b)
-            if length>amount:return(a[0]+(b[0]-a[0])*amount/length,a[1]+(b[1]-a[1])*amount/length)
-            amount-=length
-        return pts[-1]
-    plans=route_reserved_tracks(layout,plan_relation_arms(layout,selected_fks))
-    (OUT/'nguon/bo-cuc-erd.json').write_text(json.dumps(layout,ensure_ascii=False,indent=2))
+        members=obj['members']
+        label=f'×{len(members)}' if len(members)>1 else ''
+        diamond=d.box(*obj['screen_box'],label,shape='diamond',fs=14)
+        tag(diamond,erdKind='relationship',fkName=f['name'],foreignKeyNames=','.join(members),
+            childTable=f['child'],parentTable=f['parent'])
+        for member in members:
+            relationships[member]=diamond
     arms={}
     for p in plans:
-        f=p['fk'];role=p['role'];name=p['table'];entity=entities[name];diamond=relationships[f['id']]
+        f=p['fk'];role=p['role'];name=p['table'];entity=entities[name];diamond=relationships[f['name']]
         points=p['points']
         if role=='parent':src,dst=entity,diamond
         else:src,dst=diamond,entity;points=list(reversed(points))
         line=d.line(points,source=src,target=dst)
-        d.svgitems[-1]['relationship']=True
-        c=next(c for c in d.root.findall('mxCell') if c.get('id')==line)
-        c.set('style',c.get('style')+'jumpStyle=arc;jumpSize=8;')
         tag(line,erdKind='foreign-key-arm',fkName=f['name'],armRole=role)
-        arms.setdefault(f['id'],{})[role]=line
+        for member in f['members']:
+            arms.setdefault(member,{})[role]=line
         card=f['parent_cardinality'] if role=='parent' else f['child_cardinality']
         if role=='parent':er_marker(d,entity,points[0],points[1],card,tag,f['name'],role)
         else:er_marker(d,entity,points[-1],points[-2],card,tag,f['name'],role)
-    d.relations=[dict(f,relationship_cell_id=relationships[f['id']],arm_cells=arms[f['id']]) for f in selected_fks]
-    d.note='Bố cục mới, chia đầu nối sang các cạnh và dùng rãnh dây riêng: ERD 18 bảng trọng tâm: liệt kê đủ 218 thuộc tính và 46 khóa ngoại giữa các bảng được giữ; mỗi bảng một cột oval dọc, chữ thường, đường nối vuông góc, quan hệ hình thoi trống, bội số một/nhiều bằng vạch/chân quạ. Khóa chính gạch liền, khóa ngoại gạch đứt; không có mã FK/R. Schema vẫn 31 bảng, 362 cột, 81 FK.'
+    d.relations=[dict(f,relationship_cell_id=relationships[f['name']],arm_cells=arms[f['name']]) for f in selected_fks]
+    if layout['routing_metrics']['relationship_groups'] < len(selected_fks):
+        d.text(25,d.height-120,d.width-50,35,'×n  =  n khóa ngoại cùng cặp bảng và cùng bội số',fs=23)
+    d.note='ERD 18 bảng trọng tâm, 218 thuộc tính và 46 khóa ngoại. Dây ngang và dọc. Nhãn ×n gộp n khóa ngoại có cùng cặp bảng và cùng bội số. Khóa chính gạch liền, khóa ngoại gạch đứt.'
     save(d)
 
 
@@ -757,7 +654,7 @@ def main():
         summary.append(entry)
     E.indent(master,space='  ')
     (OUT/'Tat-ca-17-so-do-ERD-hop-nhat.drawio').write_bytes(E.tostring(master,encoding='utf-8',xml_declaration=True))
-    (OUT/'nguon/mo-hinh-va-doi-chieu.json').write_text(json.dumps({'source_commit':'cceb904','schema_sha256':hashlib.sha256(SQL.encode()).hexdigest(),'tables':SCHEMA,'foreign_keys':FKS,'erd_pages':1,'presentation':{'kind':'logical subset','shown_tables':18,'schema_tables':31,'selected_columns':218,'total_columns':362,'shown_relationships':46,'schema_foreign_keys':81,'attribute_style':'ellipse, single vertical column per table','all_attributes_of_included_tables':True,'orthogonal_relationships':True,'routing_policy':'separate 12-pixel orthogonal tracks; side ports; perpendicular crossings use jumps','bold_attributes':False,'relationship_diamonds':'blank','cardinality_notation':'one bar, many crowfoot, optional circle','primary_key_notation':'solid underline','foreign_key_notation':'dashed underline','hidden_layers':False,'selection':json.loads(Path(__file__).with_name('lua-chon-thuoc-tinh.json').read_text())},'reference_style':'6 example images supplied by user; housing domain retained','diagrams':summary},ensure_ascii=False,indent=2))
+    (OUT/'nguon/mo-hinh-va-doi-chieu.json').write_text(json.dumps({'source_commit':'cceb904','schema_sha256':hashlib.sha256(SQL.encode()).hexdigest(),'tables':SCHEMA,'foreign_keys':FKS,'erd_pages':1,'presentation':{'kind':'logical subset','shown_tables':18,'schema_tables':31,'selected_columns':218,'total_columns':362,'shown_relationships':46,'schema_foreign_keys':81,'attribute_style':'ellipse, single vertical column per table','all_attributes_of_included_tables':True,'orthogonal_relationships':True,'routing_policy':'horizontal and vertical segments; turns preferably at diamonds; separate ports; no line jumps','bold_attributes':False,'relationship_diamonds':'empty for a single key; group count for multiple keys with identical endpoints and cardinality','cardinality_notation':'one bar, many crowfoot, optional circle','primary_key_notation':'solid underline','foreign_key_notation':'dashed underline','hidden_layers':False,'selection':json.loads(Path(__file__).with_name('lua-chon-thuoc-tinh.json').read_text())},'reference_style':'6 example images supplied by user; housing domain retained','diagrams':summary},ensure_ascii=False,indent=2))
     (OUT/'danh-muc.json').write_text(json.dumps([{k:v for k,v in e.items() if k not in ['fields','relations']} for e in summary],ensure_ascii=False,indent=2))
     print('Generated 17 diagrams: one logical ERD with 18 tables, 218 complete attributes, 46 relationships; native dashed FK underlines.')
 

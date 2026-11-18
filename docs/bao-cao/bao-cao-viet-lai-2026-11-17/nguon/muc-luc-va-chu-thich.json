@@ -331,7 +331,7 @@
       "level": 3
     },
     {
-      "title": "PHỤ LỤC 2. TỪ ĐIỂN DỮ LIỆU ĐẦY ĐỦ",
+      "title": "PHỤ LỤC 2. TỪ ĐIỂN DỮ LIỆU 18 BẢNG TRONG ERD",
       "mark": "H67",
       "level": 2
     },
@@ -356,148 +356,78 @@
       "level": 3
     },
     {
-      "title": "PL2.5. chung_tu_thu_chi",
+      "title": "PL2.5. cu_dan",
       "mark": "H72",
       "level": 3
     },
     {
-      "title": "PL2.6. cu_dan",
+      "title": "PL2.6. hinh_anh_phan_anh",
       "mark": "H73",
       "level": 3
     },
     {
-      "title": "PL2.7. dat_lich_tien_ich",
+      "title": "PL2.7. hoa_don",
       "mark": "H74",
       "level": 3
     },
     {
-      "title": "PL2.8. dot_lap_hoa_don",
+      "title": "PL2.8. khoi_toa_nha",
       "mark": "H75",
       "level": 3
     },
     {
-      "title": "PL2.9. dot_nhap_du_lieu",
+      "title": "PL2.9. lich_su_cu_tru",
       "mark": "H76",
       "level": 3
     },
     {
-      "title": "PL2.10. dot_xu_ly_hoa_don",
+      "title": "PL2.10. loai_phi",
       "mark": "H77",
       "level": 3
     },
     {
-      "title": "PL2.11. gioi_han_gui",
+      "title": "PL2.11. nguoi_dung",
       "mark": "H78",
       "level": 3
     },
     {
-      "title": "PL2.12. hinh_anh_phan_anh",
+      "title": "PL2.12. phan_anh",
       "mark": "H79",
       "level": 3
     },
     {
-      "title": "PL2.13. hoa_don",
+      "title": "PL2.13. phuong_tien",
       "mark": "H80",
       "level": 3
     },
     {
-      "title": "PL2.14. khoi_toa_nha",
+      "title": "PL2.14. tang_toa_nha",
       "mark": "H81",
       "level": 3
     },
     {
-      "title": "PL2.15. lich_su_cu_tru",
+      "title": "PL2.15. thiet_bi",
       "mark": "H82",
       "level": 3
     },
     {
-      "title": "PL2.16. loai_phi",
+      "title": "PL2.16. thong_bao",
       "mark": "H83",
       "level": 3
     },
     {
-      "title": "PL2.17. nguoi_dung",
+      "title": "PL2.17. thong_bao_da_doc",
       "mark": "H84",
       "level": 3
     },
     {
-      "title": "PL2.18. phan_anh",
+      "title": "PL2.18. vi_tri_qr",
       "mark": "H85",
       "level": 3
     },
     {
-      "title": "PL2.19. phieu_bao_tri",
-      "mark": "H86",
-      "level": 3
-    },
-    {
-      "title": "PL2.20. phieu_thu_chi",
-      "mark": "H87",
-      "level": 3
-    },
-    {
-      "title": "PL2.21. phuong_tien",
-      "mark": "H88",
-      "level": 3
-    },
-    {
-      "title": "PL2.22. quy_tai_chinh",
-      "mark": "H89",
-      "level": 3
-    },
-    {
-      "title": "PL2.23. schema_migrations",
-      "mark": "H90",
-      "level": 3
-    },
-    {
-      "title": "PL2.24. tang_toa_nha",
-      "mark": "H91",
-      "level": 3
-    },
-    {
-      "title": "PL2.25. thiet_bi",
-      "mark": "H92",
-      "level": 3
-    },
-    {
-      "title": "PL2.26. thong_bao",
-      "mark": "H93",
-      "level": 3
-    },
-    {
-      "title": "PL2.27. thong_bao_da_doc",
-      "mark": "H94",
-      "level": 3
-    },
-    {
-      "title": "PL2.28. tien_ich",
-      "mark": "H95",
-      "level": 3
-    },
-    {
-      "title": "PL2.29. vi_tri_qr",
-      "mark": "H96",
-      "level": 3
-    },
-    {
-      "title": "PL2.30. yeu_cau_gui",
-      "mark": "H97",
-      "level": 3
-    },
-    {
-      "title": "PL2.31. nhat_ky_nghiep_vu",
-      "mark": "H98",
-      "level": 3
-    },
-    {
-      "title": "PL2.32. Các view lịch sử và nguồn schema",
-      "mark": "H99",
-      "level": 3
-    },
-    {
       "title": "DANH MỤC TÀI LIỆU THAM KHẢO",
-      "mark": "H100",
+      "mark": "H86",
       "level": 1
     }
   ],
@@ -709,116 +639,60 @@
       "mark": "T25"
     },
     {
-      "title": "Bảng PL.7. Cấu trúc bảng chung_tu_thu_chi",
+      "title": "Bảng PL.7. Cấu trúc bảng cu_dan",
       "mark": "T26"
     },
     {
-      "title": "Bảng PL.8. Cấu trúc bảng cu_dan",
+      "title": "Bảng PL.8. Cấu trúc bảng hinh_anh_phan_anh",
       "mark": "T27"
     },
     {
-      "title": "Bảng PL.9. Cấu trúc bảng dat_lich_tien_ich",
+      "title": "Bảng PL.9. Cấu trúc bảng hoa_don",
       "mark": "T28"
     },
     {
-      "title": "Bảng PL.10. Cấu trúc bảng dot_lap_hoa_don",
+      "title": "Bảng PL.10. Cấu trúc bảng khoi_toa_nha",
       "mark": "T29"
     },
     {
-      "title": "Bảng PL.11. Cấu trúc bảng dot_nhap_du_lieu",
+      "title": "Bảng PL.11. Cấu trúc bảng lich_su_cu_tru",
       "mark": "T30"
     },
     {
-      "title": "Bảng PL.12. Cấu trúc bảng dot_xu_ly_hoa_don",
+      "title": "Bảng PL.12. Cấu trúc bảng loai_phi",
       "mark": "T31"
     },
     {
-      "title": "Bảng PL.13. Cấu trúc bảng gioi_han_gui",
+      "title": "Bảng PL.13. Cấu trúc bảng nguoi_dung",
       "mark": "T32"
     },
     {
-      "title": "Bảng PL.14. Cấu trúc bảng hinh_anh_phan_anh",
+      "title": "Bảng PL.14. Cấu trúc bảng phan_anh",
       "mark": "T33"
     },
     {
-      "title": "Bảng PL.15. Cấu trúc bảng hoa_don",
+      "title": "Bảng PL.15. Cấu trúc bảng phuong_tien",
       "mark": "T34"
     },
     {
-      "title": "Bảng PL.16. Cấu trúc bảng khoi_toa_nha",
+      "title": "Bảng PL.16. Cấu trúc bảng tang_toa_nha",
       "mark": "T35"
     },
     {
-      "title": "Bảng PL.17. Cấu trúc bảng lich_su_cu_tru",
+      "title": "Bảng PL.17. Cấu trúc bảng thiet_bi",
       "mark": "T36"
     },
     {
-      "title": "Bảng PL.18. Cấu trúc bảng loai_phi",
+      "title": "Bảng PL.18. Cấu trúc bảng thong_bao",
       "mark": "T37"
     },
     {
-      "title": "Bảng PL.19. Cấu trúc bảng nguoi_dung",
+      "title": "Bảng PL.19. Cấu trúc bảng thong_bao_da_doc",
       "mark": "T38"
     },
     {
-      "title": "Bảng PL.20. Cấu trúc bảng phan_anh",
+      "title": "Bảng PL.20. Cấu trúc bảng vi_tri_qr",
       "mark": "T39"
-    },
-    {
-      "title": "Bảng PL.21. Cấu trúc bảng phieu_bao_tri",
-      "mark": "T40"
-    },
-    {
-      "title": "Bảng PL.22. Cấu trúc bảng phieu_thu_chi",
-      "mark": "T41"
-    },
-    {
-      "title": "Bảng PL.23. Cấu trúc bảng phuong_tien",
-      "mark": "T42"
-    },
-    {
-      "title": "Bảng PL.24. Cấu trúc bảng quy_tai_chinh",
-      "mark": "T43"
-    },
-    {
-      "title": "Bảng PL.25. Cấu trúc bảng schema_migrations",
-      "mark": "T44"
-    },
-    {
-      "title": "Bảng PL.26. Cấu trúc bảng tang_toa_nha",
-      "mark": "T45"
-    },
-    {
-      "title": "Bảng PL.27. Cấu trúc bảng thiet_bi",
-      "mark": "T46"
-    },
-    {
-      "title": "Bảng PL.28. Cấu trúc bảng thong_bao",
-      "mark": "T47"
-    },
-    {
-      "title": "Bảng PL.29. Cấu trúc bảng thong_bao_da_doc",
-      "mark": "T48"
-    },
-    {
-      "title": "Bảng PL.30. Cấu trúc bảng tien_ich",
-      "mark": "T49"
-    },
-    {
-      "title": "Bảng PL.31. Cấu trúc bảng vi_tri_qr",
-      "mark": "T50"
-    },
-    {
-      "title": "Bảng PL.32. Cấu trúc bảng yeu_cau_gui",
-      "mark": "T51"
-    },
-    {
-      "title": "Bảng PL.33. Cấu trúc bảng nhat_ky_nghiep_vu",
-      "mark": "T52"
-    },
-    {
-      "title": "Bảng PL.34. Tám view lịch sử nghiệp vụ",
-      "mark": "T53"
     }
   ],
   "bookmarks": {
@@ -935,7 +809,7 @@
     "T20": "Bảng PL.1. Quy trình thao tác Ban quản lý",
     "T21": "Bảng PL.2. Quy trình cư dân và kỹ thuật viên",
     "H66": "PL1.2. Chạy lại kiểm thử và đọc bằng chứng",
-    "H67": "PHỤ LỤC 2. TỪ ĐIỂN DỮ LIỆU ĐẦY ĐỦ",
+    "H67": "PHỤ LỤC 2. TỪ ĐIỂN DỮ LIỆU 18 BẢNG TRONG ERD",
     "H68": "PL2.1. can_ho",
     "T22": "Bảng PL.3. Cấu trúc bảng can_ho",
     "H69": "PL2.2. cau_hinh_phi",
@@ -944,63 +818,35 @@
     "T24": "Bảng PL.5. Cấu trúc bảng chi_so_dich_vu",
     "H71": "PL2.4. chi_tiet_hoa_don",
     "T25": "Bảng PL.6. Cấu trúc bảng chi_tiet_hoa_don",
-    "H72": "PL2.5. chung_tu_thu_chi",
-    "T26": "Bảng PL.7. Cấu trúc bảng chung_tu_thu_chi",
-    "H73": "PL2.6. cu_dan",
-    "T27": "Bảng PL.8. Cấu trúc bảng cu_dan",
-    "H74": "PL2.7. dat_lich_tien_ich",
-    "T28": "Bảng PL.9. Cấu trúc bảng dat_lich_tien_ich",
-    "H75": "PL2.8. dot_lap_hoa_don",
-    "T29": "Bảng PL.10. Cấu trúc bảng dot_lap_hoa_don",
-    "H76": "PL2.9. dot_nhap_du_lieu",
-    "T30": "Bảng PL.11. Cấu trúc bảng dot_nhap_du_lieu",
-    "H77": "PL2.10. dot_xu_ly_hoa_don",
-    "T31": "Bảng PL.12. Cấu trúc bảng dot_xu_ly_hoa_don",
-    "H78": "PL2.11. gioi_han_gui",
-    "T32": "Bảng PL.13. Cấu trúc bảng gioi_han_gui",
-    "H79": "PL2.12. hinh_anh_phan_anh",
-    "T33": "Bảng PL.14. Cấu trúc bảng hinh_anh_phan_anh",
-    "H80": "PL2.13. hoa_don",
-    "T34": "Bảng PL.15. Cấu trúc bảng hoa_don",
-    "H81": "PL2.14. khoi_toa_nha",
-    "T35": "Bảng PL.16. Cấu trúc bảng khoi_toa_nha",
-    "H82": "PL2.15. lich_su_cu_tru",
-    "T36": "Bảng PL.17. Cấu trúc bảng lich_su_cu_tru",
-    "H83": "PL2.16. loai_phi",
-    "T37": "Bảng PL.18. Cấu trúc bảng loai_phi",
-    "H84": "PL2.17. nguoi_dung",
-    "T38": "Bảng PL.19. Cấu trúc bảng nguoi_dung",
-    "H85": "PL2.18. phan_anh",
-    "T39": "Bảng PL.20. Cấu trúc bảng phan_anh",
-    "H86": "PL2.19. phieu_bao_tri",
-    "T40": "Bảng PL.21. Cấu trúc bảng phieu_bao_tri",
-    "H87": "PL2.20. phieu_thu_chi",
-    "T41": "Bảng PL.22. Cấu trúc bảng phieu_thu_chi",
-    "H88": "PL2.21. phuong_tien",
-    "T42": "Bảng PL.23. Cấu trúc bảng phuong_tien",
-    "H89": "PL2.22. quy_tai_chinh",
-    "T43": "Bảng PL.24. Cấu trúc bảng quy_tai_chinh",
-    "H90": "PL2.23. schema_migrations",
-    "T44": "Bảng PL.25. Cấu trúc bảng schema_migrations",
-    "H91": "PL2.24. tang_toa_nha",
-    "T45": "Bảng PL.26. Cấu trúc bảng tang_toa_nha",
-    "H92": "PL2.25. thiet_bi",
-    "T46": "Bảng PL.27. Cấu trúc bảng thiet_bi",
-    "H93": "PL2.26. thong_bao",
-    "T47": "Bảng PL.28. Cấu trúc bảng thong_bao",
-    "H94": "PL2.27. thong_bao_da_doc",
-    "T48": "Bảng PL.29. Cấu trúc bảng thong_bao_da_doc",
-    "H95": "PL2.28. tien_ich",
-    "T49": "Bảng PL.30. Cấu trúc bảng tien_ich",
-    "H96": "PL2.29. vi_tri_qr",
-    "T50": "Bảng PL.31. Cấu trúc bảng vi_tri_qr",
-    "H97": "PL2.30. yeu_cau_gui",
-    "T51": "Bảng PL.32. Cấu trúc bảng yeu_cau_gui",
-    "H98": "PL2.31. nhat_ky_nghiep_vu",
-    "T52": "Bảng PL.33. Cấu trúc bảng nhat_ky_nghiep_vu",
-    "H99": "PL2.32. Các view lịch sử và nguồn schema",
-    "T53": "Bảng PL.34. Tám view lịch sử nghiệp vụ",
-    "H100": "DANH MỤC TÀI LIỆU THAM KHẢO",
+    "H72": "PL2.5. cu_dan",
+    "T26": "Bảng PL.7. Cấu trúc bảng cu_dan",
+    "H73": "PL2.6. hinh_anh_phan_anh",
+    "T27": "Bảng PL.8. Cấu trúc bảng hinh_anh_phan_anh",
+    "H74": "PL2.7. hoa_don",
+    "T28": "Bảng PL.9. Cấu trúc bảng hoa_don",
+    "H75": "PL2.8. khoi_toa_nha",
+    "T29": "Bảng PL.10. Cấu trúc bảng khoi_toa_nha",
+    "H76": "PL2.9. lich_su_cu_tru",
+    "T30": "Bảng PL.11. Cấu trúc bảng lich_su_cu_tru",
+    "H77": "PL2.10. loai_phi",
+    "T31": "Bảng PL.12. Cấu trúc bảng loai_phi",
+    "H78": "PL2.11. nguoi_dung",
+    "T32": "Bảng PL.13. Cấu trúc bảng nguoi_dung",
+    "H79": "PL2.12. phan_anh",
+    "T33": "Bảng PL.14. Cấu trúc bảng phan_anh",
+    "H80": "PL2.13. phuong_tien",
+    "T34": "Bảng PL.15. Cấu trúc bảng phuong_tien",
+    "H81": "PL2.14. tang_toa_nha",
+    "T35": "Bảng PL.16. Cấu trúc bảng tang_toa_nha",
+    "H82": "PL2.15. thiet_bi",
+    "T36": "Bảng PL.17. Cấu trúc bảng thiet_bi",
+    "H83": "PL2.16. thong_bao",
+    "T37": "Bảng PL.18. Cấu trúc bảng thong_bao",
+    "H84": "PL2.17. thong_bao_da_doc",
+    "T38": "Bảng PL.19. Cấu trúc bảng thong_bao_da_doc",
+    "H85": "PL2.18. vi_tri_qr",
+    "T39": "Bảng PL.20. Cấu trúc bảng vi_tri_qr",
+    "H86": "DANH MỤC TÀI LIỆU THAM KHẢO",
     "TLTK_1": "[1] ",
     "TLTK_2": "[2] ",
     "TLTK_3": "[3] ",

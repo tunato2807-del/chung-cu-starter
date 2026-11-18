@@ -339,7 +339,7 @@ Sơ đồ biểu diễn các khái niệm người dùng, căn hộ, cư dân, v
 
 Hình 2.15. ERD thống nhất 18 bảng trọng tâm, 218 thuộc tính và 46 quan hệ
 
-ERD giữ các bảng trọng tâm trên cùng một bản vẽ, không tách thành những phân hệ được cho là độc lập. Toàn bộ 218 thuộc tính của 18 bảng được liệt kê thành cột oval thẳng đứng; các quan hệ khóa ngoại giữa chúng vẫn đủ 46. Đây là hình thu nhỏ tổng quan để đặt trong quyển A4; tệp draw.io, SVG và PDF vector một trang được bàn giao riêng để đọc/phóng to. Cơ sở dữ liệu triển khai có 31 bảng và 81 FK; 13 bảng không xuất hiện trên hình vẫn được mô tả trong phụ lục dữ liệu.
+Hình 2.15 biểu diễn 18 bảng nghiệp vụ trọng tâm trên một trang. Các cột oval liệt kê đủ 218 thuộc tính và các hình thoi biểu diễn đủ 46 khóa ngoại giữa các bảng. Bản draw.io, SVG và PDF vector cho phép phóng to để đọc thuộc tính. Phụ lục 2 mô tả đúng 18 bảng trong hình. Từ điển kỹ thuật đi kèm ghi cấu trúc toàn bộ 31 bảng và 81 khóa ngoại của CSDL triển khai.
 
 Mô hình giữ các nhóm quan hệ xuyên suốt: khối – tầng – căn; cư dân – lịch sử cư trú – căn; thiết bị – vị trí QR – phản ánh; căn – hóa đơn – dòng hóa đơn; người dùng – thông báo – biên nhận đọc. Người dùng là điểm tham chiếu của nhiều hành động tạo, giao và xác nhận, vì vậy các nhóm có liên hệ khóa ngoại và không thể gọi là những cơ sở dữ liệu độc lập.
 
@@ -362,7 +362,7 @@ Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn d
 
 ### 2.4.3. Thiết kế chi tiết bảng và ràng buộc
 
-Phụ lục 2 mô tả đủ 31 bảng và 362 cột, ghi kiểu MySQL, khả năng NULL, vai trò khóa và đích tham chiếu. Bảng khóa ngoại ghép được giữ theo tổ hợp, không tách mỗi cột thành một quan hệ độc lập. Các chỉ mục UNIQUE và CHECK đầy đủ được giữ trong baseline SQL và từ điển kỹ thuật đi kèm; dữ liệu nghiệp vụ không bị thay đổi khi dựng báo cáo.
+Phụ lục 2 mô tả đủ 18 bảng và 218 thuộc tính của Hình 2.15, gồm kiểu MySQL, khả năng NULL, vai trò khóa và đích tham chiếu. Mỗi khóa ngoại ghép được trình bày theo đúng tổ hợp cột. Từ điển kỹ thuật mô tả toàn bộ schema gồm 31 bảng và 362 cột. Mã SQL gốc quy định đầy đủ chỉ mục UNIQUE, ràng buộc CHECK và biểu thức của các cột sinh.
 
 Ba quyết định cần chú ý là khóa ghép tầng theo khối, cột sinh để giới hạn một bản còn hiệu lực, và các cột phiên bản để kiểm tra cập nhật cũ. Khóa ngoại bảo vệ sự tồn tại của cha/con, nhưng không tự diễn giải được quyền của KTV hoặc điều kiện ảnh nghiệm thu. Các quy tắc này được service kiểm tra dưới khóa và được thử bằng các tình huống đồng thời. Tài liệu kiểm thử khóa ngoại của MySQL cho thấy hành vi ràng buộc cần được kiểm chứng tại hệ quản trị thay vì chỉ nhìn đường nối trên hình [8].
 
@@ -538,7 +538,7 @@ Baseline database/thesis-mysql/001_thesis_schema.sql là nguồn tạo schema m�
 
 Dữ liệu mô phỏng và dữ liệu kiểm thử được tách khỏi dữ liệu sử dụng. npm test và npm run test:e2e chọn chung_cu_test, cài fixture và chạy tuần tự. Mục đích của fixture là tạo các trường hợp có thể lặp lại: căn, cư dân, tài khoản, QR, hóa đơn và trạng thái liên quan. Ảnh minh họa trong báo cáo dùng dữ liệu thử; không phải hồ sơ cư dân của một chung cư đã triển khai.
 
-Thiết kế vật lý bổ sung cho sơ đồ chương 2 bằng kiểu dữ liệu, chỉ mục, CHECK và các cột sinh. Ví dụ tang_toa_nha dùng khóa ghép; can_ho tham chiếu cặp khối/tầng; hóa đơn giữ ràng buộc duy nhất cho bản còn hiệu lực. Việc đếm bảng bao gồm cả bảng kỹ thuật; tám view lịch sử không cộng thêm vào 31 bảng vật lý. Phụ lục 2 liệt kê cấu trúc đủ để đối chiếu với mã SQL.
+Thiết kế vật lý bổ sung cho sơ đồ chương 2 bằng kiểu dữ liệu, chỉ mục, CHECK và các cột sinh. Ví dụ tang_toa_nha dùng khóa ghép; can_ho tham chiếu cặp khối/tầng; hóa đơn giữ ràng buộc duy nhất cho bản còn hiệu lực. Việc đếm bảng bao gồm cả bảng kỹ thuật; tám view lịch sử không cộng thêm vào 31 bảng vật lý. Phụ lục 2 liệt kê cấu trúc của 18 bảng trong Hình 2.15 để đối chiếu với mã SQL.
 
 
 ### 3.2.2. Backend RESTful API và cơ chế xác thực
@@ -865,12 +865,14 @@ npm run test:e2e
 
 Thư mục kiem-chung đi kèm lưu đầu ra của bốn lệnh cùng thông tin nguồn. Khi chạy lại, số bài có thể thay đổi theo phiên bản mã nguồn; cần ghi commit và ngày kiểm tra mới. Không dùng database chứa dữ liệu làm việc cho test. Để cập nhật mục lục, mở Word trên máy có Times New Roman, chọn toàn bộ rồi Update Field/Update entire table và kiểm tra lại phân trang trước khi in.
 
-Tệp sơ đồ chỉnh sửa được nằm trong docs/so-do-theo-mau-2026-11-17. Hình 2.15 vẫn là một ERD duy nhất gồm 18 bảng trọng tâm; khi cần đọc tên thuộc tính hãy mở PDF vector/SVG hoặc draw.io riêng. Không coi các đoạn phóng to trong phần mềm xem ảnh là những ERD phân hệ độc lập. Từ điển dưới đây bổ sung đủ các bảng vật lý không vẽ trên hình.
+Tệp sơ đồ chỉnh sửa được nằm trong docs/so-do-theo-mau-2026-11-17. Khi cần đọc tên thuộc tính của Hình 2.15, có thể mở bản PDF vector, SVG hoặc draw.io. Từ điển ở Phụ lục 2 sử dụng đúng danh sách 18 bảng trong hình.
 
 
-## PHỤ LỤC 2. TỪ ĐIỂN DỮ LIỆU ĐẦY ĐỦ
+## PHỤ LỤC 2. TỪ ĐIỂN DỮ LIỆU 18 BẢNG TRONG ERD
 
-Các bảng sau được sinh từ từ điển metadata của schema hiện tại và đối chiếu mô hình đã xuất: 31 bảng, 362 cột, 81 ràng buộc khóa ngoại. PK là khóa chính; FK là khóa ngoại; “Có/Không” chỉ khả năng nhận NULL. Các cột trong khóa ghép được đánh dấu thành viên; dòng quan hệ sau bảng giữ đúng tổ hợp. Ký hiệu trong bảng từ điển phục vụ tra cứu kỹ thuật; hình ERD vẫn dùng quy ước gạch chân theo mẫu.
+Phụ lục gồm 18 bảng, 218 thuộc tính và 46 ràng buộc khóa ngoại trong Hình 2.15. PK là khóa chính, FK là khóa ngoại và “Có/Không” chỉ khả năng nhận NULL. Dòng quan hệ sau mỗi bảng ghi đủ các cột của khóa ghép.
+
+Cơ sở dữ liệu triển khai có 31 bảng, 362 cột, 81 khóa ngoại và 8 view lịch sử. Từ điển toàn bộ 31 bảng nằm trong tệp TU-DIEN-362-COT.md ở thư mục so-do của bộ ZIP. Mã SQL gốc nằm tại database/thesis-mysql/001_thesis_schema.sql.
 
 
 ### PL2.1. can_ho
@@ -967,32 +969,9 @@ Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; khôn
 Quan hệ khóa ngoại: (ma_hoa_don) → hoa_don(ma_hoa_don); (ma_cau_hinh_phi) → cau_hinh_phi(ma_cau_hinh_phi); (ma_chi_so_dich_vu) → chi_so_dich_vu(ma_chi_so_dich_vu).
 
 
-### PL2.5. chung_tu_thu_chi
+### PL2.5. cu_dan
 
-Bảng PL.7. Cấu trúc bảng chung_tu_thu_chi
-
-| Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
-| --- | --- | --- | --- |
-| ma_chung_tu | int unsigned | Không | PK |
-| ma_phieu | int unsigned | Không | FK → phieu_thu_chi.ma_phieu |
-| ten_tep | varchar(120) | Không | — |
-| loai_tep | enum('image/jpeg','application/pdf') | Không | — |
-| kich_thuoc | int unsigned | Không | — |
-| bam_sha256 | char(64) | Không | — |
-| noi_dung | mediumblob | Không | — |
-| ma_nguoi_tai | int unsigned | Không | FK → nguoi_dung.ma_nguoi_dung |
-| ngay_tao | datetime(6) | Không | — |
-
-Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.
-
-Tổ hợp UNIQUE: (ma_phieu, bam_sha256).
-
-Quan hệ khóa ngoại: (ma_phieu) → phieu_thu_chi(ma_phieu); (ma_nguoi_tai) → nguoi_dung(ma_nguoi_dung).
-
-
-### PL2.6. cu_dan
-
-Bảng PL.8. Cấu trúc bảng cu_dan
+Bảng PL.7. Cấu trúc bảng cu_dan
 
 | Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
 | --- | --- | --- | --- |
@@ -1010,116 +989,9 @@ Tổ hợp UNIQUE: (ma_nguoi_dung).
 Quan hệ khóa ngoại: (ma_nguoi_dung) → nguoi_dung(ma_nguoi_dung).
 
 
-### PL2.7. dat_lich_tien_ich
+### PL2.6. hinh_anh_phan_anh
 
-Bảng PL.9. Cấu trúc bảng dat_lich_tien_ich
-
-| Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
-| --- | --- | --- | --- |
-| ma_dat_lich | int unsigned | Không | PK |
-| ma_tien_ich | int unsigned | Không | FK → tien_ich.ma_tien_ich |
-| ma_can_ho | int unsigned | Không | FK → can_ho.ma_can_ho |
-| ma_nguoi_dat | int unsigned | Không | FK → nguoi_dung.ma_nguoi_dung |
-| ma_cu_dan | int unsigned | Không | FK → cu_dan.ma_cu_dan |
-| ma_lich_su_cu_tru | int unsigned | Không | FK → lich_su_cu_tru.ma_lich_su_cu_tru |
-| ten_tien_ich | varchar(120) | Không | — |
-| vi_tri | varchar(160) | Không | — |
-| ten_nguoi_dat | varchar(100) | Không | — |
-| bat_dau | datetime | Không | — |
-| ket_thuc | datetime | Không | — |
-| so_nguoi | smallint unsigned | Không | — |
-| ghi_chu | varchar(1000) | Không | — |
-| trang_thai | enum('CHO_DUYET','DA_DUYET','TU_CHOI','DA_HUY') | Không | — |
-| phien_ban | int unsigned | Không | — |
-| khoa_yeu_cau | char(36) | Không | — |
-| van_tay | char(64) | Không | — |
-| ngay_tao | datetime(6) | Không | — |
-
-Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.
-
-Tổ hợp UNIQUE: (khoa_yeu_cau).
-
-Quan hệ khóa ngoại: (ma_tien_ich) → tien_ich(ma_tien_ich); (ma_can_ho) → can_ho(ma_can_ho); (ma_nguoi_dat) → nguoi_dung(ma_nguoi_dung); (ma_cu_dan) → cu_dan(ma_cu_dan); (ma_lich_su_cu_tru) → lich_su_cu_tru(ma_lich_su_cu_tru).
-
-
-### PL2.8. dot_lap_hoa_don
-
-Bảng PL.10. Cấu trúc bảng dot_lap_hoa_don
-
-| Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
-| --- | --- | --- | --- |
-| ma_dot_lap | int unsigned | Không | PK |
-| ma_nguoi_lap | int unsigned | Không | FK → nguoi_dung.ma_nguoi_dung |
-| khoa_yeu_cau | char(36) | Không | — |
-| dau_vao_sha256 | char(64) | Không | — |
-| ket_qua | json | Có | — |
-| ngay_tao | datetime(6) | Không | — |
-
-Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.
-
-Tổ hợp UNIQUE: (ma_nguoi_lap, khoa_yeu_cau).
-
-Quan hệ khóa ngoại: (ma_nguoi_lap) → nguoi_dung(ma_nguoi_dung).
-
-
-### PL2.9. dot_nhap_du_lieu
-
-Bảng PL.11. Cấu trúc bảng dot_nhap_du_lieu
-
-| Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
-| --- | --- | --- | --- |
-| ma_dot_nhap | bigint unsigned | Không | PK |
-| ma_nguoi_nhap | int unsigned | Không | FK → nguoi_dung.ma_nguoi_dung |
-| khoa_yeu_cau | char(36) | Không | — |
-| phan_he | varchar(30) | Không | — |
-| sha256 | char(64) | Không | — |
-| so_dong | smallint unsigned | Không | — |
-| ket_qua | json | Không | — |
-| ngay_tao | datetime(6) | Không | — |
-
-Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.
-
-Tổ hợp UNIQUE: (ma_nguoi_nhap, khoa_yeu_cau); (ma_nguoi_nhap, phan_he, sha256).
-
-Quan hệ khóa ngoại: (ma_nguoi_nhap) → nguoi_dung(ma_nguoi_dung).
-
-
-### PL2.10. dot_xu_ly_hoa_don
-
-Bảng PL.12. Cấu trúc bảng dot_xu_ly_hoa_don
-
-| Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
-| --- | --- | --- | --- |
-| ma_dot_xu_ly | int unsigned | Không | PK |
-| ma_nguoi_thuc_hien | int unsigned | Không | FK → nguoi_dung.ma_nguoi_dung |
-| khoa_yeu_cau | char(36) | Không | — |
-| thao_tac | enum('DUYET','GUI') | Không | — |
-| dau_vao_sha256 | char(64) | Không | — |
-| ket_qua | json | Có | — |
-| ngay_tao | datetime(6) | Không | — |
-
-Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.
-
-Tổ hợp UNIQUE: (ma_nguoi_thuc_hien, khoa_yeu_cau).
-
-Quan hệ khóa ngoại: (ma_nguoi_thuc_hien) → nguoi_dung(ma_nguoi_dung).
-
-
-### PL2.11. gioi_han_gui
-
-Bảng PL.13. Cấu trúc bảng gioi_han_gui
-
-| Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
-| --- | --- | --- | --- |
-| khoa | char(64) | Không | PK |
-| cac_moc_thoi_gian | json | Không | — |
-
-Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.
-
-
-### PL2.12. hinh_anh_phan_anh
-
-Bảng PL.14. Cấu trúc bảng hinh_anh_phan_anh
+Bảng PL.8. Cấu trúc bảng hinh_anh_phan_anh
 
 | Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
 | --- | --- | --- | --- |
@@ -1138,9 +1010,9 @@ Tổ hợp UNIQUE: (duong_dan_tep).
 Quan hệ khóa ngoại: (ma_phan_anh) → phan_anh(ma_phan_anh); (ma_nguoi_tai_len) → nguoi_dung(ma_nguoi_dung).
 
 
-### PL2.13. hoa_don
+### PL2.7. hoa_don
 
-Bảng PL.15. Cấu trúc bảng hoa_don
+Bảng PL.9. Cấu trúc bảng hoa_don
 
 | Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
 | --- | --- | --- | --- |
@@ -1185,9 +1057,9 @@ Tổ hợp UNIQUE: (so_hoa_don); (ma_can_ho, ky_thanh_toan, lan_lap); (ma_hoa_do
 Quan hệ khóa ngoại: (ma_can_ho) → can_ho(ma_can_ho); (ma_hoa_don_thay_the_cho) → hoa_don(ma_hoa_don); (ma_nguoi_lap) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_duyet) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_gui) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_huy) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_xac_nhan) → nguoi_dung(ma_nguoi_dung).
 
 
-### PL2.14. khoi_toa_nha
+### PL2.8. khoi_toa_nha
 
-Bảng PL.16. Cấu trúc bảng khoi_toa_nha
+Bảng PL.10. Cấu trúc bảng khoi_toa_nha
 
 | Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
 | --- | --- | --- | --- |
@@ -1201,9 +1073,9 @@ Bảng PL.16. Cấu trúc bảng khoi_toa_nha
 Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.
 
 
-### PL2.15. lich_su_cu_tru
+### PL2.9. lich_su_cu_tru
 
-Bảng PL.17. Cấu trúc bảng lich_su_cu_tru
+Bảng PL.11. Cấu trúc bảng lich_su_cu_tru
 
 | Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
 | --- | --- | --- | --- |
@@ -1224,9 +1096,9 @@ Tổ hợp UNIQUE: (cu_dan_dang_o).
 Quan hệ khóa ngoại: (ma_cu_dan) → cu_dan(ma_cu_dan); (ma_can_ho) → can_ho(ma_can_ho); (ma_nguoi_ghi_nhan) → nguoi_dung(ma_nguoi_dung).
 
 
-### PL2.16. loai_phi
+### PL2.10. loai_phi
 
-Bảng PL.18. Cấu trúc bảng loai_phi
+Bảng PL.12. Cấu trúc bảng loai_phi
 
 | Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
 | --- | --- | --- | --- |
@@ -1237,9 +1109,9 @@ Bảng PL.18. Cấu trúc bảng loai_phi
 Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.
 
 
-### PL2.17. nguoi_dung
+### PL2.11. nguoi_dung
 
-Bảng PL.19. Cấu trúc bảng nguoi_dung
+Bảng PL.13. Cấu trúc bảng nguoi_dung
 
 | Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
 | --- | --- | --- | --- |
@@ -1266,9 +1138,9 @@ Tổ hợp UNIQUE: (so_dien_thoai); (ten_dang_nhap); (ma_can_ho_thanh_toan); (ma
 Quan hệ khóa ngoại: (ma_can_ho_thanh_toan) → can_ho(ma_can_ho); (ma_cu_dan_phu_trach) → cu_dan(ma_cu_dan).
 
 
-### PL2.18. phan_anh
+### PL2.12. phan_anh
 
-Bảng PL.20. Cấu trúc bảng phan_anh
+Bảng PL.14. Cấu trúc bảng phan_anh
 
 | Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
 | --- | --- | --- | --- |
@@ -1305,84 +1177,9 @@ Tổ hợp UNIQUE: (ma_tra_cuu); (khoa_yeu_cau).
 Quan hệ khóa ngoại: (ma_thiet_bi) → thiet_bi(ma_thiet_bi); (ma_cu_dan_nguoi_gui) → cu_dan(ma_cu_dan); (ma_vi_tri_qr) → vi_tri_qr(ma_vi_tri_qr); (ma_nguoi_gui) → nguoi_dung(ma_nguoi_dung); (ma_ky_thuat_vien) → nguoi_dung(ma_nguoi_dung); (ma_phan_anh_goc) → phan_anh(ma_phan_anh).
 
 
-### PL2.19. phieu_bao_tri
+### PL2.13. phuong_tien
 
-Bảng PL.21. Cấu trúc bảng phieu_bao_tri
-
-| Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
-| --- | --- | --- | --- |
-| ma_phieu_bao_tri | int unsigned | Không | PK |
-| ma_thiet_bi | int unsigned | Không | FK → thiet_bi.ma_thiet_bi |
-| loai | enum('DINH_KY','DOT_XUAT') | Không | — |
-| tieu_de | varchar(180) | Không | — |
-| noi_dung | varchar(2000) | Không | — |
-| ten_thiet_bi_luc_lap | varchar(150) | Không | — |
-| vi_tri_luc_lap | varchar(160) | Không | — |
-| ngay_lap | date | Không | — |
-| ngay_den_han | date | Không | — |
-| chu_ky_ngay | smallint unsigned | Có | — |
-| do_uu_tien | enum('THUONG','CAO','KHAN_CAP') | Không | — |
-| trang_thai | enum('MOI','DA_PHAN_CONG','DANG_THUC_HIEN','CHO_NGHIEM_THU','HOAN_THANH','HUY') | Không | — |
-| ma_ky_thuat_vien | int unsigned | Có | FK → nguoi_dung.ma_nguoi_dung |
-| ma_nguoi_lap | int unsigned | Không | FK → nguoi_dung.ma_nguoi_dung |
-| ma_nguoi_nghiem_thu | int unsigned | Có | FK → nguoi_dung.ma_nguoi_dung |
-| ma_nguoi_huy | int unsigned | Có | FK → nguoi_dung.ma_nguoi_dung |
-| phien_ban | int unsigned | Không | — |
-| luot_thuc_hien | int unsigned | Không | — |
-| ngay_thuc_hien | date | Có | — |
-| ket_qua | text | Không | — |
-| nhan_xet_nghiem_thu | varchar(1000) | Không | — |
-| ly_do_huy | varchar(500) | Không | — |
-| ngay_tao | datetime(6) | Không | — |
-| ngay_bat_dau | datetime(6) | Có | — |
-| ngay_bao_cao | datetime(6) | Có | — |
-| ngay_nghiem_thu | datetime(6) | Có | — |
-| ngay_huy | datetime(6) | Có | — |
-| khoa_yeu_cau | char(36) | Không | — |
-| van_tay | char(64) | Không | — |
-| dinh_ky_dang_mo | int unsigned | Có | — |
-
-Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.
-
-Tổ hợp UNIQUE: (khoa_yeu_cau); (dinh_ky_dang_mo).
-
-Quan hệ khóa ngoại: (ma_thiet_bi) → thiet_bi(ma_thiet_bi); (ma_ky_thuat_vien) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_lap) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_nghiem_thu) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_huy) → nguoi_dung(ma_nguoi_dung).
-
-
-### PL2.20. phieu_thu_chi
-
-Bảng PL.22. Cấu trúc bảng phieu_thu_chi
-
-| Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
-| --- | --- | --- | --- |
-| ma_phieu | int unsigned | Không | PK |
-| ma_quy | int unsigned | Không | FK → quy_tai_chinh.ma_quy |
-| loai | enum('THU','CHI') | Không | — |
-| nhom | varchar(30) | Không | — |
-| ngay_hach_toan | date | Không | — |
-| so_tien | decimal(14,0) | Không | — |
-| doi_tac | varchar(150) | Không | — |
-| dien_giai | varchar(1000) | Không | — |
-| trang_thai | enum('NHAP','DA_GHI_SO','HUY') | Không | — |
-| phien_ban | int unsigned | Không | — |
-| ma_nguoi_lap | int unsigned | Không | FK → nguoi_dung.ma_nguoi_dung |
-| ma_nguoi_duyet | int unsigned | Có | FK → nguoi_dung.ma_nguoi_dung |
-| ngay_duyet | datetime(6) | Có | — |
-| ngay_tao | datetime(6) | Không | — |
-| ma_phieu_goc | int unsigned | Có | FK → phieu_thu_chi.ma_phieu |
-| khoa_yeu_cau | char(36) | Có | — |
-| van_tay | char(64) | Có | — |
-
-Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.
-
-Tổ hợp UNIQUE: (ma_phieu_goc); (khoa_yeu_cau).
-
-Quan hệ khóa ngoại: (ma_quy) → quy_tai_chinh(ma_quy); (ma_nguoi_lap) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_duyet) → nguoi_dung(ma_nguoi_dung); (ma_phieu_goc) → phieu_thu_chi(ma_phieu).
-
-
-### PL2.21. phuong_tien
-
-Bảng PL.23. Cấu trúc bảng phuong_tien
+Bảng PL.15. Cấu trúc bảng phuong_tien
 
 | Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
 | --- | --- | --- | --- |
@@ -1412,41 +1209,9 @@ Tổ hợp UNIQUE: (ma_dang_ky); (ma_dang_ky_truoc); (bien_so_dang_hoat_dong).
 Quan hệ khóa ngoại: (ma_cu_dan) → cu_dan(ma_cu_dan); (ma_can_ho) → can_ho(ma_can_ho); (ma_lich_su_cu_tru) → lich_su_cu_tru(ma_lich_su_cu_tru); (ma_dang_ky_truoc) → phuong_tien(ma_phuong_tien); (ma_nguoi_tao) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_ket_thuc) → nguoi_dung(ma_nguoi_dung).
 
 
-### PL2.22. quy_tai_chinh
+### PL2.14. tang_toa_nha
 
-Bảng PL.24. Cấu trúc bảng quy_tai_chinh
-
-| Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
-| --- | --- | --- | --- |
-| ma_quy | int unsigned | Không | PK |
-| ten_quy | varchar(120) | Không | — |
-| mo_ta | varchar(1000) | Không | — |
-| dang_hoat_dong | tinyint(1) | Không | — |
-| nhan_thu_hoa_don | tinyint(1) | Không | — |
-| quy_hoa_don | tinyint | Có | — |
-| phien_ban | int unsigned | Không | — |
-| ngay_tao | datetime(6) | Không | — |
-
-Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.
-
-Tổ hợp UNIQUE: (quy_hoa_don).
-
-
-### PL2.23. schema_migrations
-
-Bảng PL.25. Cấu trúc bảng schema_migrations
-
-| Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
-| --- | --- | --- | --- |
-| name | varchar(100) | Không | PK |
-| checksum | char(64) | Không | — |
-
-Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.
-
-
-### PL2.24. tang_toa_nha
-
-Bảng PL.26. Cấu trúc bảng tang_toa_nha
+Bảng PL.16. Cấu trúc bảng tang_toa_nha
 
 | Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
 | --- | --- | --- | --- |
@@ -1463,9 +1228,9 @@ Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; khôn
 Quan hệ khóa ngoại: (khoi) → khoi_toa_nha(khoi).
 
 
-### PL2.25. thiet_bi
+### PL2.15. thiet_bi
 
-Bảng PL.27. Cấu trúc bảng thiet_bi
+Bảng PL.17. Cấu trúc bảng thiet_bi
 
 | Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
 | --- | --- | --- | --- |
@@ -1493,9 +1258,9 @@ Tổ hợp UNIQUE: (ma_tai_san).
 Quan hệ khóa ngoại: (ma_nguoi_tao) → nguoi_dung(ma_nguoi_dung).
 
 
-### PL2.26. thong_bao
+### PL2.16. thong_bao
 
-Bảng PL.28. Cấu trúc bảng thong_bao
+Bảng PL.18. Cấu trúc bảng thong_bao
 
 | Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
 | --- | --- | --- | --- |
@@ -1526,9 +1291,9 @@ Tổ hợp UNIQUE: (ma_hoa_don, ngay_nhac).
 Quan hệ khóa ngoại: (ma_can_ho) → can_ho(ma_can_ho); (ma_hoa_don) → hoa_don(ma_hoa_don); (ma_nguoi_tao) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_gui) → nguoi_dung(ma_nguoi_dung); (ma_nguoi_thu_hoi) → nguoi_dung(ma_nguoi_dung).
 
 
-### PL2.27. thong_bao_da_doc
+### PL2.17. thong_bao_da_doc
 
-Bảng PL.29. Cấu trúc bảng thong_bao_da_doc
+Bảng PL.19. Cấu trúc bảng thong_bao_da_doc
 
 | Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
 | --- | --- | --- | --- |
@@ -1542,34 +1307,9 @@ Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; khôn
 Quan hệ khóa ngoại: (ma_thong_bao) → thong_bao(ma_thong_bao); (ma_nguoi_dung) → nguoi_dung(ma_nguoi_dung).
 
 
-### PL2.28. tien_ich
+### PL2.18. vi_tri_qr
 
-Bảng PL.30. Cấu trúc bảng tien_ich
-
-| Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
-| --- | --- | --- | --- |
-| ma_tien_ich | int unsigned | Không | PK |
-| ten_tien_ich | varchar(120) | Không | — |
-| vi_tri | varchar(160) | Không | — |
-| mo_ta | text | Không | — |
-| suc_chua | smallint unsigned | Không | — |
-| gio_mo | time | Không | — |
-| gio_dong | time | Không | — |
-| toi_da_phut | smallint unsigned | Không | — |
-| dat_truoc_ngay | smallint unsigned | Không | — |
-| dang_mo | tinyint(1) | Không | — |
-| phien_ban | int unsigned | Không | — |
-| ma_nguoi_tao | int unsigned | Không | FK → nguoi_dung.ma_nguoi_dung |
-| ngay_tao | datetime(6) | Không | — |
-
-Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.
-
-Quan hệ khóa ngoại: (ma_nguoi_tao) → nguoi_dung(ma_nguoi_dung).
-
-
-### PL2.29. vi_tri_qr
-
-Bảng PL.31. Cấu trúc bảng vi_tri_qr
+Bảng PL.20. Cấu trúc bảng vi_tri_qr
 
 | Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
 | --- | --- | --- | --- |
@@ -1589,76 +1329,6 @@ Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; khôn
 Tổ hợp UNIQUE: (token_qr).
 
 Quan hệ khóa ngoại: (ma_thiet_bi) → thiet_bi(ma_thiet_bi); (ma_nguoi_tao) → nguoi_dung(ma_nguoi_dung).
-
-
-### PL2.30. yeu_cau_gui
-
-Bảng PL.32. Cấu trúc bảng yeu_cau_gui
-
-| Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
-| --- | --- | --- | --- |
-| khoa | char(36) | Không | PK |
-| van_tay | char(64) | Không | — |
-| ma_phan_anh | int unsigned | Có | FK → phan_anh.ma_phan_anh |
-
-Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.
-
-Quan hệ khóa ngoại: (ma_phan_anh) → phan_anh(ma_phan_anh).
-
-
-### PL2.31. nhat_ky_nghiep_vu
-
-Bảng PL.33. Cấu trúc bảng nhat_ky_nghiep_vu
-
-| Thuộc tính | Kiểu MySQL | NULL | Khóa / tham chiếu |
-| --- | --- | --- | --- |
-| ma_nhat_ky | BIGINT UNSIGNED | Không | PK |
-| loai_nhat_ky | VARCHAR(40) | Không | — |
-| ma_goc | INT UNSIGNED | Có | — |
-| ma_nguoi_thuc_hien | INT UNSIGNED | Có | FK → nguoi_dung.ma_nguoi_dung |
-| su_kien | VARCHAR(40) | Không | — |
-| ghi_chu | TEXT | Có | — |
-| chi_tiet | JSON | Không | — |
-| ngay_tao | DATETIME(6) | Không | — |
-| ma_phan_anh | INT UNSIGNED | Có | FK → phan_anh.ma_phan_anh |
-| ma_hoa_don | INT UNSIGNED | Có | FK → hoa_don.ma_hoa_don |
-| ma_can_ho | INT UNSIGNED | Có | FK → can_ho.ma_can_ho |
-| ma_thong_bao | INT UNSIGNED | Có | FK → thong_bao.ma_thong_bao |
-| ma_thiet_bi | INT UNSIGNED | Có | FK → thiet_bi.ma_thiet_bi |
-| ma_phieu_bao_tri | INT UNSIGNED | Có | FK → phieu_bao_tri.ma_phieu_bao_tri |
-| ma_dat_lich | INT UNSIGNED | Có | FK → dat_lich_tien_ich.ma_dat_lich |
-| ma_phieu | INT UNSIGNED | Có | FK → phieu_thu_chi.ma_phieu |
-| ma_vi_tri_qr | INT UNSIGNED | Có | FK → vi_tri_qr.ma_vi_tri_qr |
-| ma_ky_thuat_vien_cu | INT UNSIGNED | Có | FK → nguoi_dung.ma_nguoi_dung |
-| ma_ky_thuat_vien_moi | INT UNSIGNED | Có | FK → nguoi_dung.ma_nguoi_dung |
-| ma_thiet_bi_cu | INT UNSIGNED | Có | FK → thiet_bi.ma_thiet_bi |
-| ma_thiet_bi_moi | INT UNSIGNED | Có | FK → thiet_bi.ma_thiet_bi |
-
-Nguồn: metadata MySQL và baseline 001_thesis_schema.sql của dự án; không chứa dữ liệu nghiệp vụ.
-
-Tổ hợp UNIQUE: (loai_nhat_ky, ma_goc).
-
-Quan hệ khóa ngoại: (ma_nguoi_thuc_hien) → nguoi_dung(ma_nguoi_dung); (ma_phan_anh) → phan_anh(ma_phan_anh); (ma_hoa_don) → hoa_don(ma_hoa_don); (ma_can_ho) → can_ho(ma_can_ho); (ma_thong_bao) → thong_bao(ma_thong_bao); (ma_thiet_bi) → thiet_bi(ma_thiet_bi); (ma_phieu_bao_tri) → phieu_bao_tri(ma_phieu_bao_tri); (ma_dat_lich) → dat_lich_tien_ich(ma_dat_lich); (ma_phieu) → phieu_thu_chi(ma_phieu); (ma_vi_tri_qr) → vi_tri_qr(ma_vi_tri_qr); (ma_ky_thuat_vien_cu) → nguoi_dung(ma_nguoi_dung); (ma_ky_thuat_vien_moi) → nguoi_dung(ma_nguoi_dung); (ma_thiet_bi_cu) → thiet_bi(ma_thiet_bi); (ma_thiet_bi_moi) → thiet_bi(ma_thiet_bi).
-
-
-### PL2.32. Các view lịch sử và nguồn schema
-
-Bảng PL.34. Tám view lịch sử nghiệp vụ
-
-| View | Nội dung |
-| --- | --- |
-| lich_su_phan_anh | Phân công, xử lý và nghiệm thu phản ánh |
-| lich_su_hoa_don | Lập, duyệt, gửi, hủy và thu hóa đơn |
-| lich_su_ban_giao_can_ho | Bàn giao tài khoản/trách nhiệm căn |
-| lich_su_thong_bao | Tạo, phát hành và thu hồi thông báo |
-| lich_su_bao_tri | Xử lý phiếu bảo trì |
-| lich_su_dat_lich | Yêu cầu và quyết định đặt tiện ích |
-| lich_su_thu_chi | Các sự kiện phiếu thu/chi |
-| lich_su_lien_ket_qr | Thay đổi liên kết vị trí QR và thiết bị |
-
-Nguồn: tác giả tổng hợp từ yêu cầu đề cương và mã nguồn dự án.
-
-Các view là giao diện đọc dữ liệu lịch sử từ bảng nhật ký chung, không phải tám bảng vật lý bổ sung. Baseline SQL là nguồn quyết định cho CHECK, biểu thức cột sinh và hành vi cập nhật/xóa của FK. Từ điển bảng trong báo cáo lược cột mặc định và toàn văn CHECK để thuận tiện đọc; từ điển kỹ thuật docs/bao-cao/tu-dien-du-lieu.md và SQL vẫn giữ chi tiết cần cho triển khai.
 
 
 # DANH MỤC TÀI LIỆU THAM KHẢO
