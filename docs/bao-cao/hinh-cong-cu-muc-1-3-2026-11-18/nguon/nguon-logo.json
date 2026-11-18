@@ -1,0 +1,62 @@
+{
+  "project": "Devicon",
+  "revision": "32fe1d3b3f36ad11f90ab94f7db59738139c2bf6",
+  "license_url": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/LICENSE",
+  "logos": [
+    {
+      "file": "svg/react.svg",
+      "url": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/react/react-original.svg",
+      "sha256": "5825b649c8c04dec13ecf01d0182401bd0ec71789d2fa06224866d882cd1515f"
+    },
+    {
+      "file": "svg/vite.svg",
+      "url": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/vitejs/vitejs-original.svg",
+      "sha256": "f84e50febcb3a2a81399c9a1ae76d96dc235428202f91610b6f36bfb5b62051a"
+    },
+    {
+      "file": "svg/nodejs.svg",
+      "url": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/nodejs/nodejs-original-wordmark.svg",
+      "sha256": "a50b1f4c80e2c8637fab8e9eefa3fdb65736e08259ed289b4fa99bb11126e562"
+    },
+    {
+      "file": "svg/express.svg",
+      "url": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/express/express-original-wordmark.svg",
+      "sha256": "ba01068278d859c4902930e76e5cb452beb9176f000ea9a6b7e1585ba6aa340e"
+    },
+    {
+      "file": "svg/mysql.svg",
+      "url": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/mysql/mysql-original-wordmark.svg",
+      "sha256": "e668f0185435dca48cac3ff6dd150cf05d14eab92152485c7ea702d8bb79329d"
+    },
+    {
+      "file": "svg/git.svg",
+      "url": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/git/git-original-wordmark.svg",
+      "sha256": "9984b63886d5909aa31e0e222871b7403f991cd57d8265ac7dc6dd4d908e9bf2"
+    },
+    {
+      "file": "svg/github.svg",
+      "url": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/github/github-original-wordmark.svg",
+      "sha256": "bf3e55c36ef703c12964410dda12c0eaeedcbf38cd16eef19cc08ece9f4e0bad"
+    },
+    {
+      "file": "svg/vscode.svg",
+      "url": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/vscode/vscode-original.svg",
+      "sha256": "503d580c442a7071aae180d9b4766e312e4600bf0e9d842b30f56d0e614eceb8"
+    },
+    {
+      "file": "svg/playwright.svg",
+      "url": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/playwright/playwright-original.svg",
+      "sha256": "c829ee41780a2c9748b9aeeeec530dc9ceeade68687e252ff7f044c16a8c384b"
+    },
+    {
+      "file": "svg/figma.svg",
+      "url": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/figma/figma-original.svg",
+      "sha256": "d37c2bf1a1d4f10aeffb224e44da672cb8b9510f6e5a2e24b61758262995805e"
+    },
+    {
+      "file": "svg/postman.svg",
+      "url": "https://raw.githubusercontent.com/devicons/devicon/32fe1d3b3f36ad11f90ab94f7db59738139c2bf6/icons/postman/postman-original.svg",
+      "sha256": "0b366c7a023328b0d95e8c90d9050519b8c31d206f8b34db17742488f72efccb"
+    }
+  ]
+}
