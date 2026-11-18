@@ -119,7 +119,7 @@
     <mxCell id="d12-27" value="billing.service.js&lt;br&gt;Nghiệp vụ" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
       <mxGeometry x="983" y="1486" width="224" height="85" as="geometry" />
     </mxCell>
-    <mxCell id="d12-28" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=12;boundedLbl=1;" parent="1" vertex="1">
+    <mxCell id="d12-28" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=0.15;boundedLbl=1;" parent="1" vertex="1">
       <mxGeometry x="1288" y="106" width="224" height="100" as="geometry" />
     </mxCell>
     <mxCell id="d12-29" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=none;endFill=1;endSize=9;dashed=1;dashPattern=6 4;" edge="1" parent="1">
@@ -128,7 +128,7 @@
         <mxPoint x="1400" y="1466" as="targetPoint" />
       </mxGeometry>
     </mxCell>
-    <mxCell id="d12-30" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=12;boundedLbl=1;" parent="1" vertex="1">
+    <mxCell id="d12-30" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=0.15;boundedLbl=1;" parent="1" vertex="1">
       <mxGeometry x="1288" y="1486" width="224" height="85" as="geometry" />
     </mxCell>
     <mxCell id="d12-31" value="" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">

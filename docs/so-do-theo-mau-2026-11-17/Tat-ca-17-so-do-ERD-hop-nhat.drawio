@@ -1567,7 +1567,7 @@
         <mxCell id="d09-27" value="qr.service.js&lt;br&gt;Nghiệp vụ" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="983" y="1618" width="224" height="85" as="geometry" />
         </mxCell>
-        <mxCell id="d09-28" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=12;boundedLbl=1;" parent="1" vertex="1">
+        <mxCell id="d09-28" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=0.15;boundedLbl=1;" parent="1" vertex="1">
           <mxGeometry x="1288" y="106" width="224" height="100" as="geometry" />
         </mxCell>
         <mxCell id="d09-29" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=none;endFill=1;endSize=9;dashed=1;dashPattern=6 4;" edge="1" parent="1">
@@ -1576,7 +1576,7 @@
             <mxPoint x="1400" y="1598" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="d09-30" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=12;boundedLbl=1;" parent="1" vertex="1">
+        <mxCell id="d09-30" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=0.15;boundedLbl=1;" parent="1" vertex="1">
           <mxGeometry x="1288" y="1618" width="224" height="85" as="geometry" />
         </mxCell>
         <mxCell id="d09-31" value="" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
@@ -2109,7 +2109,7 @@
         <mxCell id="d11-30" value="Repository" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="1288" y="2806" width="224" height="85" as="geometry" />
         </mxCell>
-        <mxCell id="d11-31" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=12;boundedLbl=1;" parent="1" vertex="1">
+        <mxCell id="d11-31" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=0.15;boundedLbl=1;" parent="1" vertex="1">
           <mxGeometry x="1593" y="106" width="224" height="100" as="geometry" />
         </mxCell>
         <mxCell id="d11-32" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=none;endFill=1;endSize=9;dashed=1;dashPattern=6 4;" edge="1" parent="1">
@@ -2118,7 +2118,7 @@
             <mxPoint x="1705" y="2786" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="d11-33" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=12;boundedLbl=1;" parent="1" vertex="1">
+        <mxCell id="d11-33" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=0.15;boundedLbl=1;" parent="1" vertex="1">
           <mxGeometry x="1593" y="2806" width="224" height="85" as="geometry" />
         </mxCell>
         <mxCell id="d11-34" value="" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
@@ -2462,7 +2462,7 @@
         <mxCell id="d12-27" value="billing.service.js&lt;br&gt;Nghiệp vụ" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="983" y="1486" width="224" height="85" as="geometry" />
         </mxCell>
-        <mxCell id="d12-28" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=12;boundedLbl=1;" parent="1" vertex="1">
+        <mxCell id="d12-28" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=20;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=0.15;boundedLbl=1;" parent="1" vertex="1">
           <mxGeometry x="1288" y="106" width="224" height="100" as="geometry" />
         </mxCell>
         <mxCell id="d12-29" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=none;endFill=1;endSize=9;dashed=1;dashPattern=6 4;" edge="1" parent="1">
@@ -2471,7 +2471,7 @@
             <mxPoint x="1400" y="1466" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="d12-30" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=12;boundedLbl=1;" parent="1" vertex="1">
+        <mxCell id="d12-30" value="MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=19;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#e9e9f0;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=0.15;boundedLbl=1;" parent="1" vertex="1">
           <mxGeometry x="1288" y="1486" width="224" height="85" as="geometry" />
         </mxCell>
         <mxCell id="d12-31" value="" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
@@ -6903,10 +6903,10 @@
         <mxCell id="d20-10" value="TẦNG DỮ LIỆU" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=20;fontStyle=1;fontColor=#111111;strokeColor=none;strokeWidth=1.3;fillColor=none;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="60" y="765" width="1070" height="48" as="geometry" />
         </mxCell>
-        <mxCell id="d20-11" value="MySQL / InnoDB&lt;br&gt;31 bảng và 8 view lịch sử" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=12;boundedLbl=1;" parent="1" vertex="1">
+        <mxCell id="d20-11" value="MySQL / InnoDB&lt;br&gt;31 bảng và 8 view lịch sử" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=0.15;boundedLbl=1;" parent="1" vertex="1">
           <mxGeometry x="145" y="845" width="380" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="d20-12" value="Kho tệp ảnh&lt;br&gt;Metadata trong MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=12;boundedLbl=1;" parent="1" vertex="1">
+        <mxCell id="d20-12" value="Kho tệp ảnh&lt;br&gt;Metadata trong MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=0.15;boundedLbl=1;" parent="1" vertex="1">
           <mxGeometry x="690" y="845" width="350" height="110" as="geometry" />
         </mxCell>
         <mxCell id="d20-13" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;" edge="1" parent="1" source="d20-4" target="d20-7">
@@ -6974,7 +6974,7 @@
         <mxCell id="d21-5" value="API: QR / quyền / ảnh&lt;br&gt;giới hạn / chống gửi lặp" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;rounded=1;arcSize=18;" parent="1" vertex="1">
           <mxGeometry x="465" y="380" width="330" height="115" as="geometry" />
         </mxCell>
-        <mxCell id="d21-6" value="Phản ánh + snapshot&lt;br&gt;ảnh + nhật ký" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=12;boundedLbl=1;" parent="1" vertex="1">
+        <mxCell id="d21-6" value="Phản ánh + snapshot&lt;br&gt;ảnh + nhật ký" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=0.15;boundedLbl=1;" parent="1" vertex="1">
           <mxGeometry x="465" y="680" width="330" height="115" as="geometry" />
         </mxCell>
         <mxCell id="d21-7" value="BQL tiếp nhận&lt;br&gt;và phân công" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;rounded=1;arcSize=18;" parent="1" vertex="1">

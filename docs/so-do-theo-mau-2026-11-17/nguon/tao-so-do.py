@@ -126,7 +126,7 @@ class Diagram:
         if shape=='ellipse':style+='shape=ellipse;'
         elif shape=='diamond':style+='shape=rhombus;'
         elif shape=='round':style+='rounded=1;arcSize=18;'
-        elif shape=='cylinder':style+='shape=cylinder;size=12;boundedLbl=1;'
+        elif shape=='cylinder':style+='shape=cylinder;size=0.15;boundedLbl=1;'
         else:style+='rounded=0;'
         if shape=='group':style+='group;strokeColor=none;fillColor=none;'
         textlines=wrap(label,w-16,fs) if label else []

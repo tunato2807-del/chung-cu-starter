@@ -35,10 +35,10 @@
         <mxCell id="d20-10" value="TẦNG DỮ LIỆU" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=20;fontStyle=1;fontColor=#111111;strokeColor=none;strokeWidth=1.3;fillColor=none;align=center;verticalAlign=middle;spacing=5;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="60" y="765" width="1070" height="48" as="geometry" />
         </mxCell>
-        <mxCell id="d20-11" value="MySQL / InnoDB&lt;br&gt;31 bảng và 8 view lịch sử" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=12;boundedLbl=1;" parent="1" vertex="1">
+        <mxCell id="d20-11" value="MySQL / InnoDB&lt;br&gt;31 bảng và 8 view lịch sử" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=0.15;boundedLbl=1;" parent="1" vertex="1">
           <mxGeometry x="145" y="845" width="380" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="d20-12" value="Kho tệp ảnh&lt;br&gt;Metadata trong MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=12;boundedLbl=1;" parent="1" vertex="1">
+        <mxCell id="d20-12" value="Kho tệp ảnh&lt;br&gt;Metadata trong MySQL" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=0.15;boundedLbl=1;" parent="1" vertex="1">
           <mxGeometry x="690" y="845" width="350" height="110" as="geometry" />
         </mxCell>
         <mxCell id="d20-13" value="" style="html=1;noEdgeStyle=1;edgeStyle=none;rounded=0;strokeColor=#222222;strokeWidth=1.3;endArrow=block;endFill=1;endSize=9;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;" edge="1" parent="1" source="d20-4" target="d20-7">

@@ -20,7 +20,7 @@
         <mxCell id="d21-5" value="API: QR / quyền / ảnh&lt;br&gt;giới hạn / chống gửi lặp" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;rounded=1;arcSize=18;" parent="1" vertex="1">
           <mxGeometry x="465" y="380" width="330" height="115" as="geometry" />
         </mxCell>
-        <mxCell id="d21-6" value="Phản ánh + snapshot&lt;br&gt;ảnh + nhật ký" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=12;boundedLbl=1;" parent="1" vertex="1">
+        <mxCell id="d21-6" value="Phản ánh + snapshot&lt;br&gt;ảnh + nhật ký" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;shape=cylinder;size=0.15;boundedLbl=1;" parent="1" vertex="1">
           <mxGeometry x="465" y="680" width="330" height="115" as="geometry" />
         </mxCell>
         <mxCell id="d21-7" value="BQL tiếp nhận&lt;br&gt;và phân công" style="html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Arial;fontSize=22;fontStyle=0;fontColor=#111111;strokeColor=#222222;strokeWidth=1.3;fillColor=#ffffff;align=center;verticalAlign=middle;spacing=5;rounded=1;arcSize=18;" parent="1" vertex="1">
